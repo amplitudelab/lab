@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Amplitude Lab</title>
+<meta name="description" content="Laboratório de experiências digitais: cartões digitais, páginas de agendamento, displays interativos e remake visual para empresas, artistas e eventos.">
+<meta name="theme-color" content="#0A0F1C">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Amplitude Lab">
+<meta property="og:description" content="Cartões digitais, agendamento e displays interativos. Veja as demos.">
+<meta property="og:url" content="https://symbiozyy.github.io/amplitude-lab/">
+<meta property="og:image" content="https://symbiozyy.github.io/amplitude-lab/assets/og-image.png">
+<meta property="og:image:width" content="1080">
+<meta property="og:image:height" content="1080">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: dark lab bench. Text column + live phone "specimen" in the hero, then
+   services as spec sheets, the protocol as a real sequence, the remake as an artboard. */
+:root{
+  --bg:#0A0F1C; --bg-2:#0F1626; --panel:#131B2E; --line:#222C44;
+  --fg:#E9EEF7; --muted:#9AA5BB; --dim:#6B7690;
+  --accent:#5B8CFF; --accent-strong:#2450D6; --on-accent:#FFFFFF;
+  --ok:#3FCF9B;
+  --f-sans:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
+.mono{font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{text-wrap:balance;margin:0;font-weight:600;letter-spacing:-.02em}
+p{margin:0}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:19px;letter-spacing:-.02em}
+.brand b{font-weight:500;color:var(--accent)}
+nav.links{display:flex;gap:26px;font-size:14px;color:var(--muted)}
+nav.links a{text-decoration:none}
+nav.links a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--fg);font:500 15px/1 var(--f-sans);text-decoration:none;cursor:pointer;transition:background .2s,border-color .2s}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent-strong);border-color:var(--accent-strong);color:var(--on-accent)}
+.btn.primary:hover{background:#1E45BD}
+@media (max-width:820px){nav.links{display:none}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;opacity:.35;mask-image:radial-gradient(ellipse at 30% 40%,#000 20%,transparent 75%);pointer-events:none}
+.hero .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px;align-items:center;padding-block:72px 80px}
+@media (max-width:900px){.hero .wrap{grid-template-columns:minmax(0,1fr);gap:48px;padding-block:48px 56px}}
+.hero h1{font-size:clamp(40px,6.4vw,76px);line-height:1;letter-spacing:-.035em;margin-top:18px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lead{margin-top:22px;max-width:34em;font-size:clamp(17px,1.6vw,19px);color:var(--muted)}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.readout{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
+.readout div{display:flex;flex-direction:column;gap:4px}
+.readout span:last-child{font-size:15px;color:var(--fg)}
+
+/* phone specimen */
+.bench{display:flex;flex-direction:column;align-items:center;gap:18px}
+.tabs{display:flex;gap:6px;padding:5px;border:1px solid var(--line);border-radius:999px;background:var(--bg-2);max-width:100%;overflow-x:auto}
+.tabs button{min-height:40px;padding:0 16px;border-radius:999px;border:0;background:transparent;color:var(--muted);font:500 14px var(--f-sans);cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--fg);color:var(--bg)}
+.phone{width:min(340px,100%);aspect-ratio:340/690;max-width:100%;border-radius:46px;padding:12px;background:#1A2236;box-shadow:0 0 0 1px #2C3654,0 40px 80px -30px rgba(0,0,0,.7);position:relative}
+.screen{position:relative;height:100%;border-radius:35px;overflow:hidden;background:#fff;color:#111}
+.screen>section{position:absolute;inset:0;overflow-y:auto;opacity:0;transform:translateY(10px);transition:opacity .35s,transform .35s;pointer-events:none}
+.screen>section.on{opacity:1;transform:none;pointer-events:auto}
+.tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+
+/* demo: card */
+.d-card{background:#F3EFE8;color:#1F1B16;padding:28px 22px 26px;display:flex;flex-direction:column;gap:18px;min-height:100%}
+.d-card .ph{width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#E7B98F,#A5603A 70%);margin:18px auto 0;display:grid;place-items:center;color:#fff;font:600 30px var(--f-sans)}
+.d-card h3{text-align:center;font-size:24px;letter-spacing:-.02em}
+.d-card .role{text-align:center;color:#6E6255;font-size:14px;margin-top:-12px}
+.d-card .acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.d-card .acts button{min-height:48px;border-radius:12px;border:1px solid #DCD3C6;background:#fff;color:#1F1B16;font:500 14px var(--f-sans);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.d-card .acts button.main{grid-column:span 2;background:#1F1B16;color:#F3EFE8;border-color:#1F1B16}
+.d-card .gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.d-card .gal i{aspect-ratio:1;border-radius:8px;display:block}
+.d-card .foot{text-align:center;font-size:12px;color:#8A7D6E}
+
+/* demo: booking */
+.d-book{background:#F6F7F9;color:#12151C;min-height:100%;display:flex;flex-direction:column}
+.d-book .head{background:#12151C;color:#fff;padding:30px 20px 18px}
+.d-book .head h3{font-size:21px;margin-top:6px}
+.d-book .head p{color:#A9B0BF;font-size:13px;margin-top:4px}
+.d-book .body{padding:16px 16px 20px;display:flex;flex-direction:column;gap:16px}
+.d-book .lbl{font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:#6A7180}
+.svc{display:flex;flex-direction:column;gap:8px}
+.svc button,.days button,.slots button{border:1px solid #DDE1E8;background:#fff;color:#12151C;border-radius:12px;cursor:pointer;font-family:var(--f-sans)}
+.svc button{min-height:52px;padding:0 14px;display:flex;justify-content:space-between;align-items:center;font-size:14px;text-align:left}
+.svc button small{color:#6A7180;font-size:12px;display:block}
+.svc button[aria-pressed="true"],.days button[aria-pressed="true"],.slots button[aria-pressed="true"]{border-color:#2450D6;background:#EAF0FF;box-shadow:inset 0 0 0 1px #2450D6}
+.days{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.days button{min-width:52px;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;text-transform:uppercase;color:#6A7180}
+.days button b{font-size:17px;color:#12151C}
+.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.slots button{min-height:44px;font:500 13px var(--f-mono);font-variant-numeric:tabular-nums}
+.slots button:disabled{color:#B5BAC5;text-decoration:line-through;background:#F0F2F5;cursor:not-allowed}
+.confirm{min-height:50px;border:0;border-radius:12px;background:#2450D6;color:#fff;font:600 15px var(--f-sans);cursor:pointer}
+.confirm:disabled{background:#C3C9D6;cursor:not-allowed}
+.done{padding:40px 22px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+.done .chk{width:64px;height:64px;border-radius:50%;background:#E3F7EE;display:grid;place-items:center}
+.done h3{font-size:22px}
+.done p{color:#5A6170;font-size:14px}
+.done .ticket{width:100%;margin-top:8px;border:1px dashed #C8CDD7;border-radius:12px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.done .ticket div{display:flex;justify-content:space-between;gap:10px}
+.done .ticket span{color:#6A7180}
+.link-btn{background:none;border:0;color:#2450D6;font:500 14px var(--f-sans);cursor:pointer;min-height:44px}
+
+/* demo: event */
+.d-ev{background:#0B0B0E;color:#F2F0EA;min-height:100%;display:flex;flex-direction:column}
+.d-ev .poster{padding:30px 20px 22px;background:radial-gradient(120% 90% at 80% 0%,#5A1E8C 0%,transparent 60%),radial-gradient(90% 80% at 0% 100%,#C2410C 0%,transparent 55%),#0B0B0E}
+.d-ev .poster h3{font-size:40px;line-height:.92;letter-spacing:-.04em;margin-top:10px;text-transform:uppercase}
+.d-ev .poster p{margin-top:10px;font-size:13px;color:#D9D4C8}
+.stage-tabs{display:flex;gap:6px;padding:14px 16px 4px}
+.stage-tabs button{flex:1;min-height:40px;border-radius:10px;border:1px solid #2A2A33;background:transparent;color:#B9B5AA;font:500 13px var(--f-sans);cursor:pointer}
+.stage-tabs button[aria-selected="true"]{background:#F2F0EA;color:#0B0B0E;border-color:#F2F0EA}
+.lineup{list-style:none;margin:0;padding:8px 16px 12px;display:flex;flex-direction:column}
+.lineup li{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #1E1E25}
+.lineup time{font:500 13px var(--f-mono);color:#8D897F;font-variant-numeric:tabular-nums}
+.lineup b{font-weight:600;font-size:15px;display:block}
+.lineup small{color:#8D897F;font-size:12px}
+.live{font:500 10px var(--f-mono);letter-spacing:.12em;color:#0B0B0E;background:#F59E0B;padding:4px 7px;border-radius:999px}
+.d-ev .tix{margin:6px 16px 20px;min-height:50px;border:0;border-radius:12px;background:#F59E0B;color:#0B0B0E;font:600 15px var(--f-sans);cursor:pointer}
+
+.toast{position:absolute;left:12px;right:12px;bottom:14px;background:#12151C;color:#fff;font-size:13px;line-height:1.4;padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(8px);transition:.25s;pointer-events:none;z-index:5}
+.toast.on{opacity:1;transform:none}
+.caption{max-width:340px;text-align:center;font-size:13px;color:var(--dim)}
+
+/* sections */
+.sec{padding-block:96px;border-bottom:1px solid var(--line)}
+@media (max-width:700px){.sec{padding-block:64px}}
+.sec-head{display:flex;flex-direction:column;gap:14px;max-width:44rem;margin-bottom:48px}
+.sec-head h2{font-size:clamp(30px,4vw,46px);line-height:1.05;letter-spacing:-.03em}
+.sec-head p{color:var(--muted);font-size:17px;max-width:36em}
+
+/* services as spec sheets */
+.specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+@media (max-width:760px){.specs{grid-template-columns:minmax(0,1fr)}}
+.spec{background:var(--bg);padding:30px 28px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.spec.wide{grid-column:1/-1;background:var(--bg-2)}
+.spec header{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.spec h3{font-size:23px}
+.spec p{color:var(--muted);max-width:34em}
+.spec dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 18px;margin:6px 0 0;font-size:14px}
+.spec dt{font:500 11px/1.9 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.spec dd{margin:0;color:var(--fg)}
+
+/* protocol */
+.protocol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;counter-reset:p}
+@media (max-width:900px){.protocol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.protocol{grid-template-columns:minmax(0,1fr)}}
+.protocol li{display:flex;flex-direction:column;gap:10px;padding-top:18px;border-top:2px solid var(--line);min-width:0}
+.protocol li:first-child{border-top-color:var(--accent)}
+.protocol h3{font-size:19px}
+.protocol p{color:var(--muted);font-size:15px}
+
+/* remake artboard */
+.remake{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;align-items:start}
+@media (max-width:900px){.remake{grid-template-columns:minmax(0,1fr)}}
+.remake ul{list-style:none;padding:0;margin:24px 0 0;display:flex;flex-direction:column}
+.remake li{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);font-size:16px}
+.remake li span{font:500 12px/1.9 var(--f-mono);color:var(--accent);min-width:28px}
+.board{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-2);padding:22px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.board>div{border-radius:10px;min-width:0}
+.b-logo{grid-column:span 4;background:var(--bg);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:12px;padding:34px 12px;font-weight:600;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.02em}
+.b-logo b{font-weight:500;color:var(--accent)}
+.b-icon{grid-column:span 2;background:var(--fg);display:grid;place-items:center;padding:20px}
+.sw{grid-column:span 2;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;min-height:96px;font:500 11px var(--f-mono);letter-spacing:.08em}
+.b-type{grid-column:span 6;border:1px solid var(--line);padding:18px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.b-type .aa{font-size:52px;line-height:1;font-weight:600;letter-spacing:-.03em}
+.b-type .meta{display:flex;flex-direction:column;gap:4px;text-align:right}
+.b-cap{grid-column:span 6;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media (max-width:520px){.b-logo,.b-icon{grid-column:span 6}.sw{grid-column:span 2}}
+
+/* contact */
+.contact{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px}
+@media (max-width:900px){.contact{grid-template-columns:minmax(0,1fr)}}
+form.lead{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:560px){form.lead{grid-template-columns:minmax(0,1fr)}}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{width:100%;min-height:48px;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg-2);color:var(--fg);font:400 16px var(--f-sans)}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent)}
+.out{grid-column:1/-1;border:1px solid var(--line);border-radius:var(--r);padding:18px;background:var(--panel);display:flex;flex-direction:column;gap:12px}
+.out pre{margin:0;white-space:pre-wrap;font:400 14px/1.6 var(--f-mono);color:var(--fg)}
+.out .row{display:flex;flex-wrap:wrap;gap:10px}
+
+footer.end{padding-block:40px}
+footer.end .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;color:var(--dim);font-size:14px}
+</style>
+<style>body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="flask" viewBox="0 0 64 64" fill="none">
+      <path d="M28 6 V22 L12.5 51 Q9.5 58 17 58 H47 Q54.5 58 51.5 51 L36 22 V6" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+      <line x1="24" y1="6" x2="40" y2="6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M17 44 Q24.5 36 32 44 Q39.5 52 47 44" stroke="var(--accent)" stroke-width="2.8" stroke-linecap="round"/>
+      <circle cx="24.5" cy="40" r="3" fill="var(--accent)"/>
+      <circle cx="33" cy="30" r="1.9" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio" aria-label="Amplitude Lab, início">
+      <svg width="30" height="30" aria-hidden="true"><use href="#flask"/></svg>
+      <span>Amplitude <b>Lab</b></span>
+    </a>
+    <nav class="links" aria-label="Seções">
+      <a href="#servicos">Serviços</a>
+      <a href="#protocolo">Como funciona</a>
+      <a href="#remake">Remake visual</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <a class="btn primary" href="#contato">Pedir orçamento</a>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="mono">Laboratório de experiências digitais</p>
+        <h1>Sua marca com mais <em>amplitude.</em></h1>
+        <p class="lead">Cartões digitais, páginas de agendamento e displays interativos para empresas, artistas e eventos. Tudo funciona no celular do seu cliente, sem precisar instalar nada.</p>
+        <div class="ctas">
+          <a class="btn primary" href="#contato">Quero a minha página</a>
+          <a class="btn" href="#servicos">Ver serviços</a>
+        </div>
+        <div class="readout">
+          <div><span class="mono">Para</span><span>Empresas · Artistas · Eventos</span></div>
+          <div><span class="mono">Acesso</span><span>Link, QR code ou bio</span></div>
+        </div>
+      </div>
+
+      <div class="bench">
+        <div class="tabs" role="tablist" aria-label="Demonstrações">
+          <button role="tab" id="t-card" aria-selected="true" aria-controls="s-card">Cartão digital</button>
+          <button role="tab" id="t-book" aria-selected="false" aria-controls="s-book">Agendamento</button>
+          <button role="tab" id="t-ev" aria-selected="false" aria-controls="s-ev">Evento</button>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <section id="s-card" class="on" role="tabpanel" aria-labelledby="t-card">
+              <div class="d-card">
+                <div class="ph" aria-hidden="true">MO</div>
+                <h3>Marina Okada</h3>
+                <p class="role">Fotógrafa de casamentos · São Paulo</p>
+                <div class="acts">
+                  <button class="main demo-act" data-msg="Na página do cliente, este botão abre a conversa no WhatsApp.">Chamar no WhatsApp</button>
+                  <button class="demo-act" data-msg="Abre o perfil do Instagram do cliente.">Instagram</button>
+                  <button class="demo-act" data-msg="Leva ao portfólio completo.">Portfólio</button>
+                  <button class="demo-act" data-msg="Mostra a tabela de pacotes do cliente.">Pacotes</button>
+                  <button class="demo-act" data-msg="Salva nome, telefone e e-mail na agenda do celular.">Salvar contato</button>
+                </div>
+                <div class="gal" aria-hidden="true">
+                  <i style="background:linear-gradient(160deg,#D9C4A8,#8C6B4F)"></i>
+                  <i style="background:linear-gradient(160deg,#B9C7BE,#5E7368)"></i>
+                  <i style="background:linear-gradient(160deg,#E8D5CF,#A0766C)"></i>
+                </div>
+                <p class="foot">Exemplo de cartão · cliente fictícia</p>
+              </div>
+            </section>
+
+            <section id="s-book" role="tabpanel" aria-labelledby="t-book">
+              <div class="d-book">
+                <div class="head">
+                  <span class="tag" style="color:#8A93A6">Agendamento online</span>
+                  <h3>Barbearia Norte</h3>
+                  <p>Rua das Palmeiras, 120 · exemplo fictício</p>
+                </div>
+                <div class="body" id="book-form">
+                  <div class="svc" role="group" aria-label="Serviço">
+                    <span class="lbl">1. Serviço</span>
+                    <button aria-pressed="true" data-svc="Corte" data-dur="40 min">
+                      <span>Corte<small>40 min</small></span><span>R$ 50</span></button>
+                    <button aria-pressed="false" data-svc="Barba" data-dur="30 min">
+                      <span>Barba<small>30 min</small></span><span>R$ 40</span></button>
+                    <button aria-pressed="false" data-svc="Corte + barba" data-dur="1h">
+                      <span>Corte + barba<small>1h</small></span><span>R$ 80</span></button>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <span class="lbl">2. Dia</span>
+                    <div class="days" id="days" role="group" aria-label="Dia"></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <span class="lbl">3. Horário</span>
+                    <div class="slots" id="slots" role="group" aria-label="Horário"></div>
+                  </div>
+                  <button class="confirm" id="confirm" disabled>Escolha um horário</button>
+                </div>
+                <div class="done" id="book-done" hidden>
+                  <div class="chk"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#14915F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+                  <h3>Horário reservado</h3>
+                  <p>Na versão do cliente, a confirmação chega por WhatsApp ou e-mail.</p>
+                  <div class="ticket" id="ticket"></div>
+                  <button class="link-btn" id="book-again">Fazer outro agendamento</button>
+                </div>
+              </div>
+            </section>
+
+            <section id="s-ev" role="tabpanel" aria-labelledby="t-ev">
+              <div class="d-ev">
+                <div class="poster">
+                  <span class="tag" style="color:#D9D4C8">Sáb · 21 nov · 16h</span>
+                  <h3>Festival<br>Órbita</h3>
+                  <p>Galpão Leste · evento fictício</p>
+                </div>
+                <div class="stage-tabs" role="tablist" aria-label="Palcos">
+                  <button role="tab" aria-selected="true" data-stage="0">Palco Sol</button>
+                  <button role="tab" aria-selected="false" data-stage="1">Palco Lua</button>
+                </div>
+                <ul class="lineup" id="lineup"></ul>
+                <button class="tix demo-act" data-msg="Leva direto para a venda de ingressos do evento.">Comprar ingresso</button>
+              </div>
+            </section>
+
+            <div class="toast" id="toast" role="status" aria-live="polite"></div>
+          </div>
+        </div>
+        <p class="caption">Toque e navegue. São demonstrações reais do que entregamos, com clientes fictícios.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="servicos">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="mono">Serviços</p>
+        <h2>Páginas digitais feitas para o seu cliente agir.</h2>
+        <p>Cada página tem uma função clara: chamar, agendar, comprar ou conhecer. Você divulga por link, QR code ou na bio.</p>
+      </div>
+      <div class="specs">
+        <article class="spec">
+          <header><h3>Cartão digital</h3><span class="mono">Amostra 01</span></header>
+          <p>Seu cartão de visita em forma de página: contato, redes, portfólio e um botão para salvar na agenda.</p>
+          <dl><dt>Ideal para</dt><dd>Profissionais, artistas, equipes de vendas</dd><dt>Acesso</dt><dd>Link, QR code impresso ou NFC</dd></dl>
+        </article>
+        <article class="spec">
+          <header><h3>Página de agendamento</h3><span class="mono">Amostra 02</span></header>
+          <p>Seu cliente escolhe o serviço, o dia e o horário sozinho, sem troca infinita de mensagens.</p>
+          <dl><dt>Ideal para</dt><dd>Barbearias, clínicas, estúdios, consultorias</dd><dt>Inclui</dt><dd>Serviços, duração e horários disponíveis</dd></dl>
+        </article>
+        <article class="spec">
+          <header><h3>Display interativo</h3><span class="mono">Amostra 03</span></header>
+          <p>Uma vitrine navegável para mostrar line-up, cardápio, catálogo ou apresentação, direto no celular.</p>
+          <dl><dt>Ideal para</dt><dd>Eventos, festivais, restaurantes, lojas</dd><dt>Uso</dt><dd>Telão, QR na mesa, link no convite</dd></dl>
+        </article>
+        <article class="spec">
+          <header><h3>Página central</h3><span class="mono">Amostra 04</span></header>
+          <p>Um endereço só que reúne seus links, serviços, agenda e canais de contato, com a cara da sua marca.</p>
+          <dl><dt>Ideal para</dt><dd>Empresas com muitos canais</dd><dt>Substitui</dt><dd>Agregadores de link genéricos</dd></dl>
+        </article>
+        <article class="spec wide">
+          <header><h3>Remake visual</h3><span class="mono">Pacote completo</span></header>
+          <p>Renovamos a identidade da sua marca do zero: logotipo novo, artboard com cores e tipografia, peças para redes e ícones de destaques. Combina com qualquer página acima.</p>
+          <dl><dt>Entrega</dt><dd>Logo em todas as versões, artboard da marca, kit de redes sociais em PNG</dd></dl>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="protocolo">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="mono">Protocolo</p>
+        <h2>Como um projeto anda aqui dentro.</h2>
+      </div>
+      <ol class="protocol">
+        <li><span class="mono">Etapa 1</span><h3>Diagnóstico</h3><p>Entendemos seu negócio, seu público e o que a página precisa fazer.</p></li>
+        <li><span class="mono">Etapa 2</span><h3>Protótipo</h3><p>Você recebe uma primeira versão navegável para testar no celular.</p></li>
+        <li><span class="mono">Etapa 3</span><h3>Ajustes</h3><p>Refinamos textos, cores e funções a partir do seu retorno.</p></li>
+        <li><span class="mono">Etapa 4</span><h3>Publicação</h3><p>Sua página vai ao ar com link e QR code prontos para divulgar.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" id="remake">
+    <div class="wrap remake">
+      <div>
+        <div class="sec-head" style="margin-bottom:0">
+          <p class="mono">Remake visual</p>
+          <h2>Uma nova identidade, pronta para usar.</h2>
+          <p>Este é o artboard da própria Amplitude Lab. É o mesmo nível de entrega que você recebe no remake da sua marca.</p>
+        </div>
+        <ul>
+          <li><span>01</span>Logotipo novo em versões horizontal, vertical e símbolo</li>
+          <li><span>02</span>Versões coloridas e monocromáticas</li>
+          <li><span>03</span>Artboard com paleta e tipografia da marca</li>
+          <li><span>04</span>Kit para redes: perfil, posts, stories e capas</li>
+          <li><span>05</span>Ícones de destaques para o Instagram</li>
+        </ul>
+      </div>
+      <div class="board" aria-label="Artboard da marca Amplitude Lab">
+        <div class="b-logo"><svg width="44" height="44" aria-hidden="true"><use href="#flask"/></svg><span>Amplitude <b>Lab</b></span></div>
+        <div class="b-icon" style="color:var(--bg)"><svg width="64" height="64" aria-hidden="true"><use href="#flask"/></svg></div>
+        <div class="sw" style="background:#0A0F1C;border:1px solid var(--line);color:#E9EEF7">NAVY<br>#0A0F1C</div>
+        <div class="sw" style="background:#2450D6;color:#fff">COBALTO<br>#2450D6</div>
+        <div class="sw" style="background:#E9EEF7;color:#0A0F1C">NÉVOA<br>#E9EEF7</div>
+        <div class="b-type">
+          <span class="aa">Aa</span>
+          <div class="meta"><span class="mono">Títulos</span><span>IBM Plex Sans</span><span class="mono" style="margin-top:6px">Detalhes</span><span style="font-family:var(--f-mono)">IBM Plex Mono</span></div>
+        </div>
+        <div class="b-cap"><span class="mono">Artboard · v1</span><span class="mono">Applied AI Laboratory</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="contato">
+    <div class="wrap contact">
+      <div class="sec-head">
+        <p class="mono">Contato</p>
+        <h2>Vamos montar a sua página.</h2>
+        <p>Conte em poucas linhas o que você precisa. Montamos sua mensagem pronta para enviar.</p>
+        <p id="channels" style="color:var(--fg)"></p>
+      </div>
+      <form class="lead" id="lead" novalidate>
+        <div class="field"><label for="f-nome">Seu nome</label><input id="f-nome" name="nome" autocomplete="name" required></div>
+        <div class="field"><label for="f-neg">Empresa ou projeto</label><input id="f-neg" name="negocio" autocomplete="organization"></div>
+        <div class="field full"><label for="f-svc">O que você precisa</label>
+          <select id="f-svc" name="servico">
+            <option>Cartão digital</option>
+            <option>Página de agendamento</option>
+            <option>Display interativo</option>
+            <option>Página central</option>
+            <option>Remake visual</option>
+            <option>Ainda não sei, quero conversar</option>
+          </select>
+        </div>
+        <div class="field full"><label for="f-msg">Mensagem</label><textarea id="f-msg" name="mensagem" placeholder="Ex.: tenho uma barbearia e quero que os clientes agendem sozinhos."></textarea></div>
+        <div class="field full"><button class="btn primary" type="submit" style="align-self:flex-start">Montar minha mensagem</button></div>
+        <div class="out" id="out" hidden>
+          <span class="mono">Sua mensagem</span>
+          <pre id="out-text"></pre>
+          <div class="row">
+            <button class="btn" type="button" id="copy">Copiar mensagem</button>
+            <a class="btn primary" id="wa" target="_blank" rel="noopener" hidden>Enviar pelo WhatsApp</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="end">
+  <div class="wrap">
+    <a class="brand" href="#inicio" style="font-size:16px"><svg width="24" height="24" aria-hidden="true"><use href="#flask"/></svg><span>Amplitude <b>Lab</b></span></a>
+    <a class="mono" href="https://instagram.com/amplitude_lab" target="_blank" rel="noopener" style="text-decoration:none">@amplitude_lab</a>
+  </div>
+</footer>
+
+<script>
+/* Fill these in to connect the contact section */
+const CONTATO = { whatsapp: "5511952182016", instagram: "amplitude_lab" }; // whatsapp: só números com DDI, ex. 5511999999999
+
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  /* demo tabs */
+  const tabs = $$('.tabs [role="tab"]');
+  tabs.forEach(t => t.addEventListener('click', () => {
+    tabs.forEach(x => { x.setAttribute('aria-selected', x === t); $('#' + x.getAttribute('aria-controls')).classList.toggle('on', x === t); });
+  }));
+
+  /* toast */
+  let tt;
+  const toast = msg => { const el = $('#toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('on'), 2600); };
+  $$('.demo-act').forEach(b => b.addEventListener('click', () => toast(b.dataset.msg)));
+
+  /* booking demo */
+  const st = { svc: 'Corte', dur: '40 min', day: null, slot: null };
+  const wd = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  const mo = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  const days = [];
+  for (let d = new Date(), i = 0; days.length < 6 && i < 14; i++) {
+    const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + i + 1);
+    if (x.getDay() !== 0) days.push(x);
+  }
+  const daysEl = $('#days'), slotsEl = $('#slots'), conf = $('#confirm');
+  const hours = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+  const taken = (di, hi) => ((di * 7 + hi * 3) % 5) === 0;
+
+  function renderDays() {
+    daysEl.innerHTML = '';
+    days.forEach((d, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-pressed', st.day === i);
+      b.innerHTML = `${wd[d.getDay()]}<b>${d.getDate()}</b>`;
+      b.setAttribute('aria-label', `${wd[d.getDay()]}, ${d.getDate()} de ${mo[d.getMonth()]}`);
+      b.onclick = () => { st.day = i; st.slot = null; renderDays(); renderSlots(); };
+      daysEl.appendChild(b);
+    });
+  }
+  function renderSlots() {
+    slotsEl.innerHTML = '';
+    hours.forEach((h, hi) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = h;
+      b.disabled = st.day === null || taken(st.day, hi);
+      if (st.day !== null && taken(st.day, hi)) b.setAttribute('aria-label', h + ', ocupado');
+      b.setAttribute('aria-pressed', st.slot === h);
+      b.onclick = () => { st.slot = h; renderSlots(); };
+      slotsEl.appendChild(b);
+    });
+    conf.disabled = !st.slot;
+    conf.textContent = st.slot ? `Confirmar ${st.slot}` : (st.day === null ? 'Escolha um dia' : 'Escolha um horário');
+  }
+  $$('.svc button').forEach(b => b.addEventListener('click', () => {
+    $$('.svc button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    st.svc = b.dataset.svc; st.dur = b.dataset.dur;
+  }));
+  conf.addEventListener('click', () => {
+    const d = days[st.day];
+    $('#ticket').innerHTML = `<div><span>Serviço</span><b>${st.svc}</b></div><div><span>Duração</span><b>${st.dur}</b></div><div><span>Quando</span><b>${wd[d.getDay()]}, ${d.getDate()} ${mo[d.getMonth()]} · ${st.slot}</b></div>`;
+    $('#book-form').hidden = true; $('#book-done').hidden = false;
+  });
+  $('#book-again').addEventListener('click', () => {
+    st.day = null; st.slot = null; renderDays(); renderSlots();
+    $('#book-form').hidden = false; $('#book-done').hidden = true;
+  });
+  st.day = 0; renderDays(); renderSlots();
+
+  /* event demo */
+  const stages = [
+    [['16:00', 'Coletivo Maré', 'Abertura · house'], ['17:30', 'Duna Rosa', 'Indie eletrônico'], ['19:00', 'Kairo', 'Ao vivo · synth'], ['21:00', 'Vértice', 'Headliner · techno']],
+    [['16:30', 'Lia Moraes', 'Voz e violão'], ['18:00', 'Os Tropicais', 'Samba-rock'], ['19:45', 'Banda Faro', 'Rock alternativo'], ['21:30', 'Neon Baile', 'Encerramento · funk']]
+  ];
+  const live = [2, 1];
+  const lu = $('#lineup');
+  function renderLineup(s) {
+    lu.innerHTML = stages[s].map((a, i) => `<li><time>${a[0]}</time><div><b>${a[1]}</b><small>${a[2]}</small></div>${i === live[s] ? '<span class="live">AGORA</span>' : '<span></span>'}</li>`).join('');
+  }
+  $$('.stage-tabs button').forEach(b => b.addEventListener('click', () => {
+    $$('.stage-tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
+    renderLineup(+b.dataset.stage);
+  }));
+  renderLineup(0);
+
+  /* contact */
+  const chEl = $('#channels');
+  const addCh = (label, href) => {
+    if (chEl.childNodes.length) chEl.append(' · ');
+    const a = document.createElement('a'); a.href = href; a.target = '_blank'; a.rel = 'noopener'; a.textContent = label; chEl.append(a);
+  };
+  if (CONTATO.whatsapp) addCh('WhatsApp (11) 95218-2016', 'https://wa.me/' + CONTATO.whatsapp);
+  if (CONTATO.instagram) addCh('@' + CONTATO.instagram, 'https://instagram.com/' + CONTATO.instagram);
+
+  $('#lead').addEventListener('submit', e => {
+    e.preventDefault();
+    const nome = $('#f-nome');
+    if (!nome.value.trim()) { nome.focus(); nome.setAttribute('aria-invalid', 'true'); nome.placeholder = 'Escreva seu nome'; return; }
+    nome.removeAttribute('aria-invalid');
+    const neg = $('#f-neg').value.trim(), svc = $('#f-svc').value, msg = $('#f-msg').value.trim();
+    const text = `Olá, Amplitude Lab! Sou ${nome.value.trim()}${neg ? ', da ' + neg : ''}.\nTenho interesse em: ${svc}.${msg ? '\n\n' + msg : ''}`;
+    $('#out-text').textContent = text;
+    const wa = $('#wa');
+    if (CONTATO.whatsapp) { wa.href = `https://wa.me/${CONTATO.whatsapp}?text=${encodeURIComponent(text)}`; wa.hidden = false; }
+    $('#out').hidden = false;
+  });
+  $('#copy').addEventListener('click', e => {
+    const b = e.currentTarget, text = $('#out-text').textContent;
+    const done = () => { b.textContent = 'Mensagem copiada'; setTimeout(() => b.textContent = 'Copiar mensagem', 2000); };
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents($('#out-text')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Texto selecionado, copie com Ctrl+C'; };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (_) { fallback(); }
+  });
+})();
+</script>
+
+</body>
+</html>
