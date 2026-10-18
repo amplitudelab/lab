@@ -73,11 +73,11 @@ function iCymbal(t,dur){const a=MUS.ac,n=a.createBufferSource(),f=filt('highpass
 
 // ---------- sequenciador
 function musLayers(tc){const M=MODES[MUS.mode],a=MUS.ac;for(const k in MUS.G)MUS.G[k].gain.setTargetAtTime(M[k]||0,a.currentTime,tc==null?1.2:tc)}
-function musPickMode(){if(!run)return'title';if(P.dead)return'night';
+function musPickMode(){if(!run)return'title';if(!BOSSON)MUS.p2=0;if(P.dead)return'night';
   if(E.some(e=>e.boss&&!e.dead&&e.st=='chase'&&hy(e.x-P.x,e.z-P.z)<45))return'boss';
   if(inCombat()&&E.filter(e=>!e.dead&&!e.t.passive&&e.st=='chase'&&hy(e.x-P.x,e.z-P.z)<22).length>=2||MUS.mode=='combat'&&inCombat())return'combat';
   const rid=REG[regionAt(P.x,P.z)].id;if(NIGHT>.55||rid=='cald')return'night';if(hy(P.x,P.z)<60)return'vila';return'day'}
-function musBeat(t){const M=MODES[MUS.mode],spb=60/M.bpm,pr=PROG[M.p],b=MUS.beat%8;
+function musBeat(t){const M=MODES[MUS.mode],spb=60/(M.bpm*(MUS.p2&&MUS.mode=='boss'?1.12:1)),pr=PROG[M.p],b=MUS.beat%8;
   if(b==0){MUS.ci=(MUS.ci+(MUS.beat?1:0))%pr.length;if(MUS.ci==0&&MUS.beat)MUS.cyc++}
   const c=pr[MUS.ci];
   if(b==0){if(M.pad)iPad(t,c,8*spb);if(M.choir&&(MUS.mode=='night'||MUS.mode=='boss'||MUS.ci%2==0))iChoir(t,c,8*spb);if(MUS.ci==pr.length-1&&M.drum>.3)iCymbal(t+5*spb,3*spb)}

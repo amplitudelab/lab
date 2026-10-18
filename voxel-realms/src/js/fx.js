@@ -19,12 +19,13 @@ function flash(x,y,z,c,sz,l){const f=FLS[fli++%FLS.length];f.l=f.m=l||.25;f.z=sz
 function puff(x,y,z,c,sz){const p=PUF[pfi++%PUF.length];p.l=p.m=.55+R()*.25;p.z=sz||1;p.s.material.color.setHex(c);p.s.position.set(x+(R()-.5)*.3,y,z+(R()-.5)*.3);p.s.visible=true}
 // ---------- anéis, alertas de área (estilo Diablo) e feixes de saque
 const RGG=new THREE.RingGeometry(.86,1,40),DSK=new THREE.CircleGeometry(1,40),RG=[];
-function ring(x,z,r,c,t,grow){const m=new THREE.Mesh(RGG,new THREE.MeshBasicMaterial({color:c,transparent:true,side:2,depthWrite:false,blending:THREE.AdditiveBlending}));m.rotation.x=-PI/2;m.position.set(x,groundAt(x,z)+.12,z);sc.add(m);RG.push({m,t,mx:t,r,grow:grow!==0})}
+const RPL=[],TPL=[]; // anéis e alertas reaproveitados (nada de alocar a cada golpe)
+function ring(x,z,r,c,t,grow){const m=RPL.pop()||(()=>{const q=new THREE.Mesh(RGG,new THREE.MeshBasicMaterial({transparent:true,side:2,depthWrite:false,blending:THREE.AdditiveBlending}));q.rotation.x=-PI/2;return q})();m.material.color.setHex(c);m.material.opacity=1;m.position.set(x,groundAt(x,z)+.12,z);sc.add(m);RG.push({m,t,mx:t,r,grow:grow!==0})}
 const TEL=[];
-function tele(x,z,r,t,cb,c){const g=new THREE.Group(),o=new THREE.Mesh(RGG,new THREE.MeshBasicMaterial({color:c||0xff3a1a,transparent:true,side:2,depthWrite:false})),f=new THREE.Mesh(DSK,new THREE.MeshBasicMaterial({color:c||0xff3a1a,transparent:true,opacity:.28,side:2,depthWrite:false}));
-  g.add(o,f);g.rotation.x=-PI/2;g.position.set(x,groundAt(x,z)+.14,z);g.scale.setScalar(r);sc.add(g);const T={g,f,o,t,mx:t,cb,x,z,r};TEL.push(T);return T}
-function fxUpdR(dt){for(let i=RG.length-1;i>=0;i--){const o=RG[i];o.t-=dt;const k=1-o.t/o.mx;o.m.scale.setScalar(o.grow?o.r*(.2+.8*easeOut(k)):o.r);o.m.material.opacity=1-k;if(o.t<=0){sc.remove(o.m);o.m.material.dispose();RG.splice(i,1)}}
-  for(let i=TEL.length-1;i>=0;i--){const T=TEL[i];T.t-=dt;const k=1-T.t/T.mx;T.f.scale.setScalar(k);T.o.material.opacity=.5+.5*S(k*30);if(T.t<=0){sc.remove(T.g);T.f.material.dispose();T.o.material.dispose();TEL.splice(i,1);T.cb&&T.cb(T)}}}
+function tele(x,z,r,t,cb,c){let u=TPL.pop();if(!u){const g=new THREE.Group(),o=new THREE.Mesh(RGG,new THREE.MeshBasicMaterial({transparent:true,side:2,depthWrite:false})),f=new THREE.Mesh(DSK,new THREE.MeshBasicMaterial({transparent:true,opacity:.28,side:2,depthWrite:false}));g.add(o,f);g.rotation.x=-PI/2;u={g,o,f}}
+  const g=u.g,o=u.o,f=u.f;o.material.color.setHex(c||0xff3a1a);f.material.color.setHex(c||0xff3a1a);f.scale.setScalar(0);g.position.set(x,groundAt(x,z)+.14,z);g.scale.setScalar(r);sc.add(g);const T={g,f,o,t,mx:t,cb,x,z,r};TEL.push(T);return T}
+function fxUpdR(dt){for(let i=RG.length-1;i>=0;i--){const o=RG[i];o.t-=dt;const k=1-o.t/o.mx;o.m.scale.setScalar(o.grow?o.r*(.2+.8*easeOut(k)):o.r);o.m.material.opacity=1-k;if(o.t<=0){sc.remove(o.m);RPL.push(o.m);RG.splice(i,1)}}
+  for(let i=TEL.length-1;i>=0;i--){const T=TEL[i];T.t-=dt;const k=1-T.t/T.mx;T.f.scale.setScalar(k);T.o.material.opacity=.5+.5*S(k*30);if(T.t<=0){sc.remove(T.g);TPL.push({g:T.g,o:T.o,f:T.f});TEL.splice(i,1);T.cb&&T.cb(T)}}}
 const BEAMG=new THREE.CylinderGeometry(.35,.6,30,8,1,true);
 function beam(x,z,c){const m=new THREE.Mesh(BEAMG,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.35,depthWrite:false,blending:THREE.AdditiveBlending,side:2}));m.position.set(x,groundAt(x,z)+15,z);sc.add(m);return m}
 // ---------- números de dano e textos flutuantes (DOM)

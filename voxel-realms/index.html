@@ -11,7 +11,7 @@
 <title>Voxel Realms</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.min.css?v=8315b61b">
 </head>
 <body>
 <div id="rot"><i>📱</i>Voxel Realms é jogado na horizontal.<br>Gire o aparelho.</div>
@@ -22,18 +22,19 @@
   <div class="sub">ATO I · A SOMBRA SOBRE ALDORIA</div>
   <div id="ld"><div class="ldt">Gerando Aldoria…</div><div class="ldbar"><i id="ldb"></i></div></div>
   <div id="tbtn"><button id="ct" style="display:none">CONTINUAR</button><button id="ng">JOGAR</button><button id="gfx">GRÁFICOS</button></div>
-  <p class="tip">Teclado: WASD move · Shift corre · Espaço ataca · 1–4 habilidades · C dash · Q poção · E interage · I inventário · K habilidades · M mapa · J diário</p>
+  <p class="tip">Teclado: WASD move · Shift corre · Espaço ataca · 1–4 habilidades · C dash · Q poção · E interage · G tocha · +/- zoom do mapa · I inventário · K habilidades · M mapa · J diário</p>
 </div>
 
 <div id="ui">
   <!-- jogador -->
-  <div id="tl" class="wd"><div id="pf">⚔️</div><div class="tlr"><b id="lvn">Kael</b><span class="gl">🪙 <b id="gold">0</b></span><div id="buffs"></div><span id="mrc"></span></div></div>
+  <div id="tl" class="wd"><div id="pf">⚔️</div><div class="tlr"><b id="lvn">Kael</b><div class="tr2"><span class="gl">🪙 <b id="gold">0</b></span><div id="buffs"></div><span id="mrc"></span></div></div></div>
   <div id="qp" class="wd"><div id="qh" class="ttl">📜 Missões ▾</div><div id="ql"></div></div>
   <!-- alvo e chefe -->
-  <div id="tf"><b id="tfn"></b><small id="tfa"></small><div class="bar"><i id="tfb"></i></div></div>
   <div id="boss"><span class="bt">☠ <b id="bn_"></b> <em id="bph"></em></span><div class="bar"><i id="bf"></i></div></div>
+  <div id="tf"><b id="tfn"></b><small id="tfa"></small><div class="bar"><i id="tfb"></i></div></div>
   <!-- minimapa, região e menus -->
   <div id="mw"><canvas id="mc" width="160" height="160"></canvas><span class="n">N</span></div>
+  <div id="zm"><button id="zmi" class="rb" title="Aproximar">＋</button><button id="zmo" class="rb" title="Afastar">－</button></div>
   <div id="rg" class="wd"><b id="rn"></b><small id="rl"></small></div>
   <div id="tbar"><button id="mapb" title="Mapa (M)">🗺️</button><button id="jrnb" title="Diário (J)">📜</button><button id="bagb" title="Inventário (I)">🎒</button><button id="treeb" title="Habilidades (K)">✨</button><button id="menb" title="Menu (Esc)">⚙️</button></div>
   <!-- avisos -->
@@ -42,11 +43,11 @@
   <div id="jb"><div id="jk"></div></div>
   <div id="bar">
     <div id="hpo" class="orb"><span id="hpt"></span></div>
-    <div class="skills"><button id="sk0" class="sk"><i></i><em></em><u>1</u></button><button id="sk1" class="sk"><i></i><em></em><u>2</u></button><button id="sk2" class="sk"><i></i><em></em><u>3</u></button><button id="sk3" class="sk"><i></i><em></em><u>4</u></button><button id="potb" class="sk pot"><i>🧪</i><u>Q</u></button></div>
+    <div class="skills"><button id="sk0" class="sk"><i></i><em></em><u>1</u></button><button id="sk1" class="sk"><i></i><em></em><u>2</u></button><button id="potb" class="sk pot"><i>🧪</i><u>Q</u></button><button id="sk2" class="sk"><i></i><em></em><u>3</u></button><button id="sk3" class="sk"><i></i><em></em><u>4</u></button></div>
     <div id="fuo" class="orb"><span id="fut"></span></div>
     <div id="xp"><i id="xpf"></i><b id="lvl">1</b></div>
   </div>
-  <button id="atk" class="rb"><i>⚔️</i></button><button id="rolb" class="rb" title="Dash (C)"><i>💨</i></button><button id="runb" class="rb" title="Correr (Shift)"><i>🏃</i></button><button id="mntb" class="rb" title="Montaria (R)" style="display:none"><i>🦁</i></button>
+  <button id="atk" class="rb"><i>⚔️</i></button><button id="rolb" class="rb" title="Dash (C)"><i>💨</i></button><button id="runb" class="rb" title="Correr (Shift)"><i>🏃</i></button><button id="torb" class="rb on" title="Tocha (G)"><i>🔥</i></button><button id="mntb" class="rb" title="Montaria (R)" style="display:none"><i>🦁</i></button>
   <button id="itb"><i></i><span></span></button>
   <!-- diálogo -->
   <div id="dlg" class="wd"><i id="di"></i><b id="dn"></b><p id="dt"></p><div id="dch"></div><u>▶</u></div>
@@ -57,36 +58,21 @@
 <!-- janelas -->
 <div id="inv" class="win"><div class="eqc" id="eqA"></div><div class="eqc" id="eqB"></div><div id="ivS"></div>
   <div id="ivP" class="wd"><div class="wh"><span class="ttl">🎒 Inventário</span><span id="ivg"></span><button class="wx">✕</button></div><div id="ivG"></div><div id="ivD"></div></div></div>
-<div id="map" class="win"><div class="wd wbox mapbox"><div class="wh"><span class="ttl">🗺️ Aldoria</span><small id="mph"></small><button class="wx">✕</button></div><div class="mapw"><canvas id="wm" width="440" height="440"></canvas><div id="wpl"></div></div></div></div>
+<div id="map" class="win"><div class="wd wbox mapbox"><div class="wh"><span class="ttl">🗺️ Aldoria</span><small id="mph"></small><button class="wx">✕</button></div><div id="mleg"></div><div class="mapw"><canvas id="wm" width="440" height="440"></canvas><div id="wpl"></div></div></div></div>
 <div id="jrn" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">📜 Diário</span><button class="wx">✕</button></div><div id="jtabs"></div><div id="jbody"></div></div></div>
 <div id="shop" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚒️ Forja da Helga</span><span id="shg"></span><button class="wx">✕</button></div><p class="ihint">Para vender, abra o inventário e escolha "Vender".</p><div id="shl"></div></div></div>
 <div id="bty" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">📋 Quadro de Recompensas</span><button class="wx">✕</button></div><div id="btyb"></div></div></div>
 <div id="tree" class="win"><div class="wd wbox tbox"><div class="wh"><span class="ttl">✨ Habilidades</span><small id="tpts"></small><button class="wx">✕</button></div><div id="tcols"></div><div id="tdet"></div></div></div>
+<div id="pets" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🐾 Tobias, o Mercador</span><span id="ptg"></span><button class="wx">✕</button></div><p class="ihint">Um pet segue você e dá um bônus. Só um fica com você por vez.</p><div id="ptl"></div></div></div>
 <div id="gmb" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🌑 Mercante Sombrio</span><span id="gmg"></span><button class="wx">✕</button></div><p class="ihint">"Não pergunte de onde vêm. Pague, e o destino abre o embrulho." Cada peça é mágica ou melhor.</p><div id="gml"></div></div></div>
 <div id="cls"></div>
 <div id="menu" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚙️ Menu</span><button class="wx">✕</button></div>
   <p id="dayl" class="ihint"></p><button class="ib" id="gfx2">Gráficos</button><button class="ib" id="fpsb">Quadros</button><button class="ib" id="musb">Música</button><button class="ib" id="sav">Salvar agora</button><button class="ib off" id="ret">Voltar ao título</button>
-  <div class="help"><b>Como jogar</b><p>Segure ⚔️ para atacar em combo. Cada nível dá 1 ponto de habilidade: abra ✨ para aprender magias e golpes e escolha os 4 atalhos da barra. O orbe da direita é Fúria (dourado, enche ao bater) ou Mana (azul, com cajado ou varinha). Use 💨 para dar dash e desviar — desviar no último instante é uma Esquiva Perfeita (próximo golpe crítico). Toque em 🏃 para correr.</p>
+  <div class="help"><b>Como jogar</b><p>Segure ⚔️ para atacar em combo. Cada nível dá 1 ponto de habilidade: abra ✨ para aprender magias e golpes e escolha os 4 atalhos da barra. O orbe da direita é Fúria (dourado, enche ao bater) ou Mana (azul, com cajado ou varinha). Use 💨 para dar dash e desviar — desviar no último instante é uma Esquiva Perfeita (próximo golpe crítico). Toque em 🏃 para correr e em 🔥 para guardar ou acender a tocha (G). Use ＋ e － ao lado do minimapa para aproximar ou afastar; no mapa, os filtros escolhem quais marcações aparecer. Chefes têm duas fases: na segunda ficam mais rápidos e usam novas habilidades. Compre pets com o Tobias, o Mercador, na praça da vila.</p>
   <p>Monstros com nome azul são campeões; com nome amarelo, raros — e trazem tesouro. Feixes de luz amarela e laranja marcam itens raros e lendários. Toque em 💬, 📖 e 🌀 quando eles aparecerem para conversar, ler e viajar.</p></div></div></div>
 
 <script src="js/three.min.js"></script>
-<script src="js/core.js"></script>
-<script src="js/world.js"></script>
-<script src="js/places.js"></script>
-<script src="js/models.js"></script>
-<script src="js/fx.js"></script>
-<script src="js/parallax.js"></script>
-<script src="js/weather.js"></script>
-<script src="js/items.js"></script>
-<script src="js/entities.js"></script>
-<script src="js/combat.js"></script>
-<script src="js/skills.js"></script>
-<script src="js/classes.js"></script>
-<script src="js/ambience.js"></script>
-<script src="js/quests.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/music.js"></script>
-<script src="js/main.js"></script>
+<script src="js/game.min.js?v=8315b61b"></script>
 <script>if("serviceWorker"in navigator&&location.protocol=="https:")navigator.serviceWorker.register("sw.js").catch(function(){})</script>
 </body>
 </html>

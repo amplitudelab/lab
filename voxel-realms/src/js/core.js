@@ -25,6 +25,7 @@ function fbm(x,z,o){let s=0,a=.5,f=1,n=0;for(let i=0;i<(o||4);i++){s+=a*vnoise(x
 const MOB=matchMedia('(pointer:coarse)').matches||/Android|iPhone|iPad|Mobi/i.test(navigator.userAgent);
 let GL=(()=>{try{const g=localStorage.getItem('vr11_gfx');if(g!=null&&g!=='')return cl(+g|0,0,2)}catch(e){}return MOB?0:(navigator.hardwareConcurrency||4)>=6?2:1})();
 const GFX=[{n:'LEVE',pr:1,view:2,post:0,shafts:0,shadow:1024,fx:.5},{n:'MÉDIO',pr:1.25,view:2,post:1,shafts:0,shadow:1536,fx:.75},{n:'ALTO',pr:1.6,view:3,post:1,shafts:1,shadow:2048,fx:1}][GL];
+if(MOB&&((navigator.deviceMemory||4)<=3||(navigator.hardwareConcurrency||8)<=4)){GFX.fx*=.7;GFX.shadow=Math.min(GFX.shadow,768)} // aparelhos de entrada: menos partículas e sombra menor
 
 // ---------- renderer, cena e câmera
 const rd=new THREE.WebGLRenderer({antialias:!GFX.post,powerPreference:MOB?'default':'high-performance'});

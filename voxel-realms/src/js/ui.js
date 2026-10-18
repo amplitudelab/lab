@@ -18,7 +18,7 @@ function camUpd(dt){const c=CAMS;c.yaw+=angDiff(c.yaw,c.yawT)*damp(12,dt);c.pit+
   cam.position.set(x+(R()-.5)*SHK,y+(R()-.5)*SHK,z+(R()-.5)*SHK);SHK*=Math.pow(.02,dt);cam.lookAt(LTV);cam.updateMatrixWorld();SHU.uCam.value.copy(cam.position);SHU.uPl.value.set(P.x,P.y+1.4,P.z);
   SKY.position.copy(cam.position);for(const l of MTN)l.m.position.set(cam.position.x*l.f,0,cam.position.z*l.f);
   cam.getWorldDirection(_cd);const fc=_cd.dot(SUND);_pp.copy(SUND).multiplyScalar(400).add(cam.position).project(cam);SUNV=_pp.z<1&&fc>.05&&ELEV>-.05?cl((fc-.05)*1.6,0,1):0;SUNP.set(_pp.x*.5+.5,_pp.y*.5+.5);
-  const t=SHU.uT.value;SUN.target.position.set(P.x,P.y,P.z);SUN.position.copy(SUN.target.position).addScaledVector(LD,70);TORCH.position.set(P.x,P.y+3,P.z);TORCH.intensity=NIGHT*1.3}
+  const t=SHU.uT.value;SUN.target.position.set(P.x,P.y,P.z);SUN.position.copy(SUN.target.position).addScaledVector(LD,70);}
 const INV_OPEN={k:0,off:.27};
 // ---------- entrada: joystick, botões, teclado, arrastar para girar a câmera
 let jx=0,jy=0,jid=null;const kd={};
@@ -30,13 +30,13 @@ function bindInput(){const jb=$('jb'),jk=$('jk');
   cv.onpointermove=e=>{if(e.pointerId!=cid)return;const k=900/Math.max(600,innerWidth);if(INV_OPEN.k>.5)P.f-=(e.clientX-lx)*.012;else{CAMS.yawT-=(e.clientX-lx)*.0065*k;CAMS.pitT=cl(CAMS.pitT+(e.clientY-ly)*.003*k,.22,1.15)}lx=e.clientX;ly=e.clientY};cv.onpointerup=cv.onpointercancel=e=>{if(e.pointerId==cid)cid=null};
   cv.addEventListener('wheel',e=>{CAMS.dT=cl(CAMS.dT+e.deltaY*.01,6,22)},{passive:true});
   const hold=(id,fn,up)=>{const b=$(id);b.onpointerdown=e=>{e.stopPropagation();b.setPointerCapture(e.pointerId);fn()};if(up)b.onpointerup=b.onpointercancel=up};
-  hold('atk',()=>{UI.atkHeld=1;attack()},()=>UI.atkHeld=0);hold('rolb',dash);hold('runb',()=>toggleRun());hold('mntb',mount);hold('potb',potion);hold('itb',()=>INTN&&INTN.act());
+  hold('atk',()=>{UI.atkHeld=1;attack()},()=>UI.atkHeld=0);hold('rolb',dash);hold('runb',()=>toggleRun());hold('mntb',mount);hold('torb',()=>torchToggle());$('zmi').onclick=()=>mmZoom(1);$('zmo').onclick=()=>mmZoom(-1);hold('potb',potion);hold('itb',()=>INTN&&INTN.act());
   [0,1,2,3].forEach(i=>hold('sk'+i,()=>useSkill(i)));$('treeb').onclick=()=>openTree();
   $('bagb').onclick=()=>openInv();$('mapb').onclick=()=>openMap(false);$('jrnb').onclick=()=>openJournal();$('menb').onclick=()=>openMenu();$('qh').onclick=()=>$('qp').classList.toggle('min');
   addEventListener('keydown',e=>{if(e.repeat)return;kd[e.code]=1;if(!run)return;const c=e.code;
     if(DLG){if(c=='Enter'||c=='Space'||c=='KeyE')dlgNext();return}
     if(c=='Escape'){if(UI.open)closeAll();else openMenu();return}if(c=='KeyI'||c=='KeyB'){UI.open=='inv'?closeAll():openInv();return}if(c=='KeyM'){UI.open=='map'?closeAll():openMap(false);return}if(c=='KeyK'||c=='KeyT'){UI.open=='tree'?closeAll():openTree();return}if(c=='KeyJ'||c=='KeyL'){UI.open=='jrn'?closeAll():openJournal();return}
-    if(UI.open)return;if(c=='Space'){UI.atkHeld=1;attack()}if(/Digit[1-4]/.test(c))useSkill(+c[5]-1);if(c=='KeyQ')potion();if(c=='ShiftLeft'||c=='ShiftRight')toggleRun(1);if(c=='KeyC'||c=='ControlLeft'||c=='KeyV')dash();if(c=='KeyE'||c=='KeyF')INTN&&INTN.act();if(c=='KeyR')mount()});
+    if(UI.open)return;if(c=='Space'){UI.atkHeld=1;attack()}if(/Digit[1-4]/.test(c))useSkill(+c[5]-1);if(c=='KeyQ')potion();if(c=='ShiftLeft'||c=='ShiftRight')toggleRun(1);if(c=='KeyC'||c=='ControlLeft'||c=='KeyV')dash();if(c=='KeyE'||c=='KeyF')INTN&&INTN.act();if(c=='KeyR')mount();if(c=='KeyG')torchToggle();if(c=='Equal'||c=='NumpadAdd')mmZoom(1);if(c=='Minus'||c=='NumpadSubtract')mmZoom(-1)});
   addEventListener('keyup',e=>{kd[e.code]=0;if(e.code=='Space')UI.atkHeld=0;if(e.code=='ShiftLeft'||e.code=='ShiftRight')toggleRun(0)});
   addEventListener('blur',()=>{for(const k in kd)kd[k]=0;UI.atkHeld=0})}
 // ---------- avisos e faixas
@@ -75,12 +75,13 @@ function* mapGen(){const img=MAPX.createImageData(MAPS,MAPS),d=img.data,k=440/MA
     if(hy(x,z)<54.5&&hy(x,z)>52.5)c=[110,80,50];const o=(i+j*MAPS)*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255}if(j%6==5)yield j/MAPS}MAPX.putImageData(img,0,0);
   MAPX.fillStyle='#d9a948';for(const b of BRIDGES){MAPX.fillRect((b.x+220)/2-2,(b.z+220)/2-2,4,4)}yield 1}
 const mm=$('mc').getContext('2d');
-function minimap(){const c=mm,W=160,M=80,s=1.9,X=x=>M+(x-P.x)*s,Z=z=>M+(z-P.z)*s;c.save();c.clearRect(0,0,W,W);c.beginPath();c.arc(M,M,M-4,0,7);c.clip();c.fillStyle='#1a2a1a';c.fillRect(0,0,W,W);
+function minimap(){const c=mm,W=160,M=80,s=MMZ[mmZi],X=x=>M+(x-P.x)*s,Z=z=>M+(z-P.z)*s;c.save();c.clearRect(0,0,W,W);c.beginPath();c.arc(M,M,M-4,0,7);c.clip();c.fillStyle='#1a2a1a';c.fillRect(0,0,W,W);
   c.imageSmoothingEnabled=false;const px=(P.x+220)/2,pz=(P.z+220)/2,span=W/s/2;c.drawImage(MAPC,px-span/2,pz-span/2,span,span,0,0,W,W);
   const dot=(x,z,col,r)=>{c.fillStyle=col;c.beginPath();c.arc(X(x),Z(z),r,0,7);c.fill()};
   for(const w of WP){c.fillStyle=w.on?'#8fe8ff':'#58607a';c.font='12px serif';c.textAlign='center';c.textBaseline='middle';c.fillText('◆',X(w.x),Z(w.z))}
   for(const s_ of SHRINES)if(!s_.used)dot(s_.x,s_.z,'#'+SHRN[s_.ty].c.toString(16).padStart(6,'0'),2.5);for(const ch of CHESTS)if(!ch.o){c.fillStyle='#ffd34a';c.fillRect(X(ch.x)-2.5,Z(ch.z)-2.5,5,5)}
   for(const n of NPC)if(!n.hidden)dot(n.x,n.z,n.merc?'#9ae4ff':'#fff',2);for(const e of E)if(!e.dead)dot(e.x,e.z,e.boss?'#ff3030':e.el==2?'#ffe14a':e.el==1?'#6a9cff':'#e33',e.boss?5:e.el?3.2:2.2);
+  drawMarks(c,X,Z,M);
   const tg=qTarget();if(tg){let tx=X(tg[0]),tz=Z(tg[1]);const dx=tx-M,dz=tz-M,l=hy(dx,dz);if(l>M-14){tx=M+dx/l*(M-14);tz=M+dz/l*(M-14)}c.fillStyle='#ffd34a';c.strokeStyle='#000';c.lineWidth=1.5;c.beginPath();c.moveTo(tx,tz-8);c.lineTo(tx+6,tz);c.lineTo(tx,tz+8);c.lineTo(tx-6,tz);c.closePath();c.fill();c.stroke();c.fillStyle='#000';c.font='bold 11px Georgia';c.fillText('!',tx,tz+1)}
   c.translate(M,M);c.rotate(PI-P.f);c.fillStyle='#ffd34a';c.strokeStyle='#000';c.beginPath();c.moveTo(0,-8);c.lineTo(6,6);c.lineTo(0,3);c.lineTo(-6,6);c.closePath();c.fill();c.stroke();c.restore();
   c.lineWidth=6;c.strokeStyle='#d9a948';c.beginPath();c.arc(M,M,M-4,0,7);c.stroke();c.lineWidth=2;c.strokeStyle='#2a1a0a';c.beginPath();c.arc(M,M,M-8,0,7);c.stroke()}
@@ -104,7 +105,7 @@ function npcLabels(){let i=0;for(const n of NPC){if(n.hidden||!n.m.g.visible)con
   let el=NL[i];if(!el){el=document.createElement('div');el.className='nl';document.body.appendChild(el);NL.push(el)}i++;el.style.display='block';el.innerHTML=(has?'<i>!</i>':'')+(d<9?n.nm:'');el.style.transform=`translate(${(_pp.x*.5+.5)*innerWidth}px,${(-_pp.y*.5+.5)*innerHeight}px) translate(-50%,-100%)`}for(;i<NL.length;i++)NL[i].style.display='none'}
 
 // ---------- janelas
-function closeAll(){UI.open=null;for(const id of['inv','map','jrn','shop','menu','bty','tree','gmb'])$(id).classList.remove('on');document.body.classList.remove('invo')}
+function closeAll(){UI.open=null;for(const id of['inv','map','jrn','shop','menu','bty','tree','gmb','pets'])$(id).classList.remove('on');document.body.classList.remove('invo')}
 function openWin(id){closeAll();UI.open=id;$(id).classList.add('on');jx=jy=0;UI.atkHeld=0;snd(520,.06,'sine')}
 // inventário (herói em 3D à esquerda)
 let ISEL=null;
@@ -124,7 +125,7 @@ function openMap(fromWp){if(!run||DLG)return;MAPTP=fromWp;openWin('map');mapRend
 function mapRender(){const c=$('wm'),x=c.getContext('2d'),S_=c.width;x.imageSmoothingEnabled=false;x.drawImage(MAPC,0,0,S_,S_);const k=S_/440;x.fillStyle='rgba(10,6,18,.78)';
   for(let i=0;i<44;i++)for(let j=0;j<44;j++)if(!FOG.has(i+','+j))x.fillRect(i*10*k,j*10*k,10*k+1,10*k+1);
   x.font='bold '+Math.round(11*k*2)+'px Cinzel,Georgia';x.textAlign='center';x.fillStyle='#fff';x.strokeStyle='#000';x.lineWidth=3;for(const r of REG){if(!P.disc.has(r.id))continue;x.strokeText(r.n,(r.c[0]+220)*k,(r.c[1]+220)*k-14*k);x.fillText(r.n,(r.c[0]+220)*k,(r.c[1]+220)*k-14*k)}
-  const tg=qTarget();if(tg){x.fillStyle='#ffd34a';x.beginPath();x.arc((tg[0]+220)*k,(tg[1]+220)*k,7,0,7);x.fill();x.fillStyle='#000';x.fillText('!',(tg[0]+220)*k,(tg[1]+220)*k+4)}
+  drawWorldMarks(x,k);mapLegend();
   x.save();x.translate((P.x+220)*k,(P.z+220)*k);x.rotate(PI-P.f);x.fillStyle='#ffd34a';x.strokeStyle='#000';x.lineWidth=2;x.beginPath();x.moveTo(0,-10);x.lineTo(7,7);x.lineTo(0,3);x.lineTo(-7,7);x.closePath();x.fill();x.stroke();x.restore();
   $('wpl').innerHTML=WP.map(w=>`<button class="wpb ${w.on?'':'off'}" data-w="${w.id}" ${w.on?'':'disabled'} style="left:${(w.x+220)/440*100}%;top:${(w.z+220)/440*100}%">◆<span>${w.n}</span></button>`).join('');$('mph').textContent=inCombat()?'Não dá para viajar em combate.':'Toque numa pedra de teleporte ativada (◆ azul) para viajar.'}
 function teleport(x,z){P.x=x;P.z=z;worldLoadAll(x,z);P.y=groundAt(x,z);CAMS.cx=x;CAMS.cz=z;CAMS.cy=P.y;if(P.merc){P.merc.x=x-1.5;P.merc.z=z-1.5;P.merc.y=groundAt(P.merc.x,P.merc.z)}flash(x,P.y+1.5,z,0x8fe8ff,6,.6);ring(x,z,4,0x8fe8ff,.7)}
@@ -155,6 +156,7 @@ function bindWindows(){
   document.querySelectorAll('.wx').forEach(b=>b.onclick=closeAll);
   $('gfx2').onclick=()=>{try{localStorage.setItem('vr11_gfx',String((GL+1)%3))}catch(e){}save();location.reload()};$('sav').onclick=()=>{save();toast('💾','Jogo salvo','')};$('ret').onclick=()=>{save();location.reload()};
   $('rv').onclick=respawn;
+  $('pets').onclick=e=>{const b=e.target.closest('[data-p]');if(b)buyPet(b.dataset.p)};$('mleg').onclick=e=>{const b=e.target.closest('[data-mk]');if(!b)return;const k=b.dataset.mk;MK[k]=MK[k]?0:1;try{localStorage.setItem('vr11_mk',JSON.stringify(MK))}catch(e){}mapRender();minimap()};
   $('gmb').onclick=e=>{const b=e.target.closest('[data-g]');if(b)gamble(b.dataset.g)};
   $('fpsb').onclick=()=>{FPSC=FPSC==0?60:FPSC==60?30:0;try{localStorage.setItem('vr11_fps',String(FPSC))}catch(e){}fpsLbl()};fpsLbl();
   $('musb').onclick=()=>{musToggle();$('musb').textContent='Música: '+(MUS.on?'ligada':'desligada')};$('musb').textContent='Música: '+(MUS.on?'ligada':'desligada')}

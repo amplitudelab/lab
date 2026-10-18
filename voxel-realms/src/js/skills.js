@@ -30,7 +30,7 @@ const SKX={pocao:{n:'Poção de Vida',ic:'🧪',cd:18},dash:{n:'Dash',ic:'💨',
 P.sk={};P.sp=1;P.bar=[null,null,null,null];P.run=0;P.dash=0;P.shield=0;
 const rk=id=>P.sk[id]||0,reqLv=(id,r)=>SK[id].lv+(r>0?r*3:0);
 const MANA=()=>ST.wk=='staff'||ST.wk=='wand';
-function skPassive(s){s.arm*=1+.15*rk('pele');s.dmg+=6*rk('brutal');s.crit+=2*rk('brutal');s.mag=(s.mag||0)+12*rk('mente');s.ms+=5*rk('agil');s.hpP=8*rk('vital');s.mreg=8+3*rk('mente');if(typeof clsPassive=='function')clsPassive(s)}
+function skPassive(s){s.arm*=1+.15*rk('pele');s.dmg+=6*rk('brutal');s.crit+=2*rk('brutal');s.mag=(s.mag||0)+12*rk('mente');s.ms+=5*rk('agil');s.hpP=8*rk('vital');s.mreg=8+3*rk('mente');if(typeof clsPassive=='function')clsPassive(s);if(typeof petPassive=='function')petPassive(s)}
 function learn(id){const r=rk(id);if(r>=3||P.sp<1||P.lv<reqLv(id,r))return false;P.sk[id]=r+1;P.sp--;if(!r&&!SK[id].pas){const i=P.bar.indexOf(null);if(i>=0)P.bar[i]=id}calcStats();snd(880,.12,'sine');flash(P.x,P.y+1.6,P.z,0xc8a0ff,3,.3);hud();save();return true}
 function spellDmg(m){return rollDmg(m*(1+(ST.mag||0)/100))}
 function cdOf(id){return(SK[id]?SK[id].cd||0:SKX[id].cd)*(1-ST.cdr/100)*(id=='salto'&&ST.leg.has('sismo')?.5:1)*(id=='dash'?1-.1*rk('agil'):1)}
@@ -42,7 +42,7 @@ function useSkill(slot){const id=P.bar[slot];if(!id){openTree();return}dismount(
   else if(id=='grito')P.act={k:'shout',t:0,dur:.7,hp:.4,sk:id};
   else if(id=='sombra'){shadowStep(t)}
   else P.act={k:'cast',t:0,dur:id=='meteoro'?.7:.5,hp:.5,sk:id,tg:t};hud()}
-function skillHit(){const a=P.act,id=a.sk,r=rk(id),m=1+.3*(r-1)*0;const fx0=P.x+S(P.f),fz0=P.z+C(P.f);
+function skillHit(){const a=P.act,id=a.sk,r=rk(id),m=1+.3*(r-1)*0;const fx0=P.x+S(P.f),fz0=P.z+C(P.f);skillFx(id,a,r,fx0,fz0);
   if(id=='flechas'){extraSkill(id,a,r);return}
   if(id=='grito'){P.buff.grito=10;P.gritoK=.25+.05*r;addFury(40);ring(P.x,P.z,6,0xffd34a,.6);flash(P.x,P.y+2,P.z,0xffd34a,6,.5);snd(220,.5,'sawtooth');sweep(180,90,.6,'square',.05);SHK=.3;for(const e of E)if(!e.dead&&!e.t.passive&&hy(e.x-P.x,e.z-P.z)<6)e.stun=Math.max(e.stun,.6);return}
   if(id=='chama'){ring(P.x,P.z,6.5,0xff7a1a,.6);flash(P.x,P.y+1,P.z,0xff7a20,9,.45);fx(P.x,P.y+.5,P.z,0xff8a1a,40,14,.28,1.2);snd(70,.4,'sawtooth');SHK=.35;
@@ -61,12 +61,12 @@ function skillHit(){const a=P.act,id=a.sk,r=rk(id),m=1+.3*(r-1)*0;const fx0=P.x+
 const BLM=new THREE.MeshBasicMaterial({color:0xc8e0ff,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}),BLS=[];
 function bolt(a,b){const k=new Bake();let p=[a.x,a.y,a.z];const n=6;for(let i=1;i<=n;i++){const t=i/n,q=[lerp(a.x,b.x,t)+(i<n?(R()-.5)*1.2:0),lerp(a.y,b.y,t)+(i<n?(R()-.5)*1.2:0),lerp(a.z,b.z,t)+(i<n?(R()-.5)*1.2:0)];
   const dx=q[0]-p[0],dy=q[1]-p[1],dz=q[2]-p[2],L=Math.hypot(dx,dy,dz);_pv.set(dx,dy,dz).normalize();_qu.setFromUnitVectors(_nv.set(0,1,0),_pv);_eu.setFromQuaternion(_qu);k.box(.12,L,.12,(p[0]+q[0])/2,(p[1]+q[1])/2,(p[2]+q[2])/2,0xffffff,{rx:_eu.x,ry:_eu.y,rz:_eu.z});p=q}
-  const m=new THREE.Mesh(k.geo(),BLM);sc.add(m);BLS.push({m,t:.18});flash(b.x,b.y,b.z,0x9ac8ff,2.2,.2);fx(b.x,b.y,b.z,0xc8e0ff,6,5,.1,1)}
+  const m=new THREE.Mesh(k.geo(),BLM);sc.add(m);BLS.push({m,t:.18});flash(b.x,b.y,b.z,0x9ac8ff,2.2,.2);fx(b.x,b.y,b.z,0xc8e0ff,6,5,.1,1);boltFx(b)}
 function boltUpd(dt){for(let i=BLS.length-1;i>=0;i--){const b=BLS[i];b.t-=dt;b.m.visible=R()<.8;if(b.t<=0){sc.remove(b.m);b.m.geometry.dispose();BLS.splice(i,1)}}}
 function shadowStep(t){let tx,tz;if(t){tx=t.x+S(P.f)*1.5;tz=t.z+C(P.f)*1.5}else{tx=P.x+S(P.f)*9;tz=P.z+C(P.f)*9}const n=12,x0=P.x,z0=P.z;let lx=x0,lz=z0;
   for(let i=1;i<=n;i++){const x=lerp(x0,tx,i/n),z=lerp(z0,tz,i/n);if(!walkable(x,z))break;lx=x;lz=z;puff(x,groundAt(x,z)+1,z,0x2a1a3a,1.6)}
   const r=rk('sombra');for(const e of E)if(!e.dead&&segD(e.x,e.z,[x0,z0],[lx,lz])<e.r+1){const[dm,c]=rollDmg(1.5+.4*(r-1));hurtMob(e,dm,c,'sombra')}
-  flash(x0,P.y+1.4,z0,0x7a4aaa,3,.3);P.x=lx;P.z=lz;P.inv=Math.max(P.inv,.3);flash(lx,groundAt(lx,lz)+1.4,lz,0xb07aff,3,.3);sweep(900,200,.25,'sawtooth',.04)}
+  flash(x0,P.y+1.4,z0,0x7a4aaa,3,.3);P.x=lx;P.z=lz;P.inv=Math.max(P.inv,.3);flash(lx,groundAt(lx,lz)+1.4,lz,0xb07aff,3,.3);sweep(900,200,.25,'sawtooth',.04);sombraFx(x0,z0,lx,lz)}
 // ---------- dash (esquiva) e corrida
 function dash(){if(P.dead||P.dash>0||P.cd.dash>0||P.leap||UI.block())return;dismount();P.act=null;P.cd.dash=cdOf('dash');P.dash=.22;P.inv=Math.max(P.inv,.34);P.pfd=0;
   const[x,z]=inputDir();if(x||z){P.rdx=x;P.rdz=z;P.f=Math.atan2(x,z)}else{P.rdx=S(P.f);P.rdz=C(P.f)}sweep(500,1600,.14,'triangle',.05);puff(P.x,P.y+.4,P.z,0xd8d0e0,1.6);flash(P.x,P.y+1.3,P.z,0x9ae4ff,2.4,.2)}

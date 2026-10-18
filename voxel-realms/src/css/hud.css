@@ -1,0 +1,53 @@
+/* =============================================================================
+   HUD redondo e simétrico (carrega depois de style.css)
+   Colunas laterais com a mesma largura, botões em arco ao redor do ataque,
+   barra central espelhada: orbe de vida · 2 habilidades · poção · 2 habilidades · orbe de mana
+   ============================================================================= */
+:root{--m:12px;--u:clamp(32px,9.6vh,46px);--ub:clamp(30px,8.4vh,40px);--mm:clamp(80px,25vh,120px);--orb:clamp(48px,15.5vh,72px);--sk:clamp(34px,10.6vh,50px);--atk:clamp(68px,21.5vh,92px);--js:clamp(98px,30vh,140px);
+  --side:max(172px,calc(5*var(--ub) + 20px));--b:calc(var(--atk)*.52);--D:calc(var(--atk)*.92);--ax:calc(var(--m) + 10px);--ay:calc(var(--m) + 4px)}
+/* ---------- topo esquerdo */
+#tl{left:var(--m);top:var(--m);width:var(--side);min-width:0;box-sizing:border-box;padding:4px 10px 4px 4px;gap:7px;border-radius:calc(var(--u)/2 + 6px);min-height:calc(var(--u) + 8px)}
+#pf{width:var(--u);height:var(--u);flex:none;font-size:calc(var(--u)*.5)}
+.tlr{flex:1;min-width:0}.tr2{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap}#buffs{flex-wrap:nowrap;overflow:hidden;min-width:0}#buffs span{flex:none}#lvn{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gl{font-size:11.5px}
+#qp{left:var(--m);top:calc(var(--m) + var(--u) + 14px);width:var(--side);box-sizing:border-box;border-radius:14px;max-height:calc(100% - var(--m) - var(--u) - 14px - var(--js) - var(--ay) - 22px)}
+/* ---------- topo direito: minimapa, zoom, menus, região */
+#mw{right:var(--m);top:var(--m);width:var(--mm);height:var(--mm)}#mc{border:2px solid var(--g);box-sizing:border-box}
+#zm{right:calc(var(--m) + var(--mm) + 7px);top:calc(var(--m) + (var(--mm) - 2*var(--ub) - 7px)/2);display:flex;flex-direction:column;gap:7px;pointer-events:auto}
+#zm .rb{position:static;width:var(--ub);height:var(--ub);font:700 calc(var(--ub)*.5) var(--fn);color:#ffe08a;border-width:2px}#zm .rb.off{opacity:.4}
+#tbar{right:var(--m);top:calc(var(--m) + var(--mm) + 8px);display:flex;flex-direction:row;gap:5px}
+#tbar button{width:var(--ub);height:var(--ub);font-size:calc(var(--ub)*.5)}
+#rg{right:var(--m);top:calc(var(--m) + var(--mm) + 8px + var(--ub) + 6px);width:calc(5*var(--ub) + 20px);box-sizing:border-box;border-radius:14px;padding:3px 8px}
+#rn,#rl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ---------- centro do topo */
+#tf,#boss{top:var(--m);width:min(380px,calc(100vw - 2*var(--side) - 4*var(--m) - 8px));max-width:none}
+#ts{top:calc(var(--m) + 72px);width:min(340px,calc(100vw - 2*var(--side) - 4*var(--m) - 8px));min-width:0;max-width:none;box-sizing:border-box;border-radius:22px}
+#boss .bar{position:relative;border-radius:8px}#boss .bar i{border-radius:6px}
+#boss .bar:after{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:#ffd060;opacity:.8}
+#boss.p2 .bar{border-color:#ff7a3a;box-shadow:0 0 12px #ff5a1a}#boss.p2 .bar i{background:linear-gradient(#ffb060,#e03a10 60%,#7a1004)}#boss.p2 .bt{color:#ffb070}
+/* ---------- controles inferiores */
+#jb{left:var(--ax);bottom:var(--ay);width:var(--js);height:var(--js)}
+#atk{right:var(--ax);bottom:var(--ay);width:var(--atk);height:var(--atk)}
+#rolb,#runb,#torb,#mntb{width:var(--b);height:var(--b);font-size:calc(var(--b)*.46);--c:0}
+/* ângulos 180°, 140°, 100° e 60° ao redor do botão de ataque */
+#rolb{right:calc(var(--ax) + var(--atk)/2 + var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 - var(--b)/2)}
+#runb{right:calc(var(--ax) + var(--atk)/2 + .766*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 + .643*var(--D) - var(--b)/2)}
+#torb{right:calc(var(--ax) + var(--atk)/2 + .174*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 + .985*var(--D) - var(--b)/2)}
+#mntb{right:calc(var(--ax) + var(--atk)/2 - .5*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 + .866*var(--D) - var(--b)/2)}
+#torb.on{border-color:#ff9a3a;box-shadow:inset 0 0 0 3px #4a2208,inset 0 0 14px #000,0 0 14px #ff8a2a}
+/* barra central espelhada */
+#bar{left:50%;bottom:var(--ay);transform:translateX(-50%);gap:calc(var(--m) - 2px);align-items:center;padding-bottom:12px}
+#hpo,#fuo{flex:none}
+.skills{gap:6px;padding:5px 8px;border-radius:999px;margin:0;align-items:center}
+.sk{width:var(--sk);height:var(--sk);border-radius:50%;flex:none}.sk:before{border-radius:50%}
+.sk.pot{margin:0 2px}
+#xp{left:calc(var(--orb) + 10px);right:calc(var(--orb) + 10px);bottom:0;border-radius:4px}
+/* aviso de interação centralizado acima da barra */
+#itb{left:50%;right:auto;transform:translateX(-50%);bottom:calc(var(--ay) + var(--orb) + 20px);animation:none}
+#itb.on{max-width:calc(100vw - 2*var(--side) - 4*var(--m))}
+@media(max-height:340px){:root{--m:8px}#rg{display:none}#qp .q .qd{display:none}}
+@media(pointer:coarse){#qp{max-height:calc(100% - var(--m) - var(--u) - 14px - var(--js) - var(--ay) - 22px)}}
+/* mapa-múndi: filtros das marcações */
+#mleg{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:2px 0 6px}.mlc{border:2px solid #6a5a3a;background:rgba(0,0,0,.35);color:#cbbd9a;border-radius:999px;padding:3px 10px;font:700 11px var(--fn)}.mlc.on{border-color:var(--g);color:#ffe08a;background:rgba(217,169,72,.18)}
+.shi.pt.on{border-color:#ffb8d0;background:rgba(255,160,200,.12)}
+#boss .bt{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;font-size:clamp(11px,3.3vh,14px)}
+.mapw{width:min(100%,calc(92vh - 118px))}

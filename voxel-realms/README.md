@@ -74,6 +74,14 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Tocha, pets, mapa e chefes
+- **Tocha** 🔥 (botão ou G): todo personagem tem; fica na mão livre (na outra mão se usar arco), solta fogo da ponta e ilumina de leve ao redor e à frente.
+- **Pets**: o Mercador Tobias, na praça da vila, vende Lobo, Gato, Raposa e Ovelha, cada um com um bônus. Um pet por vez.
+- **Minimapa** com ＋/－ (cinco níveis de zoom) e marcações de missões, locais, serviços e chefes. No mapa há filtros por tipo.
+- **IA**: monstros esquivam de golpes e flechas, cercam em grupo (só dois atacam por vez), atacam e recuam, fogem quando feridos; atiradores mantêm distância.
+- **Chefes em duas fases**: aos 50% de vida rugem, ficam imunes por um instante e passam a usar novas habilidades (Abalo, Anel de projéteis, Espiral, Chuva de fogo, Varredura, Poças).
+- **Desempenho**: resolução dinâmica (segura o FPS em aparelhos medianos), partículas e anéis em pool, e um único `game.min.js` minificado. O código-fonte fica em `src/` (`node build.js` gera a versão publicada).
+
 ## App Android
 O APK é gerado automaticamente pelo GitHub Actions (`.github/workflows/android.yml`) a partir de `voxel-realms-android/`. Ele é um invólucro WebView que abre o jogo publicado, sempre em paisagem, em tela cheia e na maior taxa de atualização da tela. Como carrega o link, o jogo se atualiza sozinho.
 Download: https://github.com/symbiozyy/amplitude-lab/releases/download/apk/voxel-realms.apk

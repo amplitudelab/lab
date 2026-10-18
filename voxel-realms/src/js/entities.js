@@ -42,11 +42,11 @@ const MT={
   tfrog:{n:'Sapo do Brejo',m:'frog',hp:6,dmg:0,sp:4,rg:1,cd:9,xp:1,ai:'animal',passive:1,r:.35,mats:[['perna',.6]]},
   imp:{n:'Diabrete de Brasa',m:'imp',w:'club',hp:34,dmg:10,sp:5,rg:9,cd:2.2,xp:16,ai:'ranged',proj:'fire',pc:0xff7a1a,atk:'cast'}};
 const BOSS={
-  capitao:{n:'Capitão Rasgado',m:'capitao',w:'axe',hp:620,dmg:16,sp:4,rg:2.6,cd:1.6,xp:420,x:-38,z:174,lv:3,ab:['charge','spin','summon'],sum:'bandit',r:1.1,atk:'slashA'},
-  rainha:{n:'Rainha da Colmeia',m:'queen',hp:1000,dmg:18,sp:4.2,rg:3,cd:1.5,xp:700,x:192,z:56,lv:6,ab:['volley','summon','dive'],sum:'bee',proj:'sting',pc:0xffd84a,fly:1,r:1.6,atk:'sting'},
-  anciao:{n:'Ancião Corrompido',m:'treant',hp:1900,dmg:26,sp:2.3,rg:4,cd:2,xp:1100,x:12,z:-190,lv:9,ab:['roots','slam','summon'],sum:'spider',r:2.2,atk:'slam'},
-  bruxa:{n:'Morgra, a Bruxa do Mangue',m:'witch',w:'staff',hp:2300,dmg:28,sp:3.6,rg:12,cd:1.8,xp:1500,x:-186,z:60,lv:12,ab:['blink','poison','summon','volley'],sum:'frog',proj:'orb',pc:0x9aff7a,r:1,atk:'cast'},
-  ignarok:{n:'Ignarok, o Dragão de Brasa',m:'ignarok',hp:4600,dmg:34,sp:3.6,rg:6.5,cd:2.2,xp:3200,x:152,z:-178,lv:15,ab:['breath','fireballs','charge','geysers','fly'],r:3.6,atk:'bite'}};
+  capitao:{n:'Capitão Rasgado',m:'capitao',w:'axe',hp:620,dmg:16,sp:4,rg:2.6,cd:1.6,xp:420,x:-38,z:174,lv:3,ab:['charge','spin','summon'],ab2:['quake','sweep','nova'],sum:'bandit',r:1.1,atk:'slashA'},
+  rainha:{n:'Rainha da Colmeia',m:'queen',hp:1000,dmg:18,sp:4.2,rg:3,cd:1.5,xp:700,x:192,z:56,lv:6,ab:['volley','summon','dive'],ab2:['nova','spiral','pools'],sum:'bee',proj:'sting',pc:0xffd84a,fly:1,r:1.6,atk:'sting'},
+  anciao:{n:'Ancião Corrompido',m:'treant',hp:1900,dmg:26,sp:2.3,rg:4,cd:2,xp:1100,x:12,z:-190,lv:9,ab:['roots','slam','summon'],ab2:['quake','pools','sweep'],sum:'spider',r:2.2,atk:'slam'},
+  bruxa:{n:'Morgra, a Bruxa do Mangue',m:'witch',w:'staff',hp:2300,dmg:28,sp:3.6,rg:12,cd:1.8,xp:1500,x:-186,z:60,lv:12,ab:['blink','poison','summon','volley'],ab2:['spiral','meteors','pools'],sum:'frog',proj:'orb',pc:0x9aff7a,r:1,atk:'cast'},
+  ignarok:{n:'Ignarok, o Dragão de Brasa',m:'ignarok',hp:4600,dmg:34,sp:3.6,rg:6.5,cd:2.2,xp:3200,x:152,z:-178,lv:15,ab:['breath','fireballs','charge','geysers','fly'],ab2:['meteors','sweep','quake','nova'],r:3.6,atk:'bite'}};
 const SPAWN={plan:['boar','wolf','bandit','bandarc'],flor:['bee','golem','fairy','wolf'],mata:['dwolf','spider','skel'],mang:['croc','frog','slime','zombie'],cald:['lslime','imp','skel']};
 // à noite, feras agressivas se somam aos monstros da região
 const NIGHTB={plan:['wolf','wolf','boar'],flor:['wolf','dwolf'],mata:['dwolf','dwolf','spider'],mang:['croc','croc'],cald:['imp']};
@@ -138,7 +138,7 @@ function proj(side,kind,x,y,z,tg,dm,o){o=o||{};const p=PJ.find(p=>p.l<=0);if(!p)
 function projUpd(dt){for(const p of PJ){if(p.l<=0)continue;p.l-=dt;const q=p.o.position,t=p.tg;
   if(t&&!t.dead&&p.home>0){_pv2.set(t.x-q.x,(t.y||0)+(t===P?1.3:1.1)-q.y,t.z-q.z);const d=_pv2.length();_pv2.multiplyScalar(p.sp/(d||1));p.v.lerp(_pv2,Math.min(1,dt*6*p.home))}
   q.addScaledVector(p.v,dt);if(p.k=='arrow')p.o.lookAt(q.x+p.v.x,q.y+p.v.y,q.z+p.v.z);else p.o.scale.setScalar((p.k=='fire'?1.6:1.15)+S(T60*.5)*.15);
-  if(ev(2))fx(q.x,q.y,q.z,p.k=='arrow'?0xfff2c0:p.c,1,.3,p.k=='arrow'?.06:.14,0,0);
+  if(ev(2))projTrail(p,q);
   if(p.side=='p'){for(const e of E){if(e.dead||p.hits.includes(e))continue;if(hy(e.x-q.x,e.z-q.z)<e.r+.5&&Math.abs(q.y-(e.y+1.2*(e.boss?2:1)))<2.4*(e.boss?2:1)){hitProj(p,e);if(!p.pierce){p.l=0;break}}}}
   else if(!P.dead&&hy(P.x-q.x,P.z-q.z)<.75&&Math.abs(q.y-P.y-1.2)<1.6){hitPlayer(p.dm,{psn:p.psn,brn:p.brn,src:p});fx(q.x,q.y,q.z,p.c,6,4,.14);p.l=0}
   if(q.y<groundAt(q.x,q.z)+.05){if(p.aoe)hitProj(p,null);else fx(q.x,q.y+.1,q.z,0xc8a060,4,3,.1);p.l=0}if(p.l<=0)p.o.visible=false}}
@@ -147,28 +147,30 @@ function hitProj(p,e){const q=p.o.position;if(e){p.hits.push(e);hurtMob(e,p.dm,0
 // ---------- IA dos monstros
 function mobsUpd(dt,t){
   // separação: monstros não se sobrepõem
+  aiFrame();poolUpd(dt);
   for(let i=0;i<E.length;i++){const a=E[i];if(a.dead||a.boss&&a.flying)continue;for(let j=i+1;j<E.length;j++){const b=E[j];if(b.dead)continue;const dx=b.x-a.x,dz=b.z-a.z,m=a.r+b.r;if(Math.abs(dx)>m||Math.abs(dz)>m)continue;const d=hy(dx,dz);if(d<m&&d>1e-3){const k=(m-d)*.5/d;a.x-=dx*k;a.z-=dz*k;b.x+=dx*k;b.z+=dz*k}}}
   for(let i=E.length-1;i>=0;i--){const e=E[i],dx=P.x-e.x,dz=P.z-e.z,d=hy(dx,dz),T=e.t;
     if(e.dead){e.dt+=dt;const k=Math.min(1,e.dt*2.2);e.m.g.rotation.z=e.dfz*easeOut(k)*PI/2;e.m.g.position.y=e.y-Math.max(0,e.dt-1.6)*.6;if(e.dt>2.6){dropMob(e)}continue}
     const vis=d<60;e.m.g.visible=vis&&!invHide(d);if(e.ring)e.ring.visible=vis;if(!vis&&e.st!='chase')continue;
-    e.hurt=Math.max(0,e.hurt-dt*4);e.stun-=dt;e.slow-=dt;e.cd-=dt;if(e.fl>0){e.fl-=dt;if(e.fl<=0)flashModel(e.m,false)}
+    e.hurt=Math.max(0,e.hurt-dt*4);e.stun-=dt;e.slow-=dt;e.cd-=dt;e.dcd-=dt;e.evade-=dt;if(e.fl>0){e.fl-=dt;if(e.fl<=0)flashModel(e.m,false)}
     let dvx=0,dvz=0,sp=e.sp*(e.slow>0?.5:1);
     if(e.boss){bossUpd(e,dt,t,d,dx,dz);continue}
     if(T.passive){e.flee-=dt;const sc_=d<(T.sp>5?7:3.5)&&!P.dead;if(e.flee>0||sc_){const k=e.flee>0?1:.7;dvx=-dx/(d||1)*e.sp*k;dvz=-dz/(d||1)*e.sp*k;if(e.flee>0&&ev(6))puff(e.x,e.y+.2,e.z,0xcdb894,.6)}else{e.wt-=dt;if(e.wt<=0){e.wt=3+R()*5;e.tx=e.home[0]+(R()-.5)*14;e.tz=e.home[1]+(R()-.5)*14}const dd=hy(e.tx-e.x,e.tz-e.z);if(dd>.8){dvx=(e.tx-e.x)/dd*1.3;dvz=(e.tz-e.z)/dd*1.3}}
       if(T.m=='frog'){e.hop=Math.max(0,e.hop-dt*1.8);if(e.hop<=0&&hy(dvx,dvz)>.5)e.hop=1;if(e.hop<=0){dvx*=.1;dvz*=.1}}}
     else if(e.stun>0){if(ev(8))fx(e.x,e.y+e.m.g.scale.y*2.4,e.z,0xffe27a,1,1.5,.14,.4,0)}
-    else if(e.act){e.act.t+=dt;const p=e.act.t/e.act.dur;if(!e.act.hit&&p>=e.act.hp){e.act.hit=1;mobStrike(e,d)}if(e.act.t>=e.act.dur)e.act=null;if(e.act&&e.act.k=='charge'){dvx=e.act.dx*sp*3;dvz=e.act.dz*sp*3}}
+    else if(e.dd>0){e.dd-=dt;dvx=e.ddx;dvz=e.ddz;if(ev(2))puff(e.x,e.y+.3,e.z,0xcdb894,.6)}
+    else if(e.act){e.act.t+=dt;const p=e.act.t/e.act.dur;if(!e.act.hit&&p>=e.act.hp){e.act.hit=1;mobStrike(e,d)}if(e.act.t>=e.act.dur){e.act=null;aiAfterAct(e)}if(e.act&&e.act.k=='charge'){dvx=e.act.dx*sp*3;dvz=e.act.dz*sp*3}}
     else{
       if(e.st=='idle'){e.wt-=dt;if(e.wt<=0){e.wt=2+R()*4;e.tx=e.home[0]+(R()-.5)*12;e.tz=e.home[1]+(R()-.5)*12}const dd=hy(e.tx-e.x,e.tz-e.z);if(dd>.8){dvx=(e.tx-e.x)/dd*sp*.35;dvz=(e.tz-e.z)/dd*sp*.35}
         if(d<(T.ai=='ranged'?15:12)&&!P.dead){e.st='chase';alertPack(e)}}
       else if(e.st=='chase'){if(P.dead||d>34||hy(e.x-e.home[0],e.z-e.home[1])>48){e.st='idle';e.hp=Math.min(e.mx,e.hp+e.mx*.3)}
-        else if(T.ai=='ranged'){if(d<6){dvx=-dx/d*sp*.8;dvz=-dz/d*sp*.8}else if(d>T.rg*.9){dvx=dx/d*sp;dvz=dz/d*sp}e.f=angStep(e.f,Math.atan2(dx,dz),dt*8);if(e.cd<=0&&d<T.rg+2){e.cd=T.cd*(.8+R()*.4);e.act={k:T.atk||'cast',t:0,dur:.8,hp:.62}}}
+        else if(T.ai=='ranged'){dodgeCheck(e,d,dx,dz);const mv=rangedMove(e,dt,d,dx,dz,sp,T);dvx=mv[0];dvz=mv[1];e.f=angStep(e.f,Math.atan2(dx,dz),dt*8);if(e.cd<=0&&d<T.rg+2){e.cd=T.cd*(.8+R()*.4);e.act={k:T.atk||'cast',t:0,dur:.8,hp:.62}}}
         else if(T.ai=='hopper'){e.hop=Math.max(0,e.hop-dt*1.6);if(e.hop<=0&&e.cd<=0){e.hop=1;e.cd=T.cd;e.hx=dx/d;e.hz=dz/d;e.hitd=0}if(e.hop>0){dvx=e.hx*sp*1.6;dvz=e.hz*sp*1.6;if(!e.hitd&&e.hop<.5&&d<T.rg+.3){e.hitd=1;hitPlayer(e.dmg,{psn:T.psn,src:e})}}e.f=angStep(e.f,Math.atan2(dx,dz),dt*8)}
-        else{const rg=T.rg+e.r*.5;if(d>rg){dvx=dx/d*sp;dvz=dz/d*sp}else e.f=angStep(e.f,Math.atan2(dx,dz),dt*10);
+        else{const rg=T.rg+e.r*.5;dodgeCheck(e,d,dx,dz);const mv=meleeMove(e,dt,d,dx,dz,sp,rg);dvx=mv[0];dvz=mv[1];if(d<=rg)e.f=angStep(e.f,Math.atan2(dx,dz),dt*10);
           if(T.ai=='charger'&&d<9&&d>3.5&&e.cd<=0){e.cd=T.cd*2;e.act={k:'charge',t:0,dur:.75,hp:.95,dx:dx/d,dz:dz/d};sweep(180,60,.3,'sawtooth',.04)}
           else if(d<rg+.4&&e.cd<=0){e.cd=T.cd*(.85+R()*.3);e.act={k:T.atk||'bite',t:0,dur:T.atk=='slam'?.95:.6,hp:T.atk=='slam'?.55:.5}}}
         affixUpd(e,dt,d)}}
-    const v=moveEnt(e,dvx,dvz,dt,T.ai=='charger'||T.fly?5:7,e.act?3:9,e.r);
+    const v=moveEnt(e,dvx,dvz,dt,T.ai=='charger'||T.fly?5:7,e.act?3:9,e.r);if(e.fp>0){e.fp-=dt;e.f=angStep(e.f,Math.atan2(dx,dz),dt*9)}
     if(e.act&&e.act.k=='charge'&&!e.act.hd&&d<e.r+1.1){e.act.hd=1;hitPlayer(e.dmg*1.4,{src:e,kb:4})}
     e.m.g.position.set(e.x,e.y+(T.hover?T.hover+S(t*2+e.id)*.25:0),e.z);e.m.g.rotation.y=e.f;if(e.ring)e.ring.position.set(e.x,e.y+.1,e.z);
     const sc_=e.m.g.scale;animate(e.m,dt,t,{v,atk:e.act&&e.act.k!='charge'?{k:e.act.k,p:e.act.t/e.act.dur}:e.act&&{k:'charge',p:.5},hurt:e.hurt,hop:e.hop})}}

@@ -21,7 +21,7 @@ const WPN={
   dagger:(k,c)=>{k.box(.08,.6,.05,0,.42,0,c||0xc8ccd0).box(.3,.08,.1,0,.12,0,0x4a3a2a).box(.08,.2,.08,0,0,0,0x3a2a1a)},
   club:(k,c)=>{k.box(.14,1.1,.14,0,.45,0,0x6a4424).box(.3,.5,.3,0,1,0,c||0x5a3a20)},
   shield:(k,c)=>{k.box(.12,.9,.8,0,0,0,c||0x8a8f99).box(.14,.32,.32,0,0,0,0xd9a948)}};
-function weapon(m,type,col,glowCol,hand){const h=hand||m.hR;while(h.children.length)h.remove(h.children[0]);if(!type)return;const g=new THREE.Group();g.rotation.x=PI/2*.9;h.add(g);
+function weapon(m,type,col,glowCol,hand){const h=hand||m.hR;for(let i=h.children.length-1;i>=0;i--)if(!h.children[i].userData.keep)h.remove(h.children[i]);if(!type)return;const g=new THREE.Group();g.rotation.x=PI/2*.9;h.add(g);
   const k=new Bake();WPN[type](k,col,type=='sword'||type=='axe'||type=='mace'?null:0);const ms=k.mesh(MV);ms.castShadow=true;g.add(ms);
   if(glowCol){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:SPR,color:glowCol,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.6}));s.scale.set(1.1,1.1,1);s.position.y=type=='staff'?1.85:type=='wand'?.95:1;g.add(s)}
   if(type=='shield'){g.rotation.set(0,0,0);ms.position.set(-.1,0,0)}
