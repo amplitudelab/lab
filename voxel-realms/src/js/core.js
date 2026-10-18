@@ -40,14 +40,14 @@ const NT=(()=>{const c=document.createElement('canvas');c.width=c.height=8;const
 const SPR=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.22,'rgba(255,255,255,.75)');g.addColorStop(.55,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)})();
 
 // ---------- materiais com contraluz (rim light) e vento na folhagem; alfa = máscara de bloom
-const SHU={uSunV:{value:new V3(0,0,-1)},uT:{value:0},uW:{value:1},uRim:{value:new THREE.Color(0xffd0a0)},uCam:{value:new V3()},uPl:{value:new V3()}};
+const SHU={uSunV:{value:new V3(0,0,-1)},uT:{value:0},uW:{value:1},uRim:{value:new THREE.Color(0xffd0a0)},uCam:{value:new V3()},uPl:{value:new V3()},uTP:{value:new V3(0,-999,0)},uTC:{value:new THREE.Color(0,0,0)},uTR:{value:14}};
 // a malha com vento recebe só folhagem (copas, grama, flores): todo vértice balança, com fase pela posição
 const WIND='\n{vec4 wp=modelMatrix*vec4(transformed,1.);float ph=wp.x*.37+wp.z*.29;transformed.x+=sin(uT*1.6*(.7+uW*.3)+ph)*.06*uW;transformed.z+=cos(uT*1.25+ph*1.31)*.045*uW;}\n';
 // "raio-x": o que fica entre a câmera e o herói vira pontilhado (como as paredes no Diablo)
 const XRAY='{vec3 ab=uPl-uCam;float L=length(ab);vec3 dd=ab/L;float tt=dot(vWP-uCam,dd);if(tt>0.&&tt<L-1.4){float rr=mix(.8,2.6,tt/L),r=length(vWP-uCam-dd*tt);if(r<rr){float th=mod(floor(gl_FragCoord.x)+floor(gl_FragCoord.y)*2.,4.)*.25;if(th<(1.-r/rr)*1.6)discard;}}}';
 function obc(s,w){Object.assign(s.uniforms,SHU);
   s.vertexShader=s.vertexShader.replace('#include <common>','#include <common>\nuniform float uT,uW;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;').replace('#include <begin_vertex>','#include <begin_vertex>'+(w?WIND:'')).replace('#include <project_vertex>','#include <project_vertex>\nvRN=normalize(transformedNormal);vRV=-mvPosition.xyz;vWP=(modelMatrix*vec4(transformed,1.)).xyz;');
-  s.fragmentShader=s.fragmentShader.replace('#include <common>','#include <common>\nuniform vec3 uSunV,uRim,uCam,uPl;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;').replace('#include <fog_fragment>',XRAY+'{vec3 V=normalize(vRV),N=normalize(vRN);float up=abs((vec4(N,0.)*viewMatrix).y),fr=pow(1.-clamp(abs(dot(N,V)),0.,1.),3.)*(1.-up*.9),bk=.25+.75*max(dot(-V,uSunV),0.);gl_FragColor.rgb+=uRim*fr*bk*(.35+.65*diffuseColor.rgb)*.8;gl_FragColor.a*=.4;}\n#include <fog_fragment>')}
+  s.fragmentShader=s.fragmentShader.replace('#include <common>','#include <common>\nuniform vec3 uSunV,uRim,uCam,uPl,uTP,uTC;uniform float uTR;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;').replace('#include <fog_fragment>',XRAY+'{vec3 V=normalize(vRV),N=normalize(vRN);float up=abs((vec4(N,0.)*viewMatrix).y),fr=pow(1.-clamp(abs(dot(N,V)),0.,1.),3.)*(1.-up*.9),bk=.25+.75*max(dot(-V,uSunV),0.);gl_FragColor.rgb+=uRim*fr*bk*(.35+.65*diffuseColor.rgb)*.8;gl_FragColor.a*=.4;}{vec3 tl=uTP-vWP;float td=length(tl);float at=clamp(1.-td/uTR,0.,1.);at=at*at*.55+at*.45;vec3 Nw=normalize((vec4(normalize(vRN),0.)*viewMatrix).xyz);float nd=max(dot(Nw,tl/max(td,.001)),0.)*.75+.25;gl_FragColor.rgb+=diffuseColor.rgb*uTC*at*nd;}\n#include <fog_fragment>')}
 const OBC=s=>obc(s,0),OBW=s=>obc(s,1);function enh(m,w){m.onBeforeCompile=w?OBW:OBC;return m}
 const MV=enh(new THREE.MeshLambertMaterial({vertexColors:true,map:NT})),MW=enh(new THREE.MeshLambertMaterial({vertexColors:true,map:NT}),1);
 const ME=new THREE.MeshBasicMaterial({vertexColors:true}),MFL=new THREE.MeshBasicMaterial({color:0xffffff});
@@ -74,7 +74,7 @@ const HEM=new THREE.HemisphereLight(0xbfdcff,0x5a7a3a,.78);sc.add(HEM);
 const SUN=new THREE.DirectionalLight(0xffffff,1.15);SUN.castShadow=true;SUN.shadow.mapSize.set(GFX.shadow,GFX.shadow);SUN.shadow.bias=-.0006;SUN.shadow.normalBias=.035;
 {const s=SUN.shadow.camera;s.left=s.bottom=-30;s.right=s.top=30;s.near=1;s.far=170;s.updateProjectionMatrix()}sc.add(SUN,SUN.target);
 const FILL=new THREE.DirectionalLight(0x9aa8ff,.22);FILL.position.set(.4,.5,.8);sc.add(FILL);
-const TORCH=new THREE.PointLight(0xffa050,0,18,2);sc.add(TORCH);
+const TORCH=new THREE.Object3D(); // a tocha agora é calculada no shader (SHU.uTP/uTC/uTR)
 const DAY={t:.36,len:720};const SUND=new V3(),MOOND=new V3(),LD=new V3(.4,.7,-.5).normalize();let ELEV=1,NIGHT=0,GOLD=0;
 const PAL={day:{top:0x2a6ad4,mid:0x5a9be6,hor:0xc4e0f4,horS:0xfff2d6,sun:0xfff0d8,si:1.15,hs:0xc4dcff,hg:0x5a7a3a,hi:.8,fog:0xbcd8ee,rim:0xffe6c0,cl:0xffffff},
   gold:{top:0x231c5c,mid:0x7a4f9e,hor:0xe9a993,horS:0xffb468,sun:0xffb469,si:1.25,hs:0xb9a6ff,hg:0x5a6a30,hi:.8,fog:0xe2a68e,rim:0xffa860,cl:0xffc8b0},

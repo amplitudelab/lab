@@ -21,15 +21,15 @@ function torchToggle(v){if(P.dead||UI.block())return;TCH.on=v==null?!TCH.on:v;tr
 function torchUpd(dt,t){if(!TCH.g)torchBuild();const hand=bow()?P.m.hR:P.m.hL,show=TCH.on&&!P.dead&&run;
   if(TCH.g.parent!==hand)hand.add(TCH.g);TCH.g.visible=show;TCH.fk+=dt;
   const fl=.5+.3*S(TCH.fk*13)+.2*S(TCH.fk*23+1);TCH.lv+=(fl-TCH.lv)*Math.min(1,dt*14);
-  const night=NIGHT,base=show?(.85+night*1.5+WX.k.rain*.15):night*.2;
+  const night=NIGHT,base=show?(.2+night*2.1+WX.k.rain*.3):night*.2;
   TCH.sm+=dt;
   if(show){TCH.fm.scale.set(1+TCH.lv*.15,.8+TCH.lv*.55,1+TCH.lv*.15);TCH.sp.scale.setScalar(1.25+TCH.lv*.6);TCH.sp.material.opacity=.38+TCH.lv*.3;
     TCH.g.updateWorldMatrix(true,false);_tv.set(0,1.08,0);TCH.g.localToWorld(_tv);
     TCH.acc+=dt*20*GFX.fx;while(TCH.acc>=1){TCH.acc--;fx(_tv.x+(R()-.5)*.06,_tv.y,_tv.z+(R()-.5)*.06,R()<.5?0xff7a1a:R()<.6?0xffb040:0xffe090,1,.45,.07+R()*.05,1.3,-1.6)}
     if(TCH.sm>.55){TCH.sm=0;puff(_tv.x,_tv.y+.25,_tv.z,0x555555,.45);if(R()<.4)fx(_tv.x,_tv.y,_tv.z,0xfff0b0,1,1.6,.05,2.4,-.5)}
-    TORCH.position.set(_tv.x+S(P.f)*1.5,_tv.y+.2,_tv.z+C(P.f)*1.5)}
-  else TORCH.position.set(P.x,P.y+3,P.z);
-  TORCH.color.setHex(0xffa050);TORCH.distance=show?17:14;TORCH.intensity=base*(show?.9+TCH.lv*.22:1)}
+    SHU.uTP.value.set(_tv.x+S(P.f)*.9,_tv.y+.3,_tv.z+C(P.f)*.9)}
+  else SHU.uTP.value.set(P.x,P.y+2.5,P.z);
+  const k=show?base*(.85+TCH.lv*.3)*.8:base*.6;SHU.uTC.value.setRGB(1*k,.62*k,.3*k);SHU.uTR.value=show?13:7}
 
 // ---------- pets (comprados com o Mercador Tobias)
 const PETS={lobo:{n:'Filhote de Lobo',ic:'🐺',price:260,d:'Companheiro leal. +6% de dano.',mdl:()=>quad({c:0x8a8c92,mane:0xa4a6ac,hc:0x7a7c82,ears:1,len:.9,h:.4,wid:.38,tl:.6,run:8,scale:1.15})},
