@@ -24,9 +24,9 @@ function torchUpd(dt,t){if(!TCH.g)torchBuild();const hand=bow()?P.m.hR:P.m.hL,sh
   const night=NIGHT,base=show?(.2+night*2.1+WX.k.rain*.3):night*.2;
   TCH.sm+=dt;
   if(show){TCH.fm.scale.set(1+TCH.lv*.15,.8+TCH.lv*.55,1+TCH.lv*.15);TCH.sp.scale.setScalar(1.25+TCH.lv*.6);TCH.sp.material.opacity=.38+TCH.lv*.3;
-    TCH.g.updateWorldMatrix(true,false);_tv.set(0,1.08,0);TCH.g.localToWorld(_tv);
-    TCH.acc+=dt*20*GFX.fx;while(TCH.acc>=1){TCH.acc--;fx(_tv.x+(R()-.5)*.06,_tv.y,_tv.z+(R()-.5)*.06,R()<.5?0xff7a1a:R()<.6?0xffb040:0xffe090,1,.45,.07+R()*.05,1.3,-1.6)}
-    if(TCH.sm>.55){TCH.sm=0;puff(_tv.x,_tv.y+.25,_tv.z,0x555555,.45);if(R()<.4)fx(_tv.x,_tv.y,_tv.z,0xfff0b0,1,1.6,.05,2.4,-.5)}
+    TCH.g.updateWorldMatrix(true,false);_tv.set(0,1.08,0);TCH.g.localToWorld(_tv);if(fpOn()&&FPV.tt&&FPV.vm&&FPV.vm.visible&&FPV.armL.visible){FPV.tt.updateWorldMatrix(true,false);FPV.tt.getWorldPosition(_tv)}
+    TCH.acc+=dt*20*GFX.fx*(fpOn()?0:1);while(TCH.acc>=1){TCH.acc--;fx(_tv.x+(R()-.5)*.06,_tv.y,_tv.z+(R()-.5)*.06,R()<.5?0xff7a1a:R()<.6?0xffb040:0xffe090,1,.45,.07+R()*.05,1.3,-1.6)}
+    if(TCH.sm>.55&&!fpOn()){TCH.sm=0;puff(_tv.x,_tv.y+.25,_tv.z,0x555555,.45);if(R()<.4)fx(_tv.x,_tv.y,_tv.z,0xfff0b0,1,1.6,.05,2.4,-.5)}
     SHU.uTP.value.set(_tv.x+S(P.f)*.9,_tv.y+.3,_tv.z+C(P.f)*.9)}
   else SHU.uTP.value.set(P.x,P.y+2.5,P.z);
   const k=show?base*(.85+TCH.lv*.3)*.8:base*.6;SHU.uTC.value.setRGB(1*k,.62*k,.3*k);SHU.uTR.value=show?13:7}

@@ -74,6 +74,9 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Primeira pessoa (v12.1)
+Opcional: toque em 👁️ (ou tecla X) para alternar. Arraste para olhar em volta, o joystick anda na direção do olhar, a mira fica no centro (com mira assistida em um cone à frente). Braços, arma, arco e tocha aparecem na tela; o corpo some da imagem mas continua fazendo sombra. As florestas ficaram mais altas para as copas não taparem a visão.
+
 ## Montarias, chefes e economia (v12)
 - **5 montarias** na Forja da Helga, cada uma com preço e velocidade: Cavalo Baio 🐴 (220), Leão Dourado 🦁 (480), Javali de Guerra 🐗 (720, +armadura montado), Lobo das Neves 🐺 (1050, rastro de geada) e Raptor de Brasa 🦖 (1800, a mais rápida, rastro de brasas). Comprou mais de uma? Toque em "Usar" para escolher.
 - **Vitória contra chefe**: câmera lenta, coluna de luz, chuva de ouro, saque garantido (lendário na primeira vitória de cada chefe) e **subida de nível garantida**.

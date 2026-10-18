@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script>const VR_VERSION='12.0';const VR_NOTE='Modelos novos, 5 montarias, efeitos estilo Diablo, chefes com recompensa e correcoes';</script>
+<script>const VR_VERSION='12.1';const VR_NOTE='Visao em primeira pessoa (botao do olho) e florestas mais altas';</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -40,7 +40,7 @@
   <div id="mw"><canvas id="mc" width="160" height="160"></canvas><span class="n">N</span></div>
   <div id="zm"><button id="zmi" class="rb" title="Aproximar">＋</button><button id="zmo" class="rb" title="Afastar">－</button></div>
   <div id="rg" class="wd"><b id="rn"></b><small id="rl"></small></div>
-  <div id="tbar"><button id="mapb" title="Mapa (M)">🗺️</button><button id="jrnb" title="Diário (J)">📜</button><button id="bagb" title="Inventário (I)">🎒</button><button id="treeb" title="Habilidades (K)">✨</button><button id="menb" title="Menu (Esc)">⚙️</button></div>
+  <div id="tbar"><button id="mapb" title="Mapa (M)">🗺️</button><button id="jrnb" title="Diário (J)">📜</button><button id="bagb" title="Inventário (I)">🎒</button><button id="treeb" title="Habilidades (K)">✨</button><button id="fpvb" title="Primeira pessoa (X)">👁️</button><button id="menb" title="Menu (Esc)">⚙️</button></div>
   <!-- avisos -->
   <div id="ts" class="wd"></div><div id="bn"></div><div id="zt"></div><div id="mas"></div>
   <!-- controles -->
@@ -55,7 +55,7 @@
   <button id="itb"><i></i><span></span></button>
   <!-- diálogo -->
   <div id="dlg" class="wd"><i id="di"></i><b id="dn"></b><p id="dt"></p><div id="dch"></div><u>▶</u></div>
-  <div id="fl"></div><div id="lt"></div>
+  <div id="xh"></div><div id="fl"></div><div id="lt"></div>
   <div id="dd"><b>☠ Você caiu</b><button id="rv" class="ib">Renascer na Pedra de Teleporte</button></div>
 </div>
 
@@ -94,6 +94,7 @@
 <script src="js/classes.js"></script>
 <script src="js/vfx.js"></script>
 <script src="js/archer.js"></script>
+<script src="js/fpv.js"></script>
 <script src="js/extras.js"></script>
 <script src="js/ambience.js"></script>
 <script src="js/quests.js"></script>

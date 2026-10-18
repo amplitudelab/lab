@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script>const VR_VERSION='12.0';const VR_NOTE='Modelos novos, 5 montarias, efeitos estilo Diablo, chefes com recompensa e correcoes';</script>
+<script>const VR_VERSION='12.1';const VR_NOTE='Visao em primeira pessoa (botao do olho) e florestas mais altas';</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -14,7 +14,7 @@
 <title>Voxel Realms</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.min.css?v=646b077d">
+<link rel="stylesheet" href="css/style.min.css?v=dbbe2237">
 </head>
 <body>
 <div id="rot"><i>📱</i>Voxel Realms é jogado na horizontal.<br>Gire o aparelho.</div>
@@ -39,7 +39,7 @@
   <div id="mw"><canvas id="mc" width="160" height="160"></canvas><span class="n">N</span></div>
   <div id="zm"><button id="zmi" class="rb" title="Aproximar">＋</button><button id="zmo" class="rb" title="Afastar">－</button></div>
   <div id="rg" class="wd"><b id="rn"></b><small id="rl"></small></div>
-  <div id="tbar"><button id="mapb" title="Mapa (M)">🗺️</button><button id="jrnb" title="Diário (J)">📜</button><button id="bagb" title="Inventário (I)">🎒</button><button id="treeb" title="Habilidades (K)">✨</button><button id="menb" title="Menu (Esc)">⚙️</button></div>
+  <div id="tbar"><button id="mapb" title="Mapa (M)">🗺️</button><button id="jrnb" title="Diário (J)">📜</button><button id="bagb" title="Inventário (I)">🎒</button><button id="treeb" title="Habilidades (K)">✨</button><button id="fpvb" title="Primeira pessoa (X)">👁️</button><button id="menb" title="Menu (Esc)">⚙️</button></div>
   <!-- avisos -->
   <div id="ts" class="wd"></div><div id="bn"></div><div id="zt"></div><div id="mas"></div>
   <!-- controles -->
@@ -54,7 +54,7 @@
   <button id="itb"><i></i><span></span></button>
   <!-- diálogo -->
   <div id="dlg" class="wd"><i id="di"></i><b id="dn"></b><p id="dt"></p><div id="dch"></div><u>▶</u></div>
-  <div id="fl"></div><div id="lt"></div>
+  <div id="xh"></div><div id="fl"></div><div id="lt"></div>
   <div id="dd"><b>☠ Você caiu</b><button id="rv" class="ib">Renascer na Pedra de Teleporte</button></div>
 </div>
 
@@ -77,7 +77,7 @@
   <p>Monstros com nome azul são campeões; com nome amarelo, raros — e trazem tesouro. Feixes de luz amarela e laranja marcam itens raros e lendários. Toque em 💬, 📖 e 🌀 quando eles aparecerem para conversar, ler e viajar.</p></div></div></div>
 
 <script src="js/three.min.js"></script>
-<script src="js/game.min.js?v=646b077d"></script>
+<script src="js/game.min.js?v=dbbe2237"></script>
 <script>if("serviceWorker"in navigator&&location.protocol=="https:")navigator.serviceWorker.register("sw.js").catch(function(){})</script>
 </body>
 </html>

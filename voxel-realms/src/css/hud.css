@@ -58,3 +58,9 @@ body.run #vrVer{display:none}
 #vrUpd.hidden{display:none}#vrUpd b{color:#ffd34a}#vrUpd span{opacity:.85;font-family:Georgia;font-weight:400}
 #vrUpd button{font:800 13px/1 var(--fn),Georgia;padding:8px 14px;background:linear-gradient(#ffe08a,#d9a948);color:#1a0d00;border:2px solid #000;border-radius:999px;cursor:pointer}
 #tcols{grid-template-columns:repeat(4,minmax(150px,1fr));overflow-x:auto}
+/* primeira pessoa: mira e botão */
+#xh{left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;display:none;pointer-events:none;background:radial-gradient(circle,#fff 0 2px,transparent 2.5px),linear-gradient(#fff,#fff) 50% 0/2px 6px no-repeat,linear-gradient(#fff,#fff) 50% 100%/2px 6px no-repeat,linear-gradient(#fff,#fff) 0 50%/6px 2px no-repeat,linear-gradient(#fff,#fff) 100% 50%/6px 2px no-repeat;filter:drop-shadow(0 0 2px #000);opacity:.85}
+#xh.on{display:block}
+#fpvb.on{border-color:#9ae4ff;box-shadow:0 0 12px #9ae4ff,0 3px 8px rgba(0,0,0,.6)}
+:root{--side:max(172px,calc(6*var(--ub) + 25px))}
+#rg{width:calc(6*var(--ub) + 25px)}

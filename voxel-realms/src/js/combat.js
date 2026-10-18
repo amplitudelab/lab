@@ -76,7 +76,7 @@ function openChest(c){if(c.o){toast('🧰','Baú vazio','');return}c.o=1;snd(220
 
 // ---------- ações do jogador
 let TGT=null,TGTt=0;
-function bestTarget(r,front){let b=null,bs=1e9;for(const e of E){if(e.dead||!e.m.g.visible||e.t.passive)continue;const dx=e.x-P.x,dz=e.z-P.z,d=hy(dx,dz)-e.r;if(d>r)continue;const s=d-(front?3.5*Math.max(0,C(angDiff(P.f,Math.atan2(dx,dz)))):0);if(s<bs){bs=s;b=e}}return b}
+function bestTarget(r,front){let b=null,bs=1e9;for(const e of E){if(e.dead||!e.m.g.visible||e.t.passive)continue;const dx=e.x-P.x,dz=e.z-P.z,d=hy(dx,dz)-e.r;if(d>r)continue;if(fpOn()&&d>1.2&&Math.abs(angDiff(P.f,Math.atan2(dx,dz)))>.5)continue;const s=d-(front?3.5*Math.max(0,C(angDiff(P.f,Math.atan2(dx,dz)))):0);if(s<bs){bs=s;b=e}}return b}
 function canAct(){return!P.dead&&!P.act&&P.dash<=0&&!P.leap&&P.stun<=0&&!UI.block()}
 function attack(){if(!canAct())return;dismount();const sp=1+ST.ias/100+(P.buff.fren>0?.25:0);
   if(MANA()){const t=bestTarget(16,1);if(t)P.f=Math.atan2(t.x-P.x,t.z-P.z);P.act={k:'cast',t:0,dur:.5/sp,hp:.5,sk:'orbe',tg:t};return}

@@ -76,11 +76,11 @@ const DYN=[]; // objetos animados das estruturas (pás do moinho, cristais)
 function addStr(x,z,r,fn,h){if(r)flat(x,z,r,h);STR.push({x,z,fn,cx:Math.floor(x/CS),cz:Math.floor(z/CS)})}
 
 // ---------- vegetação e pedras (k: sólido, f: folhagem com vento, e: emissivo)
-function oak(k,f,x,y,z,s,leaf){leaf=leaf||[0x245f2b,0x2f7835,0x3d8b3d,0x4f9b45];k.box(.9*s,3.8*s,.9*s,x,y+1.9*s,z,0x51351c,{g:1});k.box(1.6*s,.4*s,1.6*s,x,y+.2,z,0x5a3b20,{g:1});
+function oak(k,f,x,y,z,s,leaf,lift){lift=lift||0;leaf=leaf||[0x245f2b,0x2f7835,0x3d8b3d,0x4f9b45];k.box(.9*s,(3.8+lift)*s,.9*s,x,y+(1.9+lift/2)*s,z,0x51351c,{g:1});k.box(1.6*s,.4*s,1.6*s,x,y+.2,z,0x5a3b20,{g:1});y+=lift*s;
   for(const[bx,bz,by]of[[-.7,.2,3],[.65,.25,3.35],[-.45,.65,4.2]])k.box(.28*s,1.6*s,.28*s,x+bx*s,y+by*s,z+bz*s,0x5a3b20);
   for(let i=0;i<7;i++){const a=i/7*TAU+hash2(x*7+i,z)*.4,r=(1.4+hash2(i,x*3+z)*1.2)*s;f.box((1.9+hash2(x+i,z*2)*1.1)*s,(1.2+hash2(z+i,x)*.8)*s,(1.9+hash2(i*3,z+x)*1.1)*s,x+C(a)*r*.55,y+(4+hash2(i,z*5)*2)*s,z+S(a)*r*.55,leaf[i%leaf.length])}
   f.box(2.1*s,1.1*s,2.1*s,x,y+4.8*s,z,leaf[2]||leaf[0])}
-function pine(k,f,x,y,z,s,snow){k.box(.6*s,2*s,.6*s,x,y+1*s,z,0x4a3018,{g:1});for(let i=0;i<4;i++){const w=(3.4-i*.75)*s;f.box(w,1.2*s,w,x,y+(1.8+i*1.15)*s,z,i%2?0x2a5a32:0x23502c,{ry:i*.4})}
+function pine(k,f,x,y,z,s,snow,lift){lift=lift||0;k.box(.6*s,(2+lift)*s,.6*s,x,y+(1+lift/2)*s,z,0x4a3018,{g:1});y+=lift*s;for(let i=0;i<4;i++){const w=(3.4-i*.75)*s;f.box(w,1.2*s,w,x,y+(1.8+i*1.15)*s,z,i%2?0x2a5a32:0x23502c,{ry:i*.4})}
   f.box(.5*s,1*s,.5*s,x,y+6.6*s,z,0x2a5a32);if(snow)k.box(1.4*s,.25*s,1.4*s,x,y+6.1*s,z,0xf2f6fa)}
 function birch(k,f,x,y,z,s){k.box(.6*s,4.4*s,.6*s,x,y+2.2*s,z,0xe8e4d8,{g:1});for(let i=0;i<4;i++)k.box(.62*s,.12*s,.3*s,x,y+(.8+i*.9)*s,z+.16*s,0x2a2a2a);
   for(let i=0;i<5;i++){const a=i/5*TAU;f.box(1.6*s,1.4*s,1.6*s,x+C(a)*.9*s,y+(4.2+(i%2)*.7)*s,z+S(a)*.9*s,i%2?0x8ccc5a:0x9ad664)}f.box(1.8*s,1.2*s,1.8*s,x,y+5.2*s,z,0xa6dc70)}
@@ -106,9 +106,9 @@ function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*738560
   const db=regionAt(x0+CS/2,z0+CS/2);
   for(let i=0;i<N[db][0]*1.5;i++){const p=spot(-.6);if(!p)continue;const s=(.85+r()*.6)*TREE_S;
     if(p.b==0){if(p.h<.3)continue;oak(k,f,p.x,p.h,p.z,s);col.push([p.x,p.z,.9*s])}
-    else if(p.b==1){if(p.h<.3)continue;oak(k,f,p.x,p.h,p.z,s,[0x3a7a30,0x4a8a38,0x5a9a40]);col.push([p.x,p.z,.9*s])}
+    else if(p.b==1){if(p.h<.3)continue;oak(k,f,p.x,p.h,p.z,s,[0x3a7a30,0x4a8a38,0x5a9a40],.6);col.push([p.x,p.z,.9*s])}
     else if(p.b==2){if(p.h<.3)continue;r()<.6?blossom(k,f,p.x,p.h,p.z,s):birch(k,f,p.x,p.h,p.z,s);col.push([p.x,p.z,.8*s])}
-    else if(p.b==3){if(p.h<.3)continue;const big=r()<.15?1.6:1;r()<.5?pine(k,f,p.x,p.h,p.z,s*big):oak(k,f,p.x,p.h,p.z,s*big);col.push([p.x,p.z,.9*s*big])}
+    else if(p.b==3){if(p.h<.3)continue;const big=r()<.15?1.6:1;r()<.5?pine(k,f,p.x,p.h,p.z,s*big,0,1.6):oak(k,f,p.x,p.h,p.z,s*big,null,1.2);col.push([p.x,p.z,.9*s*big])}
     else if(p.b==4){if(p.h<-.7)continue;mangrove(k,f,p.x,p.h,p.z,s);col.push([p.x,p.z,1.1*s])}
     else{if(p.h<.3)continue;deadTree(k,p.x,p.h,p.z,s);col.push([p.x,p.z,.6*s])}}
   // pedras
