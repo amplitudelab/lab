@@ -21,6 +21,7 @@ html=html.replace(/<script src="(js\/[^"]+)"><\/script>\n?/g,(m,s)=>{if(s.includ
 html=html.replace(/<link rel="stylesheet" href="css\/style.css">\n<link rel="stylesheet" href="css\/hud.css">/,`<link rel="stylesheet" href="css/style.min.css?v=${h}">`);
 fs.writeFileSync(path.join(out,'index.html'),html);
 for(const f of['sw.js','manifest.json'])fs.copyFileSync(path.join(root,f),path.join(out,f));
+fs.cpSync(path.join(root,'icons'),path.join(out,'icons'),{recursive:true});
 fs.copyFileSync(path.join(root,'js/three.min.js'),path.join(out,'js/three.min.js'));
 const sz=f=>(fs.statSync(path.join(out,f)).size/1024).toFixed(0)+' KB';
 console.log('scripts',scripts.length,'| código',(code.length/1024).toFixed(0)+' KB →',sz('js/game.min.js'),'| css',(css.length/1024).toFixed(0)+' KB →',sz('css/style.min.css'),'| versão',h);

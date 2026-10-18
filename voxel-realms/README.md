@@ -82,6 +82,9 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - **Chefes em duas fases**: aos 50% de vida rugem, ficam imunes por um instante e passam a usar novas habilidades (Abalo, Anel de projéteis, Espiral, Chuva de fogo, Varredura, Poças).
 - **Desempenho**: resolução dinâmica (segura o FPS em aparelhos medianos), partículas e anéis em pool, e um único `game.min.js` minificado. O código-fonte fica em `src/` (`node build.js` gera a versão publicada).
 
+## Instalar como app (recomendado)
+No Chrome do Android, abra o link do jogo e toque em **📲 INSTALAR APP** na tela de título (ou no menu ⋮ → *Instalar app*). O jogo ganha ícone, abre em tela cheia na horizontal, se atualiza sozinho e não passa pelo Play Protect.
+
 ## App Android
 O APK é gerado automaticamente pelo GitHub Actions (`.github/workflows/android.yml`) a partir de `voxel-realms-android/`. Ele é um invólucro WebView que abre o jogo publicado, sempre em paisagem, em tela cheia e na maior taxa de atualização da tela. Como carrega o link, o jogo se atualiza sozinho.
 Download: https://github.com/symbiozyy/amplitude-lab/releases/download/apk/voxel-realms.apk
