@@ -18,8 +18,9 @@ function torchToggle(v){if(P.dead||UI.block())return;TCH.on=v==null?!TCH.on:v;tr
   const b=$('torb');if(b)b.classList.toggle('on',TCH.on);sweep(TCH.on?260:420,TCH.on?900:140,.25,'sawtooth',.03);
   if(TCH.on&&TCH.g){TCH.g.updateWorldMatrix(true,false);_tv.set(0,1.05,0);TCH.g.localToWorld(_tv);fx(_tv.x,_tv.y,_tv.z,0xffb040,14,3,.1,2,-1);flash(_tv.x,_tv.y,_tv.z,0xff9a40,2.6,.3)}
   else if(TCH.g){TCH.g.updateWorldMatrix(true,false);_tv.set(0,1.05,0);TCH.g.localToWorld(_tv);puff(_tv.x,_tv.y,_tv.z,0x777777,.9);puff(_tv.x,_tv.y+.3,_tv.z,0x666666,.7)}}
-function torchUpd(dt,t){if(!TCH.g)torchBuild();const hand=bow()?P.m.hR:P.m.hL,show=TCH.on&&!P.dead&&run;
-  if(TCH.g.parent!==hand)hand.add(TCH.g);TCH.g.visible=show;TCH.fk+=dt;
+function torchUpd(dt,t){if(!TCH.g)torchBuild();const L=!bow(),hand=L?P.m.hL:P.m.hR,show=TCH.on&&!P.dead&&run;
+  if(TCH.g.parent!==hand)hand.add(TCH.g);TCH.g.visible=show;TCH.sp.visible=show;
+  {const sh=L?P.m.sL:P.m.sR,el=L?P.m.eL:P.m.eR;TCH.g.rotation.x=-(sh.rotation.x+el.rotation.x+P.m.torso.rotation.x)+.2;TCH.g.rotation.z=-(sh.rotation.z||0)}TCH.fk+=dt;
   const fl=.5+.3*S(TCH.fk*13)+.2*S(TCH.fk*23+1);TCH.lv+=(fl-TCH.lv)*Math.min(1,dt*14);
   const night=NIGHT,base=show?(.2+night*2.1+WX.k.rain*.3):night*.2;
   TCH.sm+=dt;
@@ -29,7 +30,7 @@ function torchUpd(dt,t){if(!TCH.g)torchBuild();const hand=bow()?P.m.hR:P.m.hL,sh
     if(TCH.sm>.55&&!fpOn()){TCH.sm=0;puff(_tv.x,_tv.y+.25,_tv.z,0x555555,.45);if(R()<.4)fx(_tv.x,_tv.y,_tv.z,0xfff0b0,1,1.6,.05,2.4,-.5)}
     SHU.uTP.value.set(_tv.x+S(P.f)*.9,_tv.y+.3,_tv.z+C(P.f)*.9)}
   else SHU.uTP.value.set(P.x,P.y+2.5,P.z);
-  const k=show?base*(.85+TCH.lv*.3)*.8:base*.6;SHU.uTC.value.setRGB(1*k,.62*k,.3*k);SHU.uTR.value=show?13:7}
+  const k=show?base*(.85+TCH.lv*.3)*.8:0;SHU.uTC.value.setRGB(1*k,.62*k,.3*k);SHU.uTR.value=show?13:7}
 
 // ---------- pets (comprados com o Mercador Tobias)
 const PETS={lobo:{n:'Filhote de Lobo',ic:'🐺',price:260,d:'Companheiro leal. +6% de dano.',mdl:()=>quad({c:0x8a8c92,mane:0xa4a6ac,hc:0x7a7c82,ears:1,len:.9,h:.4,wid:.38,tl:.6,run:8,scale:1.15})},
@@ -87,3 +88,18 @@ function drsUpd(raw){if(!run||LOADING||document.hidden)return;DRS.t+=raw;DRS.n++
   if(slow){DRS.ok=0;if(DRS.s>DRS.min&&DRS.lock<=0){DRS.cap=Math.min(DRS.cap,DRS.s);DRS.s=Math.max(DRS.min,+(DRS.s-.15).toFixed(2));DRS.lock=5;drsApply()}}
   else if(fast){if(++DRS.ok>=30&&DRS.cap<1){DRS.cap=Math.min(1,DRS.cap+.1);DRS.ok=8}if(DRS.ok>=8&&DRS.s<DRS.cap-.01&&DRS.lock<=0){DRS.s=Math.min(DRS.cap-.05,+(DRS.s+.1).toFixed(2));DRS.ok=0;DRS.lock=10;drsApply()}}else DRS.ok=0}
 function drsApply(){rd.setPixelRatio(Math.min(devicePixelRatio||1,GFX.pr)*DRS.s);rs()}
+
+// ---------- moradores inspirados nas referências (adereços 3D: lanterna, livro, óculos, monóculo, chapéu de cozinheiro)
+MDL.cozinheira=()=>hum({skin:0xf0c49a,hair:0x7a3a1a,hairS:'long',shirt:0xf4f2ea,pants:0x6a5a4a,robe:0xffffff,belt:0x8a5a3a,hat:'chef',blush:0xf08a8a,eyeC:0x4a8a3a});
+MDL.anao=()=>hum({skin:0xe0a878,hair:0xe8e8e8,beard:0xf0f0f0,shirt:0x5a4a3a,vest:0x3a2a1a,pants:0x3a4a4a,boots:0x2a1a12,belt:0x6a4a2a,goggles:1,hat:'helm',hatC:0x3a4a4a,scale:.84,bulk:1.18,gloves:0x5a3a20,eyeC:0x3a6a9a});
+MDL.arquimago=()=>hum({skin:0xe8c4a0,hair:0xf4f4f4,beard:0xf8f8f8,shirt:0x2a3a8a,pants:0x2a2a4a,robe:0x2a3a8a,trim:0xf0b040,belt:0x5a3a20,glasses:1,eyeC:0x4ab0e0,cape:0x1a2a6a,capeE:0xf0b040});
+MDL.nobre=()=>hum({skin:0xe8b890,hair:0x5a3a2a,stache:0x6a4428,shirt:0x2a6a5a,vest:0x8a2a1a,pants:0x3a2a2a,cape:0x7a1a1a,capeE:0xd9a948,belt:0x3a2a1a,monocle:1,eyeC:0x5a8a3a,trim:0xd9a948});
+MDL.bruxinha=()=>hum({skin:0xf4d0b0,hair:0xb06ad0,hairS:'long',shirt:0x5a2a8a,pants:0x3a1a5a,robe:0x4a2276,trim:0xf0c040,hat:'wizard',hatC:0x6a2a9a,gem:0x7df0ff,goggles:1,blush:0xf08a9a,eyeC:0x7a3ab0,scale:.88});
+const FOLK=[{id:'cozinha',m:'cozinheira',nm:'Marta, a Cozinheira',ic:'🍲',w:'book',c:[[-14,4],[-12,8],[-16,1]],L:['Sopa de cogumelo do mangue! Cheira a pântano, mas cura a alma.','Os javalis da planície estão gordos este ano... se você me trouxer carne, eu agradeço.','Na taverna dizem que o Ignarok gosta de pão doce. Duvido.']},
+  {id:'anao',m:'anao',nm:'Durin Engrenagem',ic:'⚙️',w:'shield',c:[[22,-8],[24,-4],[19,-11]],L:['Estes óculos? Protegem dos estilhaços da forja da Helga.','Um bom martelo resolve quase tudo. O resto, um martelo maior.','Ouvi dizer que no Covil de Ignarok as pedras derretem as botas.']},
+  {id:'arquimago',m:'arquimago',nm:'Arquimago Eldrin',ic:'📘',w:'book',c:[[-4,-20],[-1,-22],[-7,-19]],L:['Este livro guarda o selo de Aldor. Ou guardava, até a estátua rachar.','A magia arcana responde à vontade, não à força.','Se encontrar páginas do Códice pelo mundo, leia-as em voz alta.']},
+  {id:'nobre',m:'nobre',nm:'Lorde Ambrósio',ic:'🎩',w:'dagger',c:[[6,16],[9,13],[3,18]],L:['Hmpf. Um Guardião de botas sujas na praça. Que tempos.','Pago bem por relíquias antigas. Discretamente, claro.','O Mercante Sombrio? Nunca ouvi falar. Nunca.']},
+  {id:'bruxinha',m:'bruxinha',nm:'Lili, a Aprendiz',ic:'🔮',w:'lantern',c:[[-20,6],[-22,2],[-18,9]],L:['Minha lanterna nunca apaga! Bom, quase nunca.','A Mirela da taverna é minha mestra. Ela explode coisas lindas.','Vi luzes estranhas no Bosque do Ancião ontem à noite...']}];
+function spawnFolk(){for(const f of FOLK){const[x,z]=f.c[0],n=mkNPC(f.id,f.m,x,z,{nm:f.nm,ic:f.ic,still:1,w:f.w,wh:f.w=='lantern'?'L':null});n.folk=f;
+    inter({x:n.x,z:n.z,r:2.8,npc:n,ic:'💬',label:()=>'Falar com '+f.nm,act:()=>say([[f.nm,pick(f.L),f.ic]]),kind:'npc'})}}
+function placeFolk(){for(const n of NPC){if(!n.folk)continue;for(const[x,z]of n.folk.c)if(STRC.every(c=>hy(c[0]-x,c[1]-z)>c[2]+1.6)){n.x=n.hx=x;n.z=n.hz=z;n.y=groundAt(x,z);break}}}

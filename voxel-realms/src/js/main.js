@@ -3,10 +3,12 @@
    VOXEL REALMS · principal
    carregamento, tela de título, laço do jogo, salvar/carregar
    ============================================================================= */
-const SK_SAVE='vr11_save',SV=1;
+// um save por classe (3 personagens): vr11_save_guerreiro / _mago / _cacador
+let SK_SAVE='vr11_save_guerreiro';const SV=1,SKEY=c=>'vr11_save_'+c;
+(()=>{try{const o=localStorage.getItem('vr11_save');if(o){const s=JSON.parse(o),c=s&&s.P&&CLS[s.P.cls]?s.P.cls:'guerreiro';if(!localStorage.getItem(SKEY(c)))localStorage.setItem(SKEY(c),o);localStorage.removeItem('vr11_save')}}catch(e){}})();
+const slotInfo=c=>{try{const s=JSON.parse(localStorage.getItem(SKEY(c))||'null');return s&&s.P?s:null}catch(e){return null}};
 function save(){if(!run)return;try{localStorage.setItem(SK_SAVE,JSON.stringify({v:SV,t:Date.now(),P:{x:P.x,z:P.z,f:P.f,lv:P.lv,xp:P.xp,gold:P.gold,hp:P.hp,disc:[...P.disc],merc:P.merc&&P.merc.merc,cls:P.cls,mounts:P.mounts,mountSel:P.mountSel,pets:P.pets,pet:P.pet},
   INV,EQ,iid,QS,SKL:{sk:P.sk,sp:P.sp,bar:P.bar},WXT:WX.type,BOUNTY:BOUNTY.q,WP:WP.filter(w=>w.on).map(w=>w.id),CH:CHESTS.map(c=>c.o),LORE:[...LORE_FOUND],BEST,DAY:DAY.t,FOG:[...FOG],BDEF,SHOP}))}catch(e){}}
-function hasSave(){try{const s=JSON.parse(localStorage.getItem(SK_SAVE)||'null');return!!(s&&s.P)}catch(e){return false}}
 function load(){try{const s=JSON.parse(localStorage.getItem(SK_SAVE)||'null');if(!s||!s.P)return 0;const p=s.P;for(const k of['x','z','f','lv','xp','gold','hp'])if(typeof p[k]=='number'&&isFinite(p[k]))P[k]=p[k];
   P.lv=cl(P.lv|0,1,40);(p.disc||[]).forEach(d=>P.disc.add(d));if(Array.isArray(s.INV))s.INV.slice(0,30).forEach((it,i)=>INV[i]=it&&it.slot?it:null);if(s.EQ)for(const k in EQ)if(s.EQ[k]&&s.EQ[k].slot==k)EQ[k]=s.EQ[k];iid=s.iid||1000;
   if(s.QS)for(const k in s.QS)if(QS[k]){QS[k].st=s.QS[k].st|0;QS[k].p=s.QS[k].p|0;QS[k].got=Array.isArray(s.QS[k].got)?s.QS[k].got:[]}BOUNTY.q=s.BOUNTY||null;
@@ -22,12 +24,17 @@ function snd(f,d,t){try{au=au||new AudioContext();const o=au.createOscillator(),
 function sweep(f0,f1,d,t,v){try{au=au||new AudioContext();const o=au.createOscillator(),g=au.createGain();o.type=t||'square';o.frequency.setValueAtTime(f0,au.currentTime);o.frequency.exponentialRampToValueAtTime(f1,au.currentTime+d);g.gain.value=v||.04;o.connect(g);g.connect(au.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,au.currentTime+d);o.stop(au.currentTime+d)}catch(e){}}
 
 // ---------- início
-spawnNPCs();spawnExtras();spawnTobias();ambInit();calcStats();shopRoll();P.hp=ST.mx;bindInput();bindWindows();bindTree();
-const HS=hasSave();let LOADING=true,mapG=mapGen(),mapP=0,needN=0;
+spawnNPCs();spawnExtras();spawnTobias();spawnFolk();ambInit();calcStats();shopRoll();P.hp=ST.mx;bindInput();bindWindows();bindTree();
+let LOADING=true,mapG=mapGen(),mapP=0,needN=0;
 P.y=groundAt(P.x,P.z);CAMS.cx=P.x;CAMS.cz=P.z;CAMS.cy=P.y;
 $('gfx').textContent='GRÁFICOS: '+GFX.n;$('gfx').onclick=()=>{try{localStorage.setItem('vr11_gfx',String((GL+1)%3))}catch(e){}location.reload()};
-if(HS){$('ct').style.display='';$('ng').textContent='NOVO JOGO'}
-$('ct').onclick=()=>{load();begin(false)};let ngc=0;$('ng').onclick=()=>{if(HS&&!ngc){ngc=1;$('ng').textContent='TOQUE DE NOVO P/ APAGAR O SAVE';return}try{localStorage.removeItem(SK_SAVE)}catch(e){}goFull();openClassPick(c=>{startClass(c);begin(true)})};
+$('ng').textContent='JOGAR';$('ng').onclick=()=>{goFull();openSlots()};
+// escolha de personagem: 3 espaços, um por classe
+function openSlots(){const el=$('cls');let del=null;const ago=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'agora':m<60?m+' min atrás':m<1440?Math.round(m/60)+' h atrás':Math.round(m/1440)+' dias atrás'};
+  const draw=()=>{el.innerHTML='<h2>Seus personagens</h2><div class="clsr">'+Object.keys(CLS).map(k=>{const c=CLS[k],s=slotInfo(k);return`<div class="clsc slot ${s?'has':''}" data-c="${k}"><i>${c.ic}</i><b>${c.n}</b>${s?`<span>Nível ${s.P.lv} · 🪙 ${fmt(s.P.gold|0)}</span><small>Jogado ${ago(s.t||0)}</small><em class="sb">▶ CONTINUAR</em><u class="sdel" data-d="${k}">${del==k?'Toque de novo para apagar':'🗑️ Apagar'}</u>`:`<span>${c.d}</span><em class="sb">✚ NOVO PERSONAGEM</em>`}</div>`}).join('')+'</div><button class="ib" id="slx">Voltar</button>';};
+  draw();el.classList.add('on');el.onclick=e=>{const d=e.target.closest('[data-d]');if(d){if(del==d.dataset.d){try{localStorage.removeItem(SKEY(del))}catch(_){}del=null}else del=d.dataset.d;draw();return}
+    if(e.target.id=='slx'){el.classList.remove('on');return}const b=e.target.closest('[data-c]');if(!b)return;const k=b.dataset.c;SK_SAVE=SKEY(k);el.classList.remove('on');
+    if(slotInfo(k)){load();begin(false)}else{startClass(k);begin(true)}}}
 // qualquer toque/clique na tela entra em tela cheia (desde o título)
 const isFull=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
 document.addEventListener('pointerdown',()=>{if(!isFull())goFull();musStart()},true);document.addEventListener('keydown',()=>musStart(),true);
@@ -52,19 +59,19 @@ let last=performance.now(),hT=0,hfT=0,mmT=0,rT=0,shT=0,fN=0,fT=0,lowF=0;
 function frame(now){requestAnimationFrame(frame);if(FPSC&&now-last<1000/FPSC-1.5)return;if(hzS.length<90){hzS.push(now-last);if(hzS.length==90){const v=hzS.slice(30).sort((a,b)=>a-b)[30];HZ=1000/v;if(UI.open=='menu')fpsLbl()}}const raw=Math.min(.1,(now-last)/1000);last=now;T60p=T60;T60+=Math.min(.1,raw)*60;const rdt=Math.min(.05,raw),t=now/1000;let dt=run&&!UI.block()?rdt:0;if(HITSTOP>0){HITSTOP-=rdt;dt*=.15}
   // carregamento inicial (gera o mapa e os pedaços em fatias)
   if(LOADING){worldUpd(P.x,P.z,MOB?40:60);if(!needN)needN=BQ.length||1;if(mapP<1){const r=mapG.next();mapP=r.done?1:r.value}const k=(1-BQ.length/needN)*.6+mapP*.4;$('ldb').style.width=(k*100)+'%';
-    if(!BQ.length&&mapP>=1){LOADING=false;placeTobias();$('ld').classList.add('off');$('tbtn').classList.add('on')}}
+    if(!BQ.length&&mapP>=1){LOADING=false;placeTobias();placeFolk();$('ld').classList.add('off');$('tbtn').classList.add('on')}}
   else worldUpd(P.x,P.z,MOB?4:7);
   fN++;fT+=raw;if(fT>2){const f=fN/fT;fN=fT=0;if(run&&f<22&&!LOADING){if(++lowF>=3&&PO.on){PO.on=false;toast('⚙️','Efeitos reduzidos','Para manter o jogo fluido.')}}else lowF=0}
   dayUpd(run?rdt:rdt*4);
   wxUpd(rdt,P.x,P.z);plxUpd(rdt,P.x,P.z);
   if(run){playerUpd(dt,t);mobsUpd(dt,t);npcUpd(dt,t);animalsUpd(dt,t);projUpd(dt);mountUpd(dt,t);petUpd(dt,t);spawnUpd(dt);lootUpd(dt,t);qObjUpd(dt,t);interUpd();wpUpd()}
   else{CAMS.yawT+=rdt*.06;npcUpd(rdt,t);animalsUpd(rdt,t)}
-  placesUpd(rdt,t);fxUpd(dt,rdt,t);ambUpd(rdt,t,P.x,P.z);birdsUpd(rdt,t,P.x,P.z);torchUpd(rdt,t);drsUpd(raw);vfxUpd(dt);decalUpd(rdt);ambienceUpd(rdt,t);musUpd(rdt);haloUpd(t);cloudsUpd(rdt,P.x,P.z);waterUpd(P.x,P.z,t);SHU.uT.value=t;SKU.t.value=t;
+  placesUpd(rdt,t);fxUpd(dt,rdt,t);ambUpd(rdt,t,P.x,P.z);birdsUpd(rdt,t,P.x,P.z);torchUpd(rdt,t);drsUpd(raw);vfxUpd(dt);wglowUpd(rdt);decalUpd(rdt);ambienceUpd(rdt,t);musUpd(rdt);haloUpd(t);cloudsUpd(rdt,P.x,P.z);waterUpd(P.x,P.z,t);SHU.uT.value=t;SKU.t.value=t;
   INV_OPEN.k+=((UI.open=='inv'?1:0)-INV_OPEN.k)*damp(6,rdt);if(!run)P.m.g.position.set(P.x,P.y,P.z);if(!run)animate(P.m,rdt,t,{v:0});
   camUpd(rdt);fpvCam(rdt);vmUpd(rdt,t);dlgUpd(raw);
-  if(run){hfT-=rdt;if(hfT<=0){hfT=.1;hudFast()}hT-=rdt;if(hT<=0){hT=.5;hud();regionUpd()}mmT-=rdt;if(mmT<=0){mmT=.15;minimap()}npcLabels();
+  if(run){hfT-=rdt;if(hfT<=0){hfT=.1;hudFast()}hT-=rdt;if(hT<=0){hT=.5;hud();regionUpd()}mmT-=rdt;if(mmT<=0){mmT=.15;minimap()}if(ev(2))npcLabels();
     const tg=qTarget();if(tg&&hy(tg[0]-P.x,tg[1]-P.z)>14){QBEAM.visible=true;QBEAM.position.set(tg[0],groundAt(tg[0],tg[1])+15,tg[1]);QBEAM.material.opacity=.14+.06*S(t*3)}else QBEAM.visible=false;
     if(UI.open=='map'){rT-=rdt;if(rT<=0){rT=.5;mapRender()}}}
-  if(!rd.shadowMap.autoUpdate){shT-=rdt;if(shT<=0){shT=MOB?1/20:1/30;rd.shadowMap.needsUpdate=true}}
+  if(!rd.shadowMap.autoUpdate){shT-=rdt;if(shT<=0){shT=MOB?1/15:1/30;rd.shadowMap.needsUpdate=true}}
   render()}
 requestAnimationFrame(frame);

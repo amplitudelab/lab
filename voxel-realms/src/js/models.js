@@ -46,10 +46,13 @@ const WPN={
   dagger:(k,c)=>{k.box(.08,.6,.05,0,.42,0,c||0xc8ccd0).box(.3,.08,.1,0,.12,0,0x4a3a2a).box(.08,.2,.08,0,0,0,0x3a2a1a)},
   club:(k,c)=>{k.box(.14,1.1,.14,0,.45,0,0x6a4424).box(.3,.5,.3,0,1,0,c||0x5a3a20)},
   shield:(k,c)=>{k.box(.12,.9,.8,0,0,0,c||0x8a8f99).box(.14,.32,.32,0,0,0,0xd9a948)}};
-function weapon(m,type,col,glowCol,hand){const h=hand||m.hR;for(let i=h.children.length-1;i>=0;i--)if(!h.children[i].userData.keep)h.remove(h.children[i]);if(!type)return;const g=new THREE.Group();g.rotation.x=PI/2*.9;h.add(g);
-  const k=new Bake();WPN[type](k,col,type=='sword'||type=='axe'||type=='mace'?null:0);const ms=k.mesh(MV);ms.castShadow=true;g.add(ms);
-  if(glowCol){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:SPR,color:glowCol,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.6}));s.scale.set(1.1,1.1,1);s.position.y=type=='staff'?1.85:type=='wand'?.95:1;g.add(s)}
+function weapon(m,type,col,glowCol,hand){const h=hand||m.hR;for(let i=h.children.length-1;i>=0;i--)if(!h.children[i].userData.keep)h.remove(h.children[i]);if(h===m.hL)m.bowG=null;if(h===m.hR)m.wtip=null;if(!type||!WPN[type])return;const g=new THREE.Group();g.rotation.x=PI/2*.9;h.add(g);
+  const k=new Bake(),e=new Bake(),bw=typeof BOWS!='undefined'&&BOWS.has(type);WPN[type](k,col,type=='sword'||type=='axe'||type=='mace'?null:0,e);const ms=k.mesh(MV);ms.castShadow=true;g.add(ms);const em=e.mesh(ME);if(em)g.add(em);
+  if(glowCol){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:SPR,color:glowCol,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.3}));s.scale.set(.7,.7,1);s.position.y=type.startsWith('staff')?1.95:type=='wand'?1:bw?0:1.2;g.add(s)}
+  const tip=new THREE.Object3D();tip.position.y=bw?.7:type.startsWith('staff')?1.95:type=='wand'?1:1.5;g.add(tip);if(h===m.hR||!m.wtip)m.wtip=tip;
+  if(bw){g.rotation.set(0,0,0);m.bowG=g} // o arco fica em pé na mão (ajustado a cada quadro em animHum)
   if(type=='shield'){g.rotation.set(0,0,0);ms.position.set(-.1,0,0)}
+  if(type=='lantern'||type=='book')g.rotation.set(0,0,0);
   m.meshes=[];m.g.traverse(o=>{if(o.isMesh){m.meshes.push(o);if(!o.userData.mat)o.userData.mat=o.material}});return g}
 
 // ---------- humanoide
@@ -65,6 +68,11 @@ function hum(o){const B=o.bulk||1,m={kind:'hum',g:new THREE.Group(),o},TR=o.trim
       k.box(.09,.1,.05,0,.34,.41,shade(o.skin,.88)).box(.16,.04,.03,0,.23,.4,o.mouth||0x7a3a32)}
     if(o.hair&&o.hairS!='bald'){k.box(.84,.24,.84,0,.76,0,o.hair).box(.84,.6,.2,0,.5,-.34,o.hair).box(.84,.13,.1,0,.69,.38,o.hair).box(.22,.12,.1,-.26,.62,.39,shade(o.hair,.85)).box(.1,.4,.34,-.4,.5,.12,o.hair).box(.1,.4,.34,.4,.5,.12,o.hair);if(o.hairS=='long')k.box(.84,.9,.18,0,.2,-.36,o.hair).box(.18,.5,.6,-.38,.4,-.1,o.hair).box(.18,.5,.6,.38,.4,-.1,o.hair)}
     if(o.beard)k.box(.72,.5,.2,0,.06,.42,o.beard).box(.3,.3,.2,0,-.2,.44,o.beard);
+    if(o.stache)k.box(.44,.1,.06,0,.28,.43,o.stache).box(.12,.1,.06,-.25,.24,.43,o.stache).box(.12,.1,.06,.25,.24,.43,o.stache);
+    if(o.glasses){for(const s of[-1,1])k.box(.22,.2,.04,s*.17,.44,.43,0xd9a948).box(.16,.14,.03,s*.17,.44,.45,0xc8f0ff);k.box(.12,.04,.04,0,.48,.43,0xd9a948)}
+    if(o.goggles){for(const s of[-1,1])k.box(.26,.24,.08,s*.17,.45,.43,0x6a4a2a).box(.18,.16,.04,s*.17,.45,.47,0x9ae4ff);k.box(.9,.08,.86,0,.5,-.02,0x5a3a20)}
+    if(o.monocle)k.box(.24,.24,.05,.17,.45,.44,0xd9a948).box(.16,.16,.04,.17,.45,.46,0xc8f0ff).box(.03,.3,.03,.28,.28,.44,0xd9a948);
+    if(o.hat=='chef')k.box(.86,.16,.86,0,.84,0,0xf4f2ea).box(.96,.5,.96,0,1.16,0,0xffffff).box(1.04,.24,1.04,0,1.44,0,0xffffff);
     if(o.hat=='ranger'){k.box(1.36,.08,1.3,0,.82,0,o.hatC).box(.86,.36,.86,0,1.02,0,o.hatC).box(.88,.09,.88,0,.9,0,shade(o.hatC,.55)).box(.06,.56,.14,.4,1.12,-.1,o.plume||0xc0302a,{rz:-.35}).box(.04,.3,.1,.47,1.32,-.12,0xf0e0c0,{rz:-.35})}
     if(o.hat=='wizard'){k.box(1.4,.12,1.4,0,.86,0,o.hatC).box(.88,.5,.88,0,1.14,0,o.hatC).box(.9,.12,.9,0,.96,0,0xd9a948).box(.14,.14,.06,0,.97,.46,o.gem||0x7df0ff).box(.6,.45,.6,0,1.56,-.08,o.hatC).box(.36,.42,.36,0,1.94,-.2,o.hatC).box(.2,.32,.2,0,2.26,-.36,o.hatC)}
     if(o.hat=='helm'){k.box(.94,.44,.94,0,.84,0,o.hatC||0x9aa2ae).box(.96,.12,.96,0,.66,0,0xd9a948).box(.12,.36,.08,0,.5,.44,0x7a808a);if(o.plume)k.box(.14,.5,.62,0,1.2,-.05,o.plume)}
@@ -118,7 +126,8 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
   const h=m.hips,tr=m.torso;sm(h.position,'y',T.hy,dt,k);sm(h.rotation,'y',T.hry,dt,k);sm(tr.rotation,'x',T.trx,dt,k);sm(tr.rotation,'y',T.try,dt,k);sm(tr.rotation,'z',T.trz,dt,k);tr.scale.y=T.brs;
   sm(m.head.rotation,'x',T.hdx,dt,k);sm(m.head.rotation,'y',T.hdy,dt,8);sm(m.head.rotation,'z',T.hdz,dt,k);
   sm(m.tL.rotation,'x',T.tL,dt,k);sm(m.tR.rotation,'x',T.tR,dt,k);sm(m.kL.rotation,'x',T.kL,dt,k);sm(m.kR.rotation,'x',T.kR,dt,k);
-  sm(m.sL.rotation,'x',T.sLx,dt,k);sm(m.sR.rotation,'x',T.sRx,dt,k);sm(m.sL.rotation,'z',T.sLz,dt,k);sm(m.sR.rotation,'z',T.sRz,dt,k);sm(m.sL.rotation,'y',T.sLy,dt,k);sm(m.sR.rotation,'y',T.sRy,dt,k);
+  if(s.torch=='L'&&!a&&!s.dash&&!s.dead){T.sLx=-.5+T.sLx*.2;T.sLz=-.1;T.eL=-.8}else if(s.torch=='R'&&!a&&!s.dash&&!s.dead){T.sRx=-.5+T.sRx*.2;T.sRz=.1;T.eR=-.8}
+  sm(m.sL.rotation,'x',T.sLx,dt,k);sm(m.sR.rotation,'x',T.sRx,dt,k);sm(m.sL.rotation,'z',T.sLz,dt,k);sm(m.sR.rotation,'z',T.sRz,dt,k);sm(m.sL.rotation,'y',T.sLy,dt,k);sm(m.sR.rotation,'y',T.sRy,dt,k);if(m.bowG)m.bowG.rotation.x=-(m.sL.rotation.x+m.eL.rotation.x+m.torso.rotation.x)+.06;
   sm(m.eL.rotation,'x',T.eL,dt,k);sm(m.eR.rotation,'x',T.eR,dt,k);
   if(m.cape)sm(m.cape.rotation,'x',.1+W*.6+S(t*5+A.ph)*.05*(.3+W)+(s.leap?.8:0),dt,8);
   if(m.wL){const f=S(t*30)*.6;m.wL.rotation.y=-.3-f;m.wR.rotation.y=.3+f}}

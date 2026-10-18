@@ -119,7 +119,7 @@ addStr(-188,52,0,(k,e,f)=>{const t=new TB(k,e,f,-188,52,.5,.6,1.5);for(const a o
   t.b(1.6,.9,1.6,0,.45,5.4,0x2a2a2a,{g:1});t.e_(1.2,.2,1.2,0,.95,5.4,0x7dff6a);for(let i=0;i<5;i++)t.b(.3,.3,.3,-2.6+i*.4,1.7,2.4,0xe8e0d0);t.e_(.5,.5,.12,1.4,3.2,2.12,0x9aff7a);t.col(0,0,2.8);bookStand(t,4,-4)});
 // Toca do Eremita
 flat(-138,-12,10,.7);
-addStr(-138,-12,0,(k,e,f)=>{const t=new TB(k,e,f,-138,-12,-.8,.7,1.5);for(const a of[-1,1])for(const b of[-1,1])t.b(.3,2,.3,a*1.6,0,b*1.6,0x3a2a1a);house(new TB(k,e,f,-138,-12,-.8,.7+2*1.5,1.5),3.4,3.4,0x8a7a5a,0x4a5a30,0);bookStand(t,2,4)});
+addStr(-138,-12,0,(k,e,f)=>{const t=new TB(k,e,f,-138,-12,-.8,.7,1.5);for(const a of[-1,1])for(const b of[-1,1])t.b(.34,3.6,.34,a*1.6,.35,b*1.6,0x3a2a1a);t.b(4,.2,4,0,2.05,0,0x5a4430).b(4.2,.12,.12,0,2.2,2.05,0x3a2a1a);for(let i=0;i<6;i++)t.b(.9,.08,.1,0,-.6+i*.45,2.35,0x4a3420);t.b(.1,3,.1,-.42,.55,2.35,0x3a2a1a).b(.1,3,.1,.42,.55,2.35,0x3a2a1a);house(new TB(k,e,f,-138,-12,-.8,.7+2*1.5,1.5),3.4,3.4,0x8a7a5a,0x4a5a30,0);bookStand(t,2,4)});
 // Covil de Ignarok
 flat(152,-178,26,3);
 addStr(152,-178,0,(k,e,f)=>{const t=new TB(k,e,f,152,-178,0,3);for(let i=0;i<30;i++){const a=i/30*TAU;if(Math.abs(angDiff(a,2.2))<.25)continue;const h=4+hash2(i,9)*5;t.b(3.4,h,3.4,C(a)*24,h/2-.5,S(a)*24,[0x3a2e2a,0x4a3a34][i%2],{g:1});t.col(C(a)*24,S(a)*24,2)}

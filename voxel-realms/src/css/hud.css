@@ -64,3 +64,6 @@ body.run #vrVer{display:none}
 #fpvb.on{border-color:#9ae4ff;box-shadow:0 0 12px #9ae4ff,0 3px 8px rgba(0,0,0,.6)}
 :root{--side:max(172px,calc(6*var(--ub) + 25px))}
 #rg{width:calc(6*var(--ub) + 25px)}
+/* espaços de personagem */
+.clsc.slot{position:relative}.clsc.slot.has{border-color:#7df08a}.clsc .sb{font:800 12px var(--fn);font-style:normal;color:#ffd34a;margin-top:4px;padding:5px 12px;border:1px solid var(--g);border-radius:999px;background:rgba(217,169,72,.12)}
+.clsc .sdel{font-size:11px;color:#ff9a8a;text-decoration:none;margin-top:2px;padding:4px 8px}#slx{margin-top:4px}

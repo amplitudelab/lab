@@ -87,7 +87,7 @@ function birch(k,f,x,y,z,s){k.box(.6*s,4.4*s,.6*s,x,y+2.2*s,z,0xe8e4d8,{g:1});fo
 function blossom(k,f,x,y,z,s){k.box(.8*s,3*s,.8*s,x,y+1.5*s,z,0x5a3a2a,{g:1});k.box(.3*s,1.4*s,.3*s,x+.5*s,y+3*s,z,0x5a3a2a,{rz:-.5});k.box(.3*s,1.4*s,.3*s,x-.5*s,y+3*s,z,0x5a3a2a,{rz:.5});
   const P=[0xf4a6c8,0xffc4dc,0xe890b8,0xffd8e8];for(let i=0;i<8;i++){const a=i/8*TAU;f.box(1.8*s,1.1*s,1.8*s,x+C(a)*1.5*s,y+(3.4+(i%3)*.5)*s,z+S(a)*1.5*s,P[i%4])}f.box(2.4*s,1.3*s,2.4*s,x,y+4.4*s,z,P[1])}
 function mangrove(k,f,x,y,z,s){for(let i=0;i<6;i++){const a=i/6*TAU+.3;k.box(.22*s,2.2*s,.22*s,x+C(a)*.9*s,y+.9*s,z+S(a)*.9*s,0x4a3a26,{rx:S(a)*.45,rz:-C(a)*.45})}
-  k.box(.7*s,3*s,.7*s,x,y+3.2*s,z,0x4a3a26).box(1.1*s,.5*s,1.1*s,x,y+1.85*s,z,0x3e3020);for(let i=0;i<6;i++){const a=i/6*TAU;f.box(2.6*s,.9*s,2.6*s,x+C(a)*1.7*s,y+4.8*s+(i%2)*.3,z+S(a)*1.7*s,i%2?0x3a5a2a:0x4a6a30)}f.box(2.8*s,1*s,2.8*s,x,y+5.3*s,z,0x557538);
+  k.box(.7*s,4.9*s,.7*s,x,y+2.25*s,z,0x4a3a26).box(1.1*s,.5*s,1.1*s,x,y+1.85*s,z,0x3e3020).box(1.3*s,.4*s,1.3*s,x,y+.1*s,z,0x3e3020);for(let i=0;i<6;i++){const a=i/6*TAU;f.box(2.6*s,.9*s,2.6*s,x+C(a)*1.7*s,y+4.8*s+(i%2)*.3,z+S(a)*1.7*s,i%2?0x3a5a2a:0x4a6a30)}f.box(2.8*s,1*s,2.8*s,x,y+5.3*s,z,0x557538);
   for(let i=0;i<3;i++)f.box(.12,1.4,.12,x+(hash2(x+i,z)-.5)*3*s,y+3.9*s,z+(hash2(z+i,x)-.5)*3*s,0x6a7a4a)}
 function deadTree(k,x,y,z,s){k.box(.7*s,4*s,.7*s,x,y+2*s,z,0x2a1e1a,{g:1});k.box(.25*s,1.8*s,.25*s,x+.6*s,y+3.4*s,z,0x2a1e1a,{rz:-.7});k.box(.25*s,1.6*s,.25*s,x-.5*s,y+2.8*s,z+.2,0x2a1e1a,{rz:.8});k.box(.2*s,1.2*s,.2*s,x,y+4.4*s,z+.4*s,0x2a1e1a,{rx:.6})}
 function rock(k,x,y,z,s,col,moss){k.box(1.3*s,.9*s,1.1*s,x,y+.4*s,z,col,{g:1,ry:x});k.box(.8*s,.6*s,.8*s,x+.3*s,y+.9*s,z-.2*s,col,{ry:z});if(moss)k.box(1.1*s,.15*s,.9*s,x,y+.92*s,z,0x4f8a3a)}

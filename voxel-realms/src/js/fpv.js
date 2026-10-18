@@ -15,19 +15,19 @@ function fpvToggle(v){FPV.on=v==null?!FPV.on:v;try{localStorage.setItem('vr11_fp
 const VMM=new THREE.MeshLambertMaterial({vertexColors:true,map:NT}),VME=new THREE.MeshBasicMaterial({vertexColors:true});
 function vmPart(parent,fn,mat){const k=new Bake();fn(k);const m=k.mesh(mat||VMM);m.frustumCulled=false;m.renderOrder=5;parent.add(m);return m}
 function vmBuild(){if(FPV.vm){cam.remove(FPV.vm);FPV.vm.traverse(o=>{if(o.isMesh)o.geometry.dispose()})}
-  const o=P.m.o,sl=o.sleeve||o.shirt||0x6d7684,sk=o.gloves||o.skin||0xe0a878,wk=ST.wk||'fist',g=new THREE.Group();g.scale.setScalar(.6);cam.add(g);FPV.vm=g;FPV.wk=wk;FPV.cls=P.cls;
+  const o=P.m.o,sl=o.sleeve||o.shirt||0x6d7684,sk=o.gloves||o.skin||0xe0a878,wk=EQ.arma?(EQ.arma.vk||EQ.arma.wk):'fist',g=new THREE.Group();g.scale.setScalar(.6);cam.add(g);FPV.vm=g;FPV.wk=wk;FPV.cls=P.cls;
   const arm=(sx)=>{const a=new THREE.Group();a.position.set(sx*.36,-.4,-.62);g.add(a);vmPart(a,k=>{k.box(.15,.15,.46,0,0,.12,sl).box(.17,.07,.17,0,0,-.1,shade(sl,.75)).box(.13,.13,.14,0,0,-.17,sk)});return a};
   FPV.armR=arm(1);FPV.armL=arm(-1);FPV.tt=null;
   const hold=new THREE.Group();hold.position.set(0,0,-.2);FPV.armR.add(hold);
-  if(wk!='fist'&&wk!='bow'&&WPN[wk]){const w=new THREE.Group();w.rotation.x=-1.25;w.position.set(0,-.02,0);w.scale.setScalar(.34);hold.add(w);vmPart(w,k=>WPN[wk](k,EQ.arma&&EQ.arma.rar>=2?RAR[EQ.arma.rar].h2:null,null))}
-  if(wk=='bow'){const b=new THREE.Group();b.position.set(0,.02,-.22);b.rotation.set(0,0,.25);b.scale.setScalar(.6);FPV.armL.add(b);vmPart(b,k=>WPN.bow(k))}
+  const bw=BOWS.has(wk);if(wk!='fist'&&!bw&&WPN[wk]){const w=new THREE.Group();w.rotation.x=-1.25;w.position.set(0,-.02,0);w.scale.setScalar(.34);hold.add(w);const eb=new Bake();vmPart(w,k=>WPN[wk](k,null,null,eb));const em=eb.mesh(VME);if(em){em.frustumCulled=false;em.renderOrder=5;w.add(em)}}
+  if(bw){const b=new THREE.Group();b.position.set(0,.02,-.22);b.rotation.set(0,0,.25);b.scale.setScalar(.6);FPV.armL.add(b);const eb=new Bake();vmPart(b,k=>WPN[wk](k,null,null,eb));const em=eb.mesh(VME);if(em){em.frustumCulled=false;b.add(em)}}
   else{const t=new THREE.Group();t.position.set(0,.02,-.2);t.rotation.x=-.3;t.scale.setScalar(.36);FPV.armL.add(t);
     vmPart(t,k=>k.box(.1,.82,.1,0,.2,0,0x6b4423).box(.17,.24,.17,0,.62,0,0x2a1a10).box(.23,.08,.23,0,.5,0,0x4a3220));
     FPV.fl=vmPart(t,k=>k.box(.19,.22,.19,0,.84,0,0xff7a1a).box(.12,.2,.12,0,1,0,0xffc040).box(.06,.12,.06,0,1.12,0,0xfff0b0),VME);
     const s=new THREE.Sprite(new THREE.SpriteMaterial({map:SPR,color:0xff9a40,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.5}));s.scale.set(.9,.9,1);s.position.y=.98;s.renderOrder=6;t.add(s);FPV.fs=s;FPV.tt=new THREE.Object3D();FPV.tt.position.y=1.1;t.add(FPV.tt);FPV.tg=t}}
 function vmUpd(dt,t){const show=fpOn()&&run&&!P.dead;if(!show){if(FPV.vm)FPV.vm.visible=false;return}
-  if(!FPV.vm||FPV.wk!=(ST.wk||'fist')||FPV.cls!=P.cls)vmBuild();const g=FPV.vm;g.visible=true;
-  const v=Math.min(1,(P.v||0)/7);FPV.ph+=dt*(2+v*9);const bx=C(FPV.ph*.5)*.018*v,by=-Math.abs(S(FPV.ph*.5))*.03*v+S(t*1.6)*.006;g.position.set(bx*.6,by*.6-(P.dash>0?.07:0),0);
+  if(!FPV.vm||FPV.wk!=(EQ.arma?(EQ.arma.vk||EQ.arma.wk):'fist')||FPV.cls!=P.cls)vmBuild();const g=FPV.vm;g.visible=true;
+  FPV.sv=(FPV.sv||0)+(Math.min(1,(P.v||0)/7)-(FPV.sv||0))*Math.min(1,dt*5);const v=FPV.sv;FPV.ph+=dt*(1.5+v*7);const bx=C(FPV.ph*.5)*.01*v,by=-Math.abs(S(FPV.ph*.5))*.014*v+S(t*1.6)*.004;g.position.set(bx*.6,by*.6-(P.dash>0?.07:0),0);
   const R_=FPV.armR,L=FPV.armL,a=P.act;let rx=0,ry=0,rz=0,pz=-.62,px=.36,py=-.4;
   if(a){const p=Math.min(1,a.t/a.dur),k=a.k;
     if(k=='slashA'||k=='slashB'){const s=k=='slashA'?1:-1;ry=seq(p,0,s*.9,-s*1.1,.35,.6);rx=seq(p,0,.5,-.6,.35,.6);px=.36-seq(p,0,-.05,.35,.35,.6)*s}
@@ -36,8 +36,8 @@ function vmUpd(dt,t){const show=fpOn()&&run&&!P.dead;if(!show){if(FPV.vm)FPV.vm.
     else if(k=='shoot'){pz=-.62+seq(p,0,.18,-.05,.55,.65)}
     else{pz=-.62-seq(p,0,.0,.25,.4,.55);rx=-seq(p,0,0,.3,.4,.55)}}
   R_.position.set(px,py,pz);R_.rotation.set(rx,ry,rz);
-  L.visible=ST.wk=='bow'||TCH.on;L.position.set(-.36,-.38+(ST.wk=='bow'?.06:0),-.62);L.rotation.set(ST.wk=='bow'?.05:.12,0,0);
-  if(FPV.fl){const f=.5+.3*S(t*13)+.2*S(t*23+1);FPV.fl.scale.set(1+f*.15,.8+f*.5,1+f*.15);FPV.fs.scale.setScalar(.75+f*.35);FPV.fs.material.opacity=.25+f*.2}}
+  L.visible=ST.wk=='bow'||TCH.on;L.position.set(-.36,-.38+(ST.wk=='bow'?.06:0),-.62);L.rotation.set(ST.wk=='bow'?.05:.08,0,0);
+  if(FPV.fl){const f=.5+.3*S(t*13)+.2*S(t*23+1);FPV.fl.scale.set(1+f*.08,.9+f*.22,1+f*.08);FPV.fs.scale.setScalar(.75+f*.35);FPV.fs.material.opacity=.25+f*.2}}
 // ---------- corpo invisível na tela, mas com sombra
 const GHM=new Map();
 function ghostMat(m){let g=GHM.get(m);if(!g){g=m.clone();if(m.onBeforeCompile)g.onBeforeCompile=m.onBeforeCompile;g.colorWrite=false;g.depthWrite=false;GHM.set(m,g)}return g}
@@ -49,7 +49,7 @@ function fpvCam(dt){const tgt=FPV.on&&run?1:0;FPV.k+=(tgt-FPV.k)*Math.min(1,dt*7
   const k=FPV.k*(1-INV_OPEN.k);heroGhost(k>.6&&run);$('xh').classList.toggle('on',k>.8&&run&&!UI.block());
   if(k<.001){if(cam.near!==.5){cam.near=.5;cam.updateProjectionMatrix()}return}
   if(run&&!P.dead&&!P.leap)P.f=CAMS.yaw+PI;                 // o corpo acompanha o olhar (andar de lado funciona)
-  const v=Math.min(1,(P.v||0)/7),bob=S(FPV.ph)*.035*v;FPV.tilt+=((P.dash>0?.06:0)-FPV.tilt)*Math.min(1,dt*10);
+  const v=FPV.sv||0,bob=S(FPV.ph)*.016*v;FPV.tilt+=((P.dash>0?.06:0)-FPV.tilt)*Math.min(1,dt*10);
   _fpo.set(P.x,P.y+2.5+mountY()+bob,P.z);_fe.set(FPV.pitch,CAMS.yaw,FPV.tilt+C(FPV.ph*.5)*.004*v);_fq.setFromEuler(_fe);
   cam.position.lerp(_fpo,k);cam.quaternion.slerp(_fq,k);if(SHK>.01)cam.position.add(_fpo.set((R()-.5)*SHK*.3,(R()-.5)*SHK*.3,0));
   const nf=lerp(.5,.12,k);if(Math.abs(cam.near-nf)>.01){cam.near=nf;cam.updateProjectionMatrix()}
