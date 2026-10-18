@@ -135,7 +135,8 @@ const MCO=smat({t:{value:null},b:{value:null},s:{value:null},dp:{value:null},px:
 let SUNV=0,PSZ=[1,1];const SUNP=new THREE.Vector2(.5,.5),_ds=new THREE.Vector2();
 function postSize(){rd.getDrawingBufferSize(_ds);const w=Math.max(1,_ds.x|0),h=Math.max(1,_ds.y|0),qw=Math.max(1,w>>2),qh=Math.max(1,h>>2);RTM.setSize(w,h);RA.setSize(qw,qh);RB.setSize(qw,qh);RS.setSize(qw,qh);MBR.uniforms.px.value.set(1/w,1/h);MCO.uniforms.px.value.set(1/w,1/h);MSH.uniforms.asp.value=w/h;PSZ=[qw,qh]}
 function pass(m,o){FQ.material=m;rd.setRenderTarget(o);rd.render(FS,FC)}
-let frameN=0;
+let FPSC=0;try{FPSC=+localStorage.getItem('vr11_fps')||0}catch(e){}let HZ=60; // limite de quadros (0 = taxa da tela, ex.: 120 Hz)
+let frameN=0,T60=0,T60p=0;const ev=n=>Math.floor(T60/n)>Math.floor(T60p/n);
 function render(){SHU.uSunV.value.copy(ELEV>-.04?SUND:MOOND).transformDirection(cam.matrixWorldInverse);frameN++;
   if(!PO.on){rd.setRenderTarget(null);rd.render(sc,cam);return}
   try{rd.setRenderTarget(RTM);rd.render(sc,cam);MBR.uniforms.t.value=RTM.texture;pass(MBR,RA);

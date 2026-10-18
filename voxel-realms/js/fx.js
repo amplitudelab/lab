@@ -60,7 +60,7 @@ function ambUpd(dt,t,px,pz){regW(px,pz,RW);const day=1-NIGHT;
       if(k=='mot'){y+=dt*(.12+(i%7)*.04);x+=S(t*.7+i)*.008;if(far||y>groundAt(x,z)+8){x=px+(R()-.5)*44;z=pz+(R()-.5)*44;y=groundAt(x,z)+.3}}
       else if(k=='fly'){x+=S(t*.9+i)*.02;z+=C(t*1.1+i*1.3)*.02;y+=S(t*1.7+i)*.01;if(far){x=px+(R()-.5)*40;z=pz+(R()-.5)*40;y=groundAt(x,z)+.6+R()*2.5}}
       else if(k=='pet'||k=='leaf'){y-=dt*(.6+(i%5)*.12);x+=(S(t*.8+i)*.9+.5)*dt;z+=C(t+i*1.3)*.6*dt;if(far||y<groundAt(x,z)){x=px+(R()-.5)*40;z=pz+(R()-.5)*40;y=groundAt(x,z)+5+R()*6}}
-      else if(k=='mist'){x+=dt*.4;if(far){x=px+(R()-.5)*44;z=pz+(R()-.5)*44;y=Math.max(0,groundAt(x,z))+.6+R()*1.2}}
+      else if(k=='mist'){x+=dt*.4;const md=hy(x-px,z-pz);if(far||md<7){const an=R()*6.283,rr=10+R()*15;x=px+S(an)*rr;z=pz+C(an)*rr;y=Math.max(0,groundAt(x,z))+.6+R()*1.2}}
       else{y+=dt*(1.2+(i%5)*.3);x+=S(t*2+i)*.01;if(far||y>groundAt(x,z)+7){x=px+(R()-.5)*36;z=pz+(R()-.5)*36;y=groundAt(x,z)+.2}}
       a[j]=x;a[j+1]=y;a[j+2]=z}P_.g.attributes.position.needsUpdate=true}
   AMB.mist.m.material.color.copy(sc.fog.color).lerp(_cb.setHex(0xffffff),.3)}

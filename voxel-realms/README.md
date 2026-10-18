@@ -23,6 +23,9 @@ Versão anterior (V10, mapa único): `v10.html`
 | `js/entities.js` | jogador, mercenários, aldeões, animais, monstros, elites, IA e projéteis |
 | `js/combat.js` | ataque básico, dano, saque, santuários, baús, morte e chefes |
 | `js/skills.js` | árvore de habilidades (Guerreiro, Arcano, Sobrevivência), magias, Fúria/Mana, dash e corrida |
+| `js/classes.js` | classes (Guerreiro, Mago, Caçador), montarias (Leão Dourado) e o Mercante Sombrio |
+| `js/ambience.js` | spawn dinâmico, fauna de dia × feras à noite, fumaça das chaminés, rotina dos aldeões, sons ambientes |
+| `js/music.js` | trilha sonora épica procedural (Web Audio): temas de título, dia, vila, noite, combate e chefe |
 | `js/quests.js` | missões (principal, secundárias e recompensas), diálogos, rumores e bestiário |
 | `js/ui.js` | HUD, câmera, controles, minimapa, mapa-múndi, diário, inventário e janelas |
 | `js/main.js` | carregamento, tela de título, laço do jogo e salvamento (localStorage) |
@@ -45,6 +48,14 @@ Os monstros acompanham o nível do jogador (no mínimo o nível da região).
 - 1 ponto de habilidade por nível. Cada habilidade tem 3 níveis e entra num dos 4 atalhos da barra.
 - Com cajado ou varinha o recurso vira Mana (regenera sozinha) e o ataque básico vira orbe arcano.
 - Itens raros e lendários são incomuns de propósito; animais deixam materiais para vender.
+
+## Classes, montaria e trilha sonora
+- **Classes** no novo jogo: Guerreiro (Fúria, +vida e armadura, Giro), Mago (cajado, Mana, +Poder Mágico, Bola de Fogo) e Caçador (arco, +velocidade e crítico, Chuva de Flechas).
+- **Leão Dourado** 🦁 na Forja da Helga (450 ouro): 🦁 ou R monta/desmonta; atacar, usar habilidade ou dar dash desmonta.
+- **Mercante Sombrio** 🌑 na estrada do oeste: vende itens misteriosos (sempre mágicos ou melhores, com chance de lendário).
+- **Trilha sonora** sintetizada em tempo real: cordas, metais, coral, flauta, alaúde e taiko; muda com dia, vila, noite, combate e chefes. Liga/desliga no menu.
+- **Telas de 120 Hz**: o jogo acompanha a taxa da tela; efeitos e partículas são medidos em tempo, não em quadros. No menu, "Quadros" limita a 60 ou 30 fps para poupar bateria.
+- Tocar na tela entra em tela cheia (no iPhone, use "Adicionar à Tela de Início").
 
 ## Missões
 

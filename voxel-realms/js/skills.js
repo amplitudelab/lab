@@ -30,11 +30,11 @@ const SKX={pocao:{n:'Poção de Vida',ic:'🧪',cd:18},dash:{n:'Dash',ic:'💨',
 P.sk={};P.sp=1;P.bar=[null,null,null,null];P.run=0;P.dash=0;P.shield=0;
 const rk=id=>P.sk[id]||0,reqLv=(id,r)=>SK[id].lv+(r>0?r*3:0);
 const MANA=()=>ST.wk=='staff'||ST.wk=='wand';
-function skPassive(s){s.arm*=1+.15*rk('pele');s.dmg+=6*rk('brutal');s.crit+=2*rk('brutal');s.mag=(s.mag||0)+12*rk('mente');s.ms+=5*rk('agil');s.hpP=8*rk('vital');s.mreg=8+3*rk('mente')}
+function skPassive(s){s.arm*=1+.15*rk('pele');s.dmg+=6*rk('brutal');s.crit+=2*rk('brutal');s.mag=(s.mag||0)+12*rk('mente');s.ms+=5*rk('agil');s.hpP=8*rk('vital');s.mreg=8+3*rk('mente');if(typeof clsPassive=='function')clsPassive(s)}
 function learn(id){const r=rk(id);if(r>=3||P.sp<1||P.lv<reqLv(id,r))return false;P.sk[id]=r+1;P.sp--;if(!r&&!SK[id].pas){const i=P.bar.indexOf(null);if(i>=0)P.bar[i]=id}calcStats();snd(880,.12,'sine');flash(P.x,P.y+1.6,P.z,0xc8a0ff,3,.3);hud();save();return true}
 function spellDmg(m){return rollDmg(m*(1+(ST.mag||0)/100))}
 function cdOf(id){return(SK[id]?SK[id].cd||0:SKX[id].cd)*(1-ST.cdr/100)*(id=='salto'&&ST.leg.has('sismo')?.5:1)*(id=='dash'?1-.1*rk('agil'):1)}
-function useSkill(slot){const id=P.bar[slot];if(!id){openTree();return}const S_=SK[id],r=rk(id);if(!canAct()||!r)return;
+function useSkill(slot){const id=P.bar[slot];if(!id){openTree();return}dismount();const S_=SK[id],r=rk(id);if(!canAct()||!r)return;
   if(P.cd[id]>0)return;const cost=(S_.cost||0)*(id=='giro'&&ST.leg.has('furia')?.6:1);if(P.fury<cost){pop(MANA()?'Mana insuficiente':'Fúria insuficiente',P.x,P.y+3,P.z,MANA()?'#7ab4ff':'#ff8a5a');sweep(200,120,.1,'square',.03);return}
   P.fury-=cost;P.cd[id]=cdOf(id);const t=bestTarget(14,1);if(t&&id!='giro'&&id!='grito'&&id!='escudo'&&id!='cura')P.f=Math.atan2(t.x-P.x,t.z-P.z);
   if(id=='giro'){P.act={k:'spin',t:0,dur:.75,hp:2,sk:'giro',ticks:0};sweep(300,900,.5,'triangle',.05)}
@@ -43,6 +43,7 @@ function useSkill(slot){const id=P.bar[slot];if(!id){openTree();return}const S_=
   else if(id=='sombra'){shadowStep(t)}
   else P.act={k:'cast',t:0,dur:id=='meteoro'?.7:.5,hp:.5,sk:id,tg:t};hud()}
 function skillHit(){const a=P.act,id=a.sk,r=rk(id),m=1+.3*(r-1)*0;const fx0=P.x+S(P.f),fz0=P.z+C(P.f);
+  if(id=='flechas'){extraSkill(id,a,r);return}
   if(id=='grito'){P.buff.grito=10;P.gritoK=.25+.05*r;addFury(40);ring(P.x,P.z,6,0xffd34a,.6);flash(P.x,P.y+2,P.z,0xffd34a,6,.5);snd(220,.5,'sawtooth');sweep(180,90,.6,'square',.05);SHK=.3;for(const e of E)if(!e.dead&&!e.t.passive&&hy(e.x-P.x,e.z-P.z)<6)e.stun=Math.max(e.stun,.6);return}
   if(id=='chama'){ring(P.x,P.z,6.5,0xff7a1a,.6);flash(P.x,P.y+1,P.z,0xff7a20,9,.45);fx(P.x,P.y+.5,P.z,0xff8a1a,40,14,.28,1.2);snd(70,.4,'sawtooth');SHK=.35;
     for(const e of E)if(!e.dead&&hy(e.x-P.x,e.z-P.z)-e.r<6.5){const[dm,c]=spellDmg(2.2+.4*(r-1));hurtMob(e,dm,c,'chama');e.burn=3}return}
@@ -67,7 +68,7 @@ function shadowStep(t){let tx,tz;if(t){tx=t.x+S(P.f)*1.5;tz=t.z+C(P.f)*1.5}else{
   const r=rk('sombra');for(const e of E)if(!e.dead&&segD(e.x,e.z,[x0,z0],[lx,lz])<e.r+1){const[dm,c]=rollDmg(1.5+.4*(r-1));hurtMob(e,dm,c,'sombra')}
   flash(x0,P.y+1.4,z0,0x7a4aaa,3,.3);P.x=lx;P.z=lz;P.inv=Math.max(P.inv,.3);flash(lx,groundAt(lx,lz)+1.4,lz,0xb07aff,3,.3);sweep(900,200,.25,'sawtooth',.04)}
 // ---------- dash (esquiva) e corrida
-function dash(){if(P.dead||P.dash>0||P.cd.dash>0||P.leap||UI.block())return;P.act=null;P.cd.dash=cdOf('dash');P.dash=.22;P.inv=Math.max(P.inv,.34);P.pfd=0;
+function dash(){if(P.dead||P.dash>0||P.cd.dash>0||P.leap||UI.block())return;dismount();P.act=null;P.cd.dash=cdOf('dash');P.dash=.22;P.inv=Math.max(P.inv,.34);P.pfd=0;
   const[x,z]=inputDir();if(x||z){P.rdx=x;P.rdz=z;P.f=Math.atan2(x,z)}else{P.rdx=S(P.f);P.rdz=C(P.f)}sweep(500,1600,.14,'triangle',.05);puff(P.x,P.y+.4,P.z,0xd8d0e0,1.6);flash(P.x,P.y+1.3,P.z,0x9ae4ff,2.4,.2)}
 const roll=dash;
 function perfectDodge(){if(P.pfd)return;P.pfd=1;HITSTOP=.22;P.buff.pf=2;pop('ESQUIVA PERFEITA!',P.x,P.y+3.6,P.z,'#9ae4ff',1);ring(P.x,P.z,3,0x9ae4ff,.4);flash(P.x,P.y+1.4,P.z,0x9ae4ff,4,.4);snd(1500,.18,'sine')}
@@ -75,7 +76,7 @@ function toggleRun(v){P.run=v==null?!P.run:v;$('runb').classList.toggle('on',!!P
 function potion(){if(P.dead||P.cd.pocao>0||UI.block())return;if(P.hp>=ST.mx){pop('Vida cheia',P.x,P.y+3,P.z,'#fff');return}P.cd.pocao=SKX.pocao.cd;P.psn=0;heal(ST.mx*.45);snd(660,.15,'sine');fx(P.x,P.y+1,P.z,0x6fe07a,14,3,.15,2)}
 // bolha do escudo arcano
 const SHB=spr(0xa88aff,3.2,.35);SHB.visible=false;sc.add(SHB);
-function skillsUpd(dt){boltUpd(dt);if(P.shT>0){P.shT-=dt;if(P.shT<=0)P.shield=0}SHB.visible=P.shield>0;if(SHB.visible){SHB.position.set(P.x,P.y+1.4,P.z);SHB.material.opacity=.25+.08*S(frameN*.2)}
+function skillsUpd(dt){boltUpd(dt);if(P.shT>0){P.shT-=dt;if(P.shT<=0)P.shield=0}SHB.visible=P.shield>0;if(SHB.visible){SHB.position.set(P.x,P.y+1.4,P.z);SHB.material.opacity=.25+.08*S(T60*.2)}
   if(MANA())P.fury=Math.min(100,P.fury+dt*(ST.mreg||8))}
 
 // ---------- janela da árvore de habilidades

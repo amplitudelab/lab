@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#140c14">
 <title>Voxel Realms</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +46,7 @@
     <div id="fuo" class="orb"><span id="fut"></span></div>
     <div id="xp"><i id="xpf"></i><b id="lvl">1</b></div>
   </div>
-  <button id="atk" class="rb"><i>⚔️</i></button><button id="rolb" class="rb" title="Dash (C)"><i>💨</i></button><button id="runb" class="rb" title="Correr (Shift)"><i>🏃</i></button>
+  <button id="atk" class="rb"><i>⚔️</i></button><button id="rolb" class="rb" title="Dash (C)"><i>💨</i></button><button id="runb" class="rb" title="Correr (Shift)"><i>🏃</i></button><button id="mntb" class="rb" title="Montaria (R)" style="display:none"><i>🦁</i></button>
   <button id="itb"><i></i><span></span></button>
   <!-- diálogo -->
   <div id="dlg" class="wd"><i id="di"></i><b id="dn"></b><p id="dt"></p><div id="dch"></div><u>▶</u></div>
@@ -59,8 +62,10 @@
 <div id="shop" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚒️ Forja da Helga</span><span id="shg"></span><button class="wx">✕</button></div><p class="ihint">Para vender, abra o inventário e escolha "Vender".</p><div id="shl"></div></div></div>
 <div id="bty" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">📋 Quadro de Recompensas</span><button class="wx">✕</button></div><div id="btyb"></div></div></div>
 <div id="tree" class="win"><div class="wd wbox tbox"><div class="wh"><span class="ttl">✨ Habilidades</span><small id="tpts"></small><button class="wx">✕</button></div><div id="tcols"></div><div id="tdet"></div></div></div>
+<div id="gmb" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🌑 Mercante Sombrio</span><span id="gmg"></span><button class="wx">✕</button></div><p class="ihint">"Não pergunte de onde vêm. Pague, e o destino abre o embrulho." Cada peça é mágica ou melhor.</p><div id="gml"></div></div></div>
+<div id="cls"></div>
 <div id="menu" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚙️ Menu</span><button class="wx">✕</button></div>
-  <p id="dayl" class="ihint"></p><button class="ib" id="gfx2">Gráficos</button><button class="ib" id="sav">Salvar agora</button><button class="ib off" id="ret">Voltar ao título</button>
+  <p id="dayl" class="ihint"></p><button class="ib" id="gfx2">Gráficos</button><button class="ib" id="fpsb">Quadros</button><button class="ib" id="musb">Música</button><button class="ib" id="sav">Salvar agora</button><button class="ib off" id="ret">Voltar ao título</button>
   <div class="help"><b>Como jogar</b><p>Segure ⚔️ para atacar em combo. Cada nível dá 1 ponto de habilidade: abra ✨ para aprender magias e golpes e escolha os 4 atalhos da barra. O orbe da direita é Fúria (dourado, enche ao bater) ou Mana (azul, com cajado ou varinha). Use 💨 para dar dash e desviar — desviar no último instante é uma Esquiva Perfeita (próximo golpe crítico). Toque em 🏃 para correr.</p>
   <p>Monstros com nome azul são campeões; com nome amarelo, raros — e trazem tesouro. Feixes de luz amarela e laranja marcam itens raros e lendários. Toque em 💬, 📖 e 🌀 quando eles aparecerem para conversar, ler e viajar.</p></div></div></div>
 
@@ -76,8 +81,11 @@
 <script src="js/entities.js"></script>
 <script src="js/combat.js"></script>
 <script src="js/skills.js"></script>
+<script src="js/classes.js"></script>
+<script src="js/ambience.js"></script>
 <script src="js/quests.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/music.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

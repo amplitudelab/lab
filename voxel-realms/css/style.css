@@ -142,3 +142,13 @@ body.invo #ui>*:not(#ts){opacity:0!important;pointer-events:none!important}body.
 .tn.on{color:#fff;border-color:var(--g)}.tn.on i{filter:none;opacity:1}.tn.can{box-shadow:0 0 8px rgba(255,211,74,.5)}.tn.sel{outline:2px solid #fff}
 #tdet{border-top:1px solid rgba(217,169,72,.35);padding-top:6px;font-size:12px;line-height:1.4;flex:none;max-height:38%;overflow-y:auto}#tdet b{font:700 14px var(--fn);color:#ffe08a}#tdet small{display:block;color:#cbb88a}#tdet p{margin:4px 0}#tdet .nx{color:#9ae4ff}.tb{display:flex;flex-wrap:wrap}
 @media(max-height:420px){.tn{padding:3px 5px;font-size:10px}.tn i{font-size:15px}}
+/* V11.2 · montaria, classes, Mercante Sombrio */
+#mntb{right:calc(var(--atk)*1.52 + 30px);bottom:calc(var(--atk)*.62 + 22px);width:calc(var(--atk)*.52);height:calc(var(--atk)*.52);font-size:calc(var(--atk)*.24)}#mntb.on{border-color:#ffb347;box-shadow:inset 0 0 0 3px #4a2a08,inset 0 0 14px #000,0 0 16px #ffb347}
+#cls{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;background:radial-gradient(ellipse at 50% 30%,rgba(120,60,160,.25),transparent 65%),rgba(10,5,16,.96)}#cls.on{display:flex;animation:wf .4s ease-out}
+#cls h2{font:700 clamp(20px,4vw,30px) var(--fn);color:#ffd34a;text-shadow:0 2px 0 #3a1a08,0 0 18px rgba(255,180,60,.5);letter-spacing:2px}
+.clsr{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:900px;overflow-y:auto;max-height:80vh}
+.clsc{width:min(260px,88vw);display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 12px;border:2px solid #c99a3e;border-radius:10px;background:linear-gradient(#2a1a2e,#120a14);color:#efe4cc;cursor:pointer;text-align:center;transition:transform .15s,box-shadow .15s}
+.clsc:hover,.clsc:active{transform:translateY(-3px);box-shadow:0 0 22px rgba(255,200,90,.45)}.clsc i{font-style:normal;font-size:44px}.clsc b{font:700 18px var(--fn);color:#ffd34a}.clsc span{font-size:12.5px;line-height:1.35}.clsc small{font-size:11px;color:#b8a8d8}
+.shh{font:700 12px var(--fn);color:#d9a948;margin:8px 2px 2px;letter-spacing:1px}.shi.gm{width:100%;color:inherit;text-align:left;border-color:rgba(176,122,255,.5);background:rgba(40,20,60,.35)}.shi.gm b{color:#c9a4ff}
+.shi.mt{border-color:rgba(255,179,71,.6);background:linear-gradient(90deg,rgba(255,170,60,.12),rgba(0,0,0,.25))}
+@media (max-height:500px){.clsc{width:min(220px,30vw);padding:8px}.clsc i{font-size:30px}.clsc span{font-size:11px}}

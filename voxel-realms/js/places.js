@@ -27,9 +27,11 @@ const LORE=[
 const LORE_FOUND=new Set();
 
 // ---------- construções reutilizáveis
+const CHIM=[],HOUSES=[]; // chaminés (fumaça) e portas (aldeões se recolhem à noite)
 function house(t,w,d,wc,rc,two){const P=0x4a3020;t.b(w,3,d,0,1.5,0,wc,{g:1});for(const sx of[-1,1])for(const sz of[-1,1])t.b(.28,3.1,.28,sx*w/2,1.55,sz*d/2,P);t.b(w+.2,.22,d+.2,0,3.05,0,P);
   let y=3.2;if(two){t.b(w+.4,2.6,d+.4,0,4.4,0,0xeee2c8);t.b(w+.6,.22,d+.6,0,5.8,0,P);t.e_(.7,.7,.12,-w*.25,4.5,d/2+.26,0xffcf5a).e_(.7,.7,.12,w*.25,4.5,d/2+.26,0xffcf5a);y=5.9}
   for(let i=0;i<5;i++)t.b(w+.8-i*(w+.8)/5.5,.55,d+.9,0,y+.27+i*.5,0,i%2?rc:((rc&0xfefefe)>>1)+(rc>>2&0x3f3f3f));
+  t.b(.62,3,.62,w*.28,y+1.7,-d*.18,0x6a5e56).b(.82,.22,.82,w*.28,y+3.25,-d*.18,0x4a4440);if(!(CUR_S&&CUR_S.cd)){const[cx,cz]=t.w(w*.28,-d*.18);CHIM.push([cx,t.y+(y+3.5)*t.m,cz,R()*3]);const[dx,dz]=t.w(0,d/2+1.2);HOUSES.push([dx,dz])}
   t.b(1.15,2.15,.14,0,1.08,d/2+.05,0x3b281b).b(.2,.2,.08,.35,1.05,d/2+.14,0xd9a948);t.e_(.7,.7,.12,-w*.3,1.9,d/2+.06,0xffcf5a).e_(.7,.7,.12,w*.3,1.9,d/2+.06,0xffcf5a);
   t.b(.85,2.2,.85,w*.28,y+2,-d*.18,0x77706a);t.b(1,.2,1,w*.28,y+3.1,-d*.18,0x5a5a56);t.col(0,0,Math.max(w,d)*.6);if(w>5.5)t.col(w*.3,0,d*.5),t.col(-w*.3,0,d*.5)}
 function lamp(t,x,z,col){t.b(.22,2.6,.22,x,1.3,z,0x3a2a1a,{g:1}).b(.5,.12,.5,x,2.65,z,0x2a2a2a);t.e_(.42,.42,.42,x,2.9,z,col||0xffc860);t.b(.56,.1,.56,x,3.15,z,0x2a2a2a);if(!CUR_S||!CUR_S.cd)LAMPS.push([t.w(x,z)[0],t.y+2.9*t.m,t.w(x,z)[1],col||0xffc860])}

@@ -78,7 +78,7 @@ function openChest(c){if(c.o){toast('🧰','Baú vazio','');return}c.o=1;snd(220
 let TGT=null,TGTt=0;
 function bestTarget(r,front){let b=null,bs=1e9;for(const e of E){if(e.dead||!e.m.g.visible||e.t.passive)continue;const dx=e.x-P.x,dz=e.z-P.z,d=hy(dx,dz)-e.r;if(d>r)continue;const s=d-(front?3.5*Math.max(0,C(angDiff(P.f,Math.atan2(dx,dz)))):0);if(s<bs){bs=s;b=e}}return b}
 function canAct(){return!P.dead&&!P.act&&P.dash<=0&&!P.leap&&P.stun<=0&&!UI.block()}
-function attack(){if(!canAct())return;const sp=1+ST.ias/100+(P.buff.fren>0?.25:0);
+function attack(){if(!canAct())return;dismount();const sp=1+ST.ias/100+(P.buff.fren>0?.25:0);
   if(MANA()){const t=bestTarget(16,1);if(t)P.f=Math.atan2(t.x-P.x,t.z-P.z);P.act={k:'cast',t:0,dur:.5/sp,hp:.5,sk:'orbe',tg:t};return}
   if(bow()){const t=bestTarget(16,1);if(t)P.f=Math.atan2(t.x-P.x,t.z-P.z);P.act={k:'shoot',t:0,dur:.62/sp,hp:.62,sk:'flecha',tg:t};sweep(140,320,.25,'triangle',.04);return}
   const t=bestTarget(8,1);P.lunge=0;if(t){P.f=Math.atan2(t.x-P.x,t.z-P.z);const d=hy(t.x-P.x,t.z-P.z)-t.r;if(d>1.6){P.lunge=Math.min(.22,(d-1.2)/16)}}
@@ -107,18 +107,18 @@ function playerUpd(dt,t){for(const k in P.cd)P.cd[k]-=dt;for(const k in P.buff){
     for(const e of E)if(e.burn>0&&!e.dead){e.burn-=.6;hurtMob(e,rollDmg(.35)[0],0,'dot')}}
   // lava
   if(regionAt(P.x,P.z)==5&&!P.leap){const c=CHK.get(ckey(Math.floor(P.x/CS),Math.floor(P.z/CS)));if(c&&c.lava.some(l=>Math.abs(l[0]-P.x)<.7&&Math.abs(l[1]-P.z)<.7)){if(P.brn<=0)pop('Lava!',P.x,P.y+3,P.z,'#ff8a3a');P.brn=Math.max(P.brn,1.2)}}
-  let[ix,iz]=inputDir(),runk=P.run&&!P.act?1.6:1,sp=5.2*runk*(1+ST.ms/100)*(P.slow>0?.55:1);if(P.y<-.1&&!onBridge(P.x,P.z))sp*=.65;
+  let[ix,iz]=inputDir(),runk=P.mounted?MOUNTS[P.mounted].sp:P.run&&!P.act?1.6:1,sp=5.2*runk*(1+ST.ms/100)*(P.slow>0?.55:1);if(P.y<-.1&&!onBridge(P.x,P.z))sp*=.65;
   let dvx=ix*sp,dvz=iz*sp,turn=14;
   if(P.stun>0){dvx=dvz=0}
-  if(P.dash>0){P.dash-=dt;dvx=P.rdx*21;dvz=P.rdz*21;turn=0;if(frameN%2==0){flash(P.x,P.y+1.3,P.z,0x9ae4ff,1.8,.22);fx(P.x,P.y+1,P.z,0xd8f0ff,2,1.5,.1,.2,0)}}
+  if(P.dash>0){P.dash-=dt;dvx=P.rdx*21;dvz=P.rdz*21;turn=0;if(ev(2)){flash(P.x,P.y+1.3,P.z,0x9ae4ff,1.8,.22);fx(P.x,P.y+1,P.z,0xd8f0ff,2,1.5,.1,.2,0)}}
   if(P.leap){const L=P.leap;L.t+=dt;const k=Math.min(1,L.t/L.dur);P.x=lerp(L.x0,L.x1,k);P.z=lerp(L.z0,L.z1,k);P.y=lerp(L.y0,groundAt(P.x,P.z),k)+S(k*PI)*4;P.vx=P.vz=0;if(k>=1)landLeap()}
   else if(P.act){const a=P.act,sp_=1+ST.ias/100;a.t+=dt;const p=a.t/a.dur;
     if(a.k=='spin'){dvx*=.75;dvz*=.75;turn=0;P.f+=dt*16;if(a.t>=a.ticks*.22){a.ticks++;spinTick()}if(a.t>=a.dur)P.act=null}
     else{dvx*=.15;dvz*=.15;if(P.lunge>0&&p<.4){P.lunge-=dt;dvx=S(P.f)*14;dvz=C(P.f)*14}if(!a.hit&&p>=a.hp){a.hit=1;if(a.sk=='golpe'||a.sk=='flecha'||a.sk=='orbe')primaryHit();else skillHit()}if(a.t>=a.dur){P.act=null;if(UI.atkHeld)attack()}}}
   else if(UI.atkHeld)attack();
-  if(!P.leap){const v=moveEnt(P,dvx,dvz,dt,P.dash>0?30:12,turn,.5);P.v=v;if(v>4&&!P.act&&frameN%(v>7?4:7)==0)puff(P.x-S(P.f)*.4,P.y+.2,P.z-C(P.f)*.4,P.y<0?0xd8ecff:0xcdb894,.8);if(P.y<-.1&&v>1&&frameN%5==0)fx(P.x,0,P.z,0xd8ecff,2,2,.1,.6)}
-  const g=P.m.g;g.position.set(P.x,P.y,P.z);g.rotation.y=P.f;P.m.hips.rotation.x=0;
-  const a=P.act;animate(P.m,dt,t,{v:P.v||0,dash:P.dash>0,atk:a&&{k:a.k,p:Math.min(1,a.t/a.dur)},hurt:P.hurt,leap:!!P.leap,aim:bow()&&UI.atkHeld&&!a});
+  if(!P.leap){const v=moveEnt(P,dvx,dvz,dt,P.dash>0?30:12,turn,.5);P.v=v;if(v>4&&!P.act&&!P.mounted&&ev(v>7?4:7))puff(P.x-S(P.f)*.4,P.y+.2,P.z-C(P.f)*.4,P.y<0?0xd8ecff:0xcdb894,.8);if(P.y<-.1&&v>1&&ev(5))fx(P.x,0,P.z,0xd8ecff,2,2,.1,.6)}
+  const g=P.m.g;g.position.set(P.x,P.y+(P.mounted?MOUNT_Y:0),P.z);g.rotation.y=P.f;P.m.hips.rotation.x=0;
+  const a=P.act;animate(P.m,dt,t,{v:P.mounted?0:P.v||0,sit:!!P.mounted,dash:P.dash>0,atk:a&&{k:a.k,p:Math.min(1,a.t/a.dur)},hurt:P.hurt,leap:!!P.leap,aim:bow()&&UI.atkHeld&&!a});
   trailUpd(dt,!!a&&!bow()&&a.k!='cast'&&a.k!='shout'||!!P.leap,P.m.hR,EQ.arma&&EQ.arma.rar>=2?RAR[EQ.arma.rar].h:0xfff0d0)}
 function hitDot(n,c){if(P.dead)return;P.hp-=Math.round(n);pop('-'+Math.round(n),P.x,P.y+3,P.z,c);if(P.hp<=0)die()}
 const inCombat=()=>E.some(e=>!e.dead&&e.st=='chase'&&hy(e.x-P.x,e.z-P.z)<20);
@@ -153,7 +153,7 @@ function bossStart(e,k,dx,dz,d){const T=e.t;if(k=='summon'){for(let i=0;i<3;i++)
   if(k=='breath')sweep(300,80,2,'sawtooth',.05)}
 function bossAct(e,dt,p,d,dx,dz){const a=e.act,T=e.t;
   if(a.k=='basic'){if(!a.hit&&p>.55){a.hit=1;if(T.proj)proj('m',T.proj=='sting'?'orb':T.proj,e.x+S(e.f),e.y+2.5,e.z+C(e.f),P,e.dmg,{c:T.pc,psn:e.type=='rainha'||e.type=='bruxa'});else if(d<T.rg+e.r+.8)hitPlayer(e.dmg,{src:e,kb:2});if(!T.proj){fx(e.x+S(e.f)*2,e.y+1,e.z+C(e.f)*2,0xffffff,6,4,.15);SHK=Math.max(SHK,.2)}}}
-  else if(a.k=='charge'){if(p<.4){e.f=angStep(e.f,Math.atan2(dx,dz),dt*6);a.mv=[0,0]}else{if(!a.dx){a.dx=S(e.f);a.dz=C(e.f)}a.mv=[a.dx*e.sp*4,a.dz*e.sp*4];if(frameN%2==0)fx(e.x,e.y+.3,e.z,0x9a8a7a,3,4,.25,.5);if(!a.hd&&d<e.r+1.5){a.hd=1;hitPlayer(e.dmg*1.5,{src:e,kb:6})}}}
+  else if(a.k=='charge'){if(p<.4){e.f=angStep(e.f,Math.atan2(dx,dz),dt*6);a.mv=[0,0]}else{if(!a.dx){a.dx=S(e.f);a.dz=C(e.f)}a.mv=[a.dx*e.sp*4,a.dz*e.sp*4];if(ev(2))fx(e.x,e.y+.3,e.z,0x9a8a7a,3,4,.25,.5);if(!a.hd&&d<e.r+1.5){a.hd=1;hitPlayer(e.dmg*1.5,{src:e,kb:6})}}}
   else if(a.k=='spin'){e.f+=dt*14;a.mv=[dx/(d||1)*e.sp*.7,dz/(d||1)*e.sp*.7];a.tk=(a.tk||0)-dt;if(a.tk<=0){a.tk=.3;if(d<e.r+2.6)hitPlayer(e.dmg*.6,{src:e});fx(e.x,e.y+1.2,e.z,0xd8d8e0,5,7,.12,.2)}}
   else if(a.k=='volley'){if(!a.hit&&p>.5){a.hit=1;for(let i=-2;i<=2;i++){const an=Math.atan2(dx,dz)+i*.22;proj('m',T.proj=='arrow'?'arrow':'orb',e.x,e.y+2.4,e.z,P,e.dmg*.7,{c:T.pc||0xffd84a,dir:new V3(S(an),0,C(an)),home:0,psn:1})}}}
   else if(a.k=='breath'){e.f=angStep(e.f,Math.atan2(dx,dz),dt*1.5);if(p>.2){const hx=e.x+S(e.f)*6,hz=e.z+C(e.f)*6;for(let i=0;i<3;i++){const r=3+R()*8,an=e.f+(R()-.5)*.6;fx(e.x+S(an)*r,e.y+2+R(),e.z+C(an)*r,R()<.5?0xff6a1a:0xffd84a,1,2,.4,.3,-1)}

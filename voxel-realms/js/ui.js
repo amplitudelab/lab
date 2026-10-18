@@ -30,13 +30,13 @@ function bindInput(){const jb=$('jb'),jk=$('jk');
   cv.onpointermove=e=>{if(e.pointerId!=cid)return;const k=900/Math.max(600,innerWidth);if(INV_OPEN.k>.5)P.f-=(e.clientX-lx)*.012;else{CAMS.yawT-=(e.clientX-lx)*.0065*k;CAMS.pitT=cl(CAMS.pitT+(e.clientY-ly)*.003*k,.22,1.15)}lx=e.clientX;ly=e.clientY};cv.onpointerup=cv.onpointercancel=e=>{if(e.pointerId==cid)cid=null};
   cv.addEventListener('wheel',e=>{CAMS.dT=cl(CAMS.dT+e.deltaY*.01,6,22)},{passive:true});
   const hold=(id,fn,up)=>{const b=$(id);b.onpointerdown=e=>{e.stopPropagation();b.setPointerCapture(e.pointerId);fn()};if(up)b.onpointerup=b.onpointercancel=up};
-  hold('atk',()=>{UI.atkHeld=1;attack()},()=>UI.atkHeld=0);hold('rolb',dash);hold('runb',()=>toggleRun());hold('potb',potion);hold('itb',()=>INTN&&INTN.act());
+  hold('atk',()=>{UI.atkHeld=1;attack()},()=>UI.atkHeld=0);hold('rolb',dash);hold('runb',()=>toggleRun());hold('mntb',mount);hold('potb',potion);hold('itb',()=>INTN&&INTN.act());
   [0,1,2,3].forEach(i=>hold('sk'+i,()=>useSkill(i)));$('treeb').onclick=()=>openTree();
   $('bagb').onclick=()=>openInv();$('mapb').onclick=()=>openMap(false);$('jrnb').onclick=()=>openJournal();$('menb').onclick=()=>openMenu();$('qh').onclick=()=>$('qp').classList.toggle('min');
   addEventListener('keydown',e=>{if(e.repeat)return;kd[e.code]=1;if(!run)return;const c=e.code;
     if(DLG){if(c=='Enter'||c=='Space'||c=='KeyE')dlgNext();return}
     if(c=='Escape'){if(UI.open)closeAll();else openMenu();return}if(c=='KeyI'||c=='KeyB'){UI.open=='inv'?closeAll():openInv();return}if(c=='KeyM'){UI.open=='map'?closeAll():openMap(false);return}if(c=='KeyK'||c=='KeyT'){UI.open=='tree'?closeAll():openTree();return}if(c=='KeyJ'||c=='KeyL'){UI.open=='jrn'?closeAll():openJournal();return}
-    if(UI.open)return;if(c=='Space'){UI.atkHeld=1;attack()}if(/Digit[1-4]/.test(c))useSkill(+c[5]-1);if(c=='KeyQ')potion();if(c=='ShiftLeft'||c=='ShiftRight')toggleRun(1);if(c=='KeyC'||c=='ControlLeft'||c=='KeyV')dash();if(c=='KeyE'||c=='KeyF')INTN&&INTN.act()});
+    if(UI.open)return;if(c=='Space'){UI.atkHeld=1;attack()}if(/Digit[1-4]/.test(c))useSkill(+c[5]-1);if(c=='KeyQ')potion();if(c=='ShiftLeft'||c=='ShiftRight')toggleRun(1);if(c=='KeyC'||c=='ControlLeft'||c=='KeyV')dash();if(c=='KeyE'||c=='KeyF')INTN&&INTN.act();if(c=='KeyR')mount()});
   addEventListener('keyup',e=>{kd[e.code]=0;if(e.code=='Space')UI.atkHeld=0;if(e.code=='ShiftLeft'||e.code=='ShiftRight')toggleRun(0)});
   addEventListener('blur',()=>{for(const k in kd)kd[k]=0;UI.atkHeld=0})}
 // ---------- avisos e faixas
@@ -104,7 +104,7 @@ function npcLabels(){let i=0;for(const n of NPC){if(n.hidden||!n.m.g.visible)con
   let el=NL[i];if(!el){el=document.createElement('div');el.className='nl';document.body.appendChild(el);NL.push(el)}i++;el.style.display='block';el.innerHTML=(has?'<i>!</i>':'')+(d<9?n.nm:'');el.style.transform=`translate(${(_pp.x*.5+.5)*innerWidth}px,${(-_pp.y*.5+.5)*innerHeight}px) translate(-50%,-100%)`}for(;i<NL.length;i++)NL[i].style.display='none'}
 
 // ---------- janelas
-function closeAll(){UI.open=null;for(const id of['inv','map','jrn','shop','menu','bty','tree'])$(id).classList.remove('on');document.body.classList.remove('invo')}
+function closeAll(){UI.open=null;for(const id of['inv','map','jrn','shop','menu','bty','tree','gmb'])$(id).classList.remove('on');document.body.classList.remove('invo')}
 function openWin(id){closeAll();UI.open=id;$(id).classList.add('on');jx=jy=0;UI.atkHeld=0;snd(520,.06,'sine')}
 // inventário (herói em 3D à esquerda)
 let ISEL=null;
@@ -139,7 +139,8 @@ function jrnRender(){const tabs=[['main','Principal'],['side','Secundárias'],['
   $('jbody').innerHTML=h}
 // loja da Helga
 function openShop(){openWin('shop');shopRender()}
-function shopRender(){$('shg').textContent='🪙 '+fmt(P.gold);$('shl').innerHTML=SHOP.map((it,j)=>`<div class="shi r${it.rar}" data-b="${j}"><i>${it.ic}</i><div><b style="color:${RAR[it.rar].c}">${it.n}</b><small>${SLN[it.slot][1]} · ${itemLines(it).slice(0,2).join(' · ').replace(/<[^>]+>/g,'')}</small></div><em class="${P.gold<it.price?'no':''}">${it.price}🪙</em></div>`).join('')||'<p class="ihint">A Helga está forjando peças novas. Volte quando subir de nível.</p>'}
+function shopRender(){$('shg').textContent='🪙 '+fmt(P.gold);$('shl').innerHTML=SHOP.map((it,j)=>`<div class="shi r${it.rar}" data-b="${j}"><i>${it.ic}</i><div><b style="color:${RAR[it.rar].c}">${it.n}</b><small>${SLN[it.slot][1]} · ${itemLines(it).slice(0,2).join(' · ').replace(/<[^>]+>/g,'')}</small></div><em class="${P.gold<it.price?'no':''}">${it.price}🪙</em></div>`).join('')||'<p class="ihint">A Helga está forjando peças novas. Volte quando subir de nível.</p>';
+  $('shl').insertAdjacentHTML('afterbegin','<h4 class="shh">🐾 Montarias</h4>'+Object.keys(MOUNTS).map(k=>{const M=MOUNTS[k],own=P.mounts.includes(k);return`<div class="shi r3 mt" data-mt="${k}"><i>${M.ic}</i><div><b style="color:#ffb347">${M.n}</b><small>${M.d} Velocidade ${Math.round(M.sp/1.6*100)}% da corrida.</small></div><em class="${own?'':P.gold<M.price?'no':''}">${own?'✔ Sua':M.price+'🪙'}</em></div>`}).join('')+'<h4 class="shh">⚒️ Peças da forja</h4>')}
 // recompensas
 function openBounty(){openWin('bty');btyRender()}
 function btyRender(){const B=BOUNTY.q;let h='';if(B){h=`<div class="jq"><b>📋 ${B.txt}</b><p>Progresso: ${B.p}/${B.n}</p><p>Recompensa: ${B.gold} ouro · ${B.xp} XP · item raro</p></div>`+(B.ok?'<button class="ib" data-bt="claim">Receber recompensa</button>':'<button class="ib off" data-bt="drop">Abandonar</button>')}
@@ -149,8 +150,12 @@ function bindWindows(){
   $('inv').onclick=e=>{const b=e.target.closest('[data-a]');if(b){const a=b.dataset.a;if(a=='eq'){equip(ISEL);ISEL=null}else if(a=='un'){unequip(ISEL);ISEL=null}else if(a=='sell'){sellItem(ISEL);ISEL=null}invRender();return}const s=e.target.closest('[data-i],[data-e]');if(s){ISEL=s.dataset.i!=null?+s.dataset.i:s.dataset.e;invRender();snd(700,.04,'sine')}};
   $('map').onclick=e=>{const b=e.target.closest('[data-w]');if(!b)return;if(inCombat()){toast('⚔️','Em combate','Afaste-se dos inimigos para viajar.');return}const w=WP.find(w=>w.id==b.dataset.w);closeAll();teleport(w.x,w.z+3);toast('🌀','Viagem',w.n)};
   $('jrn').onclick=e=>{const b=e.target.closest('[data-t]');if(b){JTAB=b.dataset.t;jrnRender()}};
-  $('shop').onclick=e=>{const b=e.target.closest('[data-b]');if(b){buyItem(+b.dataset.b);shopRender()}};
+  $('shop').onclick=e=>{const m=e.target.closest('[data-mt]');if(m){buyMount(m.dataset.mt);shopRender();return}const b=e.target.closest('[data-b]');if(b){buyItem(+b.dataset.b);shopRender()}};
   $('bty').onclick=e=>{const b=e.target.closest('[data-bt]');if(!b)return;const k=b.dataset.bt;if(k=='claim'){const B=BOUNTY.q;BOUNTY.q=null;grant({gold:B.gold,xp:B.xp,item:2});toast('📋','Contrato concluído','')}else if(k=='drop')BOUNTY.q=null;else BOUNTY.q=bountyGen(k);btyRender();trackUpd();save()};
   document.querySelectorAll('.wx').forEach(b=>b.onclick=closeAll);
   $('gfx2').onclick=()=>{try{localStorage.setItem('vr11_gfx',String((GL+1)%3))}catch(e){}save();location.reload()};$('sav').onclick=()=>{save();toast('💾','Jogo salvo','')};$('ret').onclick=()=>{save();location.reload()};
-  $('rv').onclick=respawn}
+  $('rv').onclick=respawn;
+  $('gmb').onclick=e=>{const b=e.target.closest('[data-g]');if(b)gamble(b.dataset.g)};
+  $('fpsb').onclick=()=>{FPSC=FPSC==0?60:FPSC==60?30:0;try{localStorage.setItem('vr11_fps',String(FPSC))}catch(e){}fpsLbl()};fpsLbl();
+  $('musb').onclick=()=>{musToggle();$('musb').textContent='Música: '+(MUS.on?'ligada':'desligada')};$('musb').textContent='Música: '+(MUS.on?'ligada':'desligada')}
+function fpsLbl(){$('fpsb').textContent='Quadros: '+(FPSC?FPSC+' fps':'Máx. da tela ('+(HZ>=100?Math.round(HZ/10)*10+' Hz':'auto')+')')}

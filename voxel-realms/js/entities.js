@@ -48,6 +48,8 @@ const BOSS={
   bruxa:{n:'Morgra, a Bruxa do Mangue',m:'witch',w:'staff',hp:2300,dmg:28,sp:3.6,rg:12,cd:1.8,xp:1500,x:-186,z:60,lv:12,ab:['blink','poison','summon','volley'],sum:'frog',proj:'orb',pc:0x9aff7a,r:1,atk:'cast'},
   ignarok:{n:'Ignarok, o Dragão de Brasa',m:'ignarok',hp:4600,dmg:34,sp:3.6,rg:6.5,cd:2.2,xp:3200,x:152,z:-178,lv:15,ab:['breath','fireballs','charge','geysers','fly'],r:3.6,atk:'bite'}};
 const SPAWN={plan:['boar','wolf','bandit','bandarc'],flor:['bee','golem','fairy','wolf'],mata:['dwolf','spider','skel'],mang:['croc','frog','slime','zombie'],cald:['lslime','imp','skel']};
+// à noite, feras agressivas se somam aos monstros da região
+const NIGHTB={plan:['wolf','wolf','boar'],flor:['wolf','dwolf'],mata:['dwolf','dwolf','spider'],mang:['croc','croc'],cald:['imp']};
 const FAUNA={vila:[],plan:['sheep','cow','rabbit','deer'],flor:['rabbit','deer','fox'],mata:['deer','fox','rabbit'],mang:['tfrog'],cald:[]};
 const AFF={rapido:{n:'Rápido'},blindado:{n:'Blindado'},vampiro:{n:'Vampírico'},fundido:{n:'Fundido'},gelido:{n:'Gélido'},peconha:{n:'Peçonhento'},vortice:{n:'Vórtice'}};
 const E=[],ANI=[],NPC=[],CLEARED=new Map();let eid=0;
@@ -65,17 +67,18 @@ function mkMob(type,x,z,o){o=o||{};const t=BOSS[type]||MT[type],lv=o.lv||1,boss=
 function dropMob(e){dropModel(e.m);if(e.ring)sc.remove(e.ring);const i=E.indexOf(e);if(i>=0)E.splice(i,1)}
 
 // ---------- geração por pedaço: bandos de monstros, animais e baús são ligados ao pedaço
-function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2;if(hy(cx,cz)<75)return;const cl_=CLEARED.get(k);if(cl_&&performance.now()-cl_<240000)return;
-  const r=rng(c.cx*92821^c.cz*68917^((performance.now()/240000)|0)),reg=regionAt(cx,cz),rid=REG[reg].id;
+function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2;if(hy(cx,cz)<75)return;const cl_=CLEARED.get(k);if(cl_&&performance.now()-cl_<90000)return;
+  const r=rng(c.cx*92821^c.cz*68917^((performance.now()/90000)|0)),reg=regionAt(cx,cz),rid=REG[reg].id;
   let tbl=SPAWN[rid]||[];for(const p of POI)if(hy(cx-p.x,cz-p.z)<p.r+16){if(p.n.startsWith('Cemit'))tbl=['zombie','zombie','ghoul','skel'];if(p.n.startsWith('Acamp'))tbl=['bandit','bandarc'];if(p.n.startsWith('Colmeia'))tbl=['bee','bee','fairy']}
-  const packs=tbl.length?(r()<[0,.5,.55,.62,.6,.66][reg]?1:0)+(r()<.12?1:0):0;
+  const nt=NIGHT>.5;if(nt&&!tbl.some(t=>t=='zombie'||t=='bandit'&&tbl.length==2))tbl=tbl.concat(NIGHTB[rid]||[]);
+  const packs=tbl.length?(r()<[0,.66,.7,.76,.74,.8][reg]?1:0)+(r()<(nt?.38:.26)?1:0):0;
   for(let p=0;p<packs;p++){let x=0,z=0,ok=false;for(let a=0;a<8&&!ok;a++){x=c.cx*CS+4+r()*(CS-8);z=c.cz*CS+4+r()*(CS-8);ok=walkable(x,z)&&groundAt(x,z)>(rid=='mang'?-.5:.2)}if(!ok)continue;
     const lv=mobLv(reg),roll=r(),el=roll<.06?2:roll<.14?1:0,afx=[];if(el){const ks=Object.keys(AFF);while(afx.length<el){const a=pick(ks,r);if(!afx.includes(a))afx.push(a)}}
     const t1=pick(tbl,r),n=el==1?3:el==2?1:2+(r()*3|0);
     for(let i=0;i<n;i++){const ty=el==2||i<n-1||r()<.5?t1:pick(tbl,r),e=mkMob(ty,x+(r()-.5)*5,z+(r()-.5)*5,{lv,el,afx,ch:k,name:el==2?rareName(r):null});e.pack=p}
     if(el==2)for(let i=0;i<3;i++)mkMob(t1,x+(r()-.5)*5,z+(r()-.5)*5,{lv,ch:k,minion:1})}
   // animais
-  const fa=FAUNA[rid]||[];for(let i=0;i<(fa.length?1+(r()*2|0):0);i++){const x=c.cx*CS+r()*CS,z=c.cz*CS+r()*CS;if(!walkable(x,z)||groundAt(x,z)<(rid=='mang'?-.4:.3))continue;const ty=pick(fa,r),nn=ty=='sheep'||ty=='cow'?2+(r()*2|0):1;for(let j=0;j<nn;j++){const a=mkMob(ty,x+(r()-.5)*4,z+(r()-.5)*4,{lv:REG[reg].lv,ch:k});if(ty=='tfrog')a.m.g.scale.setScalar(.55)}}
+  const fa=FAUNA[rid]||[];for(let i=0;i<(fa.length?(nt?(r()<.4?1:0):2+(r()*2|0)):0);i++){const x=c.cx*CS+r()*CS,z=c.cz*CS+r()*CS;if(!walkable(x,z)||groundAt(x,z)<(rid=='mang'?-.4:.3))continue;const ty=pick(fa,r),nn=ty=='sheep'||ty=='cow'?2+(r()*2|0):1;for(let j=0;j<nn;j++){const a=mkMob(ty,x+(r()-.5)*4,z+(r()-.5)*4,{lv:REG[reg].lv,ch:k});if(ty=='tfrog')a.m.g.scale.setScalar(.55)}}
   // chefes nos covis
   for(const b in BOSS){const B=BOSS[b];if(Math.floor(B.x/CS)==c.cx&&Math.floor(B.z/CS)==c.cz&&!E.some(e=>e.type==b)&&bossAvailable(b))mkMob(b,B.x,B.z,{lv:Math.max(B.lv,P.lv),ch:k})}}
 function onChunkDrop(c){const k=ckey(c.cx,c.cz);for(let i=E.length-1;i>=0;i--){const e=E[i];if(e.ch==k&&e.st!='chase'&&!e.boss&&!e.dead)dropMob(e)}for(let i=ANI.length-1;i>=0;i--){const a=ANI[i];if(a.ch==k){dropModel(a.m);ANI.splice(i,1)}}}
@@ -115,7 +118,7 @@ function mercUpd(n,dt,t){const M=MERC[n.merc];n.cd-=dt;n.tt=(n.tt||0)-dt;if(n.ac
   else{const a=S(P.f),b=C(P.f);tx=P.x-a*2.4+b*1.8;tz=P.z-b*2.4-a*1.8;const d=hy(tx-n.x,tz-n.z);sp=d>8?9:d>.8?Math.max(2.5,Math.min(6.5,d*2)):0}
   if(hy(P.x-n.x,P.z-n.z)>34){n.x=P.x-1.5;n.z=P.z-1.5;n.y=groundAt(n.x,n.z);fx(n.x,n.y+1,n.z,0xffffff,10,3,.15,1)}
   const dd=hy(tx-n.x,tz-n.z)||1;moveEnt(n,sp?(tx-n.x)/dd*sp:0,sp?(tz-n.z)/dd*sp:0,dt,8,9,.5);const v=hy(n.vx,n.vz);
-  n.m.g.position.set(n.x,n.y,n.z);n.m.g.rotation.y=n.f;animate(n.m,dt,t,{v,atk:n.act&&{k:n.act.k,p:n.act.t/n.act.dur},aim:n.merc=='lyra'&&!!tg&&!n.act});if(v>5&&frameN%9==0)puff(n.x,n.y+.2,n.z,0xcdb894,.6);return v}
+  n.m.g.position.set(n.x,n.y,n.z);n.m.g.rotation.y=n.f;animate(n.m,dt,t,{v,atk:n.act&&{k:n.act.k,p:n.act.t/n.act.dur},aim:n.merc=='lyra'&&!!tg&&!n.act});if(v>5&&ev(9))puff(n.x,n.y+.2,n.z,0xcdb894,.6);return v}
 function mercHit(n){const tg=n.act.tg;if(!tg||tg.dead)return;const lvM=1+P.lv*.18,M=MERC[n.merc];
   if(n.merc=='borin'){if(hy(tg.x-n.x,tg.z-n.z)-tg.r<2.4){hurtMob(tg,(6+P.lv*2.2)*lvM*(.9+R()*.2),0,'merc');fx(tg.x,tg.y+1.2,tg.z,0xffffff,5,4,.14);flash(tg.x,tg.y+1.3,tg.z,0xffe0b0,1.4,.12);snd(160,.06,'square')}}
   else proj('p',n.merc=='lyra'?'arrow':'orb',n.x+S(n.f)*.6,n.y+(n.merc=='lyra'?1.8:2.6),n.z+C(n.f)*.6,tg,(n.merc=='lyra'?5+P.lv*1.8:7+P.lv*2.3)*lvM*(.9+R()*.2),n.merc=='mirela'?{aoe:2.6,c:0xc07aff}:{})}
@@ -134,8 +137,8 @@ function proj(side,kind,x,y,z,tg,dm,o){o=o||{};const p=PJ.find(p=>p.l<=0);if(!p)
   const sp=kind=='arrow'?28:kind=='orb'?14:16;if(o.dir)p.v.copy(o.dir).multiplyScalar(sp);else p.v.set(tg.x-x,(tg.y||0)+(tg===P?1.3:1.1)-y,tg.z-z).normalize().multiplyScalar(sp);if(kind=='orb'&&side=='p')p.v.y+=3;p.sp=sp}
 function projUpd(dt){for(const p of PJ){if(p.l<=0)continue;p.l-=dt;const q=p.o.position,t=p.tg;
   if(t&&!t.dead&&p.home>0){_pv2.set(t.x-q.x,(t.y||0)+(t===P?1.3:1.1)-q.y,t.z-q.z);const d=_pv2.length();_pv2.multiplyScalar(p.sp/(d||1));p.v.lerp(_pv2,Math.min(1,dt*6*p.home))}
-  q.addScaledVector(p.v,dt);if(p.k=='arrow')p.o.lookAt(q.x+p.v.x,q.y+p.v.y,q.z+p.v.z);else p.o.scale.setScalar((p.k=='fire'?1.6:1.15)+S(frameN*.5)*.15);
-  if(frameN%2==0)fx(q.x,q.y,q.z,p.k=='arrow'?0xfff2c0:p.c,1,.3,p.k=='arrow'?.06:.14,0,0);
+  q.addScaledVector(p.v,dt);if(p.k=='arrow')p.o.lookAt(q.x+p.v.x,q.y+p.v.y,q.z+p.v.z);else p.o.scale.setScalar((p.k=='fire'?1.6:1.15)+S(T60*.5)*.15);
+  if(ev(2))fx(q.x,q.y,q.z,p.k=='arrow'?0xfff2c0:p.c,1,.3,p.k=='arrow'?.06:.14,0,0);
   if(p.side=='p'){for(const e of E){if(e.dead||p.hits.includes(e))continue;if(hy(e.x-q.x,e.z-q.z)<e.r+.5&&Math.abs(q.y-(e.y+1.2*(e.boss?2:1)))<2.4*(e.boss?2:1)){hitProj(p,e);if(!p.pierce){p.l=0;break}}}}
   else if(!P.dead&&hy(P.x-q.x,P.z-q.z)<.75&&Math.abs(q.y-P.y-1.2)<1.6){hitPlayer(p.dm,{psn:p.psn,brn:p.brn,src:p});fx(q.x,q.y,q.z,p.c,6,4,.14);p.l=0}
   if(q.y<groundAt(q.x,q.z)+.05){if(p.aoe)hitProj(p,null);else fx(q.x,q.y+.1,q.z,0xc8a060,4,3,.1);p.l=0}if(p.l<=0)p.o.visible=false}}
@@ -151,9 +154,9 @@ function mobsUpd(dt,t){
     e.hurt=Math.max(0,e.hurt-dt*4);e.stun-=dt;e.slow-=dt;e.cd-=dt;if(e.fl>0){e.fl-=dt;if(e.fl<=0)flashModel(e.m,false)}
     let dvx=0,dvz=0,sp=e.sp*(e.slow>0?.5:1);
     if(e.boss){bossUpd(e,dt,t,d,dx,dz);continue}
-    if(T.passive){e.flee-=dt;const sc_=d<(T.sp>5?7:3.5)&&!P.dead;if(e.flee>0||sc_){const k=e.flee>0?1:.7;dvx=-dx/(d||1)*e.sp*k;dvz=-dz/(d||1)*e.sp*k;if(e.flee>0&&frameN%6==0)puff(e.x,e.y+.2,e.z,0xcdb894,.6)}else{e.wt-=dt;if(e.wt<=0){e.wt=3+R()*5;e.tx=e.home[0]+(R()-.5)*14;e.tz=e.home[1]+(R()-.5)*14}const dd=hy(e.tx-e.x,e.tz-e.z);if(dd>.8){dvx=(e.tx-e.x)/dd*1.3;dvz=(e.tz-e.z)/dd*1.3}}
+    if(T.passive){e.flee-=dt;const sc_=d<(T.sp>5?7:3.5)&&!P.dead;if(e.flee>0||sc_){const k=e.flee>0?1:.7;dvx=-dx/(d||1)*e.sp*k;dvz=-dz/(d||1)*e.sp*k;if(e.flee>0&&ev(6))puff(e.x,e.y+.2,e.z,0xcdb894,.6)}else{e.wt-=dt;if(e.wt<=0){e.wt=3+R()*5;e.tx=e.home[0]+(R()-.5)*14;e.tz=e.home[1]+(R()-.5)*14}const dd=hy(e.tx-e.x,e.tz-e.z);if(dd>.8){dvx=(e.tx-e.x)/dd*1.3;dvz=(e.tz-e.z)/dd*1.3}}
       if(T.m=='frog'){e.hop=Math.max(0,e.hop-dt*1.8);if(e.hop<=0&&hy(dvx,dvz)>.5)e.hop=1;if(e.hop<=0){dvx*=.1;dvz*=.1}}}
-    else if(e.stun>0){if(frameN%8==0)fx(e.x,e.y+e.m.g.scale.y*2.4,e.z,0xffe27a,1,1.5,.14,.4,0)}
+    else if(e.stun>0){if(ev(8))fx(e.x,e.y+e.m.g.scale.y*2.4,e.z,0xffe27a,1,1.5,.14,.4,0)}
     else if(e.act){e.act.t+=dt;const p=e.act.t/e.act.dur;if(!e.act.hit&&p>=e.act.hp){e.act.hit=1;mobStrike(e,d)}if(e.act.t>=e.act.dur)e.act=null;if(e.act&&e.act.k=='charge'){dvx=e.act.dx*sp*3;dvz=e.act.dz*sp*3}}
     else{
       if(e.st=='idle'){e.wt-=dt;if(e.wt<=0){e.wt=2+R()*4;e.tx=e.home[0]+(R()-.5)*12;e.tz=e.home[1]+(R()-.5)*12}const dd=hy(e.tx-e.x,e.tz-e.z);if(dd>.8){dvx=(e.tx-e.x)/dd*sp*.35;dvz=(e.tz-e.z)/dd*sp*.35}
