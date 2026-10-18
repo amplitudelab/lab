@@ -16,13 +16,14 @@ const WPN={
   axe:(k,c,g)=>{k.box(.1,1.5,.1,0,.6,0,0x6a4424).box(.08,.62,.55,0,1.15,.24,c||0xcfd6dc).box(.1,.2,.2,0,1.15,0,g||0xd9a948)},
   mace:(k,c,g)=>{k.box(.1,1.2,.1,0,.5,0,0x5a3a20).box(.4,.4,.4,0,1.2,0,c||0x8a8f99).box(.12,.12,.55,0,1.2,0,c||0x8a8f99).box(.55,.12,.12,0,1.2,0,c||0x8a8f99).box(.14,.14,.14,0,-.08,0,g||0xd9a948)},
   bow:(k,c)=>{k.box(.1,.75,.1,0,.36,.12,c||0x8a5a2b,{rx:.35}).box(.1,.75,.1,0,-.36,.12,c||0x8a5a2b,{rx:-.35}).box(.03,1.32,.03,0,0,-.02,0xf5eed0)},
-  staff:(k,c)=>{k.box(.11,2.6,.11,0,.5,0,0x5a3a20).box(.24,.24,.24,0,1.85,0,c||0xd9a948)},
+  staff:(k,c)=>{k.box(.11,2.6,.11,0,.5,0,0x5a3a20).box(.24,.24,.24,0,1.85,0,c||0xd9a948).box(.36,.1,.36,0,1.65,0,0xd9a948)},
+  wand:(k,c)=>{k.box(.08,1,.08,0,.4,0,0x3a2a4a).box(.16,.16,.16,0,.95,0,c||0xc8a0ff).box(.12,.06,.12,0,.1,0,0xd9a948)},
   dagger:(k,c)=>{k.box(.08,.6,.05,0,.42,0,c||0xc8ccd0).box(.3,.08,.1,0,.12,0,0x4a3a2a).box(.08,.2,.08,0,0,0,0x3a2a1a)},
   club:(k,c)=>{k.box(.14,1.1,.14,0,.45,0,0x6a4424).box(.3,.5,.3,0,1,0,c||0x5a3a20)},
   shield:(k,c)=>{k.box(.12,.9,.8,0,0,0,c||0x8a8f99).box(.14,.32,.32,0,0,0,0xd9a948)}};
 function weapon(m,type,col,glowCol,hand){const h=hand||m.hR;while(h.children.length)h.remove(h.children[0]);if(!type)return;const g=new THREE.Group();g.rotation.x=PI/2*.9;h.add(g);
   const k=new Bake();WPN[type](k,col,type=='sword'||type=='axe'||type=='mace'?null:0);const ms=k.mesh(MV);ms.castShadow=true;g.add(ms);
-  if(glowCol){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:SPR,color:glowCol,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.6}));s.scale.set(1.1,1.1,1);s.position.y=type=='staff'?1.85:1;g.add(s)}
+  if(glowCol){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:SPR,color:glowCol,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.6}));s.scale.set(1.1,1.1,1);s.position.y=type=='staff'?1.85:type=='wand'?.95:1;g.add(s)}
   if(type=='shield'){g.rotation.set(0,0,0);ms.position.set(-.1,0,0)}
   m.meshes=[];m.g.traverse(o=>{if(o.isMesh){m.meshes.push(o);if(!o.userData.mat)o.userData.mat=o.material}});return g}
 
@@ -55,16 +56,19 @@ function hum(o){const B=o.bulk||1,m={kind:'hum',g:new THREE.Group(),o};
 const _T={};
 function seq(p,rest,wind,strike,a,b){const u1=easeOut(cl(p/a,0,1)),u2=easeOut(cl((p-a)/(b-a),0,1)),u3=sstep(b,1,p);return lerp(lerp(lerp(rest,wind,u1),strike,u2),rest,u3)}
 function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
-  sm(A,'w',cl(v/(zb?2.4:4.6),0,1.3),dt,8);const W=A.w;A.ph+=dt*(zb?1.6:2.2+v*1.6)*(W>.04?1:.0);const sp=S(A.ph),cp=C(A.ph);
+  sm(A,'w',cl(v/(zb?2.4:4.6),0,1.3),dt,8);const W=A.w;A.ph+=dt*(zb?1.6:2+v*1.55)*(W>.04?1:.0);const sp=S(A.ph),cp=C(A.ph);
   A.lt-=dt;if(A.lt<=0){A.lt=2+R()*3;A.lookT=(R()-.5)*1.1}sm(A,'look',A.lookT*(1-cl(W*2,0,1)),dt,3);
   T.hy=1.02+(Math.abs(sp)*.08-.04)*W;T.hry=sp*.14*W;T.hrx=0;T.trx=(zb?.25:.1*W*W);T.try=-sp*.2*W;T.trz=zb?S(t*1.3)*.08:0;T.hdx=zb?.25:0;T.hdy=A.look;T.hdz=zb?.2:0;
   T.tL=-sp*.75*W;T.tR=sp*.75*W;T.kL=Math.max(0,cp)*1.15*W+.03;T.kR=Math.max(0,-cp)*1.15*W+.03;
   T.sLx=sp*.65*W;T.sRx=-sp*.65*W;T.sLz=-.07-S(t*1.8)*.025*(1-W);T.sRz=.07+S(t*1.8)*.025*(1-W);T.sLy=0;T.sRy=0;T.eL=-(.18+.55*W);T.eR=-(.18+.55*W);
   T.brs=1+S(t*2.2)*.012*(1-W);
+  // corrida: passada longa, braços dobrados bombeando, tronco inclinado, quique maior
+  const rk_=cl((v-6)/2.5,0,1);if(rk_>0&&!zb){T.tL*=1+.35*rk_;T.tR*=1+.35*rk_;T.kL+=Math.max(0,cp)*.6*rk_;T.kR+=Math.max(0,-cp)*.6*rk_;T.sLx=sp*(.65+.45*rk_)*W;T.sRx=-sp*(.65+.45*rk_)*W;T.eL=T.eR=-(.7+.8*rk_);T.sLz=-.15;T.sRz=.15;T.trx=.1+.28*rk_;T.hy+=Math.abs(sp)*.05*rk_;T.hdx=-.12*rk_}
+  if(s.dash){T.trx=.55;T.sLx=T.sRx=1;T.sLz=-.3;T.sRz=.3;T.eL=T.eR=-.2;T.tL=-.7;T.tR=.6;T.kL=.4;T.kR=1.2;T.hdx=-.3}
   if(zb){T.sLx=-1.35+sp*.15;T.sRx=-1.45-sp*.15;T.eL=T.eR=-.1;T.sLz=-.1;T.sRz=.1}
   if(s.aim){const pl=s.pull||0;T.sLx=-1.55;T.sLz=0;T.eL=-.05;T.sRx=-1.55;T.sRz=.1;T.eR=-.4-1.5*pl;T.try=-.45;T.hdy=.45}
   if(s.block){T.sLx=-1.2;T.eL=-1.2;T.sLz=-.3}
-  let k=12;const a=s.atk;
+  let k=s.dash?30:14;const a=s.atk;
   if(a){const p=a.p;k=28;switch(a.k){
     case 'slashA':T.sRx=seq(p,T.sRx,-2.55,-.25,.3,.5);T.sRz=seq(p,T.sRz,.5,-.35,.3,.5);T.eR=seq(p,T.eR,-.7,-.1,.3,.5);T.try=seq(p,T.try,.5,-.55,.3,.5);T.hry=seq(p,T.hry,.2,-.25,.3,.5);T.sLx=seq(p,T.sLx,.3,-.4,.3,.5);break;
     case 'slashB':T.sRx=seq(p,T.sRx,-1.45,-1.45,.3,.5);T.sRz=seq(p,T.sRz,1.35,-.7,.3,.5);T.sRy=seq(p,0,.4,-.6,.3,.5);T.eR=-.15;T.try=seq(p,T.try,.75,-.85,.3,.5);T.hry=seq(p,T.hry,.3,-.3,.3,.5);T.sLz=seq(p,T.sLz,-.6,-.2,.3,.5);break;

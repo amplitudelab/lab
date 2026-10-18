@@ -7,7 +7,7 @@
 // ---------- jogador
 const P={x:-4,z:14,y:1.5,vx:0,vz:0,f:PI,lv:1,xp:0,gold:30,hp:100,fury:0,dead:0,act:null,cd:{},roll:0,rdx:0,rdz:0,inv:0,hurt:0,buff:{},kills:0,stun:0,slow:0,psn:0,brn:0,ptk:0,leap:null,merc:null,disc:new Set(),pot:0};
 P.m=MDL.hero();
-const XPN=l=>Math.round(120*Math.pow(l,1.55)); // experiência para o próximo nível
+const XPN=l=>Math.round(170*Math.pow(l,1.85)); // curva mais íngreme: cada nível custa mais // experiência para o próximo nível
 
 // ---------- movimento comum: aceleração, curva suave, chão em degraus, colisão
 function moveEnt(o,dvx,dvz,dt,acc,turn,r){o.vx+=(dvx-o.vx)*damp(acc,dt);o.vz+=(dvz-o.vz)*damp(acc,dt);const sp=hy(o.vx,o.vz);
@@ -33,6 +33,13 @@ const MT={
   frog:{n:'Sapo Peçonhento',m:'pfrog',hp:30,dmg:8,sp:5,rg:1.9,cd:1.6,xp:13,ai:'hopper',psn:1},
   slime:{n:'Lodo Vivo',m:'slime',hp:46,dmg:9,sp:2.7,rg:1.7,cd:1.4,xp:14,ai:'melee',atk:'squash',split:1},
   lslime:{n:'Slime de Lava',m:'lslime',hp:52,dmg:11,sp:2.9,rg:1.7,cd:1.4,xp:16,ai:'melee',atk:'squash',brn:1},
+  // animais (passivos: fogem e deixam materiais)
+  sheep:{n:'Ovelha',m:'sheep',hp:18,dmg:0,sp:3.2,rg:1,cd:9,xp:2,ai:'animal',passive:1,r:.6,mats:[['la',.8],['carne',.5]]},
+  cow:{n:'Vaca',m:'cow',hp:30,dmg:0,sp:2.6,rg:1,cd:9,xp:3,ai:'animal',passive:1,r:.8,mats:[['couro',.7],['carne',.8]]},
+  deer:{n:'Cervo',m:'deer',hp:22,dmg:0,sp:7.5,rg:1,cd:9,xp:4,ai:'animal',passive:1,r:.6,mats:[['chifre',.5],['couro',.6]]},
+  rabbit:{n:'Coelho',m:'rabbit',hp:8,dmg:0,sp:6.5,rg:1,cd:9,xp:1,ai:'animal',passive:1,r:.35,mats:[['coelho',.4],['carne',.3]]},
+  fox:{n:'Raposa',m:'fox',hp:14,dmg:0,sp:7,rg:1,cd:9,xp:3,ai:'animal',passive:1,r:.45,mats:[['raposa',.7]]},
+  tfrog:{n:'Sapo do Brejo',m:'frog',hp:6,dmg:0,sp:4,rg:1,cd:9,xp:1,ai:'animal',passive:1,r:.35,mats:[['perna',.6]]},
   imp:{n:'Diabrete de Brasa',m:'imp',w:'club',hp:34,dmg:10,sp:5,rg:9,cd:2.2,xp:16,ai:'ranged',proj:'fire',pc:0xff7a1a,atk:'cast'}};
 const BOSS={
   capitao:{n:'Capitão Rasgado',m:'capitao',w:'axe',hp:620,dmg:16,sp:4,rg:2.6,cd:1.6,xp:420,x:-38,z:174,lv:3,ab:['charge','spin','summon'],sum:'bandit',r:1.1,atk:'slashA'},
@@ -41,13 +48,13 @@ const BOSS={
   bruxa:{n:'Morgra, a Bruxa do Mangue',m:'witch',w:'staff',hp:2300,dmg:28,sp:3.6,rg:12,cd:1.8,xp:1500,x:-186,z:60,lv:12,ab:['blink','poison','summon','volley'],sum:'frog',proj:'orb',pc:0x9aff7a,r:1,atk:'cast'},
   ignarok:{n:'Ignarok, o Dragão de Brasa',m:'ignarok',hp:4600,dmg:34,sp:3.6,rg:6.5,cd:2.2,xp:3200,x:152,z:-178,lv:15,ab:['breath','fireballs','charge','geysers','fly'],r:3.6,atk:'bite'}};
 const SPAWN={plan:['boar','wolf','bandit','bandarc'],flor:['bee','golem','fairy','wolf'],mata:['dwolf','spider','skel'],mang:['croc','frog','slime','zombie'],cald:['lslime','imp','skel']};
-const FAUNA={vila:[],plan:['sheep','cow','rabbit','deer'],flor:['rabbit','deer','fox'],mata:['deer','fox','rabbit'],mang:['frog'],cald:[]};
+const FAUNA={vila:[],plan:['sheep','cow','rabbit','deer'],flor:['rabbit','deer','fox'],mata:['deer','fox','rabbit'],mang:['tfrog'],cald:[]};
 const AFF={rapido:{n:'Rápido'},blindado:{n:'Blindado'},vampiro:{n:'Vampírico'},fundido:{n:'Fundido'},gelido:{n:'Gélido'},peconha:{n:'Peçonhento'},vortice:{n:'Vórtice'}};
 const E=[],ANI=[],NPC=[],CLEARED=new Map();let eid=0;
 
 function mobLv(reg){return Math.max(REG[reg].lv,Math.floor(P.lv*.85))}
 function mkMob(type,x,z,o){o=o||{};const t=BOSS[type]||MT[type],lv=o.lv||1,boss=!!BOSS[type],el=o.el||0;
-  const hpM=(boss?.85:.62)*(1+.3*(lv-1))*(el==1?3:el==2?4.2:1)*(o.minion?1.4:1),m=MDL[t.m]();
+  const hpM=t.passive?1+.08*lv:(boss?.85:.62)*(1+.3*(lv-1))*(el==1?3:el==2?4.2:1)*(o.minion?1.4:1),m=MDL[t.m]();
   if(t.w)weapon(m,t.w,null,null,t.wh=='L'?m.hL:m.hR);
   if(el)m.g.scale.multiplyScalar(1.18);
   const e={id:eid++,type,t,boss,el,afx:o.afx||[],minion:o.minion,x,z,y:groundAt(x,z),vx:0,vz:0,f:R()*TAU,hp:t.hp*hpM,mx:t.hp*hpM,lv,dmg:t.dmg*(1+.2*(lv-1))*(el?1.3:1),sp:t.sp*(o.afx&&o.afx.includes('rapido')?1.45:1),
@@ -68,10 +75,10 @@ function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2
     for(let i=0;i<n;i++){const ty=el==2||i<n-1||r()<.5?t1:pick(tbl,r),e=mkMob(ty,x+(r()-.5)*5,z+(r()-.5)*5,{lv,el,afx,ch:k,name:el==2?rareName(r):null});e.pack=p}
     if(el==2)for(let i=0;i<3;i++)mkMob(t1,x+(r()-.5)*5,z+(r()-.5)*5,{lv,ch:k,minion:1})}
   // animais
-  const fa=FAUNA[rid]||[];for(let i=0;i<(fa.length?1+(r()*2|0):0);i++){const x=c.cx*CS+r()*CS,z=c.cz*CS+r()*CS;if(!walkable(x,z)||groundAt(x,z)<(rid=='mang'?-.4:.3))continue;const ty=pick(fa,r),nn=ty=='sheep'||ty=='cow'?2+(r()*2|0):1;for(let j=0;j<nn;j++)mkAnimal(ty,x+(r()-.5)*4,z+(r()-.5)*4,k)}
+  const fa=FAUNA[rid]||[];for(let i=0;i<(fa.length?1+(r()*2|0):0);i++){const x=c.cx*CS+r()*CS,z=c.cz*CS+r()*CS;if(!walkable(x,z)||groundAt(x,z)<(rid=='mang'?-.4:.3))continue;const ty=pick(fa,r),nn=ty=='sheep'||ty=='cow'?2+(r()*2|0):1;for(let j=0;j<nn;j++){const a=mkMob(ty,x+(r()-.5)*4,z+(r()-.5)*4,{lv:REG[reg].lv,ch:k});if(ty=='tfrog')a.m.g.scale.setScalar(.55)}}
   // chefes nos covis
   for(const b in BOSS){const B=BOSS[b];if(Math.floor(B.x/CS)==c.cx&&Math.floor(B.z/CS)==c.cz&&!E.some(e=>e.type==b)&&bossAvailable(b))mkMob(b,B.x,B.z,{lv:Math.max(B.lv,P.lv),ch:k})}}
-function onChunkDrop(c){const k=ckey(c.cx,c.cz);for(let i=E.length-1;i>=0;i--){const e=E[i];if(e.ch==k&&e.st!='chase'&&!e.boss)dropMob(e)}for(let i=ANI.length-1;i>=0;i--){const a=ANI[i];if(a.ch==k){dropModel(a.m);ANI.splice(i,1)}}}
+function onChunkDrop(c){const k=ckey(c.cx,c.cz);for(let i=E.length-1;i>=0;i--){const e=E[i];if(e.ch==k&&e.st!='chase'&&!e.boss&&!e.dead)dropMob(e)}for(let i=ANI.length-1;i>=0;i--){const a=ANI[i];if(a.ch==k){dropModel(a.m);ANI.splice(i,1)}}}
 const RN1=['Grar','Vex','Morth','Ulda','Kesh','Brann','Zul','Ottra','Fenn','Skar'],RN2=['o Faminto','Dente-Negro','a Peste','Olho-Rubro','o Podre','Garra-Fria','o Silencioso','Pele-de-Pedra'];
 function rareName(r){return pick(RN1,r)+' '+pick(RN2,r)}
 
@@ -122,7 +129,7 @@ function dismiss(silent){const n=P.merc;if(!n)return;n.follow=0;n.still=1;n.act=
 const PJ=[],_pv2=new V3();
 function arrowMesh(){const k=new Bake();k.box(.05,.05,1.1,0,0,0,0x9a7a4a).box(.1,.1,.2,0,0,.6,0xcfd6dc).box(.02,.22,.22,0,0,-.5,0xe04a3a).box(.22,.02,.22,0,0,-.5,0xe04a3a);return k.mesh(MV)}
 for(let i=0;i<34;i++){const s=spr(0xffffff,1.1,1);s.visible=false;sc.add(s);const a=arrowMesh();a.visible=false;sc.add(a);PJ.push({s,a,o:null,l:0,v:new V3,tg:null,dm:0,k:'',side:''})}
-function proj(side,kind,x,y,z,tg,dm,o){o=o||{};const p=PJ.find(p=>p.l<=0);if(!p)return;Object.assign(p,{side,k:kind,tg,dm,l:o.life||2.4,aoe:o.aoe||0,c:o.c||0xffffff,pierce:o.pierce,hits:[],psn:o.psn,brn:o.brn,home:o.home==null?(side=='p'?1:.2):o.home});
+function proj(side,kind,x,y,z,tg,dm,o){o=o||{};const p=PJ.find(p=>p.l<=0);if(!p)return;Object.assign(p,{side,k:kind,tg,dm,l:o.life||2.4,aoe:o.aoe||0,c:o.c||0xffffff,pierce:o.pierce,hits:[],psn:o.psn,brn:o.brn,home:o.home==null?(side=='p'?1:0):o.home});
   p.o=kind=='arrow'?p.a:p.s;p.o.visible=true;p.o.position.set(x,y,z);if(kind!='arrow'){p.s.material.color.setHex(p.c);p.s.scale.setScalar(kind=='fire'?1.6:1.2)}
   const sp=kind=='arrow'?28:kind=='orb'?14:16;if(o.dir)p.v.copy(o.dir).multiplyScalar(sp);else p.v.set(tg.x-x,(tg.y||0)+(tg===P?1.3:1.1)-y,tg.z-z).normalize().multiplyScalar(sp);if(kind=='orb'&&side=='p')p.v.y+=3;p.sp=sp}
 function projUpd(dt){for(const p of PJ){if(p.l<=0)continue;p.l-=dt;const q=p.o.position,t=p.tg;
@@ -144,7 +151,9 @@ function mobsUpd(dt,t){
     e.hurt=Math.max(0,e.hurt-dt*4);e.stun-=dt;e.slow-=dt;e.cd-=dt;if(e.fl>0){e.fl-=dt;if(e.fl<=0)flashModel(e.m,false)}
     let dvx=0,dvz=0,sp=e.sp*(e.slow>0?.5:1);
     if(e.boss){bossUpd(e,dt,t,d,dx,dz);continue}
-    if(e.stun>0){if(frameN%8==0)fx(e.x,e.y+e.m.g.scale.y*2.4,e.z,0xffe27a,1,1.5,.14,.4,0)}
+    if(T.passive){e.flee-=dt;const sc_=d<(T.sp>5?7:3.5)&&!P.dead;if(e.flee>0||sc_){const k=e.flee>0?1:.7;dvx=-dx/(d||1)*e.sp*k;dvz=-dz/(d||1)*e.sp*k;if(e.flee>0&&frameN%6==0)puff(e.x,e.y+.2,e.z,0xcdb894,.6)}else{e.wt-=dt;if(e.wt<=0){e.wt=3+R()*5;e.tx=e.home[0]+(R()-.5)*14;e.tz=e.home[1]+(R()-.5)*14}const dd=hy(e.tx-e.x,e.tz-e.z);if(dd>.8){dvx=(e.tx-e.x)/dd*1.3;dvz=(e.tz-e.z)/dd*1.3}}
+      if(T.m=='frog'){e.hop=Math.max(0,e.hop-dt*1.8);if(e.hop<=0&&hy(dvx,dvz)>.5)e.hop=1;if(e.hop<=0){dvx*=.1;dvz*=.1}}}
+    else if(e.stun>0){if(frameN%8==0)fx(e.x,e.y+e.m.g.scale.y*2.4,e.z,0xffe27a,1,1.5,.14,.4,0)}
     else if(e.act){e.act.t+=dt;const p=e.act.t/e.act.dur;if(!e.act.hit&&p>=e.act.hp){e.act.hit=1;mobStrike(e,d)}if(e.act.t>=e.act.dur)e.act=null;if(e.act&&e.act.k=='charge'){dvx=e.act.dx*sp*3;dvz=e.act.dz*sp*3}}
     else{
       if(e.st=='idle'){e.wt-=dt;if(e.wt<=0){e.wt=2+R()*4;e.tx=e.home[0]+(R()-.5)*12;e.tz=e.home[1]+(R()-.5)*12}const dd=hy(e.tx-e.x,e.tz-e.z);if(dd>.8){dvx=(e.tx-e.x)/dd*sp*.35;dvz=(e.tz-e.z)/dd*sp*.35}
@@ -160,7 +169,7 @@ function mobsUpd(dt,t){
     if(e.act&&e.act.k=='charge'&&!e.act.hd&&d<e.r+1.1){e.act.hd=1;hitPlayer(e.dmg*1.4,{src:e,kb:4})}
     e.m.g.position.set(e.x,e.y+(T.hover?T.hover+S(t*2+e.id)*.25:0),e.z);e.m.g.rotation.y=e.f;if(e.ring)e.ring.position.set(e.x,e.y+.1,e.z);
     const sc_=e.m.g.scale;animate(e.m,dt,t,{v,atk:e.act&&e.act.k!='charge'?{k:e.act.k,p:e.act.t/e.act.dur}:e.act&&{k:'charge',p:.5},hurt:e.hurt,hop:e.hop})}}
-function alertPack(e){for(const o of E)if(!o.dead&&o.st=='idle'&&hy(o.x-e.x,o.z-e.z)<12)o.st='chase'}
+function alertPack(e){for(const o of E)if(!o.dead&&!o.t.passive&&o.st=='idle'&&hy(o.x-e.x,o.z-e.z)<12)o.st='chase'}
 function mobStrike(e,d){const T=e.t,k=e.act.k;
   if(T.proj||k=='cast'||k=='shoot'){proj('m',T.proj||'orb',e.x+S(e.f)*.8,e.y+1.6*(e.m.g.scale.y),e.z+C(e.f)*.8,P,e.dmg,{c:T.pc||0xffffff,psn:T.psn,brn:T.brn});if(T.proj=='arrow')sweep(1100,400,.1,'triangle',.02);return}
   const reach=T.rg+e.r*.5+1;if(d<reach){const a=Math.abs(angDiff(e.f,Math.atan2(P.x-e.x,P.z-e.z)));if(a<1.3||d<1.4)hitPlayer(e.dmg,{psn:T.psn,brn:T.brn,src:e,kb:k=='slam'?3:0})}

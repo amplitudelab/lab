@@ -14,6 +14,7 @@ function camUpd(dt){const c=CAMS;c.yaw+=angDiff(c.yaw,c.yawT)*damp(12,dt);c.pit+
   let x=c.cx+sy*d,z=c.cz+cz*d,y=c.cy+1.6+sp*d;const g=groundAt(x,z)+1.2;if(y<g)y=g;
   if(INV_OPEN.k>.002){const k=INV_OPEN.k*INV_OPEN.k*(3-2*INV_OPEN.k),a=c.yaw+angDiff(c.yaw,P.f)*k,dd=lerp(d*C(c.pit),5.6,k);x=P.x+S(a)*dd;z=P.z+C(a)*dd;y=lerp(y,P.y+2.3,k);LTV.set(lerp(c.cx,P.x,k),lerp(c.cy+1.4,P.y+1.6,k),lerp(c.cz,P.z,k));cam.setViewOffset(innerWidth,innerHeight,innerWidth*INV_OPEN.off*k,0,innerWidth,innerHeight)}
   else{LTV.set(c.cx,c.cy+1.4,c.cz);if(cam.view&&cam.view.enabled)cam.clearViewOffset()}
+  const tf=(innerHeight>innerWidth?60:52)+(P.run&&P.v>6?6:0)+(P.dash>0?4:0);if(Math.abs(tf-cam.fov)>.05){cam.fov+=(tf-cam.fov)*damp(5,dt);cam.updateProjectionMatrix()}
   cam.position.set(x+(R()-.5)*SHK,y+(R()-.5)*SHK,z+(R()-.5)*SHK);SHK*=Math.pow(.02,dt);cam.lookAt(LTV);cam.updateMatrixWorld();SHU.uCam.value.copy(cam.position);SHU.uPl.value.set(P.x,P.y+1.4,P.z);
   SKY.position.copy(cam.position);for(const l of MTN)l.m.position.set(cam.position.x*l.f,0,cam.position.z*l.f);
   cam.getWorldDirection(_cd);const fc=_cd.dot(SUND);_pp.copy(SUND).multiplyScalar(400).add(cam.position).project(cam);SUNV=_pp.z<1&&fc>.05&&ELEV>-.05?cl((fc-.05)*1.6,0,1):0;SUNP.set(_pp.x*.5+.5,_pp.y*.5+.5);
@@ -29,14 +30,14 @@ function bindInput(){const jb=$('jb'),jk=$('jk');
   cv.onpointermove=e=>{if(e.pointerId!=cid)return;const k=900/Math.max(600,innerWidth);if(INV_OPEN.k>.5)P.f-=(e.clientX-lx)*.012;else{CAMS.yawT-=(e.clientX-lx)*.0065*k;CAMS.pitT=cl(CAMS.pitT+(e.clientY-ly)*.003*k,.22,1.15)}lx=e.clientX;ly=e.clientY};cv.onpointerup=cv.onpointercancel=e=>{if(e.pointerId==cid)cid=null};
   cv.addEventListener('wheel',e=>{CAMS.dT=cl(CAMS.dT+e.deltaY*.01,6,22)},{passive:true});
   const hold=(id,fn,up)=>{const b=$(id);b.onpointerdown=e=>{e.stopPropagation();b.setPointerCapture(e.pointerId);fn()};if(up)b.onpointerup=b.onpointercancel=up};
-  hold('atk',()=>{UI.atkHeld=1;attack()},()=>UI.atkHeld=0);hold('rolb',roll);hold('potb',potion);hold('itb',()=>INTN&&INTN.act());
-  BAR.forEach((k,i)=>hold('sk'+i,()=>useSkill(i)));
+  hold('atk',()=>{UI.atkHeld=1;attack()},()=>UI.atkHeld=0);hold('rolb',dash);hold('runb',()=>toggleRun());hold('potb',potion);hold('itb',()=>INTN&&INTN.act());
+  [0,1,2,3].forEach(i=>hold('sk'+i,()=>useSkill(i)));$('treeb').onclick=()=>openTree();
   $('bagb').onclick=()=>openInv();$('mapb').onclick=()=>openMap(false);$('jrnb').onclick=()=>openJournal();$('menb').onclick=()=>openMenu();$('qh').onclick=()=>$('qp').classList.toggle('min');
   addEventListener('keydown',e=>{if(e.repeat)return;kd[e.code]=1;if(!run)return;const c=e.code;
     if(DLG){if(c=='Enter'||c=='Space'||c=='KeyE')dlgNext();return}
-    if(c=='Escape'){if(UI.open)closeAll();else openMenu();return}if(c=='KeyI'||c=='KeyB'){UI.open=='inv'?closeAll():openInv();return}if(c=='KeyM'){UI.open=='map'?closeAll():openMap(false);return}if(c=='KeyJ'||c=='KeyL'){UI.open=='jrn'?closeAll():openJournal();return}
-    if(UI.open)return;if(c=='Space'||c=='KeyK'){UI.atkHeld=1;attack()}if(/Digit[1-4]/.test(c))useSkill(+c[5]-1);if(c=='KeyQ')potion();if(c=='ShiftLeft'||c=='KeyC')roll();if(c=='KeyE'||c=='KeyF')INTN&&INTN.act()});
-  addEventListener('keyup',e=>{kd[e.code]=0;if(e.code=='Space'||e.code=='KeyK')UI.atkHeld=0});
+    if(c=='Escape'){if(UI.open)closeAll();else openMenu();return}if(c=='KeyI'||c=='KeyB'){UI.open=='inv'?closeAll():openInv();return}if(c=='KeyM'){UI.open=='map'?closeAll():openMap(false);return}if(c=='KeyK'||c=='KeyT'){UI.open=='tree'?closeAll():openTree();return}if(c=='KeyJ'||c=='KeyL'){UI.open=='jrn'?closeAll():openJournal();return}
+    if(UI.open)return;if(c=='Space'){UI.atkHeld=1;attack()}if(/Digit[1-4]/.test(c))useSkill(+c[5]-1);if(c=='KeyQ')potion();if(c=='ShiftLeft'||c=='ShiftRight')toggleRun(1);if(c=='KeyC'||c=='ControlLeft'||c=='KeyV')dash();if(c=='KeyE'||c=='KeyF')INTN&&INTN.act()});
+  addEventListener('keyup',e=>{kd[e.code]=0;if(e.code=='Space')UI.atkHeld=0;if(e.code=='ShiftLeft'||e.code=='ShiftRight')toggleRun(0)});
   addEventListener('blur',()=>{for(const k in kd)kd[k]=0;UI.atkHeld=0})}
 // ---------- avisos e faixas
 const TQ=[];let tBusy=0;
@@ -54,15 +55,16 @@ function dlgUpd(rdt){if(DLG&&DLG.k<DLG.txt.length){DLG.k=Math.min(DLG.txt.length
 // ---------- HUD
 function hud(){if(!ST.mx)return;const hp=cl(P.hp/ST.mx,0,1);$('hpo').style.setProperty('--f',hp);$('hpt').textContent=Math.ceil(P.hp)+'/'+ST.mx;$('fuo').style.setProperty('--f',P.fury/100);$('fut').textContent=Math.floor(P.fury);
   $('xpf').style.width=(P.xp/XPN(P.lv)*100)+'%';$('lvl').textContent=P.lv;$('gold').textContent=fmt(P.gold);$('lvn').textContent='Kael · Nível '+P.lv;
-  BAR.forEach((k0,i)=>{const k=skId(k0),b=$('sk'+i),S_=SK[k0],lock=P.lv<S_.lv;b.classList.toggle('lock',lock);b.querySelector('i').textContent=lock?'🔒':SK[k].ic;b.querySelector('em').textContent=lock?'Nv '+S_.lv:(SK[k].fury?SK[k].fury:'');b.title=SK[k].n});
-  $('atk').querySelector('i').textContent=bow()?'🏹':EQ.arma?EQ.arma.ic:'👊';$('mrc').textContent=P.merc?MERC[P.merc.merc].ic+' '+MERC[P.merc.merc].n:'';
+  P.bar.forEach((k,i)=>{const b=$('sk'+i),S_=k&&SK[k];b.classList.toggle('lock',!S_);b.querySelector('i').textContent=S_?S_.ic:'＋';b.querySelector('em').textContent=S_?(S_.cost||''):'';b.title=S_?S_.n:'Escolher habilidade'});
+  $('fuo').classList.toggle('mana',MANA());$('treeb').classList.toggle('nw',P.sp>0);
+  $('atk').querySelector('i').textContent=bow()?'🏹':EQ.arma?EQ.arma.ic:'👊';$('rolb').querySelector('i').textContent='💨';$('mrc').textContent=P.merc?MERC[P.merc.merc].ic+' '+MERC[P.merc.merc].n:'';
   $('buffs').innerHTML=Object.keys(P.buff).map(k=>`<span title="${(SHRN[k]||{}).n||'Grito de Guerra'}">${k=='grito'?'📯':SHRN[k].ic}<em>${Math.ceil(P.buff[k])}</em></span>`).join('')}
-function hudFast(){const cdEl=(id,v,mx)=>$(id).style.setProperty('--c',mx?cl(v/mx,0,1):0);BAR.forEach((k,i)=>cdEl('sk'+i,P.cd[k]||0,cdOf(k)));cdEl('potb',P.cd.pocao||0,SK.pocao.cd);cdEl('rolb',P.cd.rolar||0,SK.rolar.cd);
+function hudFast(){const cdEl=(id,v,mx)=>$(id).style.setProperty('--c',mx?cl(v/mx,0,1):0);P.bar.forEach((k,i)=>cdEl('sk'+i,k?P.cd[k]||0:0,k?cdOf(k):0));cdEl('potb',P.cd.pocao||0,SKX.pocao.cd);cdEl('rolb',P.cd.dash||0,cdOf('dash'));
   $('hpo').style.setProperty('--f',cl(P.hp/ST.mx,0,1));$('hpt').textContent=Math.ceil(P.hp)+'/'+ST.mx;$('fuo').style.setProperty('--f',P.fury/100);$('fut').textContent=Math.floor(P.fury);$('hpo').classList.toggle('psn',P.psn>0);$('hpo').classList.toggle('low',P.hp<ST.mx*.3);
   const tf=$('tf');TGTt-=.1;if(TGT&&!TGT.dead&&TGTt>0&&!TGT.boss&&hy(TGT.x-P.x,TGT.z-P.z)<30){tf.classList.add('on');$('tfn').textContent=TGT.name+(TGT.el?'':'')+' · Nv '+TGT.lv;$('tfn').style.color=TGT.el==2?'#ffe14a':TGT.el==1?'#8ab4ff':'#f4ead2';$('tfa').textContent=TGT.afx.map(a=>AFF[a].n).join(' · ');$('tfb').style.width=Math.max(0,TGT.hp/TGT.mx*100)+'%'}else tf.classList.remove('on')}
 // ---------- região atual
 let REGC=-1,POIC='';
-function regionUpd(){const r=regionAt(P.x,P.z),p=POI.find(p=>hy(P.x-p.x,P.z-p.z)<p.r),nm=p?p.n:REG[r].n;$('rn').textContent=nm;$('rl').textContent='Nível '+mobLv(r)+' · '+clockStr();
+function regionUpd(){const r=regionAt(P.x,P.z),p=POI.find(p=>hy(P.x-p.x,P.z-p.z)<p.r),nm=p?p.n:REG[r].n;$('rn').textContent=nm;$('rl').textContent='Nível '+mobLv(r)+' · '+clockStr()+' '+wxIcon();
   if(r!=REGC||nm!=POIC){if(REGC>=0||r){const R_=REG[r];$('zt').innerHTML=`<b>${nm}</b><span>${p?R_.n:R_.amb}</span>`;$('zt').classList.remove('on');void $('zt').offsetWidth;$('zt').classList.add('on')}REGC=r;POIC=nm;if(!P.disc.has(REG[r].id)){P.disc.add(REG[r].id);qAvail()}}
   const gx=Math.floor((P.x+220)/10),gz=Math.floor((P.z+220)/10);for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)FOG.add((gx+a)+','+(gz+b))}
 const clockStr=()=>{const h=(DAY.t*24)%24;return(h|0).toString().padStart(2,'0')+':'+(((h%1)*60)|0).toString().padStart(2,'0')+(NIGHT>.5?' 🌙':ELEV<.3?' 🌅':' ☀️')};
@@ -102,17 +104,18 @@ function npcLabels(){let i=0;for(const n of NPC){if(n.hidden||!n.m.g.visible)con
   let el=NL[i];if(!el){el=document.createElement('div');el.className='nl';document.body.appendChild(el);NL.push(el)}i++;el.style.display='block';el.innerHTML=(has?'<i>!</i>':'')+(d<9?n.nm:'');el.style.transform=`translate(${(_pp.x*.5+.5)*innerWidth}px,${(-_pp.y*.5+.5)*innerHeight}px) translate(-50%,-100%)`}for(;i<NL.length;i++)NL[i].style.display='none'}
 
 // ---------- janelas
-function closeAll(){UI.open=null;for(const id of['inv','map','jrn','shop','menu','bty'])$(id).classList.remove('on');document.body.classList.remove('invo')}
+function closeAll(){UI.open=null;for(const id of['inv','map','jrn','shop','menu','bty','tree'])$(id).classList.remove('on');document.body.classList.remove('invo')}
 function openWin(id){closeAll();UI.open=id;$(id).classList.add('on');jx=jy=0;UI.atkHeld=0;snd(520,.06,'sine')}
 // inventário (herói em 3D à esquerda)
 let ISEL=null;
 function openInv(){if(!run||DLG)return;openWin('inv');document.body.classList.add('invo');$('bagb').classList.remove('nw');invRender();requestAnimationFrame(()=>{const r=$('ivP').getBoundingClientRect();INV_OPEN.off=.5-(r.left/2)/innerWidth})}
-function invRender(){if(UI.open!='inv')return;let h='';for(let i=0;i<30;i++){const it=INV[i];h+=it?`<div class="is r${it.rar}${ISEL===i?' sel':''}" data-i="${i}"><i>${it.ic}</i>${itemScore(it)>itemScore(EQ[it.slot])?'<s>▲</s>':''}</div>`:'<div class="is e"></div>'}$('ivG').innerHTML=h;
+function invRender(){if(UI.open!='inv')return;let h='';for(let i=0;i<30;i++){const it=INV[i];h+=it?`<div class="is r${it.rar}${ISEL===i?' sel':''}" data-i="${i}"><i>${it.ic}</i>${it.slot!='mat'&&itemScore(it)>itemScore(EQ[it.slot])?'<s>▲</s>':''}${it.q>1?`<em>${it.q}</em>`:''}</div>`:'<div class="is e"></div>'}$('ivG').innerHTML=h;
   const eh=([s,n,ic])=>{const it=EQ[s];return it?`<div class="is r${it.rar}${ISEL===s?' sel':''}" data-e="${s}"><i>${it.ic}</i><b>${n}</b></div>`:`<div class="is e g"><i>${ic}</i><b>${n}</b></div>`};
   $('eqA').innerHTML=SLOTS.slice(0,4).map(eh).join('');$('eqB').innerHTML=SLOTS.slice(4).map(eh).join('');$('ivg').textContent='🪙 '+fmt(P.gold);
   $('ivS').innerHTML=`<span class="chip">❤️ ${ST.mx}</span><span class="chip">⚔️ ${Math.round((ST.dmin+ST.dmax)/2*(1+P.lv*.08)*(1+ST.dmg/100))}</span><span class="chip">🛡️ ${ST.armor}</span><span class="chip">🎯 ${ST.crit}%</span>${ST.ms?`<span class="chip">👟 +${ST.ms}%</span>`:''}`;
   const d=$('ivD'),it=typeof ISEL=='number'?INV[ISEL]:ISEL?EQ[ISEL]:null;if(!it){d.innerHTML='<p class="ihint">Toque num item para ver detalhes e comparar com o equipado. Arraste o herói para girá-lo.</p>';return}
   const eq=typeof ISEL=='string',cur=EQ[it.slot],diff=eq?0:itemScore(it)-itemScore(cur);
+  if(it.slot=='mat'){d.innerHTML=`<div class="tip"><b>${it.ic} ${it.n}${it.q>1?' ×'+it.q:''}</b><small>Material · vende por ${it.price} cada</small><div>${it.d||''}</div></div><div class="ibt"><button class="ib off" data-a="sell">Vender ${it.price*(it.q||1)}🪙</button></div>`;return}
   d.innerHTML=`<div class="tip r${it.rar}"><b style="color:${RAR[it.rar].c}">${it.n}</b><small>${RAR[it.rar].n} · ${SLN[it.slot][1]} · nível ${it.ilvl}</small>${itemLines(it).map(l=>`<div>${l}</div>`).join('')}${!eq&&cur?`<div class="cmp ${diff>=0?'up':'dn'}">${diff>=0?'▲ Melhor':'▼ Pior'} que ${cur.n}</div>`:''}</div>
    <div class="ibt">${eq?'<button class="ib" data-a="un">Remover</button>':'<button class="ib" data-a="eq">Equipar</button><button class="ib off" data-a="sell">Vender '+it.price+'🪙</button>'}</div>`}
 // mapa-múndi (teleporte)

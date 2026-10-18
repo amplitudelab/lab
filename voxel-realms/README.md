@@ -17,9 +17,12 @@ Versão anterior (V10, mapa único): `v10.html`
 | `js/places.js` | vila, pedras de teleporte, pontos de interesse, livros de lore, placas, santuários e baús |
 | `js/models.js` | esqueletos articulados e animação procedural de pessoas, animais e monstros |
 | `js/fx.js` | partículas, brilhos, alertas no chão, feixes de saque, números de dano, ambiente por região |
+| `js/parallax.js` | horizonte em duas camadas com paralaxe, diferente para cada bioma |
+| `js/weather.js` | clima (sol, nublado, chuva, tempestade com raios, neblina, cinzas), neblina fixa por lugar |
 | `js/items.js` | raridades, afixos, lendários, inventário e loja |
 | `js/entities.js` | jogador, mercenários, aldeões, animais, monstros, elites, IA e projéteis |
-| `js/combat.js` | habilidades, fúria, dano, saque, santuários, baús, morte e chefes |
+| `js/combat.js` | ataque básico, dano, saque, santuários, baús, morte e chefes |
+| `js/skills.js` | árvore de habilidades (Guerreiro, Arcano, Sobrevivência), magias, Fúria/Mana, dash e corrida |
 | `js/quests.js` | missões (principal, secundárias e recompensas), diálogos, rumores e bestiário |
 | `js/ui.js` | HUD, câmera, controles, minimapa, mapa-múndi, diário, inventário e janelas |
 | `js/main.js` | carregamento, tela de título, laço do jogo e salvamento (localStorage) |
@@ -36,6 +39,12 @@ Versão anterior (V10, mapa único): `v10.html`
 | Caldeira de Brasas (nordeste) | 14 | lava, Covil de Ignarok |
 
 Os monstros acompanham o nível do jogador (no mínimo o nível da região).
+
+## Progressão
+
+- 1 ponto de habilidade por nível. Cada habilidade tem 3 níveis e entra num dos 4 atalhos da barra.
+- Com cajado ou varinha o recurso vira Mana (regenera sozinha) e o ataque básico vira orbe arcano.
+- Itens raros e lendários são incomuns de propósito; animais deixam materiais para vender.
 
 ## Missões
 

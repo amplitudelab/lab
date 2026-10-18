@@ -19,7 +19,7 @@
   <div class="sub">ATO I · A SOMBRA SOBRE ALDORIA</div>
   <div id="ld"><div class="ldt">Gerando Aldoria…</div><div class="ldbar"><i id="ldb"></i></div></div>
   <div id="tbtn"><button id="ct" style="display:none">CONTINUAR</button><button id="ng">JOGAR</button><button id="gfx">GRÁFICOS</button></div>
-  <p class="tip">Teclado: WASD move · Espaço ataca · 1–4 habilidades · Q poção · Shift rola · E interage · I inventário · M mapa · J diário</p>
+  <p class="tip">Teclado: WASD move · Shift corre · Espaço ataca · 1–4 habilidades · C dash · Q poção · E interage · I inventário · K habilidades · M mapa · J diário</p>
 </div>
 
 <div id="ui">
@@ -32,7 +32,7 @@
   <!-- minimapa, região e menus -->
   <div id="mw"><canvas id="mc" width="160" height="160"></canvas><span class="n">N</span></div>
   <div id="rg" class="wd"><b id="rn"></b><small id="rl"></small></div>
-  <div id="tbar"><button id="mapb" title="Mapa (M)">🗺️</button><button id="jrnb" title="Diário (J)">📜</button><button id="bagb" title="Inventário (I)">🎒</button><button id="menb" title="Menu (Esc)">⚙️</button></div>
+  <div id="tbar"><button id="mapb" title="Mapa (M)">🗺️</button><button id="jrnb" title="Diário (J)">📜</button><button id="bagb" title="Inventário (I)">🎒</button><button id="treeb" title="Habilidades (K)">✨</button><button id="menb" title="Menu (Esc)">⚙️</button></div>
   <!-- avisos -->
   <div id="ts" class="wd"></div><div id="bn"></div><div id="zt"></div><div id="mas"></div>
   <!-- controles -->
@@ -43,11 +43,11 @@
     <div id="fuo" class="orb"><span id="fut"></span></div>
     <div id="xp"><i id="xpf"></i><b id="lvl">1</b></div>
   </div>
-  <button id="atk" class="rb"><i>⚔️</i></button><button id="rolb" class="rb"><i>💨</i></button>
+  <button id="atk" class="rb"><i>⚔️</i></button><button id="rolb" class="rb" title="Dash (C)"><i>💨</i></button><button id="runb" class="rb" title="Correr (Shift)"><i>🏃</i></button>
   <button id="itb"><i></i><span></span></button>
   <!-- diálogo -->
   <div id="dlg" class="wd"><i id="di"></i><b id="dn"></b><p id="dt"></p><div id="dch"></div><u>▶</u></div>
-  <div id="fl"></div>
+  <div id="fl"></div><div id="lt"></div>
   <div id="dd"><b>☠ Você caiu</b><button id="rv" class="ib">Renascer na Pedra de Teleporte</button></div>
 </div>
 
@@ -58,9 +58,10 @@
 <div id="jrn" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">📜 Diário</span><button class="wx">✕</button></div><div id="jtabs"></div><div id="jbody"></div></div></div>
 <div id="shop" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚒️ Forja da Helga</span><span id="shg"></span><button class="wx">✕</button></div><p class="ihint">Para vender, abra o inventário e escolha "Vender".</p><div id="shl"></div></div></div>
 <div id="bty" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">📋 Quadro de Recompensas</span><button class="wx">✕</button></div><div id="btyb"></div></div></div>
+<div id="tree" class="win"><div class="wd wbox tbox"><div class="wh"><span class="ttl">✨ Habilidades</span><small id="tpts"></small><button class="wx">✕</button></div><div id="tcols"></div><div id="tdet"></div></div></div>
 <div id="menu" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚙️ Menu</span><button class="wx">✕</button></div>
   <p id="dayl" class="ihint"></p><button class="ib" id="gfx2">Gráficos</button><button class="ib" id="sav">Salvar agora</button><button class="ib off" id="ret">Voltar ao título</button>
-  <div class="help"><b>Como jogar</b><p>Segure ⚔️ para atacar em combo. A barra de baixo tem as habilidades (destravam com o nível), a poção e os orbes de Vida (vermelho) e Fúria (dourado): ataques básicos enchem a Fúria, e as habilidades fortes gastam. Role (💨) para desviar dos círculos vermelhos dos chefes.</p>
+  <div class="help"><b>Como jogar</b><p>Segure ⚔️ para atacar em combo. Cada nível dá 1 ponto de habilidade: abra ✨ para aprender magias e golpes e escolha os 4 atalhos da barra. O orbe da direita é Fúria (dourado, enche ao bater) ou Mana (azul, com cajado ou varinha). Use 💨 para dar dash e desviar — desviar no último instante é uma Esquiva Perfeita (próximo golpe crítico). Toque em 🏃 para correr.</p>
   <p>Monstros com nome azul são campeões; com nome amarelo, raros — e trazem tesouro. Feixes de luz amarela e laranja marcam itens raros e lendários. Toque em 💬, 📖 e 🌀 quando eles aparecerem para conversar, ler e viajar.</p></div></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -69,9 +70,12 @@
 <script src="js/places.js"></script>
 <script src="js/models.js"></script>
 <script src="js/fx.js"></script>
+<script src="js/parallax.js"></script>
+<script src="js/weather.js"></script>
 <script src="js/items.js"></script>
 <script src="js/entities.js"></script>
 <script src="js/combat.js"></script>
+<script src="js/skills.js"></script>
 <script src="js/quests.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/main.js"></script>

@@ -39,13 +39,13 @@ const NT=(()=>{const c=document.createElement('canvas');c.width=c.height=8;const
 const SPR=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.22,'rgba(255,255,255,.75)');g.addColorStop(.55,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)})();
 
 // ---------- materiais com contraluz (rim light) e vento na folhagem; alfa = máscara de bloom
-const SHU={uSunV:{value:new V3(0,0,-1)},uT:{value:0},uRim:{value:new THREE.Color(0xffd0a0)},uCam:{value:new V3()},uPl:{value:new V3()}};
+const SHU={uSunV:{value:new V3(0,0,-1)},uT:{value:0},uW:{value:1},uRim:{value:new THREE.Color(0xffd0a0)},uCam:{value:new V3()},uPl:{value:new V3()}};
 // a malha com vento recebe só folhagem (copas, grama, flores): todo vértice balança, com fase pela posição
-const WIND='\n{vec4 wp=modelMatrix*vec4(transformed,1.);float ph=wp.x*.37+wp.z*.29;transformed.x+=sin(uT*1.6+ph)*.06;transformed.z+=cos(uT*1.25+ph*1.31)*.045;}\n';
+const WIND='\n{vec4 wp=modelMatrix*vec4(transformed,1.);float ph=wp.x*.37+wp.z*.29;transformed.x+=sin(uT*1.6*(.7+uW*.3)+ph)*.06*uW;transformed.z+=cos(uT*1.25+ph*1.31)*.045*uW;}\n';
 // "raio-x": o que fica entre a câmera e o herói vira pontilhado (como as paredes no Diablo)
 const XRAY='{vec3 ab=uPl-uCam;float L=length(ab);vec3 dd=ab/L;float tt=dot(vWP-uCam,dd);if(tt>0.&&tt<L-1.4){float rr=mix(.8,2.6,tt/L),r=length(vWP-uCam-dd*tt);if(r<rr){float th=mod(floor(gl_FragCoord.x)+floor(gl_FragCoord.y)*2.,4.)*.25;if(th<(1.-r/rr)*1.6)discard;}}}';
 function obc(s,w){Object.assign(s.uniforms,SHU);
-  s.vertexShader=s.vertexShader.replace('#include <common>','#include <common>\nuniform float uT;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;').replace('#include <begin_vertex>','#include <begin_vertex>'+(w?WIND:'')).replace('#include <project_vertex>','#include <project_vertex>\nvRN=normalize(transformedNormal);vRV=-mvPosition.xyz;vWP=(modelMatrix*vec4(transformed,1.)).xyz;');
+  s.vertexShader=s.vertexShader.replace('#include <common>','#include <common>\nuniform float uT,uW;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;').replace('#include <begin_vertex>','#include <begin_vertex>'+(w?WIND:'')).replace('#include <project_vertex>','#include <project_vertex>\nvRN=normalize(transformedNormal);vRV=-mvPosition.xyz;vWP=(modelMatrix*vec4(transformed,1.)).xyz;');
   s.fragmentShader=s.fragmentShader.replace('#include <common>','#include <common>\nuniform vec3 uSunV,uRim,uCam,uPl;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;').replace('#include <fog_fragment>',XRAY+'{vec3 V=normalize(vRV),N=normalize(vRN);float up=abs((vec4(N,0.)*viewMatrix).y),fr=pow(1.-clamp(abs(dot(N,V)),0.,1.),3.)*(1.-up*.9),bk=.25+.75*max(dot(-V,uSunV),0.);gl_FragColor.rgb+=uRim*fr*bk*(.35+.65*diffuseColor.rgb)*.8;gl_FragColor.a*=.4;}\n#include <fog_fragment>')}
 const OBC=s=>obc(s,0),OBW=s=>obc(s,1);function enh(m,w){m.onBeforeCompile=w?OBW:OBC;return m}
 const MV=enh(new THREE.MeshLambertMaterial({vertexColors:true,map:NT})),MW=enh(new THREE.MeshLambertMaterial({vertexColors:true,map:NT}),1);
@@ -81,19 +81,20 @@ const PAL={day:{top:0x2a6ad4,mid:0x5a9be6,hor:0xc4e0f4,horS:0xfff2d6,sun:0xfff0d
 const _ca=new THREE.Color(),_cb=new THREE.Color();
 function palC(k,out){_ca.setHex(PAL.day[k]).lerp(_cb.setHex(PAL.gold[k]),GOLD);return out.copy(_ca).lerp(_cb.setHex(PAL.night[k]),NIGHT)}
 function palS(k){return lerp(lerp(PAL.day[k],PAL.gold[k],GOLD),PAL.night[k],NIGHT)}
-const SKU={top:{value:new THREE.Color()},mid:{value:new THREE.Color()},hor:{value:new THREE.Color()},horS:{value:new THREE.Color()},sunC:{value:new THREE.Color()},sd:{value:SUND},md:{value:MOOND},nf:{value:0},t:{value:0}};
+const SKU={top:{value:new THREE.Color()},mid:{value:new THREE.Color()},hor:{value:new THREE.Color()},horS:{value:new THREE.Color()},sunC:{value:new THREE.Color()},sd:{value:SUND},md:{value:MOOND},nf:{value:0},t:{value:0},cv:{value:0},fl:{value:0}};
 const SKY=new THREE.Mesh(new THREE.SphereGeometry(600,32,16),new THREE.ShaderMaterial({uniforms:SKU,side:THREE.BackSide,depthWrite:false,depthTest:false,fog:false,
   vertexShader:'varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-  fragmentShader:`uniform vec3 top,mid,hor,horS,sunC,sd,md;uniform float nf,t;varying vec3 vP;
-float hs(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+  fragmentShader:`uniform vec3 top,mid,hor,horS,sunC,sd,md;uniform float nf,t,cv,fl;varying vec3 vP;
 void main(){vec3 d=normalize(vP);float h=d.y,s=max(dot(d,sd),0.),m=max(dot(d,md),0.),sv=smoothstep(-.12,.03,sd.y);
 float az=pow(max(dot(normalize(d.xz+1e-4),normalize(sd.xz+1e-4)),0.),2.)*sv;
 vec3 hz=mix(hor,horS,az*.8+pow(s,4.)*.35*sv),up=mix(mid,top,smoothstep(.15,.75,h));
-vec3 c=mix(hz,up,smoothstep(0.,.4,max(h,0.)));c=mix(c,hor*.85,smoothstep(0.,-.15,h));
-float b=sin(d.x*9.+d.z*3.+t*.02)*sin(d.z*7.-d.x*2.)*.5+.5;c=mix(c,mix(hor,vec3(1.),.5),smoothstep(.6,.95,b)*smoothstep(.05,.16,h)*smoothstep(.5,.22,h)*.22*(1.-nf));
+vec3 c=mix(hz,up,smoothstep(0.,.4,max(h,0.)));c=mix(c,hor*.85,1.-smoothstep(-.15,0.,h));
+float b=sin(d.x*9.+d.z*3.+t*.02)*sin(d.z*7.-d.x*2.)*.5+.5;c=mix(c,mix(hor,vec3(1.),.5),smoothstep(.6,.95,b)*smoothstep(.05,.16,h)*(1.-smoothstep(.22,.5,h))*.22*(1.-nf));
+float gr=dot(c,vec3(.3,.59,.11));c=mix(c,vec3(gr)*mix(vec3(.9,.93,.98),vec3(.4,.45,.55),nf),cv*.78);sv*=1.-cv*.85;
 c+=sunC*(pow(s,6.)*.3+pow(s,48.)*.5)*sv+vec3(1.,.97,.88)*smoothstep(.9966,.9986,s)*1.4*sv;
-c+=vec3(.85,.9,1.)*smoothstep(.9984,.9991,m)*nf*1.3+vec3(.3,.4,.8)*pow(m,24.)*nf*.35;
-vec2 g=floor(d.xz/(h+.25)*120.);c+=vec3(step(.9962,hs(g))*smoothstep(.04,.5,h)*nf*.95);
+c+=(vec3(.85,.9,1.)*smoothstep(.9984,.9991,m)*1.3+vec3(.3,.4,.8)*pow(m,24.)*.35)*nf*(1.-cv*.8);
+if(nf>.01&&h>0.){vec3 q=floor(d*170.);float n=fract(sin(dot(q,vec3(12.99,78.23,37.72)))*4375.85);c+=vec3(step(.9965,n)*smoothstep(.04,.5,h)*nf*.95*(1.-cv));}
+c+=vec3(.8,.85,1.)*fl;
 gl_FragColor=vec4(c,clamp(pow(s,12.)*1.3*sv+smoothstep(.9984,.9991,m)*nf,0.,1.));}`}));
 SKY.renderOrder=-10;SKY.frustumCulled=false;sc.add(SKY);
 // nuvens voxel instanciadas (1 chamada), tingidas pela hora do dia
@@ -103,13 +104,7 @@ const CIM=new THREE.InstancedMesh(new THREE.BoxGeometry(1,1,1),CLM,CLD.length*5)
 function cloudsUpd(dt,cx,cz){let i=0;for(const c of CLD){c.x+=c.sp*dt;if(c.x-cx>440)c.x-=880;for(const b of c.b){_m4.compose(_pv.set(c.x+b[0]+cx*.5,c.y+b[1],c.z+b[2]+cz*.5),_qu.set(0,0,0,1),_sv.set(b[3],b[4],b[5]));CIM.setMatrixAt(i++,_m4)}}CIM.instanceMatrix.needsUpdate=true}
 // montanhas distantes (anel com paralaxe), cor misturada ao horizonte no shader
 const MTU={uHor:{value:new THREE.Color()},uTint:{value:new THREE.Color(1,1,1)}};
-const MTM=new THREE.ShaderMaterial({uniforms:MTU,fog:false,vertexColors:true,vertexShader:'varying vec3 vC;varying float vH;void main(){vC=color;vH=position.y;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-  fragmentShader:'uniform vec3 uHor,uTint;varying vec3 vC;varying float vH;void main(){gl_FragColor=vec4(mix(vC*uTint,uHor,.55-smoothstep(0.,90.,vH)*.25),.01);}'});
-const MTN=[];
-function mtLayer(r,n,h0,h1,cols,f){const k=new Bake();for(let i=0;i<n;i++){const a=i/n*TAU+R()*.15,rr=r+R()*r*.1,H=h0+R()*(h1-h0),bw=H*(.9+R()*.6),x=S(a)*rr,z=C(a)*rr;
-  for(let s=0;s<5;s++){const w=bw*(1-s/5*.82),hh=H/5;k.box(w,hh+.5,w*(.8+R()*.3),x+(R()-.5)*bw*.08,-6+hh*s+hh/2,z+(R()-.5)*bw*.08,s==4&&H>h0+(h1-h0)*.4?cols[2]:cols[s%2],{ry:a})}}
-  const m=k.mesh(MTM);m.frustumCulled=false;sc.add(m);MTN.push({m,f})}
-mtLayer(330,20,55,110,[0x6f86a8,0x7d93b3,0xf4f6fa],.75);mtLayer(250,24,30,64,[0x4f6f86,0x5f8299,0x5f8299],.5);
+const MTN=[]; // camadas de paralaxe (preenchidas em parallax.js)
 
 function dayUpd(dt){DAY.t=(DAY.t+dt/DAY.len*(ELEV>0?.75:1.7))%1;const a=TAU*(DAY.t-.25);SUND.set(C(a)*.8,S(a),-.55).normalize();MOOND.set(-SUND.x,-SUND.y,SUND.z).normalize();ELEV=SUND.y;
   NIGHT=sstep(.02,-.16,ELEV);GOLD=(1-sstep(.06,.34,ELEV))*(1-NIGHT);
@@ -117,7 +112,7 @@ function dayUpd(dt){DAY.t=(DAY.t+dt/DAY.len*(ELEV>0?.75:1.7))%1;const a=TAU*(DAY
   palC('sun',SUN.color);palC('hs',HEM.color);palC('hg',HEM.groundColor);HEM.intensity=palS('hi');palC('rim',SHU.uRim.value);palC('cl',CLM.color);
   SUN.intensity=palS('si')*(.3+.7*sstep(0,.1,Math.abs(ELEV+.03)));
   LD.copy(ELEV>-.04?SUND:MOOND);if(LD.y<.34){const l=hy(LD.x,LD.z)||1;LD.x*=.94/l;LD.z*=.94/l;LD.y=.34;LD.normalize()}
-  MTU.uHor.value.copy(SKU.hor.value);MTU.uTint.value.setRGB(1,1,1).lerp(_cb.setHex(0x6a7aa8),NIGHT*.8).lerp(_cb.setHex(0xffc8b0),GOLD*.5)}
+  palC('fog',sc.fog.color);MTU.uHor.value.copy(SKU.hor.value);MTU.uTint.value.setRGB(1,1,1).lerp(_cb.setHex(0x6a7aa8),NIGHT*.8).lerp(_cb.setHex(0xffc8b0),GOLD*.5);if(typeof wxApply=='function')wxApply()}
 
 // ---------- pós-processamento: bloom (máscara no alfa), raios de luz com oclusão por profundidade, gradação e FXAA
 const PO={on:!!GFX.post},FS=new THREE.Scene(),FC=new THREE.OrthographicCamera(-1,1,1,-1,0,1),FQ=new THREE.Mesh(new THREE.PlaneGeometry(2,2));FQ.frustumCulled=false;FS.add(FQ);
