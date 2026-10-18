@@ -80,10 +80,10 @@ function drawWorldMarks(x,k){x.textAlign='center';x.textBaseline='middle';
 function mapLegend(){$('mleg').innerHTML=[['q','❗ Missões'],['p','📍 Locais'],['s','⚒️ Serviços'],['b','☠️ Chefes']].map(([k,n])=>`<button class="mlc ${MK[k]?'on':''}" data-mk="${k}">${n}</button>`).join('')}
 
 // ---------- qualidade adaptativa: resolução dinâmica para manter a fluidez
-const DRS={s:1,t:0,n:0,ok:0,min:MOB?.55:.7};
-function drsUpd(raw){if(!run||LOADING||document.hidden)return;DRS.t+=raw;DRS.n++;if(DRS.t<1.6)return;const ms=DRS.t/DRS.n*1000;DRS.t=DRS.n=0;
-  const tgt=1000/((FPSC||(HZ>=100?90:60))*.92);                // o alvo acompanha a tela (60/90/120 Hz) sem exigir o impossível
-  const slow=ms>Math.max(tgt*1.18,24),fast=ms<Math.max(tgt*.8,12);
-  if(slow){DRS.ok=0;if(DRS.s>DRS.min){DRS.s=Math.max(DRS.min,DRS.s-.12);drsApply()}}
-  else if(fast){if(++DRS.ok>=4&&DRS.s<1){DRS.s=Math.min(1,DRS.s+.08);DRS.ok=0;drsApply()}}else DRS.ok=0}
+const DRS={s:1,t:0,n:0,ok:0,min:MOB?.6:.7,cap:1,lock:0};
+function drsUpd(raw){if(!run||LOADING||document.hidden)return;DRS.t+=raw;DRS.n++;DRS.lock-=raw;if(DRS.t<2)return;const ms=DRS.t/DRS.n*1000;DRS.t=DRS.n=0;
+  const tgt=1000/((FPSC||(HZ>=100?90:60))*.92);
+  const slow=ms>Math.max(tgt*1.25,24),fast=ms<Math.max(tgt*.75,12);
+  if(slow){DRS.ok=0;if(DRS.s>DRS.min&&DRS.lock<=0){DRS.cap=Math.min(DRS.cap,DRS.s);DRS.s=Math.max(DRS.min,+(DRS.s-.15).toFixed(2));DRS.lock=5;drsApply()}}
+  else if(fast){if(++DRS.ok>=30&&DRS.cap<1){DRS.cap=Math.min(1,DRS.cap+.1);DRS.ok=8}if(DRS.ok>=8&&DRS.s<DRS.cap-.01&&DRS.lock<=0){DRS.s=Math.min(DRS.cap-.05,+(DRS.s+.1).toFixed(2));DRS.ok=0;DRS.lock=10;drsApply()}}else DRS.ok=0}
 function drsApply(){rd.setPixelRatio(Math.min(devicePixelRatio||1,GFX.pr)*DRS.s);rs()}

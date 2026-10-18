@@ -38,7 +38,7 @@ const SN={combat:[0,0,.5,0,0,0,.5,0,0,0,.5,0,0,0,.5,.3],boss:[0,0,.6,0,0,0,.6,0,
 function impulse(a,sec,dec){const n=a.sampleRate*sec|0,b=a.createBuffer(2,n,a.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,dec)}return b}
 function musInit(){if(MUS.ac)return true;try{au=au||new AudioContext()}catch(e){return false}const a=MUS.ac=au;
   const out=a.createGain();out.gain.value=0;const comp=a.createDynamicsCompressor();comp.threshold.value=-16;comp.ratio.value=3.5;comp.attack.value=.01;comp.release.value=.3;out.connect(comp);comp.connect(a.destination);MUS.out=out;
-  const rv=a.createConvolver();rv.buffer=impulse(a,3.2,2.4);const rvG=a.createGain();rvG.gain.value=.5;rv.connect(rvG);rvG.connect(out);
+  const rv=a.createConvolver();rv.buffer=impulse(a,MOB?1.6:3.2,2.4);const rvG=a.createGain();rvG.gain.value=.5;rv.connect(rvG);rvG.connect(out);
   for(const k of['pad','str','horn','choir','drum','pluck','flute']){const g=a.createGain();g.gain.value=0;g.connect(out);const s=a.createGain();s.gain.value=k=='drum'?.18:k=='pluck'?.35:.55;g.connect(s);s.connect(rv);MUS.G[k]=g}
   const nb=a.createBuffer(1,a.sampleRate,a.sampleRate),d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;MUS.nz=nb;
   const lfo=a.createOscillator(),lg=a.createGain();lfo.frequency.value=5.2;lg.gain.value=9;lfo.connect(lg);lfo.start();MUS.lfo=lg;return true}
@@ -51,7 +51,7 @@ function osc(type,f,t,end,dst,det){const o=MUS.ac.createOscillator();o.type=type
 function filt(type,f,q){const b=MUS.ac.createBiquadFilter();b.type=type;b.frequency.value=f;b.Q.value=q||.7;return b}
 // cordas sustentadas (pad): serras desafinadas atrás de um passa-baixa que "respira"
 function iPad(t,c,dur){const a=MUS.ac,f=filt('lowpass',500),g=a.createGain();f.frequency.setValueAtTime(420,t);f.frequency.linearRampToValueAtTime(1300,t+dur*.45);f.frequency.linearRampToValueAtTime(560,t+dur);env(g,t,dur*.3,.07,dur*.75,dur*.35);f.connect(g);g.connect(MUS.G.pad);
-  for(const m of[c.r-12,c.r,c.r+c.f,c.r+12+c.t])for(const d of[-8,8])osc('sawtooth',mtof(m),t,t+dur*1.15,f,d)}
+  for(const m of[c.r-12,c.r,c.r+c.f,c.r+12+c.t])for(const d of MOB?[6]:[-8,8])osc('sawtooth',mtof(m),t,t+dur*1.15,f,d)}
 // cordas em ostinato (colcheias de arpejo)
 function iStr(t,m,dur,v){const a=MUS.ac,f=filt('lowpass',2400),g=a.createGain();env(g,t,.012,v,dur*.5,dur*.6);f.connect(g);g.connect(MUS.G.str);osc('sawtooth',mtof(m),t,t+dur*1.2,f,-5);osc('sawtooth',mtof(m),t,t+dur*1.2,f,6)}
 // metais: o filtro abre com o sopro, vibrato depois do ataque
@@ -59,7 +59,7 @@ function iHorn(t,m,dur,v){const a=MUS.ac,f=filt('lowpass',400,1.2),g=a.createGai
   env(g,t,Math.min(.08,dur*.3),.11*(v||1),dur*.85,.25);f.connect(g);g.connect(MUS.G.horn);for(const d of[-6,6]){const o=osc('sawtooth',mtof(m),t,t+dur+.35,f,d);MUS.lfo.connect(o.detune)}osc('square',mtof(m-12),t,t+dur+.35,f).detune.value=3}
 // coral: "aah" com duas formantes
 function iChoir(t,c,dur){const a=MUS.ac,g=a.createGain(),f1=filt('bandpass',720,4),f2=filt('bandpass',1180,5);env(g,t,dur*.35,.18,dur*.7,dur*.4);f1.connect(g);f2.connect(g);g.connect(MUS.G.choir);
-  for(const m of[c.r+12,c.r+12+c.t,c.r+12+c.f,c.r+24])for(const d of[-11,9]){const o=osc('sawtooth',mtof(m),t,t+dur*1.15,f1,d);o.connect(f2);MUS.lfo.connect(o.detune)}}
+  for(const m of MOB?[c.r+12,c.r+12+c.t,c.r+12+c.f]:[c.r+12,c.r+12+c.t,c.r+12+c.f,c.r+24])for(const d of MOB?[-6]:[-11,9]){const o=osc('sawtooth',mtof(m),t,t+dur*1.15,f1,d);o.connect(f2);MUS.lfo.connect(o.detune)}}
 // flauta: seno + um pouco de sopro
 function iFlute(t,m,dur){const a=MUS.ac,g=a.createGain(),f=filt('lowpass',3200);env(g,t,.06,.09,dur*.85,.2);f.connect(g);g.connect(MUS.G.flute);const o=osc('sine',mtof(m),t,t+dur+.3,f);MUS.lfo.connect(o.detune);osc('triangle',mtof(m+12),t,t+dur+.3,f).detune.value=4;
   const n=a.createBufferSource(),nf=filt('bandpass',mtof(m)*2,8),ng=a.createGain();n.buffer=MUS.nz;ng.gain.value=.012;n.connect(nf);nf.connect(ng);ng.connect(g);n.start(t,R()*.5,dur+.2)}

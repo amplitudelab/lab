@@ -5,8 +5,33 @@
    assadas por osso; animação procedural com suavização em todas as juntas
    ============================================================================= */
 function part(parent,x,y,z,fn){const g=new THREE.Group();g.position.set(x,y,z);parent.add(g);if(fn){const k=new Bake();fn(k);const m=k.mesh(MV);if(m){m.castShadow=true;g.add(m)}}return g}
-function finish(m){m.meshes=[];m.g.traverse(o=>{if(o.isMesh){m.meshes.push(o);o.userData.mat=o.material}});m.A={w:0,ph:R()*6,look:0,lookT:0,lt:0,aw:0,fl:0};sc.add(m.g);return m}
-function flashModel(m,on){if(!!m.fl==on)return;m.fl=on;for(const o of m.meshes)o.material=on?MFL:o.userData.mat}
+function finish(m){try{skinModel(m)}catch(e){console.warn('skin',e)}m.meshes=[];m.g.traverse(o=>{if(o.isMesh){m.meshes.push(o);o.userData.mat=o.material}});m.A={w:0,ph:R()*6,look:0,lookT:0,lt:0,aw:0,fl:0};sc.add(m.g);return m}
+function flashModel(m,on){if(!!m.fl==on)return;m.fl=on;for(const o of m.meshes)o.material=on?(o.isSkinnedMesh?MFLS:MFL):o.userData.mat}
+// ---------- modelo numa malha só: cada parte (cabeça, braço, perna...) vira um "osso" e o corpo inteiro é
+// desenhado de uma vez (SkinnedMesh). A animação continua mexendo nos mesmos grupos, mas o custo cai de
+// ~15 chamadas de desenho por personagem para 1 ou 2.
+const MFLS=new THREE.MeshBasicMaterial({color:0xffffff,skinning:true}),SKM=new Map(),_mi=new THREE.Matrix4(),_m3=new THREE.Matrix3(),_v3=new V3();
+function skinMat(mt){let s=SKM.get(mt);if(!s){s=mt.clone();s.skinning=true;if(mt.onBeforeCompile)s.onBeforeCompile=mt.onBeforeCompile;SKM.set(mt,s)}return s}
+function skinModel(m){const root=m.g,list=[];root.updateMatrixWorld(true);
+  root.traverse(o=>{if(o.isMesh&&!o.isSkinnedMesh&&o.geometry&&o.geometry.attributes.position)list.push(o)});if(list.length<3)return;
+  _mi.copy(root.matrixWorld).invert();const groups=new Map();
+  for(const o of list){const k=o.material;if(!groups.has(k))groups.set(k,[]);groups.get(k).push(o)}
+  const bones=[],bi=new Map();
+  for(const o of list){const b=new THREE.Object3D();b.position.copy(o.position);b.quaternion.copy(o.quaternion);b.scale.copy(o.scale);o.parent.add(b);while(o.children.length)b.add(o.children[0]);o.parent.remove(o);bi.set(o,bones.length);bones.push(b)}
+  root.updateMatrixWorld(true);const skel=new THREE.Skeleton(bones);
+  for(const[mt,arr]of groups){let nv=0,ni=0;for(const o of arr){const g=o.geometry;nv+=g.attributes.position.count;ni+=g.index?g.index.count:g.attributes.position.count}
+    const P_=new Float32Array(nv*3),N=new Float32Array(nv*3),Cc=new Float32Array(nv*3),U=new Float32Array(nv*2),SI=new Float32Array(nv*4),SW=new Float32Array(nv*4),I=new (nv>65535?Uint32Array:Uint16Array)(ni);let vo=0,io=0;
+    for(const o of arr){const g=o.geometry,pa=g.attributes.position,na=g.attributes.normal,ca=g.attributes.color,ua=g.attributes.uv,n=pa.count,b=bi.get(o);
+      const M=new THREE.Matrix4().multiplyMatrices(_mi,o.matrixWorld);_m3.getNormalMatrix(M);
+      for(let i=0;i<n;i++){_v3.fromBufferAttribute(pa,i).applyMatrix4(M);P_.set([_v3.x,_v3.y,_v3.z],(vo+i)*3);
+        if(na){_v3.fromBufferAttribute(na,i).applyMatrix3(_m3).normalize();N.set([_v3.x,_v3.y,_v3.z],(vo+i)*3)}
+        if(ca){Cc[(vo+i)*3]=ca.getX(i);Cc[(vo+i)*3+1]=ca.getY(i);Cc[(vo+i)*3+2]=ca.getZ(i)}else{Cc[(vo+i)*3]=Cc[(vo+i)*3+1]=Cc[(vo+i)*3+2]=1}
+        if(ua){U[(vo+i)*2]=ua.getX(i);U[(vo+i)*2+1]=ua.getY(i)}SI[(vo+i)*4]=b;SW[(vo+i)*4]=1}
+      if(g.index){const ix=g.index.array;for(let i=0;i<ix.length;i++)I[io+i]=ix[i]+vo;io+=ix.length}else{for(let i=0;i<n;i++)I[io+i]=vo+i;io+=n}
+      vo+=n;g.dispose()}
+    const G=new THREE.BufferGeometry();G.setAttribute('position',new THREE.BufferAttribute(P_,3));G.setAttribute('normal',new THREE.BufferAttribute(N,3));G.setAttribute('color',new THREE.BufferAttribute(Cc,3));G.setAttribute('uv',new THREE.BufferAttribute(U,2));
+    G.setAttribute('skinIndex',new THREE.BufferAttribute(SI,4));G.setAttribute('skinWeight',new THREE.BufferAttribute(SW,4));G.setIndex(new THREE.BufferAttribute(I,1));G.computeBoundingSphere();G.boundingSphere.radius*=1.5;
+    const sk=new THREE.SkinnedMesh(G,skinMat(mt));sk.castShadow=arr.some(o=>o.castShadow);sk.receiveShadow=arr.some(o=>o.receiveShadow);root.add(sk);sk.updateMatrixWorld(true);sk.bind(skel,sk.matrixWorld.clone())}}
 function dropModel(m){sc.remove(m.g);m.g.traverse(o=>{if(o.isMesh)o.geometry.dispose()})}
 const sm=(o,k,v,dt,sp)=>{o[k]+=(v-o[k])*damp(sp,dt)};
 

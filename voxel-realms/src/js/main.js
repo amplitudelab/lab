@@ -65,6 +65,6 @@ function frame(now){requestAnimationFrame(frame);if(FPSC&&now-last<1000/FPSC-1.5
   if(run){hfT-=rdt;if(hfT<=0){hfT=.1;hudFast()}hT-=rdt;if(hT<=0){hT=.5;hud();regionUpd()}mmT-=rdt;if(mmT<=0){mmT=.15;minimap()}npcLabels();
     const tg=qTarget();if(tg&&hy(tg[0]-P.x,tg[1]-P.z)>14){QBEAM.visible=true;QBEAM.position.set(tg[0],groundAt(tg[0],tg[1])+15,tg[1]);QBEAM.material.opacity=.14+.06*S(t*3)}else QBEAM.visible=false;
     if(UI.open=='map'){rT-=rdt;if(rT<=0){rT=.5;mapRender()}}}
-  if(!rd.shadowMap.autoUpdate){shT-=rdt;if(shT<=0){shT=1/30;rd.shadowMap.needsUpdate=true}}
+  if(!rd.shadowMap.autoUpdate){shT-=rdt;if(shT<=0){shT=MOB?1/20:1/30;rd.shadowMap.needsUpdate=true}}
   render()}
 requestAnimationFrame(frame);

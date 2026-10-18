@@ -67,7 +67,7 @@ function mkMob(type,x,z,o){o=o||{};const t=BOSS[type]||MT[type],lv=o.lv||1,boss=
 function dropMob(e){dropModel(e.m);if(e.ring)sc.remove(e.ring);const i=E.indexOf(e);if(i>=0)E.splice(i,1)}
 
 // ---------- geração por pedaço: bandos de monstros, animais e baús são ligados ao pedaço
-function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2;if(hy(cx,cz)<75)return;const cl_=CLEARED.get(k);if(cl_&&performance.now()-cl_<90000)return;
+function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2;if(hy(cx,cz)<75)return;const cl_=CLEARED.get(k);if(cl_&&performance.now()-cl_<90000)return;if(aliveN()>=MAXE)return;
   const r=rng(c.cx*92821^c.cz*68917^((performance.now()/90000)|0)),reg=regionAt(cx,cz),rid=REG[reg].id;
   let tbl=SPAWN[rid]||[];for(const p of POI)if(hy(cx-p.x,cz-p.z)<p.r+16){if(p.n.startsWith('Cemit'))tbl=['zombie','zombie','ghoul','skel'];if(p.n.startsWith('Acamp'))tbl=['bandit','bandarc'];if(p.n.startsWith('Colmeia'))tbl=['bee','bee','fairy']}
   const nt=NIGHT>.5;if(nt&&!tbl.some(t=>t=='zombie'||t=='bandit'&&tbl.length==2))tbl=tbl.concat(NIGHTB[rid]||[]);
@@ -104,7 +104,7 @@ function spawnNPCs(){mkNPC('bram','bram',-10,-33,{nm:'Ancião Bram',ic:'🧙',ta
   for(let i=0;i<6;i++){const a=i/6*TAU+.4,r=15+R()*20;mkNPC('aldeao'+i,'villager',C(a)*r,S(a)*r,{nm:pick(['Aldeã','Aldeão','Lavrador','Mercadora','Pescador','Criança']),wander:1,talk:'aldeao'})}
   for(const n of NPC)if(n.talk||n.merc)inter({x:0,z:0,r:2.6,npc:n,ic:n.ic||'💬',label:()=>n.merc?(P.merc&&P.merc.id==n.merc?'Dispensar '+MERC[n.merc].n:'Contratar '+n.nm+' ('+MERC[n.merc].price+' ouro)'):'Falar com '+n.nm,act:()=>n.merc?hireMerc(n):talkTo(n),kind:'npc'})}
 const invHide=d=>INV_OPEN.k>.2&&d<8;
-function npcUpd(dt,t){for(const n of NPC){const d=hy(n.x-P.x,n.z-P.z);n.m.g.visible=d<80&&!n.hidden&&!invHide(d);if(!n.m.g.visible)continue;let sp=0;
+function npcUpd(dt,t){for(const n of NPC){const d=hy(n.x-P.x,n.z-P.z);n.m.g.visible=d<(MOB?50:80)&&!n.hidden&&!invHide(d);if(!n.m.g.visible)continue;let sp=0;
   if(n.follow){const M=n.follow;sp=mercUpd(n,dt,t);}
   else if(n.wander){n.t-=dt;if(n.t<=0){n.t=4+R()*6;if(R()<.6){const a=R()*TAU,r=8+R()*30;n.tx=C(a)*r;n.tz=S(a)*r}}const dd=hy(n.tx-n.x,n.tz-n.z);if(dd>.8&&d>2.5){sp=1.5;moveEnt(n,(n.tx-n.x)/dd*sp,(n.tz-n.z)/dd*sp,dt,5,5,.45)}else moveEnt(n,0,0,dt,8,0,.45)}
   else{const dh=hy(n.hx-n.x,n.hz-n.z);if(dh>.5){sp=2;moveEnt(n,(n.hx-n.x)/dh*sp,(n.hz-n.z)/dh*sp,dt,6,6,.45)}else{n.vx=n.vz=0;if(d<6)n.f=angStep(n.f,Math.atan2(P.x-n.x,P.z-n.z),dt*3)}}
@@ -151,7 +151,7 @@ function mobsUpd(dt,t){
   for(let i=0;i<E.length;i++){const a=E[i];if(a.dead||a.boss&&a.flying)continue;for(let j=i+1;j<E.length;j++){const b=E[j];if(b.dead)continue;const dx=b.x-a.x,dz=b.z-a.z,m=a.r+b.r;if(Math.abs(dx)>m||Math.abs(dz)>m)continue;const d=hy(dx,dz);if(d<m&&d>1e-3){const k=(m-d)*.5/d;a.x-=dx*k;a.z-=dz*k;b.x+=dx*k;b.z+=dz*k}}}
   for(let i=E.length-1;i>=0;i--){const e=E[i],dx=P.x-e.x,dz=P.z-e.z,d=hy(dx,dz),T=e.t;
     if(e.dead){e.dt+=dt;const k=Math.min(1,e.dt*2.2);e.m.g.rotation.z=e.dfz*easeOut(k)*PI/2;e.m.g.position.y=e.y-Math.max(0,e.dt-1.6)*.6;if(e.dt>2.6){dropMob(e)}continue}
-    const vis=d<60;e.m.g.visible=vis&&!invHide(d);if(e.ring)e.ring.visible=vis;if(!vis&&e.st!='chase')continue;
+    const vis=d<VISD||e.boss&&d<70;e.m.g.visible=vis&&!invHide(d);if(vis){const sh=d<SHD;if(sh!==e.sh){e.sh=sh;for(const o of e.m.meshes)o.castShadow=sh}}if(e.ring)e.ring.visible=vis;if(!vis&&e.st!='chase')continue;
     e.hurt=Math.max(0,e.hurt-dt*4);e.stun-=dt;e.slow-=dt;e.cd-=dt;e.dcd-=dt;e.evade-=dt;if(e.fl>0){e.fl-=dt;if(e.fl<=0)flashModel(e.m,false)}
     let dvx=0,dvz=0,sp=e.sp*(e.slow>0?.5:1);
     if(e.boss){bossUpd(e,dt,t,d,dx,dz);continue}
