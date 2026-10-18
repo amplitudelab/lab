@@ -74,6 +74,10 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Arqueiro e saque por classe
+- **Árvore do Arqueiro** 🏹 (a da sua classe aparece primeiro): Chuva de Flechas, Tiro Múltiplo, Olho de Águia, Salto Evasivo, Flecha Perfurante, Aljava Leve, Armadilha de Gelo, Falcão Caçador e Tempestade de Flechas. As habilidades de tiro exigem arco.
+- **Drops pela classe**: cerca de 80% das armas que caem são da sua classe (Guerreiro: espadas, machados e maças; Mago: cajados e varinhas; Caçador: arcos), mas armas de outras classes ainda aparecem. Os atributos também puxam para a classe (Fúria, Vida e Armadura; Poder Mágico e Recarga; Crítico e Velocidade de Ataque), e os lendários preferem os da sua classe. Cada arma mostra se é da sua classe.
+
 ## Tocha, pets, mapa e chefes
 - **Tocha** 🔥 (botão ou G): todo personagem tem; fica na mão livre (na outra mão se usar arco), solta fogo da ponta e ilumina de leve ao redor e à frente.
 - **Pets**: o Mercador Tobias, na praça da vila, vende Lobo, Gato, Raposa e Ovelha, cada um com um bônus. Um pet por vez.

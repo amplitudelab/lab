@@ -8,7 +8,7 @@ const MAT={couro:{n:'Couro',ic:'🟫',p:4,d:'Couro curtido de animal. A ferreira
 const RAR=[{n:'Comum',c:'#e2ddd2',h:0xe2ddd2,h2:0xdfe8f0},{n:'Mágico',c:'#6aa0ff',h:0x6aa0ff,h2:0xb8d4ff},{n:'Raro',c:'#ffe14a',h:0xffe14a,h2:0xfff2b0},{n:'Lendário',c:'#ff8a1a',h:0xff8a1a,h2:0xffc890}];
 const SLOTS=[['arma','Arma','⚔️'],['elmo','Elmo','🪖'],['peito','Peitoral','🛡️'],['luvas','Luvas','🧤'],['botas','Botas','🥾'],['anel','Anel','💍'],['amuleto','Amuleto','📿']];
 const SLN={mat:['mat','Material','🟫']};SLOTS.forEach(s=>SLN[s[0]]=s);
-const BASES={arma:[['Espada Longa','⚔️','sword'],['Machado de Guerra','🪓','axe'],['Maça Pesada','🔨','mace'],['Arco Curvo','🏹','bow'],['Cajado Arcano','🪄','staff'],['Varinha Rúnica','🪄','wand']],elmo:[['Elmo de Ferro','🪖','helm'],['Capuz do Caçador','🎩','hood']],peito:[['Couraça','🛡️'],['Cota de Malha','🥋']],luvas:[['Manoplas','🧤']],botas:[['Botas de Couro','🥾']],anel:[['Anel','💍']],amuleto:[['Amuleto','📿']]};
+const BASES={arma:[['Espada Longa','⚔️','sword'],['Machado de Guerra','🪓','axe'],['Maça Pesada','🔨','mace'],['Arco Curvo','🏹','bow'],['Cajado Arcano','🪄','staff'],['Varinha Rúnica','🪄','wand'],['Arco Longo','🏹','bow'],['Cajado de Carvalho','🪄','staff']],elmo:[['Elmo de Ferro','🪖','helm'],['Capuz do Caçador','🎩','hood']],peito:[['Couraça','🛡️'],['Cota de Malha','🥋']],luvas:[['Manoplas','🧤']],botas:[['Botas de Couro','🥾']],anel:[['Anel','💍']],amuleto:[['Amuleto','📿']]};
 const AFX=[{k:'dmg',f:v=>`+${v}% de Dano`,r:[4,12],pre:'Feroz'},{k:'hp',f:v=>`+${v} de Vida`,r:[12,34],flat:1,suf:'do Urso'},{k:'arm',f:v=>`+${v} de Armadura`,r:[4,11],flat:1,suf:'da Rocha'},
   {k:'crit',f:v=>`+${v}% de Chance Crítica`,r:[2,6],pre:'Preciso'},{k:'critd',f:v=>`+${v}% de Dano Crítico`,r:[10,35],pre:'Cruel'},{k:'ias',f:v=>`+${v}% de Velocidade de Ataque`,r:[3,9],pre:'Veloz'},
   {k:'ms',f:v=>`+${v}% de Velocidade de Movimento`,r:[3,9],suf:'do Vento',slot:['botas','amuleto','anel']},{k:'regen',f:v=>`+${v} de Vida por segundo`,r:[1,3],flat:1,suf:'da Fênix'},
@@ -20,18 +20,18 @@ const LEG=[{id:'crepusculo',n:'Lâmina do Crepúsculo',slot:'arma',b:0,d:'Golpes
 const RARE_N=['Rasga-Sombras','Juramento de Ferro','Presa Cinzenta','Vigia de Pedraverde','Brasa Antiga','Lamento do Lodo','Eco de Aldor','Fúria do Norte','Raiz Partida','Canção de Lírio','Guarda do Moinho','Olho do Corvo'];
 let iid=1;
 function genItem(ilvl,bonus,slot,forceLeg){bonus=bonus||0;const r=R();let rar=forceLeg||r<.004+bonus*.025?3:r<.04+bonus*.1?2:r<.24+bonus*.14?1:0;
-  let leg=null;if(rar==3){leg=pick(slot?LEG.filter(l=>l.slot==slot):LEG)||pick(LEG);slot=leg.slot}
-  slot=slot||pick(SLOTS)[0];const bl=BASES[slot],bi=leg&&leg.b!=null?leg.b:(R()*bl.length)|0,b=bl[bi];
+  let leg=null;if(rar==3){leg=pickLeg(slot);slot=leg.slot}
+  slot=slot||pick(SLOTS)[0];const bl=BASES[slot],bi=leg&&leg.b!=null?leg.b:pickBase(slot,bl),b=bl[bi];
   const it={id:iid++,slot,rar,ilvl,base:b[0],ic:b[1],wk:slot=='arma'?b[2]:null,vk:slot=='elmo'?b[2]:null,aff:{},leg:leg&&leg.id};
   const rm=[1,1.12,1.28,1.5][rar];
   if(slot=='arma'){const bow=it.wk=='bow',mg=it.wk=='staff'||it.wk=='wand',base=(6+ilvl*2.4)*rm*(bow?.85:mg?.9:it.wk=='mace'?1.12:it.wk=='axe'?1.06:1);it.wd=[Math.round(base*.8),Math.round(base*1.2)];it.spd=it.wk=='mace'?.92:it.wk=='axe'?.97:1;if(mg)it.aff.mag=Math.round((it.wk=='staff'?20:12)*(1+ilvl*.02))}
   else if(slot!='anel'&&slot!='amuleto')it.arm=Math.round((3+ilvl*1.1)*rm*({elmo:1,peito:1.6,luvas:.7,botas:.8}[slot]));
   const na=[0,1+(R()<.5?1:0),3+(R()<.4?1:0),4][rar],pool=AFX.filter(a=>!a.slot||a.slot.includes(slot));
-  for(let i=0;i<na&&pool.length;i++){const a=pool.splice((R()*pool.length)|0,1)[0];const sc_=a.flat?1+ilvl*.09:1+ilvl*.015;it.aff[a.k]=Math.max(1,Math.round(lerp(a.r[0],a.r[1],R())*sc_*(rar>=2?1.15:1)))}
+  for(let i=0;i<na&&pool.length;i++){const a=pool.splice(pickAff(pool),1)[0];const sc_=a.flat?1+ilvl*.09:1+ilvl*.015;it.aff[a.k]=Math.max(1,Math.round(lerp(a.r[0],a.r[1],R())*sc_*(rar>=2?1.15:1)))}
   const ks=Object.keys(it.aff),A=k=>AFX.find(a=>a.k==k);
   if(rar==3)it.n=leg.n;else if(rar==2)it.n=pick(RARE_N);else if(rar==1){const pre=ks.map(A).find(a=>a.pre),suf=ks.map(A).find(a=>a.suf);it.n=it.base+(pre?' '+pre.pre:'')+(suf?' '+suf.suf:'')}else it.n=it.base;
   it.price=Math.round([6,16,45,140][rar]*(1+ilvl*.12));return it}
-function itemLines(it){const L=[];if(it.wd)L.push(`<b class="big">${it.wd[0]}–${it.wd[1]}</b> de Dano${it.spd&&it.spd!=1?` · ${it.spd<1?'lenta':'rápida'}`:''}`);if(it.arm)L.push(`<b class="big">${it.arm}</b> de Armadura`);
+function itemLines(it){const L=[];if(it.wd)L.push(`<b class="big">${it.wd[0]}–${it.wd[1]}</b> de Dano${it.spd&&it.spd!=1?` · ${it.spd<1?'lenta':'rápida'}`:''}`);{const ct=clsTag(it);if(ct)L.push(ct)}if(it.arm)L.push(`<b class="big">${it.arm}</b> de Armadura`);
   for(const k in it.aff)L.push('<span class="af">'+AFX.find(a=>a.k==k).f(it.aff[k])+'</span>');if(it.leg)L.push('<span class="lg">'+LEG.find(l=>l.id==it.leg).d+'</span>');return L}
 // pontuação simples para a seta verde/vermelha de comparação
 function itemScore(it){if(!it)return 0;const a=it.aff;let s=(it.wd?(it.wd[0]+it.wd[1])*2:0)+(it.arm||0)*1.2+(a.hp||0)*.6+(a.dmg||0)*2.2+(a.crit||0)*3+(a.critd||0)*.8+(a.ias||0)*2+(a.ms||0)*1.5+(a.regen||0)*4+(a.cdr||0)*2+(a.fury||0)*4+(a.ls||0)*4+(a.arm||0)*1.2+(a.gold||0)*.3;return s+(it.leg?25:0)}

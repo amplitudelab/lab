@@ -57,3 +57,4 @@ body.run #vrVer{display:none}
 #vrUpd{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 6px);transform:translateX(-50%);z-index:9000;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);box-sizing:border-box;padding:8px 10px 8px 16px;background:linear-gradient(#3a1a4a,#1e0e26);border:2px solid var(--g);border-radius:999px;color:#fff;font:700 12px/1.2 var(--fn),Georgia;box-shadow:0 4px 14px rgba(0,0,0,.6),0 0 16px rgba(217,169,72,.35)}
 #vrUpd.hidden{display:none}#vrUpd b{color:#ffd34a}#vrUpd span{opacity:.85;font-family:Georgia;font-weight:400}
 #vrUpd button{font:800 13px/1 var(--fn),Georgia;padding:8px 14px;background:linear-gradient(#ffe08a,#d9a948);color:#1a0d00;border:2px solid #000;border-radius:999px;cursor:pointer}
+#tcols{grid-template-columns:repeat(4,minmax(150px,1fr));overflow-x:auto}

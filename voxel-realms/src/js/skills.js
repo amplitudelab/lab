@@ -30,20 +30,20 @@ const SKX={pocao:{n:'Poção de Vida',ic:'🧪',cd:18},dash:{n:'Dash',ic:'💨',
 P.sk={};P.sp=1;P.bar=[null,null,null,null];P.run=0;P.dash=0;P.shield=0;
 const rk=id=>P.sk[id]||0,reqLv=(id,r)=>SK[id].lv+(r>0?r*3:0);
 const MANA=()=>ST.wk=='staff'||ST.wk=='wand';
-function skPassive(s){s.arm*=1+.15*rk('pele');s.dmg+=6*rk('brutal');s.crit+=2*rk('brutal');s.mag=(s.mag||0)+12*rk('mente');s.ms+=5*rk('agil');s.hpP=8*rk('vital');s.mreg=8+3*rk('mente');if(typeof clsPassive=='function')clsPassive(s);if(typeof petPassive=='function')petPassive(s)}
+function skPassive(s){s.arm*=1+.15*rk('pele');s.dmg+=6*rk('brutal');s.crit+=2*rk('brutal');s.mag=(s.mag||0)+12*rk('mente');s.ms+=5*rk('agil');s.hpP=8*rk('vital');s.mreg=8+3*rk('mente');if(typeof clsPassive=='function')clsPassive(s);if(typeof petPassive=='function')petPassive(s);if(typeof archerPassive=='function')archerPassive(s)}
 function learn(id){const r=rk(id);if(r>=3||P.sp<1||P.lv<reqLv(id,r))return false;P.sk[id]=r+1;P.sp--;if(!r&&!SK[id].pas){const i=P.bar.indexOf(null);if(i>=0)P.bar[i]=id}calcStats();snd(880,.12,'sine');flash(P.x,P.y+1.6,P.z,0xc8a0ff,3,.3);hud();save();return true}
 function spellDmg(m){return rollDmg(m*(1+(ST.mag||0)/100))}
 function cdOf(id){return(SK[id]?SK[id].cd||0:SKX[id].cd)*(1-ST.cdr/100)*(id=='salto'&&ST.leg.has('sismo')?.5:1)*(id=='dash'?1-.1*rk('agil'):1)}
-function useSkill(slot){const id=P.bar[slot];if(!id){openTree();return}dismount();const S_=SK[id],r=rk(id);if(!canAct()||!r)return;
+function useSkill(slot){const id=P.bar[slot];if(!id){openTree();return}dismount();const S_=SK[id],r=rk(id);if(!canAct()||!r)return;if(S_.bow&&!bow()){pop('Requer arco',P.x,P.y+3,P.z,'#ffd070');sweep(200,120,.1,'square',.03);return}
   if(P.cd[id]>0)return;const cost=(S_.cost||0)*(id=='giro'&&ST.leg.has('furia')?.6:1);if(P.fury<cost){pop(MANA()?'Mana insuficiente':'Fúria insuficiente',P.x,P.y+3,P.z,MANA()?'#7ab4ff':'#ff8a5a');sweep(200,120,.1,'square',.03);return}
   P.fury-=cost;P.cd[id]=cdOf(id);const t=bestTarget(14,1);if(t&&id!='giro'&&id!='grito'&&id!='escudo'&&id!='cura')P.f=Math.atan2(t.x-P.x,t.z-P.z);
   if(id=='giro'){P.act={k:'spin',t:0,dur:.75,hp:2,sk:'giro',ticks:0};sweep(300,900,.5,'triangle',.05)}
   else if(id=='salto'){let tx,tz;if(t){tx=t.x-S(P.f)*.5;tz=t.z-C(P.f)*.5}else{tx=P.x+S(P.f)*8;tz=P.z+C(P.f)*8}if(!walkable(tx,tz)){tx=P.x;tz=P.z}P.leap={x0:P.x,z0:P.z,y0:P.y,x1:tx,z1:tz,t:0,dur:.6};sweep(200,700,.3,'triangle',.05)}
   else if(id=='grito')P.act={k:'shout',t:0,dur:.7,hp:.4,sk:id};
   else if(id=='sombra'){shadowStep(t)}
-  else P.act={k:'cast',t:0,dur:id=='meteoro'?.7:.5,hp:.5,sk:id,tg:t};hud()}
+  else P.act={k:S_.bow?'shoot':'cast',t:0,dur:id=='meteoro'?.7:S_.bow?.45:.5,hp:S_.bow?.6:.5,sk:id,tg:t};hud()}
 function skillHit(){const a=P.act,id=a.sk,r=rk(id),m=1+.3*(r-1)*0;const fx0=P.x+S(P.f),fz0=P.z+C(P.f);skillFx(id,a,r,fx0,fz0);
-  if(id=='flechas'){extraSkill(id,a,r);return}
+  if(SK[id].t=='arco'){archerSkill(id,a,r);return}
   if(id=='grito'){P.buff.grito=10;P.gritoK=.25+.05*r;addFury(40);ring(P.x,P.z,6,0xffd34a,.6);flash(P.x,P.y+2,P.z,0xffd34a,6,.5);snd(220,.5,'sawtooth');sweep(180,90,.6,'square',.05);SHK=.3;for(const e of E)if(!e.dead&&!e.t.passive&&hy(e.x-P.x,e.z-P.z)<6)e.stun=Math.max(e.stun,.6);return}
   if(id=='chama'){ring(P.x,P.z,6.5,0xff7a1a,.6);flash(P.x,P.y+1,P.z,0xff7a20,9,.45);fx(P.x,P.y+.5,P.z,0xff8a1a,40,14,.28,1.2);snd(70,.4,'sawtooth');SHK=.35;
     for(const e of E)if(!e.dead&&hy(e.x-P.x,e.z-P.z)-e.r<6.5){const[dm,c]=spellDmg(2.2+.4*(r-1));hurtMob(e,dm,c,'chama');e.burn=3}return}
@@ -76,14 +76,14 @@ function toggleRun(v){P.run=v==null?!P.run:v;$('runb').classList.toggle('on',!!P
 function potion(){if(P.dead||P.cd.pocao>0||UI.block())return;if(P.hp>=ST.mx){pop('Vida cheia',P.x,P.y+3,P.z,'#fff');return}P.cd.pocao=SKX.pocao.cd;P.psn=0;heal(ST.mx*.45);snd(660,.15,'sine');fx(P.x,P.y+1,P.z,0x6fe07a,14,3,.15,2)}
 // bolha do escudo arcano
 const SHB=spr(0xa88aff,3.2,.35);SHB.visible=false;sc.add(SHB);
-function skillsUpd(dt){boltUpd(dt);if(P.shT>0){P.shT-=dt;if(P.shT<=0)P.shield=0}SHB.visible=P.shield>0;if(SHB.visible){SHB.position.set(P.x,P.y+1.4,P.z);SHB.material.opacity=.25+.08*S(T60*.2)}
+function skillsUpd(dt){boltUpd(dt);archerUpd(dt,performance.now()/1000);if(P.shT>0){P.shT-=dt;if(P.shT<=0)P.shield=0}SHB.visible=P.shield>0;if(SHB.visible){SHB.position.set(P.x,P.y+1.4,P.z);SHB.material.opacity=.25+.08*S(T60*.2)}
   if(MANA())P.fury=Math.min(100,P.fury+dt*(ST.mreg||8))}
 
 // ---------- janela da árvore de habilidades
 let TSEL=null;
 function openTree(){if(!run||DLG)return;openWin('tree');treeRender()}
 function treeRender(){if(UI.open!='tree')return;$('tpts').textContent=P.sp+' ponto'+(P.sp==1?'':'s');
-  $('tcols').innerHTML=TREE.map(T=>`<div class="tcol"><h4 style="color:${T.c}">${T.ic} ${T.n}</h4>${Object.keys(SK).filter(k=>SK[k].t==T.id).sort((a,b)=>SK[a].lv-SK[b].lv).map(k=>{const S_=SK[k],r=rk(k),can=r<3&&P.sp>0&&P.lv>=reqLv(k,r);
+  $('tcols').innerHTML=treeOrder().map(T=>`<div class="tcol"><h4 style="color:${T.c}">${T.ic} ${T.n}</h4>${Object.keys(SK).filter(k=>SK[k].t==T.id).sort((a,b)=>SK[a].lv-SK[b].lv).map(k=>{const S_=SK[k],r=rk(k),can=r<3&&P.sp>0&&P.lv>=reqLv(k,r);
     return`<button class="tn ${r?'on':''} ${can?'can':''} ${TSEL==k?'sel':''}" data-k="${k}"><i>${S_.ic}</i><span>${S_.n}${S_.pas?' <small>(passiva)</small>':''}</span><em>${'●'.repeat(r)}${'○'.repeat(3-r)}</em>${P.lv<S_.lv?`<u>Nv ${S_.lv}</u>`:''}</button>`}).join('')}</div>`).join('');
   const d=$('tdet');if(!TSEL){d.innerHTML='<p class="ihint">Você ganha 1 ponto a cada nível. Toque numa habilidade para aprender ou melhorar, e escolha em qual dos 4 atalhos ela fica.</p>';return}
   const S_=SK[TSEL],r=rk(TSEL),nr=Math.min(3,r+1),need=reqLv(TSEL,r);

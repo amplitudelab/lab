@@ -16,7 +16,7 @@ function startDodge(e,dx,dz,d){const s=Math.random()<.5?1:-1,sp=e.sp*3.4;e.ddx=-
 function dodgeCheck(e,d,dx,dz){if(e.boss||e.t.passive||e.t.ai=='hopper'||(e.dcd||0)>0||e.dd>0||e.stun>0||d<.5)return;
   const a=P.act;
   if(a&&a.t/a.dur<(a.hp||.5)&&d<4.6&&a.dgBy!==e&&Math.abs(angDiff(P.f,Math.atan2(e.x-P.x,e.z-P.z)))<1.1&&a.k!='shout'){a.dgBy=e;if(Math.random()<dgChance(e)){startDodge(e,dx,dz,d);return}}
-  for(const p of PJ)if(p.l>0&&p.side=='p'&&p.dgBy!==e){const q=p.o.position,px=q.x-e.x,pz=q.z-e.z,pd=hy(px,pz);if(pd<6.5&&(p.v.x*px+p.v.z*pz)<0){p.dgBy=e;if(Math.random()<dgChance(e)+.1){const l=hy(p.v.x,p.v.z)||1;startDodge(e,p.v.z/l*d,-p.v.x/l*d,d);return}}}}
+  for(const p of PJ)if(p.l>0&&p.side=='p'&&p.dgBy!==e){const q=p.o.position,px=q.x-e.x,pz=q.z-e.z,pd=hy(px,pz);if(pd<6.5&&(p.v.x*px+p.v.z*pz)<0){p.dgBy=e;if(Math.random()<dgChance(e)+.1){const l=hy(p.v.x,p.v.z)||1;startDodge(e,p.v.z/l*d,-p.v.x/l*d,d)}else e.dcd=.8;return}}}
 function circleMv(e,dx,dz,d,sp,want,k){e.fp=.2;if(!e.cs||(e.ct-=1/60)<0){e.cs=Math.random()<.5?1:-1;e.ct=1.5+R()*2}
   const tx=-dz/d*e.cs,tz=dx/d*e.cs,rad=cl((d-want)*.45,-.7,.7);return[(tx*k+dx/d*rad)*sp,(tz*k+dz/d*rad)*sp]}
 function meleeMove(e,dt,d,dx,dz,sp,rg){
