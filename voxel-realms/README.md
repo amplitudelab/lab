@@ -73,3 +73,7 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - **Ato II — Terras Geladas:** o Rei Sem Nome fugiu da cova do Cemitério para o norte.
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
+
+## App Android
+O APK é gerado automaticamente pelo GitHub Actions (`.github/workflows/android.yml`) a partir de `voxel-realms-android/`. Ele é um invólucro WebView que abre o jogo publicado, sempre em paisagem, em tela cheia e na maior taxa de atualização da tela. Como carrega o link, o jogo se atualiza sozinho.
+Download: https://github.com/symbiozyy/amplitude-lab/releases/download/apk/voxel-realms.apk

@@ -1,0 +1,26 @@
+name: Android APK
+on:
+  push:
+    branches: [main]
+    paths: ['voxel-realms-android/**', '.github/workflows/android.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.7' }
+      - run: gradle -p voxel-realms-android assembleRelease --no-daemon
+      - name: Publicar o APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp voxel-realms-android/app/build/outputs/apk/release/app-release.apk voxel-realms.apk
+          gh release view apk >/dev/null 2>&1 || gh release create apk --title "Voxel Realms (Android)" --notes "APK mais recente do Voxel Realms. O jogo se atualiza sozinho; este arquivo só muda quando o app em si muda."
+          gh release upload apk voxel-realms.apk --clobber
