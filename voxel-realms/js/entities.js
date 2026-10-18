@@ -5,7 +5,7 @@
    campeões, raros e chefes); movimento com aceleração e curvas suaves
    ============================================================================= */
 // ---------- jogador
-const P={x:-4,z:14,y:1.5,vx:0,vz:0,f:PI,lv:1,xp:0,gold:30,hp:100,fury:0,dead:0,act:null,cd:{},roll:0,rdx:0,rdz:0,inv:0,hurt:0,buff:{},kills:0,stun:0,slow:0,psn:0,brn:0,ptk:0,leap:null,merc:null,disc:new Set(),pot:0};
+const P={x:-6,z:20,y:1.5,vx:0,vz:0,f:PI,lv:1,xp:0,gold:30,hp:100,fury:0,dead:0,act:null,cd:{},roll:0,rdx:0,rdz:0,inv:0,hurt:0,buff:{},kills:0,stun:0,slow:0,psn:0,brn:0,ptk:0,leap:null,merc:null,disc:new Set(),pot:0};
 P.m=MDL.hero();
 const XPN=l=>Math.round(170*Math.pow(l,1.85)); // curva mais íngreme: cada nível custa mais // experiência para o próximo nível
 
@@ -65,7 +65,7 @@ function mkMob(type,x,z,o){o=o||{};const t=BOSS[type]||MT[type],lv=o.lv||1,boss=
 function dropMob(e){dropModel(e.m);if(e.ring)sc.remove(e.ring);const i=E.indexOf(e);if(i>=0)E.splice(i,1)}
 
 // ---------- geração por pedaço: bandos de monstros, animais e baús são ligados ao pedaço
-function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2;if(hy(cx,cz)<52)return;const cl_=CLEARED.get(k);if(cl_&&performance.now()-cl_<240000)return;
+function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2;if(hy(cx,cz)<75)return;const cl_=CLEARED.get(k);if(cl_&&performance.now()-cl_<240000)return;
   const r=rng(c.cx*92821^c.cz*68917^((performance.now()/240000)|0)),reg=regionAt(cx,cz),rid=REG[reg].id;
   let tbl=SPAWN[rid]||[];for(const p of POI)if(hy(cx-p.x,cz-p.z)<p.r+16){if(p.n.startsWith('Cemit'))tbl=['zombie','zombie','ghoul','skel'];if(p.n.startsWith('Acamp'))tbl=['bandit','bandarc'];if(p.n.startsWith('Colmeia'))tbl=['bee','bee','fairy']}
   const packs=tbl.length?(r()<[0,.5,.55,.62,.6,.66][reg]?1:0)+(r()<.12?1:0):0;
@@ -95,15 +95,15 @@ function mkNPC(id,mdl,x,z,o){const m=MDL[mdl](rng(id.length*977)),n={id,m,x,z,y:
 const MERC={lyra:{n:'Lyra',cls:'Arqueira',mdl:'lyra',w:'bow',wh:'L',price:60,rng:9,d:'Atira flechas à distância e marca os inimigos.',ic:'🏹'},
   mirela:{n:'Mirela',cls:'Maga',mdl:'mirela',w:'staff',price:90,rng:9,d:'Lança orbes arcanos que explodem em área.',ic:'🔮'},
   borin:{n:'Borin',cls:'Guerreiro anão',mdl:'borin',w:'axe',price:70,rng:1.6,d:'Luta na linha de frente e atrai os golpes.',ic:'🪓'}};
-function spawnNPCs(){mkNPC('bram','bram',-6,-21,{nm:'Ancião Bram',ic:'🧙',talk:'bram',still:1});mkNPC('helga','helga',14,-12,{nm:'Helga, a Ferreira',ic:'⚒️',talk:'helga',still:1});
-  mkNPC('guarda','guard',3,31,{nm:'Guarda Tomas',ic:'🛡️',talk:'guarda',still:1,w:'sword'});mkNPC('eremita','eremita',-136,-8,{nm:'Eremita Ulric',ic:'🧓',talk:'eremita',still:1});
-  [['lyra',-12,-9],['mirela',-15,-8],['borin',-18,-9.5]].forEach(([id,x,z])=>{const M=MERC[id];mkNPC(id,M.mdl,x,z,{nm:M.n+' · '+M.cls,ic:M.ic,merc:id,w:M.w,wh:M.wh,still:1})});
-  for(let i=0;i<6;i++){const a=i/6*TAU+.4,r=10+R()*14;mkNPC('aldeao'+i,'villager',C(a)*r,S(a)*r,{nm:pick(['Aldeã','Aldeão','Lavrador','Mercadora','Pescador','Criança']),wander:1,talk:'aldeao'})}
+function spawnNPCs(){mkNPC('bram','bram',-10,-33,{nm:'Ancião Bram',ic:'🧙',talk:'bram',still:1});mkNPC('helga','helga',21,-18,{nm:'Helga, a Ferreira',ic:'⚒️',talk:'helga',still:1});
+  mkNPC('guarda','guard',6,48,{nm:'Guarda Tomas',ic:'🛡️',talk:'guarda',still:1,w:'sword'});mkNPC('eremita','eremita',-136,-8,{nm:'Eremita Ulric',ic:'🧓',talk:'eremita',still:1});
+  [['lyra',-17,-14],['mirela',-20,-12.5],['borin',-23,-13]].forEach(([id,x,z])=>{const M=MERC[id];mkNPC(id,M.mdl,x,z,{nm:M.n+' · '+M.cls,ic:M.ic,merc:id,w:M.w,wh:M.wh,still:1})});
+  for(let i=0;i<6;i++){const a=i/6*TAU+.4,r=15+R()*20;mkNPC('aldeao'+i,'villager',C(a)*r,S(a)*r,{nm:pick(['Aldeã','Aldeão','Lavrador','Mercadora','Pescador','Criança']),wander:1,talk:'aldeao'})}
   for(const n of NPC)if(n.talk||n.merc)inter({x:0,z:0,r:2.6,npc:n,ic:n.ic||'💬',label:()=>n.merc?(P.merc&&P.merc.id==n.merc?'Dispensar '+MERC[n.merc].n:'Contratar '+n.nm+' ('+MERC[n.merc].price+' ouro)'):'Falar com '+n.nm,act:()=>n.merc?hireMerc(n):talkTo(n),kind:'npc'})}
 const invHide=d=>INV_OPEN.k>.2&&d<8;
 function npcUpd(dt,t){for(const n of NPC){const d=hy(n.x-P.x,n.z-P.z);n.m.g.visible=d<80&&!n.hidden&&!invHide(d);if(!n.m.g.visible)continue;let sp=0;
   if(n.follow){const M=n.follow;sp=mercUpd(n,dt,t);}
-  else if(n.wander){n.t-=dt;if(n.t<=0){n.t=4+R()*6;if(R()<.6){const a=R()*TAU,r=6+R()*20;n.tx=C(a)*r;n.tz=S(a)*r}}const dd=hy(n.tx-n.x,n.tz-n.z);if(dd>.8&&d>2.5){sp=1.5;moveEnt(n,(n.tx-n.x)/dd*sp,(n.tz-n.z)/dd*sp,dt,5,5,.45)}else moveEnt(n,0,0,dt,8,0,.45)}
+  else if(n.wander){n.t-=dt;if(n.t<=0){n.t=4+R()*6;if(R()<.6){const a=R()*TAU,r=8+R()*30;n.tx=C(a)*r;n.tz=S(a)*r}}const dd=hy(n.tx-n.x,n.tz-n.z);if(dd>.8&&d>2.5){sp=1.5;moveEnt(n,(n.tx-n.x)/dd*sp,(n.tz-n.z)/dd*sp,dt,5,5,.45)}else moveEnt(n,0,0,dt,8,0,.45)}
   else{const dh=hy(n.hx-n.x,n.hz-n.z);if(dh>.5){sp=2;moveEnt(n,(n.hx-n.x)/dh*sp,(n.hz-n.z)/dh*sp,dt,6,6,.45)}else{n.vx=n.vz=0;if(d<6)n.f=angStep(n.f,Math.atan2(P.x-n.x,P.z-n.z),dt*3)}}
   for(const it of INTER)if(it.npc===n){it.x=n.x;it.z=n.z}
   n.m.g.position.set(n.x,n.y,n.z);n.m.g.rotation.y=n.f;if(!n.follow)animate(n.m,dt,t,{v:hy(n.vx,n.vz),atk:n.act&&{k:n.act.k,p:n.act.t/n.act.dur},sit:n.sit})}}

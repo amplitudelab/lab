@@ -6,7 +6,7 @@
    ============================================================================= */
 const CS=32,WMAX=214; // tamanho do pedaço e limite andável do mundo (±)
 const REG=[
-  {id:'vila',n:'Vila Pedraverde',lv:1,c:[0,0],k:2.0,top:[0x6aa84a,0x62a044,0x72ae50],side:0x7a5a3a,map:'#86b85e',amb:'Pedraverde, a última vila livre de Aldoria.'},
+  {id:'vila',n:'Vila Pedraverde',lv:1,c:[0,0],k:1.5,top:[0x6aa84a,0x62a044,0x72ae50],side:0x7a5a3a,map:'#86b85e',amb:'Pedraverde, a última vila livre de Aldoria.'},
   {id:'plan',n:'Planície Dourada',lv:2,c:[10,150],k:1,top:[0xa6bc4c,0xb2c656,0x9ab246,0xbcc660],side:0x8a6a3a,map:'#c0c460',amb:'Trigais e moinhos — e bandidos nas estradas.'},
   {id:'flor',n:'Campos de Lírio',lv:5,c:[165,10],k:1,top:[0x74c656,0x6abc4e,0x80cc60],side:0x7a5a3a,map:'#94d66e',amb:'Flores sem fim. Algo corrompeu as colmeias.'},
   {id:'mata',n:'Floresta Ancestral',lv:8,c:[-10,-158],k:1,top:[0x3f8a38,0x357a30,0x478f3c],side:0x5a4428,map:'#3d7636',amb:'Árvores mais velhas que o reino guardam segredos.'},
@@ -63,12 +63,13 @@ function collide(o,r){const cx=Math.floor(o.x/CS),cz=Math.floor(o.z/CS);
 function pushOut(o,r,L){for(const k of L){const dx=o.x-k[0],dz=o.z-k[1];if(Math.abs(dx)>k[2]+r||Math.abs(dz)>k[2]+r)continue;const d=hy(dx,dz),m=k[2]+r;if(d<m&&d>1e-4){o.x=k[0]+dx/d*m;o.z=k[1]+dz/d*m}}}
 
 // ---------- ajudante de estruturas: caixas em coordenadas locais (girado e assentado no chão)
-class TB{constructor(k,e,f,x,z,ry,y){this.k=k;this.e=e;this.f=f;this.x=x;this.z=z;this.ry=ry||0;this.y=y==null?groundAt(x,z):y;this.c=C(this.ry);this.s=S(this.ry)}
-  w(lx,lz){return[this.x+lx*this.c+lz*this.s,this.z-lx*this.s+lz*this.c]}
-  b(w,h,d,lx,ly,lz,col,o,tgt){const[x,z]=this.w(lx,lz),oo=Object.assign({},o||{});oo.ry=(oo.ry||0)+this.ry;(tgt||this.k).box(w,h,d,x,this.y+ly,z,col,oo);return this}
+// m = escala da construção (casas e prédios ficam proporcionais ao herói, que tem ~2,9 de altura)
+class TB{constructor(k,e,f,x,z,ry,y,m){this.k=k;this.e=e;this.f=f;this.x=x;this.z=z;this.ry=ry||0;this.y=y==null?groundAt(x,z):y;this.c=C(this.ry);this.s=S(this.ry);this.m=m||1}
+  w(lx,lz){lx*=this.m;lz*=this.m;return[this.x+lx*this.c+lz*this.s,this.z-lx*this.s+lz*this.c]}
+  b(w,h,d,lx,ly,lz,col,o,tgt){const[x,z]=this.w(lx,lz),oo=Object.assign({},o||{}),m=this.m;oo.ry=(oo.ry||0)+this.ry;(tgt||this.k).box(w*m,h*m,d*m,x,this.y+ly*m,z,col,oo);return this}
   e_(w,h,d,lx,ly,lz,col,o){return this.b(w,h,d,lx,ly,lz,col,o,this.e)}
   f_(w,h,d,lx,ly,lz,col,o){return this.b(w,h,d,lx,ly,lz,col,o,this.f)}
-  col(lx,lz,r){if(CUR_S&&CUR_S.cd)return;const[x,z]=this.w(lx,lz);STRC.push([x,z,r])}}
+  col(lx,lz,r){if(CUR_S&&CUR_S.cd)return;const[x,z]=this.w(lx,lz);STRC.push([x,z,r*this.m])}}
 let CUR_S=null; // estrutura sendo construída (colisores e lampiões só são registrados na primeira vez)
 const STR=[]; // {x,z,fn(k,e,f)} construídas dentro do pedaço que contém o centro
 const DYN=[]; // objetos animados das estruturas (pás do moinho, cristais)
@@ -95,12 +96,15 @@ function flower(f,x,y,z,c,t){f.box(.1,.38*t,.1,x,y+.19*t,z,0x3d8b3d).box(.26,.2,
 function grass(f,x,y,z,c){f.box(.1,.55,.1,x,y+.27,z,c).box(.1,.42,.1,x+.18,y+.21,z+.1,c).box(.1,.38,.1,x-.13,y+.19,z-.14,c)}
 
 // ---------- construção de um pedaço (gerador: trabalha em fatias para não travar o quadro)
+// escala local para detalhes (grama, flores...) ao redor do ponto onde nascem
+class SB{constructor(k,ox,oy,oz,m){this.k=k;this.o=[ox,oy,oz];this.m=m}box(w,h,d,x,y,z,c,o){const m=this.m,O=this.o;this.k.box(w*m,h*m,d*m,O[0]+(x-O[0])*m,O[1]+(y-O[1])*m,O[2]+(z-O[2])*m,c,o);return this}}
+const TREE_S=1.6,ROCK_S=1.5,PROP_S=1.4; // árvores e objetos proporcionais ao herói (~2,9 de altura)
 function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*73856093^ch.cz*19349663^0x5bd1e995),col=ch.col;
   const nearStr=(x,z)=>{for(const s of FZ)if(Math.abs(x-s.x)<s.r*.8&&Math.abs(z-s.z)<s.r*.8&&hy(x-s.x,z-s.z)<s.r*.8)return true;return false};
   const spot=(minH)=>{const x=x0+r()*CS,z=z0+r()*CS,ix=Math.floor(x)-x0,iz=Math.floor(z)-z0,h=ch.h[(ix+1)+(iz+1)*34];if(h<(minH==null?.25:minH)||roadD(x,z)<2.4||nearStr(x,z)||onBridge(x,z))return null;regW(x,z,RW);let b=0;for(let i=1;i<REG.length;i++)if(RW[i]>RW[b])b=i;return{x,z,h,b}};
   const N=[[3,0,1,40,20],[4,0,4,70,16],[5,0,2,40,150],[18,0,4,40,14],[10,0,3,10,6],[5,0,9,0,0]]; // árvores, -, pedras, grama, flores por região
   const db=regionAt(x0+CS/2,z0+CS/2);
-  for(let i=0;i<N[db][0]*1.5;i++){const p=spot(-.6);if(!p)continue;const s=.85+r()*.6;
+  for(let i=0;i<N[db][0]*1.5;i++){const p=spot(-.6);if(!p)continue;const s=(.85+r()*.6)*TREE_S;
     if(p.b==0){if(p.h<.3)continue;oak(k,f,p.x,p.h,p.z,s);col.push([p.x,p.z,.9*s])}
     else if(p.b==1){if(p.h<.3)continue;oak(k,f,p.x,p.h,p.z,s,[0x3a7a30,0x4a8a38,0x5a9a40]);col.push([p.x,p.z,.9*s])}
     else if(p.b==2){if(p.h<.3)continue;r()<.6?blossom(k,f,p.x,p.h,p.z,s):birch(k,f,p.x,p.h,p.z,s);col.push([p.x,p.z,.8*s])}
@@ -108,11 +112,11 @@ function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*738560
     else if(p.b==4){if(p.h<-.7)continue;mangrove(k,f,p.x,Math.max(p.h,-.3),p.z,s);col.push([p.x,p.z,1.1*s])}
     else{if(p.h<.3)continue;deadTree(k,p.x,p.h,p.z,s);col.push([p.x,p.z,.6*s])}}
   // pedras
-  for(let i=0;i<N[db][2]+1;i++){const p=spot();if(!p)continue;const s=.7+r()*1.1;rock(k,p.x,p.h,p.z,s,p.b==5?0x2a2224:p.b==4?0x5a5a4a:0x8a8a84,p.b==3||p.b==4);if(s>1.1)col.push([p.x,p.z,.7*s]);
+  for(let i=0;i<N[db][2]+1;i++){const p=spot();if(!p)continue;const s=(.7+r()*1.1)*ROCK_S;rock(k,p.x,p.h,p.z,s,p.b==5?0x2a2224:p.b==4?0x5a5a4a:0x8a8a84,p.b==3||p.b==4);if(s>1.6)col.push([p.x,p.z,.7*s]);
     if(p.b==5&&r()<.6){k.box(.5,2.5+r()*2,.5,p.x+1.4,p.h+1.2,p.z,0x1a1418,{rz:.3,ry:r()*3});}}
   if(lod>1)return;
   // detalhes pequenos (só perto): grama, flores, cogumelos, juncos, trigo, vitórias-régias
-  for(let i=0;i<160;i++){const p=spot(-.5);if(!p)continue;const n=N[p.b],t=r();
+  const K0=k,F0=f;for(let i=0;i<160;i++){const p=spot(-.5);if(!p)continue;const n=N[p.b],t=r(),sm_=p.h<-.05?1:PROP_S,k=new SB(K0,p.x,p.h,p.z,sm_),f=new SB(F0,p.x,p.h,p.z,sm_);
     if(p.b==4){if(p.h<-.05){if(t<.35){k.box(.9,.04,.9,p.x,.03,p.z,0x4a8a3a,{ry:r()*3});if(r()<.25)f.box(.22,.16,.22,p.x,.1,p.z,0xff9ad0)}}
       else if(t<.5){f.box(.08,1.6,.08,p.x,p.h+.8,p.z,0x6a8a3a).box(.14,.4,.14,p.x,p.h+1.5,p.z,0x5a3a20).box(.08,1.3,.08,p.x+.2,p.h+.65,p.z+.1,0x7a9a4a)}else if(t<.6){k.box(.14,.3,.14,p.x,p.h+.15,p.z,0xe8e0d0).box(.4,.16,.4,p.x,p.h+.36,p.z,0x9a6a3a)}continue}
     if(p.h<.3)continue;
@@ -132,7 +136,7 @@ function* genChunk(ch){const lod=ch.lod,x0=ch.cx*CS,z0=ch.cz*CS,H=ch.h,k=new Bak
       if(h<-.25)c=b==4?0x3e3626:h<-1?0x8a7a58:0xb0a070;else if(h<.6&&b!=4&&b!=5)c=v<.5?0xd8c890:0xcfbf86;
       else if(e2>205){c=h>13?0xf2f4f8:v<.5?0x7a7a76:0x6a6a66;sc=0x5a5a56}
       else if(roadD(cx,cz)<1.7){c=v<.5?0xa08458:0x94784e;sc=0x7a5a3a}
-      else if(b==0&&hy(cx,cz)<13){c=[0x9a9a92,0x8a8a84,0xa8a8a0][(v*3)|0];sc=0x7a7a74}
+      else if(b==0&&hy(cx,cz)<19.5){c=[0x9a9a92,0x8a8a84,0xa8a8a0][(v*3)|0];sc=0x7a7a74}
       else if(b==5&&RW[5]>.6&&fbm(cx*.07,cz*.07,2)>.63){emi=1;c=v<.3?0xffd84a:v<.7?0xff7a1a:0xff5a10}
       const x1=ix+lod,z1=iz+lod,sh=.94+v*.1;
       if(emi){e.quad([ix,h-.25,z1],[x1,h-.25,z1],[x1,h-.25,iz],[ix,h-.25,iz],[0,1,0],c,null,lod,lod);ch.lava.push([cx,cz])}

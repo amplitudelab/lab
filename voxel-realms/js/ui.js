@@ -72,7 +72,7 @@ const clockStr=()=>{const h=(DAY.t*24)%24;return(h|0).toString().padStart(2,'0')
 const MAPS=220,MAPC=document.createElement('canvas');MAPC.width=MAPC.height=MAPS;const MAPX=MAPC.getContext('2d'),FOG=new Set();
 function* mapGen(){const img=MAPX.createImageData(MAPS,MAPS),d=img.data,k=440/MAPS;for(let j=0;j<MAPS;j++){for(let i=0;i<MAPS;i++){const x=-220+i*k+k/2,z=-220+j*k+k/2,h=rawH(x,z),r=regionAt(x,z);let c;
     if(h<-.3)c=r==4?[62,74,52]:[52,128,196];else if(Math.max(Math.abs(x),Math.abs(z))>205)c=[120,118,112];else if(roadD(x,z)<2)c=[168,140,92];else{const hx=REG[r].map;c=[parseInt(hx.slice(1,3),16),parseInt(hx.slice(3,5),16),parseInt(hx.slice(5,7),16)];const sh=.85+cl(h,0,12)*.025;c=c.map(v=>v*sh)}
-    if(hy(x,z)<36&&hy(x,z)>34.5)c=[110,80,50];const o=(i+j*MAPS)*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255}if(j%6==5)yield j/MAPS}MAPX.putImageData(img,0,0);
+    if(hy(x,z)<54.5&&hy(x,z)>52.5)c=[110,80,50];const o=(i+j*MAPS)*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255}if(j%6==5)yield j/MAPS}MAPX.putImageData(img,0,0);
   MAPX.fillStyle='#d9a948';for(const b of BRIDGES){MAPX.fillRect((b.x+220)/2-2,(b.z+220)/2-2,4,4)}yield 1}
 const mm=$('mc').getContext('2d');
 function minimap(){const c=mm,W=160,M=80,s=1.9,X=x=>M+(x-P.x)*s,Z=z=>M+(z-P.z)*s;c.save();c.clearRect(0,0,W,W);c.beginPath();c.arc(M,M,M-4,0,7);c.clip();c.fillStyle='#1a2a1a';c.fillRect(0,0,W,W);
@@ -87,7 +87,7 @@ function minimap(){const c=mm,W=160,M=80,s=1.9,X=x=>M+(x-P.x)*s,Z=z=>M+(z-P.z)*s
 // ---------- alvo da missão (para minimapa, rastreador e feixe no mundo)
 function qTarget(){const q=QD.find(q=>q.cat=='main'&&act(q.id))||QD.find(q=>act(q.id)&&q.reg==REG[REGC]?.id);return q?qPos(q):null}
 function qPos(q){const s=QS[q.id];if(q.t=='talk'){const n=NPC.find(n=>n.id==q.npc);return n&&[n.x,n.z]}if(q.t=='wp'){const w=WP.find(w=>w.id==q.wp);return[w.x,w.z]}if(q.t=='boss'){const b=BOSS[q.boss];return[b.x,b.z]}
-  if(q.t=='collect'||q.t=='interact'){let b=null,bd=1e9;for(const o of QOBJ)if(o.q===q){const d=hy(o.x-P.x,o.z-P.z);if(d<bd){bd=d;b=[o.x,o.z]}}return b}if(q.t=='zone')return q.at;if(q.t=='hire')return[-15,-9];
+  if(q.t=='collect'||q.t=='interact'){let b=null,bd=1e9;for(const o of QOBJ)if(o.q===q){const d=hy(o.x-P.x,o.z-P.z);if(d<bd){bd=d;b=[o.x,o.z]}}return b}if(q.t=='zone')return q.at;if(q.t=='hire')return[-20,-13];
   if(q.t=='kill'){const p={dwolf:[-10,-140],zombie:[-112,-96],ghoul:[-112,-96],skel:[-112,-96],spider:[-30,-160],boar:[10,150],croc:[-168,25],lslime:[155,-150]}[q.mob[0]];return p}return null}
 const QBEAM=beam(0,0,0xffd34a);QBEAM.material.opacity=.18;
 function trackUpd(){const L=[];for(const q of QD)if(act(q.id)&&q.cat=='main')L.push(q);const reg=REG[Math.max(0,REGC)]?.id;for(const q of QD)if(act(q.id)&&q.cat=='side'&&q.reg==reg)L.push(q);for(const q of QD)if(act(q.id)&&q.cat=='side'&&!L.includes(q))L.push(q);

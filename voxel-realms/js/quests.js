@@ -18,7 +18,7 @@ const QD=[
   done:[['Narrador','A Rainha tomba e o mel negro escorre para a terra, sem força. A primeira raiz da Sombra foi cortada.','🍯'],[KN,'Uma de quatro. A floresta ao norte é a próxima.',KA]]},
  {id:'m7',cat:'main',reg:'mata',n:'Uivos na Floresta',d:'Lobos das Sombras rondam a Floresta Ancestral. Abata 8 deles.',t:'kill',mob:['dwolf'],n_:8,req:['m6'],rw:{xp:420,gold:80}},
  {id:'m8',cat:'main',reg:'mata',n:'Os Mortos Não Descansam',d:'Zumbis se levantam no Cemitério Esquecido (noroeste da floresta). Destrua 12 mortos-vivos.',t:'kill',mob:['zombie','ghoul','skel'],n_:12,req:['m7'],rw:{xp:500,gold:90}},
- {id:'m9',cat:'main',reg:'mata',n:'O Coração Pútrido',d:'Destrua o Coração Pútrido diante da cripta do cemitério.',t:'interact',obj:'coracao',n_:1,pts:[[-112,-103]],req:['m8'],rw:{xp:520,item:1},
+ {id:'m9',cat:'main',reg:'mata',n:'O Coração Pútrido',d:'Destrua o Coração Pútrido diante da cripta do cemitério.',t:'interact',obj:'coracao',n_:1,pts:[[-112,-104.5]],req:['m8'],rw:{xp:520,item:1},
   done:[['Narrador','O coração estoura em fumaça verde. Os mortos caem de joelhos e não se levantam mais. Segunda raiz cortada.','💚']]},
  {id:'m10',cat:'main',reg:'mata',n:'O Ancião Corrompido',d:'A Raiz da Seiva prende o Ancião do Bosque, no extremo norte. Liberte-o à força.',t:'boss',boss:'anciao',req:['m9'],rw:{xp:900,gold:240,item:2},
   done:[['Ancião do Bosque','...obrigado, pequeno guardião. A bruxa do lodo me envenenou. Ela serve a alguém do norte gelado.','🌳'],[KN,'Então o mangue é o próximo.',KA]]},
@@ -85,7 +85,7 @@ function qEvent(ev,a,b,e){for(const q of QD){const s=QS[q.id];if(s.st!=1)continu
   trackUpd()}
 
 // ---------- quadro de recompensas (repetível)
-inter({x:7.6,z:-7.4,r:2.4,ic:'📋',label:()=>'Quadro de Recompensas',act:()=>openBounty(),kind:'board'});
+inter({x:11,z:-9.5,r:2.6,ic:'📋',label:()=>'Quadro de Recompensas',act:()=>openBounty(),kind:'board'});
 function bountyGen(reg){const R_=REG[RI[reg]];return{reg,n:15,p:0,ok:0,gold:Math.round(60+R_.lv*25),xp:Math.round(150+R_.lv*60),txt:'Abata 15 monstros em '+R_.n}}
 
 // ---------- conversas com NPCs
