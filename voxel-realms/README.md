@@ -82,6 +82,9 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - **Chefes em duas fases**: aos 50% de vida rugem, ficam imunes por um instante e passam a usar novas habilidades (Abalo, Anel de projéteis, Espiral, Chuva de fogo, Varredura, Poças).
 - **Desempenho**: resolução dinâmica (segura o FPS em aparelhos medianos), partículas e anéis em pool, e um único `game.min.js` minificado. O código-fonte fica em `src/` (`node build.js` gera a versão publicada).
 
+## Versão e atualização
+A versão aparece no canto inferior esquerdo da tela de título e no menu. Ao abrir o jogo, ele compara com a versão publicada; se houver uma nova, mostra **VERSÃO NOVA DISPONÍVEL** com o botão **ATUALIZAR AGORA** (mesmo esquema do Quebrada Z). Para publicar uma versão nova, suba `VR_VERSION` (e a nota `VR_NOTE`) no topo de `src/index.html` e rode `node build.js`.
+
 ## Instalar como app (recomendado)
 No Chrome do Android, abra o link do jogo e toque em **📲 INSTALAR APP** na tela de título (ou no menu ⋮ → *Instalar app*). O jogo ganha ícone, abre em tela cheia na horizontal, se atualiza sozinho e não passa pelo Play Protect.
 

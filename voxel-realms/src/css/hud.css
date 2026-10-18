@@ -51,3 +51,9 @@
 .shi.pt.on{border-color:#ffb8d0;background:rgba(255,160,200,.12)}
 #boss .bt{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;font-size:clamp(11px,3.3vh,14px)}
 .mapw{width:min(100%,calc(92vh - 118px))}
+/* versão no canto e aviso de atualização */
+#vrVer{position:fixed;left:calc(env(safe-area-inset-left,0px) + 8px);bottom:calc(env(safe-area-inset-bottom,0px) + 4px);z-index:40;font:700 10px/1 var(--fn),monospace;color:rgba(255,255,255,.55);text-shadow:0 1px 0 #000;pointer-events:none}
+body.run #vrVer{display:none}
+#vrUpd{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 6px);transform:translateX(-50%);z-index:9000;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);box-sizing:border-box;padding:8px 10px 8px 16px;background:linear-gradient(#3a1a4a,#1e0e26);border:2px solid var(--g);border-radius:999px;color:#fff;font:700 12px/1.2 var(--fn),Georgia;box-shadow:0 4px 14px rgba(0,0,0,.6),0 0 16px rgba(217,169,72,.35)}
+#vrUpd.hidden{display:none}#vrUpd b{color:#ffd34a}#vrUpd span{opacity:.85;font-family:Georgia;font-weight:400}
+#vrUpd button{font:800 13px/1 var(--fn),Georgia;padding:8px 14px;background:linear-gradient(#ffe08a,#d9a948);color:#1a0d00;border:2px solid #000;border-radius:999px;cursor:pointer}

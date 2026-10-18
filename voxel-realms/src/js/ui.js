@@ -146,7 +146,7 @@ function shopRender(){$('shg').textContent='🪙 '+fmt(P.gold);$('shl').innerHTM
 function openBounty(){openWin('bty');btyRender()}
 function btyRender(){const B=BOUNTY.q;let h='';if(B){h=`<div class="jq"><b>📋 ${B.txt}</b><p>Progresso: ${B.p}/${B.n}</p><p>Recompensa: ${B.gold} ouro · ${B.xp} XP · item raro</p></div>`+(B.ok?'<button class="ib" data-bt="claim">Receber recompensa</button>':'<button class="ib off" data-bt="drop">Abandonar</button>')}
   else{h='<p class="ihint">Escolha uma região. Cada contrato pede 15 monstros abatidos lá.</p>'+REG.filter(r=>r.id!='vila'&&P.disc.has(r.id)).map(r=>`<button class="ib bq" data-bt="${r.id}">${r.n} <small>Nv ${r.lv}+</small></button>`).join('')}$('btyb').innerHTML=h}
-function openMenu(){if(!run)return;openWin('menu');$('gfx2').textContent='Gráficos: '+GFX.n;$('dayl').textContent='Hora em Aldoria: '+clockStr()}
+function openMenu(){if(!run)return;openWin('menu');$('gfx2').textContent='Gráficos: '+GFX.n;$('dayl').textContent='Hora em Aldoria: '+clockStr();$('menuVer').textContent='Versão '+VR_VERSION}
 function bindWindows(){
   $('inv').onclick=e=>{const b=e.target.closest('[data-a]');if(b){const a=b.dataset.a;if(a=='eq'){equip(ISEL);ISEL=null}else if(a=='un'){unequip(ISEL);ISEL=null}else if(a=='sell'){sellItem(ISEL);ISEL=null}invRender();return}const s=e.target.closest('[data-i],[data-e]');if(s){ISEL=s.dataset.i!=null?+s.dataset.i:s.dataset.e;invRender();snd(700,.04,'sine')}};
   $('map').onclick=e=>{const b=e.target.closest('[data-w]');if(!b)return;if(inCombat()){toast('⚔️','Em combate','Afaste-se dos inimigos para viajar.');return}const w=WP.find(w=>w.id==b.dataset.w);closeAll();teleport(w.x,w.z+3);toast('🌀','Viagem',w.n)};

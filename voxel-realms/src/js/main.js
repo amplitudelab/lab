@@ -36,6 +36,13 @@ function begin(fresh){if(run)return;document.activeElement&&document.activeEleme
   teleport(P.x,P.z);P.y=groundAt(P.x,P.z);calcStats();hud();trackUpd();regionUpd();qAvail();
   if(fresh){if(!EQ.arma)startClass('guerreiro');calcStats();P.hp=ST.mx;hud();qStart(QIDX.m1,1);say([['Narrador','Aldoria, cem anos depois da Guerra das Brasas. O dragão Ignarok dorme selado sob a Caldeira, ao nordeste.','📜'],['Narrador','Esta noite, a Estátua de Aldor rachou. Uma Sombra se espalha pelas colmeias, florestas, cemitérios e pântanos.','🌑'],['Narrador','Você é Kael, '+(P.cls=='mago'?'aprendiz de magia e':P.cls=='cacador'?'batedor das florestas e':'espadachim e')+' o novo Guardião de Pedraverde. O Ancião Bram espera por você na vila.',KA],['Dica','Mova-se com o joystick e segure ⚔️ para atacar. 🏃 corre, 💨 dá dash para desviar. Sua habilidade de classe já está na barra, e você tem 1 ponto extra: toque em ✨. Junte ouro para comprar o 🦁 Leão Dourado na Forja da Helga.','💡']],()=>{trackUpd()})}
   else toast('💾','Bem-vindo de volta',REG[regionAt(P.x,P.z)].n);save()}
+// versão no canto e aviso de versão nova (mesmo esquema do Quebrada Z)
+$('vrVer').textContent='v'+VR_VERSION+(MOB?' · touch':'');
+function vrReload(v){const u=location.href.split('#')[0].replace(/([?&])(v|t)=[^&]*&?/g,'$1').replace(/[?&]$/,'');save();location.replace(u+(u.indexOf('?')<0?'?':'&')+'v='+v+'&t='+Date.now())}
+function vrCheckUpdate(){if(!/^https?:/.test(location.protocol))return;
+  fetch(location.pathname+'?nocache='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():'').then(t=>{const m=/VR_VERSION\s*=\s*["']([\d.]+)["']/.exec(t),nt=/VR_NOTE\s*=\s*'([^']*)'/.exec(t);
+    if(!m||m[1]===VR_VERSION)return;$('vrUpdTx').textContent='v'+VR_VERSION+' → v'+m[1]+(nt?' · '+nt[1]:'');$('vrUpd').classList.remove('hidden');$('vrUpdGo').onclick=()=>vrReload(m[1])}).catch(()=>{})}
+setTimeout(vrCheckUpdate,1500);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!run)vrCheckUpdate()});
 // instalar como app (PWA): ícone na tela inicial, tela cheia e na horizontal, sem passar pelo Play Protect
 let INSTP=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();INSTP=e;$('inst').style.display=''});
 $('inst').onclick=()=>{if(!INSTP)return;INSTP.prompt();INSTP.userChoice.finally(()=>{INSTP=null;$('inst').style.display='none'})};addEventListener('appinstalled',()=>{$('inst').style.display='none';toast('📲','Voxel Realms instalado','Abra pelo ícone na tela inicial.')});
