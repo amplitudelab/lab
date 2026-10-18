@@ -14,8 +14,8 @@ Publicado com GitHub Pages a partir da branch `main`.
 - `vendor/`: GSAP (core, ScrollTrigger, SplitText) e Three.js, sem depender de CDN
 - `catalogo.html`: redireciona para `index.html#precos` (o catálogo agora é uma seção)
 - `assets/`: ícones e imagem de prévia para redes sociais
-- `voxel-realms/`: jogo VOXEL REALMS V10 (RPG voxel em Three.js), aberto em
-  `https://symbiozyy.github.io/amplitude-lab/voxel-realms/`
+- `voxel-realms/`: jogo Voxel Realms (RPG voxel em Three.js), aberto em
+  `https://symbiozyy.github.io/amplitude-lab/voxel-realms/` (detalhes em `voxel-realms/README.md`)
 
 ## Como editar
 
