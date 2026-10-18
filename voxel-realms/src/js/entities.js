@@ -133,15 +133,22 @@ const PJ=[],_pv2=new V3();
 function arrowMesh(){const k=new Bake();k.box(.05,.05,1.1,0,0,0,0x9a7a4a).box(.1,.1,.2,0,0,.6,0xcfd6dc).box(.02,.22,.22,0,0,-.5,0xe04a3a).box(.22,.02,.22,0,0,-.5,0xe04a3a);return k.mesh(MV)}
 for(let i=0;i<34;i++){const s=spr(0xffffff,1.1,1);s.visible=false;sc.add(s);const a=arrowMesh();a.visible=false;sc.add(a);PJ.push({s,a,o:null,l:0,v:new V3,tg:null,dm:0,k:'',side:''})}
 function proj(side,kind,x,y,z,tg,dm,o){o=o||{};const p=PJ.find(p=>p.l<=0);if(!p)return;Object.assign(p,{side,k:kind,tg,dm,l:o.life||2.4,aoe:o.aoe||0,c:o.c||0xffffff,pierce:o.pierce,hits:[],psn:o.psn,brn:o.brn,home:o.home==null?(side=='p'?1:0):o.home});
-  p.o=kind=='arrow'?p.a:p.s;p.o.visible=true;p.o.position.set(x,y,z);if(kind!='arrow'){p.s.material.color.setHex(p.c);p.s.scale.setScalar(kind=='fire'?1.6:1.2)}
+  p.ml=p.l;p.o=kind=='arrow'?p.a:p.s;p.o.visible=true;p.o.position.set(x,y,z);if(kind!='arrow'){p.s.material.color.setHex(p.c);p.s.scale.setScalar(kind=='fire'?1.6:1.2)}
   const sp=kind=='arrow'?28:kind=='orb'?14:16;if(o.dir)p.v.copy(o.dir).multiplyScalar(sp);else p.v.set(tg.x-x,(tg.y||0)+(tg===P?1.3:1.1)-y,tg.z-z).normalize().multiplyScalar(sp);if(kind=='orb'&&side=='p')p.v.y+=3;p.sp=sp}
-function projUpd(dt){for(const p of PJ){if(p.l<=0)continue;p.l-=dt;const q=p.o.position,t=p.tg;
+function projUpd(dt){stickUpd(dt);for(const p of PJ){if(p.l<=0)continue;p.l-=dt;const q=p.o.position,t=p.tg;
   if(t&&!t.dead&&p.home>0){_pv2.set(t.x-q.x,(t.y||0)+(t===P?1.3:1.1)-q.y,t.z-q.z);const d=_pv2.length();_pv2.multiplyScalar(p.sp/(d||1));p.v.lerp(_pv2,Math.min(1,dt*6*p.home))}
+  if(p.k=='arrow'&&p.l<p.ml*.55&&!(t&&t.mx&&!t.dead)){p.home=0;p.v.y-=26*dt}
   q.addScaledVector(p.v,dt);if(p.k=='arrow')p.o.lookAt(q.x+p.v.x,q.y+p.v.y,q.z+p.v.z);else p.o.scale.setScalar((p.k=='fire'?1.6:1.15)+S(T60*.5)*.15);
   if(ev(2))projTrail(p,q);
   if(p.side=='p'){for(const e of E){if(e.dead||p.hits.includes(e))continue;if(hy(e.x-q.x,e.z-q.z)<e.r+.5&&Math.abs(q.y-(e.y+1.2*(e.boss?2:1)))<2.4*(e.boss?2:1)){hitProj(p,e);if(!p.pierce){p.l=0;break}}}}
   else if(!P.dead&&hy(P.x-q.x,P.z-q.z)<.75&&Math.abs(q.y-P.y-1.2)<1.6){hitPlayer(p.dm,{psn:p.psn,brn:p.brn,src:p});fx(q.x,q.y,q.z,p.c,6,4,.14);p.l=0}
-  if(q.y<groundAt(q.x,q.z)+.05){if(p.aoe)hitProj(p,null);else fx(q.x,q.y+.1,q.z,0xc8a060,4,3,.1);p.l=0}if(p.l<=0)p.o.visible=false}}
+  if(q.y<groundAt(q.x,q.z)+.05){if(p.aoe)hitProj(p,null);else{fx(q.x,q.y+.1,q.z,0xc8a060,4,3,.1);if(p.k=='arrow')stickArrow(p.o)}p.l=0}
+  else if(p.l<=0&&p.k=='arrow'&&!p.hitEnd){p.l=.6;p.hitEnd=1;p.v.y=Math.min(p.v.y,-4)} // no fim do alcance a flecha cai em vez de sumir no ar
+  if(p.l<=0){p.o.visible=false;p.hitEnd=0}}}
+// flechas cravadas no chão (pool próprio, somem devagar)
+const STK=[];let stkI=0;
+function stickArrow(o){let a=STK[stkI%14];if(!a){a=arrowMesh();sc.add(a);STK.push(a)}stkI++;a.position.copy(o.position);a.quaternion.copy(o.quaternion);a.visible=true;a.userData.t=4;a.scale.setScalar(1)}
+function stickUpd(dt){for(const a of STK){if(!a.visible)continue;a.userData.t-=dt;if(a.userData.t<.5)a.scale.setScalar(Math.max(.01,a.userData.t*2));if(a.userData.t<=0)a.visible=false}}
 function hitProj(p,e){const q=p.o.position;if(e){p.hits.push(e);hurtMob(e,p.dm,0,'proj')}if(p.aoe){for(const o of E)if(o!==e&&!o.dead&&hy(o.x-q.x,o.z-q.z)<p.aoe)hurtMob(o,p.dm*.6,0,'proj');fx(q.x,q.y,q.z,p.c,14,6,.18,1.2);flash(q.x,q.y,q.z,p.c,3.5,.3);ring(q.x,q.z,p.aoe,p.c,.35);snd(300,.12,'sine')}else{fx(q.x,q.y,q.z,0xffe9a0,5,4,.12);flash(q.x,q.y,q.z,0xfff0b0,1.1,.12)}}
 
 // ---------- IA dos monstros

@@ -30,7 +30,7 @@ const SKX={pocao:{n:'Poção de Vida',ic:'🧪',cd:18},dash:{n:'Dash',ic:'💨',
 P.sk={};P.sp=1;P.bar=[null,null,null,null];P.run=0;P.dash=0;P.shield=0;
 const rk=id=>P.sk[id]||0,reqLv=(id,r)=>SK[id].lv+(r>0?r*3:0);
 const MANA=()=>ST.wk=='staff'||ST.wk=='wand';
-function skPassive(s){s.arm*=1+.15*rk('pele');s.dmg+=6*rk('brutal');s.crit+=2*rk('brutal');s.mag=(s.mag||0)+12*rk('mente');s.ms+=5*rk('agil');s.hpP=8*rk('vital');s.mreg=8+3*rk('mente');if(typeof clsPassive=='function')clsPassive(s);if(typeof petPassive=='function')petPassive(s);if(typeof archerPassive=='function')archerPassive(s)}
+function skPassive(s){s.arm*=1+.15*rk('pele');s.dmg+=6*rk('brutal');s.crit+=2*rk('brutal');s.mag=(s.mag||0)+12*rk('mente');s.ms+=5*rk('agil');s.hpP=8*rk('vital');s.mreg=8+3*rk('mente');if(typeof clsPassive=='function')clsPassive(s);if(typeof petPassive=='function')petPassive(s);if(typeof archerPassive=='function')archerPassive(s);if(typeof mountPassive=='function')mountPassive(s)}
 function learn(id){const r=rk(id);if(r>=3||P.sp<1||P.lv<reqLv(id,r))return false;P.sk[id]=r+1;P.sp--;if(!r&&!SK[id].pas){const i=P.bar.indexOf(null);if(i>=0)P.bar[i]=id}calcStats();snd(880,.12,'sine');flash(P.x,P.y+1.6,P.z,0xc8a0ff,3,.3);hud();save();return true}
 function spellDmg(m){return rollDmg(m*(1+(ST.mag||0)/100))}
 function cdOf(id){return(SK[id]?SK[id].cd||0:SKX[id].cd)*(1-ST.cdr/100)*(id=='salto'&&ST.leg.has('sismo')?.5:1)*(id=='dash'?1-.1*rk('agil'):1)}

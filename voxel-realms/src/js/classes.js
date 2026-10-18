@@ -9,9 +9,9 @@ const CLS={
   guerreiro:{n:'Guerreiro',ic:'⚔️',d:'Mestre do corpo a corpo. +20% de vida e +10 de armadura. Usa Fúria, que enche ao bater.',sk:'giro',
     wpn:{base:'Espada Curta',n:'Espada do Guardião',ic:'⚔️',wk:'sword',wd:[6,9]},mdl:{}},
   mago:{n:'Mago',ic:'🔮',d:'Domina fogo, gelo e raio. +20% de Poder Mágico e Mana mais rápida. Ataca com orbes arcanos.',sk:'bolafogo',
-    wpn:{base:'Cajado Arcano',n:'Cajado do Aprendiz',ic:'🪄',wk:'staff',wd:[5,8],aff:{mag:15}},mdl:{shirt:0x34346e,cape:0x2a3f9a,capeE:0xc0d0ff,hat:'wizard',hatC:0x2a3a8a,robe:0x2a3a7a,shoulders:0,beard:0x8a8a8a,hair:0x8a8a8a}},
+    wpn:{base:'Cajado Arcano',n:'Cajado do Aprendiz',ic:'🪄',wk:'staff',wd:[5,8],aff:{mag:15}},mdl:{shirt:0x34346e,cape:0x2a3f9a,capeE:0xc0d0ff,hat:'wizard',hatC:0x4a2a8a,robe:0x3a2a7a,shoulders:0,beard:0x8a8a8a,hair:0x8a8a8a,belt:0x2a1a3a,gem:0x7df0ff}},
   cacador:{n:'Caçador',ic:'🏹',d:'Ataca de longe com o arco. +10% de velocidade e +5% de chance crítica. Começa com Chuva de Flechas.',sk:'flechas',
-    wpn:{base:'Arco Curvo',n:'Arco do Batedor',ic:'🏹',wk:'bow',wd:[5,8]},mdl:{shirt:0x3d6a2a,vest:0x2f4a20,cape:0x2f5a24,capeE:0x8a6a3a,hat:'hood',hatC:0x2f5a24,shoulders:0,gloves:0x5a3a20}}};
+    wpn:{base:'Arco Curvo',n:'Arco do Batedor',ic:'🏹',wk:'bow',wd:[5,8]},mdl:{shirt:0x3d6a2a,vest:0x2f4a20,cape:0x2f5a24,capeE:0x8a6a3a,hat:'ranger',hatC:0x6a4428,plume:0xc0302a,shoulders:0,gloves:0x5a3a20,belt:0x4a2e18}}};
 function heroModel(cls){const c=CLS[cls]||CLS.guerreiro;return hum(Object.assign({skin:0xe0a878,hair:0x4a2a18,shirt:0x6d7684,pants:0x4a3a2e,boots:0x3a2a1e,cape:0xb3202a,capeE:0xd9a948,belt:0x5a3a20,shoulders:0x8a93a2},c.mdl))}
 function setClass(cls){P.cls=CLS[cls]?cls:'guerreiro';const old=P.m;P.m=heroModel(P.cls);P.m.g.position.copy(old.g.position);P.m.g.rotation.y=old.g.rotation.y;dropModel(old);calcStats()}
 function clsPassive(s){if(P.cls=='guerreiro'){s.hpP=(s.hpP||0)+20;s.arm+=10}else if(P.cls=='mago'){s.mag+=20;s.mreg=(s.mreg||8)+3}else if(P.cls=='cacador'){s.ms+=10;s.crit+=5}}
@@ -24,15 +24,26 @@ function extraSkill(id,a,r){if(id!='flechas')return;const t=a.tg,x=t?t.x:P.x+S(P
     snd(500,.15,'square');for(const e of E)if(!e.dead&&hy(e.x-T.x,e.z-T.z)-e.r<3.6){const[dm,c]=rollDmg(1.6+.4*(r-1));hurtMob(e,dm,c,'flechas');e.slow=2}},0xffe08a)}
 
 // ---------- montarias
-const MOUNTS={leao:{n:'Leão Dourado',ic:'🦁',price:450,sp:2.4,d:'Juba dourada e passos de trovão. Corre muito mais rápido que você a pé.'}};
-MDL.lion=()=>quad({c:0xd8a040,c2:0xe8c070,mane:0x8a4a1a,hc:0xd8a040,snout:0x6a4a2a,ears:1,teeth:1,len:2.3,h:1.15,wid:.95,bh:.7,hl:.7,tl:1.3,tw:.18,tc:0xd8a040,lc:0xc89030,run:12,scale:1.2,tailUp:.2});
-P.mounts=[];P.mounted=null;let MNT=null;const MOUNT_Y=1.45;
-function mount(){if(P.dead||UI.block())return;if(P.mounted){dismount();return}if(!P.mounts.length){toast('🦁','Você não tem montaria','Compre o Leão Dourado na Forja da Helga.');return}
-  P.mounted=P.mounts[0];P.act=null;if(!MNT){MNT=MDL.lion();MNT.meshes.forEach(m=>m.castShadow=true)}MNT.g.visible=true;MNT.g.position.set(P.x,P.y,P.z);MNT.g.rotation.y=P.f;
-  puff(P.x,P.y+.4,P.z,0xcdb894,2.4);sweep(160,70,.5,'sawtooth',.06);setTimeout(()=>sweep(220,90,.4,'sawtooth',.05),180);$('mntb').classList.add('on');toast(MOUNTS[P.mounted].ic,MOUNTS[P.mounted].n,'Atacar ou usar habilidade desmonta.')}
-function dismount(){if(!P.mounted)return;P.mounted=null;if(MNT)MNT.g.visible=false;puff(P.x,P.y+.4,P.z,0xcdb894,1.8);$('mntb').classList.remove('on')}
-function mountUpd(dt,t){if(!MNT)return;if(!P.mounted){MNT.g.visible=false;return}MNT.g.position.set(P.x,P.y,P.z);MNT.g.rotation.y=P.f;animate(MNT,dt,t,{v:P.v||0});if((P.v||0)>8&&ev(3))puff(P.x-S(P.f)*1.2,P.y+.2,P.z-C(P.f)*1.2,0xcdb894,1.1)}
-function buyMount(id){const M=MOUNTS[id];if(P.mounts.includes(id))return;if(P.gold<M.price){toast('🪙','Ouro insuficiente','Faltam '+(M.price-P.gold)+' moedas');return}P.gold-=M.price;P.mounts.push(id);$('mntb').style.display='';snd(220,.4,'sawtooth');toast(M.ic,'Montaria comprada: '+M.n,'Toque em '+M.ic+' (ou R) para montar.');hud();save()}
+const MOUNTS={
+  cavalo:{n:'Cavalo Baio',ic:'🐴',price:220,sp:2.1,d:'Manso e confiável. A primeira montaria de todo aventureiro.',m:{c:0x8a5a32,mane:0x3a2418,hc:0x8a5a32,snout:0x5a3a22,ears:1,len:2.2,h:1.25,wid:.8,bh:.7,hl:.85,tl:1.1,tw:.16,tc:0x3a2418,run:12,scale:1.15,tailUp:-.6}},
+  leao:{n:'Leão Dourado',ic:'🦁',price:480,sp:2.4,d:'Juba dourada e passos de trovão.',m:{c:0xd8a040,c2:0xe8c070,mane:0x8a4a1a,hc:0xd8a040,snout:0x6a4a2a,ears:1,teeth:1,len:2.3,h:1.15,wid:.95,bh:.7,hl:.7,tl:1.3,tw:.18,tc:0xd8a040,lc:0xc89030,run:12,scale:1.2,tailUp:.2}},
+  javali:{n:'Javali de Guerra',ic:'🐗',price:720,sp:2.45,arm:15,d:'Blindado com placas de ferro. +15% de armadura enquanto montado.',m:{c:0x5a3a2a,mane:0x2a1a12,hc:0x4a2e20,tusk:1,ears:1,len:2.1,h:1,wid:1.05,bh:.85,hl:.75,tl:.4,run:10,scale:1.2,back:0x9aa2ae,spots:0x7a808a}},
+  lobo:{n:'Lobo das Neves',ic:'🐺',price:1050,sp:2.75,d:'Veloz como o vento do norte. Deixa um rastro de geada.',fx:0xd8f4ff,m:{c:0xe8eef4,mane:0xffffff,hc:0xdfe6ee,ears:1,teeth:1,eye:0x4ab0ff,len:2.2,h:1.1,wid:.85,tl:1.1,tw:.22,tc:0xffffff,run:12,scale:1.28}},
+  raptor:{n:'Raptor de Brasa',ic:'🦖',price:1800,sp:3.05,d:'Lendário. A montaria mais rápida de Aldoria, com um rastro de brasas.',fx:0xff7a1a,m:{c:0xc0401a,c2:0xffb060,hc:0xc0401a,teeth:1,eye:0xffe060,len:2.4,h:1.2,wid:.7,hl:.95,tl:1.9,tw:.3,tc:0xc0401a,back:0x6a2a8a,run:13,scale:1.25,tailUp:.1}}};
+for(const k in MOUNTS){const M=MOUNTS[k];M.y=((M.m.h||.7)+.15+(M.m.bh||.62)/2)*(M.m.scale||1)-.53;MDL['mnt_'+k]=()=>quad(M.m)}
+MDL.lion=MDL.mnt_leao;
+P.mounts=[];P.mounted=null;P.mountSel=null;const MNTS={};let MNT=null;
+const mountY=()=>P.mounted?MOUNTS[P.mounted].y:0;
+function mount(){if(P.dead||UI.block())return;if(P.mounted){dismount();return}if(!P.mounts.length){toast('🐴','Você não tem montaria','Compre uma na Forja da Helga.');return}
+  const id=P.mounts.includes(P.mountSel)?P.mountSel:P.mounts[0];P.mounted=id;P.act=null;if(!MNTS[id]){const m=MDL['mnt_'+id]();m.meshes.forEach(o=>o.castShadow=true);MNTS[id]=m}
+  for(const k in MNTS)MNTS[k].g.visible=false;MNT=MNTS[id];MNT.g.visible=true;MNT.g.position.set(P.x,P.y,P.z);MNT.g.rotation.y=P.f;calcStats();
+  puff(P.x,P.y+.4,P.z,0xcdb894,2.4);ring(P.x,P.z,2.4,0xffe08a,.4);sweep(160,70,.5,'sawtooth',.06);setTimeout(()=>sweep(220,90,.4,'sawtooth',.05),180);$('mntb').classList.add('on');toast(MOUNTS[id].ic,MOUNTS[id].n,'Atacar ou usar habilidade desmonta.')}
+function dismount(){if(!P.mounted)return;P.mounted=null;if(MNT)MNT.g.visible=false;calcStats();puff(P.x,P.y+.4,P.z,0xcdb894,1.8);$('mntb').classList.remove('on')}
+function mountUpd(dt,t){if(!MNT)return;if(!P.mounted){MNT.g.visible=false;return}MNT.g.position.set(P.x,P.y,P.z);MNT.g.rotation.y=P.f;animate(MNT,dt,t,{v:P.v||0});const M=MOUNTS[P.mounted];
+  if((P.v||0)>8&&ev(3)){puff(P.x-S(P.f)*1.2,P.y+.2,P.z-C(P.f)*1.2,0xcdb894,1.1);if(M.fx)fx(P.x-S(P.f)*1.4,P.y+.3,P.z-C(P.f)*1.4,M.fx,2,1.5,.14,.8,M.fx==0xff7a1a?-1:2)}}
+function mountPassive(s){if(P.mounted&&MOUNTS[P.mounted].arm)s.arm=s.arm*(1+MOUNTS[P.mounted].arm/100)+10}
+function buyMount(id){const M=MOUNTS[id];if(P.mounts.includes(id)){P.mountSel=id;$('mntb').querySelector('i').textContent=M.ic;if(P.mounted&&P.mounted!=id){dismount();mount()}toast(M.ic,M.n+' selecionado','Toque em '+M.ic+' (ou R) para montar.');save();return}
+  if(P.gold<M.price){toast('🪙','Ouro insuficiente','Faltam '+(M.price-P.gold)+' moedas');return}P.gold-=M.price;P.mounts.push(id);P.mountSel=id;$('mntb').style.display='';$('mntb').querySelector('i').textContent=M.ic;snd(220,.4,'sawtooth');toast(M.ic,'Montaria comprada: '+M.n,'Toque em '+M.ic+' (ou R) para montar.');hud();save()}
 
 // ---------- Mercante Sombrio (fora da paliçada, na estrada do oeste)
 MDL.sombrio=()=>hum({skin:0x5a4a6a,shirt:0x1a1222,pants:0x140e1a,robe:0x1e1428,hat:'hood',hatC:0x1a1222,mask:0x0a0a10,glowEyes:0xb07aff,cape:0x2a1a3a,capeE:0x7a4aaa,scale:1.12,noFace:1});

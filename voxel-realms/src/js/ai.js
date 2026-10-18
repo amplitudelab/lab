@@ -19,7 +19,7 @@ function dodgeCheck(e,d,dx,dz){if(e.boss||e.t.passive||e.t.ai=='hopper'||(e.dcd|
   for(const p of PJ)if(p.l>0&&p.side=='p'&&p.dgBy!==e){const q=p.o.position,px=q.x-e.x,pz=q.z-e.z,pd=hy(px,pz);if(pd<6.5&&(p.v.x*px+p.v.z*pz)<0){p.dgBy=e;if(Math.random()<dgChance(e)+.1){const l=hy(p.v.x,p.v.z)||1;startDodge(e,p.v.z/l*d,-p.v.x/l*d,d)}else e.dcd=.8;return}}}
 function circleMv(e,dx,dz,d,sp,want,k){e.fp=.2;if(!e.cs||(e.ct-=1/60)<0){e.cs=Math.random()<.5?1:-1;e.ct=1.5+R()*2}
   const tx=-dz/d*e.cs,tz=dx/d*e.cs,rad=cl((d-want)*.45,-.7,.7);return[(tx*k+dx/d*rad)*sp,(tz*k+dz/d*rad)*sp]}
-function meleeMove(e,dt,d,dx,dz,sp,rg){
+function meleeMove(e,dt,d,dx,dz,sp,rg){aiStuck(e,dt,d);if(e.ut>0){e.ut-=dt;return[e.ux*sp,e.uz*sp]}
   if(e.ret>0){e.ret-=dt;e.fp=.2;return[-dx/d*sp*.85,-dz/d*sp*.85]}
   if(!e.rt&&!e.el&&e.hp<e.mx*.22&&Math.random()<dt*1.2){e.rt=1;e.rtt=3.2;if(d<14)pop('...',e.x,e.y+2.4,e.z,'#c8c8c8')}
   if(e.rtt>0){e.rtt-=dt;e.fp=.2;e.hp=Math.min(e.mx,e.hp+e.mx*.02*dt*4);return[-dx/d*sp*1.05,-dz/d*sp*1.05]}
@@ -30,7 +30,7 @@ function meleeMove(e,dt,d,dx,dz,sp,rg){
     if(d<7&&HR[e.type]&&!e.act&&(e.sw=(e.sw||0)+dt)>1.1){const c=circleMv(e,dx,dz,d,sp,rg+.6,.9);if(e.sw>2){e.sw=0}return c}  // flanqueia antes do bote
     return[ax/al*sp,az/al*sp]}
   return[0,0]}
-function rangedMove(e,dt,d,dx,dz,sp,T){const lo=T.rg*.45,hi=T.rg*.85;
+function rangedMove(e,dt,d,dx,dz,sp,T){aiStuck(e,dt,d);if(e.ut>0){e.ut-=dt;return[e.ux*sp,e.uz*sp]}const lo=T.rg*.45,hi=T.rg*.85;
   if(d<lo)return[-dx/d*sp*.9,-dz/d*sp*.9];if(d>hi)return[dx/d*sp,dz/d*sp];return circleMv(e,dx,dz,d,sp,(lo+hi)/2,.55)}
 function aiAfterAct(e){if(HR[e.type]&&!e.boss)e.ret=.55+R()*.5}
 
@@ -66,3 +66,15 @@ function poolUpd(dt){for(let i=POOLS.length-1;i>=0;i--){const o=POOLS[i];o.t-=dt
     if(ev(5))fx(o.x+(R()-.5)*o.r*1.6,groundAt(o.x,o.z)+.15,o.z+(R()-.5)*o.r*1.6,o.c,1,1.2,.2,1.4,-1);
     if(o.tk<=0){o.tk=.5;if(!P.dead&&hy(P.x-o.x,P.z-o.z)<o.r&&P.dash<=0)hitPlayer(o.dm,{psn:o.psn,brn:o.brn})}
     if(o.t<=0)POOLS.splice(i,1)}}
+
+// ---------- chefes sempre presentes no covil (o limite de monstros não pode impedir o chefe)
+let bossCk=0;
+function bossCheck(dt){bossCk-=dt;if(bossCk>0)return;bossCk=1.5;
+  for(const b in BOSS){const B=BOSS[b];if(hy(P.x-B.x,P.z-B.z)>75)continue;if(!CHK.get(ckey(Math.floor(B.x/CS),Math.floor(B.z/CS))))continue;
+    if(E.some(e=>e.type==b&&!e.dead)||!bossAvailable(b))continue;mkMob(b,B.x,B.z,{lv:Math.max(B.lv,P.lv),ch:ckey(Math.floor(B.x/CS),Math.floor(B.z/CS))})}}
+// ---------- monstro preso (árvore, pedra, cerca): contorna; se continuar preso longe da vista, reposiciona
+function aiStuck(e,dt,d){e.skT=(e.skT||0)+dt;if(e.skT<1.2)return null;e.skT=0;const mv=hy(e.x-(e.skx??e.x+9),e.z-(e.skz??e.z+9));e.skx=e.x;e.skz=e.z;
+  if(e.st!='chase'||d<e.t.rg+e.r+1.2||e.act){e.skn=0;return null}
+  if(mv<.6){e.skn=(e.skn||0)+1;const a=R()*TAU;e.ux=S(a);e.uz=C(a);e.ut=.9;
+    if(e.skn>=3&&d>14){for(let i=0;i<8;i++){const a2=R()*TAU,r=3+R()*5,x=e.x+S(a2)*r,z=e.z+C(a2)*r;if(walkable(x,z,e.y)){e.x=x;e.z=z;e.y=groundAt(x,z);e.skn=0;break}}}}
+  else e.skn=0;return null}

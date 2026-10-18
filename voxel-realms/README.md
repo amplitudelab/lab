@@ -74,6 +74,13 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Montarias, chefes e economia (v12)
+- **5 montarias** na Forja da Helga, cada uma com preço e velocidade: Cavalo Baio 🐴 (220), Leão Dourado 🦁 (480), Javali de Guerra 🐗 (720, +armadura montado), Lobo das Neves 🐺 (1050, rastro de geada) e Raptor de Brasa 🦖 (1800, a mais rápida, rastro de brasas). Comprou mais de uma? Toque em "Usar" para escolher.
+- **Vitória contra chefe**: câmera lenta, coluna de luz, chuva de ouro, saque garantido (lendário na primeira vitória de cada chefe) e **subida de nível garantida**.
+- **Economia**: loja da forja cobra 3× o valor de venda (antes 3,5×); ouro dos chefes escala com o nível.
+- **Efeitos estilo Diablo**: pedaços voando na morte, manchas no chão, estrela nos críticos, coluna dourada ao subir de nível.
+- **Modelos novos** inspirados em Hytale: cabeça maior, olhos com íris e brilho, sobrancelhas, nariz, bochechas, orelhas, franja, golas, barras, fivelas, punhos e solas; chapéu de patrulheiro com pena no Caçador.
+
 ## Arqueiro e saque por classe
 - **Árvore do Arqueiro** 🏹 (a da sua classe aparece primeiro): Chuva de Flechas, Tiro Múltiplo, Olho de Águia, Salto Evasivo, Flecha Perfurante, Aljava Leve, Armadilha de Gelo, Falcão Caçador e Tempestade de Flechas. As habilidades de tiro exigem arco.
 - **Drops pela classe**: cerca de 80% das armas que caem são da sua classe (Guerreiro: espadas, machados e maças; Mago: cajados e varinhas; Caçador: arcos), mas armas de outras classes ainda aparecem. Os atributos também puxam para a classe (Fúria, Vida e Armadura; Poder Mágico e Recarga; Crítico e Velocidade de Ataque), e os lendários preferem os da sua classe. Cada arma mostra se é da sua classe.
