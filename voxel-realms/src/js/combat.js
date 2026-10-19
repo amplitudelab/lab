@@ -19,12 +19,12 @@ function armorVis(){const m=P.m;for(const k of['elmo','peito','botas'])if(m['av_
   m.meshes=[];m.g.traverse(o=>{if(o.isMesh){m.meshes.push(o);if(!o.userData.mat)o.userData.mat=o.material}})}
 
 // ---------- dano
-function rollDmg(mult){const b=(ST.dmin+R()*(ST.dmax-ST.dmin))*(1+P.lv*.08)*(1+ST.dmg/100)*(P.buff.grito>0?1+(P.gritoK||.3):1)*(P.buff.pod>0?1.3:1)*mult,c=P.buff.pf>0||R()*100<ST.crit;if(c)delete P.buff.pf;return[c?b*(1+ST.critd/100):b,c]}
+function rollDmg(mult){const b=(ST.dmin+R()*(ST.dmax-ST.dmin))*(1+P.lv*.08)*(1+ST.dmg/100)*(P.buff.grito>0?1+(P.gritoK||.3):1)*(P.buff.pod>0?1.3:1)*vampDmg()*mult,c=P.buff.pf>0||R()*100<ST.crit;if(c)delete P.buff.pf;return[c?b*(1+ST.critd/100):b,c]}
 function hurtMob(e,d,crit,src){if(e.dead)return;if(e.inv>0){pop('Imune',e.x,e.y+2.6*e.m.g.scale.y,e.z,'#ffb070');return}if(e.evade>0&&src!='dot'&&src!='leg'&&!e.boss){e.evade=0;pop('Esquivou!',e.x,e.y+2.2*e.m.g.scale.y,e.z,'#9ae4ff');return}if(e.afx.includes('blindado'))d*=.6;if(e.stun>0)d*=1.25;d=Math.max(1,Math.round(d));e.hp-=d;
   if(crit)critFx(e);if((src=='golpe'||src=='proj')&&!e.t.passive)powProc(e,d,crit);pop((crit?'✦':'')+fmt(d),e.x,e.y+2.2*e.m.g.scale.y,e.z,crit?'#ffd84a':src=='merc'||src=='proj'&&!crit?'#ffe8c0':'#ffffff',crit);
   e.fl=.08;flashModel(e.m,true);e.hurt=1;if(!e.boss){const a=Math.atan2(e.x-P.x,e.z-P.z),kb=src=='giro'||src=='chama'?2.2:1.2;e.vx+=S(a)*kb*3;e.vz+=C(a)*kb*3}
-  if(e.t.passive){e.flee=5}else if(e.st!='chase'){e.st='chase';alertPack(e)}if(src!='merc'){TGT=e;TGTt=4}
-  if(ST.ls&&src!='merc'){const h=d*ST.ls/100;P.hp=Math.min(ST.mx,P.hp+h)}if(e.afx.includes('vampiro'))e.hp=Math.min(e.mx,e.hp+d*.08);
+  if(e.t.passive){e.flee=5}else if(e.st!='chase'){e.st='chase';alertPack(e)}if(src!='merc'&&src!='minion'){TGT=e;TGTt=4}
+  if(ST.ls&&src!='merc'&&src!='minion'){const h=d*Math.min(P.cls=='vampiro'?15:100,ST.ls+(P.buff.fren2>0?5:0))/100;P.hp=Math.min(ST.mx,P.hp+h)}if(e.afx.includes('vampiro'))e.hp=Math.min(e.mx,e.hp+d*.08);
   if(crit&&ST.leg.has('trovao')&&R()<.5)setTimeout(()=>{if(!e.dead){flash(e.x,e.y+3,e.z,0x9ae4ff,4,.3);fx(e.x,e.y+1.5,e.z,0x9ae4ff,12,6,.15,1.5);hurtMob(e,d*1,0,'leg');snd(1400,.15,'sawtooth')}},80);
   if(e.hp<=0)killMob(e)}
 function killMob(e){e.dead=1;e.dt=0;e.dfz=R()<.5?1:-1;flashModel(e.m,false);if(e.ring)e.ring.visible=false;const T=e.t,lv=e.lv;
@@ -78,7 +78,7 @@ function openChest(c){if(c.o){toast('🧰','Baú vazio','');return}c.o=1;snd(220
 let TGT=null,TGTt=0;
 function bestTarget(r,front){let b=null,bs=1e9;for(const e of E){if(e.dead||!e.m.g.visible||e.t.passive)continue;const dx=e.x-P.x,dz=e.z-P.z,d=hy(dx,dz)-e.r;if(d>r)continue;if(fpOn()&&d>1.2&&Math.abs(angDiff(P.f,Math.atan2(dx,dz)))>.5)continue;const s=d-(front?3.5*Math.max(0,C(angDiff(P.f,Math.atan2(dx,dz)))):0);if(s<bs){bs=s;b=e}}return b}
 function canAct(){return!P.dead&&!P.act&&P.dash<=0&&!P.leap&&P.stun<=0&&!UI.block()}
-function attack(){if(!canAct()||P.block)return;dismount();const sp=1+ST.ias/100+(P.buff.fren>0?.25:0);
+function attack(){if(!canAct()||P.block)return;dismount();const sp=1+ST.ias/100+(P.buff.fren>0?.25:0)+(P.buff.fren2>0?.2+.1*rk('frenesi'):0);
   if(MANA()){const t=bestTarget(16,1);if(t)P.f=Math.atan2(t.x-P.x,t.z-P.z);P.act={k:'cast',t:0,dur:.5/sp,hp:.5,sk:'orbe',tg:t};return}
   if(bow()){const t=bestTarget(16,1);if(t)P.f=Math.atan2(t.x-P.x,t.z-P.z);P.act={k:'shoot',t:0,dur:(ST.wk=='xbow'?.95:.62)/sp,hp:.62,sk:'flecha',tg:t};sweep(140,320,.25,'triangle',.04);return}
   const t=bestTarget(8,1);P.lunge=0;if(t){P.f=Math.atan2(t.x-P.x,t.z-P.z);const d=hy(t.x-P.x,t.z-P.z)-t.r;if(d>1.6){P.lunge=Math.min(.22,(d-1.2)/16)}}

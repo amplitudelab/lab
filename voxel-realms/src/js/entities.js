@@ -132,7 +132,7 @@ function dismiss(silent){const n=P.merc;if(!n)return;n.follow=0;n.still=1;n.act=
 const PJ=[],_pv2=new V3();
 function arrowMesh(){const k=new Bake();k.box(.05,.05,1.1,0,0,0,0x9a7a4a).box(.1,.1,.2,0,0,.6,0xcfd6dc).box(.02,.22,.22,0,0,-.5,0xe04a3a).box(.22,.02,.22,0,0,-.5,0xe04a3a);return k.mesh(MV)}
 for(let i=0;i<34;i++){const s=spr(0xffffff,1.1,1);s.visible=false;sc.add(s);const a=arrowMesh();a.visible=false;sc.add(a);PJ.push({s,a,o:null,l:0,v:new V3,tg:null,dm:0,k:'',side:''})}
-function proj(side,kind,x,y,z,tg,dm,o){o=o||{};const p=PJ.find(p=>p.l<=0);if(!p)return;Object.assign(p,{side,k:kind,tg,dm,l:o.life||2.4,aoe:o.aoe||0,c:o.c||0xffffff,pierce:o.pierce,hits:[],psn:o.psn,brn:o.brn,home:o.home==null?(side=='p'?1:0):o.home});
+function proj(side,kind,x,y,z,tg,dm,o){o=o||{};const p=PJ.find(p=>p.l<=0);if(!p)return;Object.assign(p,{lh:o.lh,side,k:kind,tg,dm,l:o.life||2.4,aoe:o.aoe||0,c:o.c||0xffffff,pierce:o.pierce,hits:[],psn:o.psn,brn:o.brn,home:o.home==null?(side=='p'?1:0):o.home});
   p.ml=p.l;p.o=kind=='arrow'?p.a:p.s;p.o.visible=true;p.o.position.set(x,y,z);if(kind!='arrow'){p.s.material.color.setHex(p.c);p.s.scale.setScalar(kind=='fire'?1.6:1.2)}
   const sp=kind=='arrow'?28:kind=='orb'?14:16;if(o.dir)p.v.copy(o.dir).multiplyScalar(sp);else p.v.set(tg.x-x,(tg.y||0)+(tg===P?1.3:1.1)-y,tg.z-z).normalize().multiplyScalar(sp);if(kind=='orb'&&side=='p')p.v.y+=3;p.sp=sp}
 function projUpd(dt){stickUpd(dt);for(const p of PJ){if(p.l<=0)continue;p.l-=dt;const q=p.o.position,t=p.tg;
@@ -149,14 +149,14 @@ function projUpd(dt){stickUpd(dt);for(const p of PJ){if(p.l<=0)continue;p.l-=dt;
 const STK=[];let stkI=0;
 function stickArrow(o){let a=STK[stkI%14];if(!a){a=arrowMesh();sc.add(a);STK.push(a)}stkI++;a.position.copy(o.position);a.quaternion.copy(o.quaternion);a.visible=true;a.userData.t=4;a.scale.setScalar(1)}
 function stickUpd(dt){for(const a of STK){if(!a.visible)continue;a.userData.t-=dt;if(a.userData.t<.5)a.scale.setScalar(Math.max(.01,a.userData.t*2));if(a.userData.t<=0)a.visible=false}}
-function hitProj(p,e){const q=p.o.position;if(e){p.hits.push(e);hurtMob(e,p.dm,0,'proj')}if(p.aoe){for(const o of E)if(o!==e&&!o.dead&&hy(o.x-q.x,o.z-q.z)<p.aoe)hurtMob(o,p.dm*.6,0,'proj');fx(q.x,q.y,q.z,p.c,14,6,.18,1.2);flash(q.x,q.y,q.z,p.c,3.5,.3);ring(q.x,q.z,p.aoe,p.c,.35);snd(300,.12,'sine')}else{fx(q.x,q.y,q.z,0xffe9a0,5,4,.12);flash(q.x,q.y,q.z,0xfff0b0,1.1,.12)}}
+function hitProj(p,e){const q=p.o.position;if(e){p.hits.push(e);hurtMob(e,p.dm,0,'proj');if(p.lh)heal(p.dm*.1,1)}if(p.aoe){for(const o of E)if(o!==e&&!o.dead&&hy(o.x-q.x,o.z-q.z)<p.aoe)hurtMob(o,p.dm*.6,0,'proj');fx(q.x,q.y,q.z,p.c,14,6,.18,1.2);flash(q.x,q.y,q.z,p.c,3.5,.3);ring(q.x,q.z,p.aoe,p.c,.35);snd(300,.12,'sine')}else{fx(q.x,q.y,q.z,0xffe9a0,5,4,.12);flash(q.x,q.y,q.z,0xfff0b0,1.1,.12)}}
 
 // ---------- IA dos monstros
 function mobsUpd(dt,t){
   // separação: monstros não se sobrepõem
   aiFrame();poolUpd(dt);
   for(let i=0;i<E.length;i++){const a=E[i];if(a.dead||a.boss&&a.flying)continue;for(let j=i+1;j<E.length;j++){const b=E[j];if(b.dead)continue;const dx=b.x-a.x,dz=b.z-a.z,m=a.r+b.r;if(Math.abs(dx)>m||Math.abs(dz)>m)continue;const d=hy(dx,dz);if(d<m&&d>1e-3){const k=(m-d)*.5/d;a.x-=dx*k;a.z-=dz*k;b.x+=dx*k;b.z+=dz*k}}}
-  for(let i=E.length-1;i>=0;i--){const e=E[i],dx=P.x-e.x,dz=P.z-e.z,d=hy(dx,dz),T=e.t;
+  for(let i=E.length-1;i>=0;i--){const e=E[i];e.tgm=e.st=='chase'&&!e.boss?minionTarget(e):null;const tgx=e.tgm?e.tgm.x:P.x,tgz=e.tgm?e.tgm.z:P.z,dx=tgx-e.x,dz=tgz-e.z,d=hy(dx,dz),T=e.t;
     if(e.dead){e.dt+=dt;const k=Math.min(1,e.dt*2.2);e.m.g.rotation.z=e.dfz*easeOut(k)*PI/2;e.m.g.position.y=e.y-Math.max(0,e.dt-1.6)*.6;if(e.dt>2.6){dropMob(e)}continue}
     const vis=d<VISD||e.boss&&d<70;e.m.g.visible=vis&&!invHide(d);if(vis){const sh=d<SHD;if(sh!==e.sh){e.sh=sh;for(const o of e.m.meshes)o.castShadow=sh}}if(e.ring)e.ring.visible=vis;if(!vis&&e.st!='chase')continue;
     e.hurt=Math.max(0,e.hurt-dt*4);e.stun-=dt;e.slow-=dt;e.cd-=dt;e.dcd-=dt;e.evade-=dt;if(e.fl>0){e.fl-=dt;if(e.fl<=0)flashModel(e.m,false)}
@@ -184,7 +184,7 @@ function mobsUpd(dt,t){
 function alertPack(e){for(const o of E)if(!o.dead&&!o.t.passive&&o.st=='idle'&&hy(o.x-e.x,o.z-e.z)<16)o.st='chase'}
 function mobStrike(e,d){const T=e.t,k=e.act.k;
   if(T.proj||k=='cast'||k=='shoot'){proj('m',T.proj||'orb',e.x+S(e.f)*.8,e.y+1.6*(e.m.g.scale.y),e.z+C(e.f)*.8,P,e.dmg,{c:T.pc||0xffffff,psn:T.psn,brn:T.brn});if(T.proj=='arrow')sweep(1100,400,.1,'triangle',.02);return}
-  const reach=T.rg+e.r*.5+1;if(d<reach){const a=Math.abs(angDiff(e.f,Math.atan2(P.x-e.x,P.z-e.z)));if(a<1.3||d<1.4)hitPlayer(e.dmg,{psn:T.psn,brn:T.brn,src:e,kb:k=='slam'?3:0})}
+  const reach=T.rg+e.r*.5+1;if(e.tgm&&MIN.includes(e.tgm)){if(d<reach+e.tgm.D.r)minionHurt(e.tgm,e.dmg)}else if(d<reach){const a=Math.abs(angDiff(e.f,Math.atan2(P.x-e.x,P.z-e.z)));if(a<1.3||d<1.4)hitPlayer(e.dmg,{psn:T.psn,brn:T.brn,src:e,kb:k=='slam'?3:0})}
   if(k=='slam'){ring(e.x+S(e.f)*1.5,e.z+C(e.f)*1.5,2.4,0xd8c8a8,.35);fx(e.x+S(e.f)*1.5,e.y+.3,e.z+C(e.f)*1.5,0xb8a888,10,5,.2,.6);SHK=Math.max(SHK,.25)}}
 // afixos de elite
 function affixUpd(e,dt,d){if(!e.afx.length)return;e.ab.t=(e.ab.t||0)-dt;if(e.ab.t>0)return;e.ab.t=4+R()*2;

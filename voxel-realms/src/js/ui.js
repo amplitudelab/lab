@@ -56,7 +56,7 @@ function dlgUpd(rdt){if(DLG&&DLG.k<DLG.txt.length){DLG.k=Math.min(DLG.txt.length
 function hud(){if(!ST.mx)return;const hp=cl(P.hp/ST.mx,0,1);$('hpo').style.setProperty('--f',hp);$('hpt').textContent=Math.ceil(P.hp)+'/'+ST.mx;$('fuo').style.setProperty('--f',P.fury/100);$('fut').textContent=Math.floor(P.fury);
   $('xpf').style.width=(P.xp/XPN(P.lv)*100)+'%';$('lvl').textContent=P.lv;$('gold').textContent=fmt(P.gold);$('lvn').textContent='Kael · Nível '+P.lv;
   P.bar.forEach((k,i)=>{const b=$('sk'+i),S_=k&&SK[k];b.classList.toggle('lock',!S_);b.querySelector('i').textContent=S_?S_.ic:'＋';b.querySelector('em').textContent=S_?(S_.cost||''):'';b.title=S_?S_.n:'Escolher habilidade'});
-  $('fuo').classList.toggle('mana',MANA());$('treeb').classList.toggle('nw',P.sp>0);
+  $('fuo').classList.toggle('mana',MANA()&&P.cls!='necromante');$('fuo').classList.toggle('soul',MANA()&&P.cls=='necromante');$('fuo').classList.toggle('blood',!MANA()&&P.cls=='vampiro');$('treeb').classList.toggle('nw',P.sp>0);
   $('atk').querySelector('i').textContent=bow()?'🏹':EQ.arma?EQ.arma.ic:'👊';$('rolb').querySelector('i').textContent='💨';$('mrc').textContent=P.merc?MERC[P.merc.merc].ic+' '+MERC[P.merc.merc].n:'';
   $('buffs').innerHTML=Object.keys(P.buff).map(k=>`<span title="${(SHRN[k]||{}).n||(k=='pf'?'Crítico garantido':'Grito de Guerra')}">${k=='grito'?'📯':k=='pf'?'✦':(SHRN[k]||{ic:'✨'}).ic}<em>${Math.ceil(P.buff[k])}</em></span>`).join('')}
 function hudFast(){const cdEl=(id,v,mx)=>$(id).style.setProperty('--c',mx?cl(v/mx,0,1):0);P.bar.forEach((k,i)=>cdEl('sk'+i,k?P.cd[k]||0:0,k?cdOf(k):0));cdEl('potb',P.cd.pocao||0,SKX.pocao.cd);cdEl('rolb',P.cd.dash||0,cdOf('dash'));

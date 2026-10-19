@@ -42,7 +42,7 @@ function useSkill(slot){const id=P.bar[slot];if(!id){openTree();return}dismount(
   else if(id=='grito')P.act={k:'shout',t:0,dur:.7,hp:.4,sk:id};
   else if(id=='sombra'){shadowStep(t)}
   else{if(!S_.bow)magicCircle(SK[id].t=='arcano'?0xb08aff:SK[id].t=='necro'?0x7dff9a:SK[id].t=='sangue'?0xff3a4a:0xffd070,.75);P.act={k:S_.anim||(S_.bow?'shoot':'cast'),t:0,dur:S_.dur||(id=='meteoro'?.7:S_.bow?.45:.5),hp:S_.hp||(S_.bow?.6:.5),sk:id,tg:t}}hud()}
-function skillHit(){const a=P.act,id=a.sk,r=rk(id),m=1+.3*(r-1)*0;const fx0=P.x+S(P.f),fz0=P.z+C(P.f);skillFx(id,a,r,fx0,fz0);
+function skillHit(){const a=P.act,id=a.sk,r=rk(id),m=1+.3*(r-1)*0;const fx0=P.x+S(P.f),fz0=P.z+C(P.f);skillFx(id,a,r,fx0,fz0);if(newSkill(id,a,r))return;
   if(SK[id].t=='arco'){archerSkill(id,a,r);return}
   if(id=='grito'){P.buff.grito=10;P.gritoK=.25+.05*r;addFury(40);ring(P.x,P.z,6,0xffd34a,.6);flash(P.x,P.y+2,P.z,0xffd34a,6,.5);snd(220,.5,'sawtooth');sweep(180,90,.6,'square',.05);SHK=.3;for(const e of E)if(!e.dead&&!e.t.passive&&hy(e.x-P.x,e.z-P.z)<6)e.stun=Math.max(e.stun,.6);return}
   if(id=='chama'){ring(P.x,P.z,6.5,0xff7a1a,.6);flash(P.x,P.y+1,P.z,0xff7a20,9,.45);fx(P.x,P.y+.5,P.z,0xff8a1a,40,14,.28,1.2);snd(70,.4,'sawtooth');SHK=.35;
