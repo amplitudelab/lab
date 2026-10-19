@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Voxel Realms · Histórico</title>
+<style>
+:root{--bg:#140c14;--card:#22142a;--line:#3a2a44;--ink:#f1e8d6;--mute:#b9a9c4;--gold:#e7b852;--gold2:#ffd77a;--fix:#7fd6a0;--new:#8fb8ff;--perf:#ffb27a}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f7f1e6;--card:#fffaf1;--line:#e3d5bd;--ink:#2a1c2c;--mute:#6b5a6f;--gold:#a8741a;--gold2:#8a5c10;--fix:#1f8a50;--new:#2a5fc0;--perf:#b85a10}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 Georgia,"Times New Roman",serif;padding:0 16px 60px}
+header{max-width:900px;margin:0 auto;padding:36px 0 18px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:clamp(28px,6vw,44px);letter-spacing:1px;color:var(--gold2)}
+.sub{color:var(--mute);margin:6px 0 0}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.links a{color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:6px 12px;border-radius:999px;font-size:13px}
+.links a:hover{border-color:var(--gold)}
+main{max-width:900px;margin:0 auto}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:18px 0 6px;color:var(--mute);font-size:13px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle;background:var(--c)}
+.tl{position:relative;margin:10px 0 0;padding-left:26px}
+.tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.v{position:relative;margin:0 0 18px}
+.v::before{content:"";position:absolute;left:-23px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px var(--bg)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.vh{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:6px}
+.tag{font:700 13px/1 system-ui,sans-serif;color:var(--bg);background:var(--gold);padding:4px 8px;border-radius:6px}
+.vh h2{margin:0;font-size:18px}
+ul{margin:4px 0 0;padding-left:18px}li{margin:3px 0}
+li.f::marker{color:var(--fix)}li.n::marker{color:var(--new)}li.p::marker{color:var(--perf)}
+li b{color:var(--gold2);font-weight:600}
+.k{font-size:12px;color:var(--mute);font-style:italic}
+footer{max-width:900px;margin:30px auto 0;color:var(--mute);font-size:13px;border-top:1px solid var(--line);padding-top:14px}
+code{font-size:13px;background:rgba(127,127,127,.15);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>VOXEL REALMS</h1>
+  <p class="sub">Histórico de todas as alterações, da V10 até a versão 13.3 · atualizado em 19/10/2026</p>
+  <div class="links">
+    <a href="./">▶ Jogar</a>
+    <a href="MEMORIA.txt">📄 Memória do projeto (txt)</a>
+    <a href="https://github.com/symbiozyy/amplitude-lab/releases/download/apk/voxel-realms.apk">🤖 APK Android</a>
+    <a href="https://github.com/symbiozyy/amplitude-lab">💾 Repositório</a>
+  </div>
+</header>
+<main>
+  <div class="legend"><span style="--c:var(--new)">Novidade</span><span style="--c:var(--fix)">Correção</span><span style="--c:var(--perf)">Desempenho</span></div>
+  <div class="tl">
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">13.3</span><h2>Conteúdo extra</h2></div><ul>
+    <li class="n"><b>Furtividade 🥷</b> (N): inimigos te veem só de perto; ataque pelas costas causa dano triplo</li>
+    <li class="n"><b>3 masmorras</b> (Cripta, Caverna, Ruína): 3 ondas, chefe e baú; lendário garantido na primeira vez</li>
+    <li class="n"><b>Cozinha da Marta</b> (pratos com bônus de 4 min) e <b>bancada do Durin</b> (arma até +5)</li>
+    <li class="n"><b>Missões de classe</b> em 3 partes para as 5 classes, com recompensa lendária</li>
+    <li class="n"><b>16 conquistas</b> com títulos ao lado do nome · <b>invasão noturna</b> da vila · <b>chefe errante</b></li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">13.2</span><h2>Necromante e Vampiro</h2></div><ul>
+    <li class="n"><b>Necromante</b>: esqueleto guerreiro, arqueiro esquelético e golem de ossos que lutam e atraem inimigos; Lança de Ossos, Colheita de Almas, Explosão de Cadáver</li>
+    <li class="n"><b>Vampiro</b>: Garra de Sangue, Lança Carmesim, Névoa Rubra, Frenesi, Sifão, Chuva de Sangue; roubo de vida (teto 15%), mais forte à noite, fraco ao fogo</li>
+    <li class="n">5 personagens (um por classe), adagas e cajado de ossos, drops por classe</li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">13.1</span><h2>Animações para todas as classes</h2></div><ul>
+    <li class="n">Combo de 4 golpes com finalização; corpo inteiro (passo, giro de quadril, inclinação)</li>
+    <li class="n">Mago: conjurar com recuo, magia para o alto, cajado no chão · Caçador: tiro de lado, tiro para o alto, chamado do falcão</li>
+    <li class="n">Círculo de runas ao conjurar, faíscas de impacto, rastro colorido pelo poder da arma</li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">13.0</span><h2>Combate e arqueiro</h2></div><ul>
+    <li class="n"><b>Bloqueio 🛡️</b> (Z) e aparo perfeito</li>
+    <li class="f">Arco virado para a frente, com a flecha encaixada na corda</li>
+    <li class="n">Bestas e lanças para o Caçador · árvore de habilidades só da classe (pontos devolvidos)</li>
+    <li class="n">IA: visão de 24–28 m com linha de visão, audição, alerta em grupo, busca no último ponto visto</li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">12.2</span><h2>Personagens e arsenal</h2></div><ul>
+    <li class="n">Tela de personagens com um save por classe</li>
+    <li class="n">16 modelos de arma no estilo das referências, com poderes (Brasa, Geada, Trovão, Eco Arcano, Sede de Sangue, Rajada, Flecha Explosiva)</li>
+    <li class="n">Moradores novos com adereços (cozinheira, anão de óculos, arquimago, lorde de monóculo, aprendiz com lanterna)</li>
+    <li class="f">Tocha e arco em pé na mão; balanço suave na primeira pessoa; casa do eremita em palafitas; mangue no chão</li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">12.1</span><h2>Primeira pessoa</h2></div><ul>
+    <li class="n">Visão em primeira pessoa opcional (👁️ / X): braços, arma, tocha e mira</li>
+    <li class="n">Florestas com troncos mais altos</li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">12.0</span><h2>Visual Hytale, montarias e chefes</h2></div><ul>
+    <li class="n">Modelos novos: cabeça maior, olhos com íris, sobrancelhas, franja, golas, fivelas, solas</li>
+    <li class="n">5 montarias: Cavalo, Leão, Javali, Lobo das Neves, Raptor de Brasa</li>
+    <li class="n">Vitória de chefe com câmera lenta, chuva de ouro e subida de nível garantida · efeitos estilo Diablo</li>
+    <li class="f">Flechas caem e cravam no chão · chefe sempre aparece · monstros não ficam presos · árvores do mangue no chão</li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">11.8</span><h2>Luz da tocha</h2></div><ul>
+    <li class="f">A tocha ilumina também dentro das sombras (calculada no shader)</li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">11.7</span><h2>Otimização</h2></div><ul>
+    <li class="p">Personagens desenhados de uma vez (chamadas de desenho 352 → ~100)</li>
+    <li class="p">Limite de monstros, 60 fps no celular, resolução dinâmica estável</li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">11.5–11.6</span><h2>Versões e arqueiro</h2></div><ul>
+    <li class="n">Versão no canto e aviso "VERSÃO NOVA DISPONÍVEL" (esquema do Quebrada Z)</li>
+    <li class="n">Árvore do Arqueiro (8 habilidades) e drops pela classe (~80% da sua classe)</li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">11.x</span><h2>Mundo, app e sistemas</h2></div><ul>
+    <li class="n">App Android (WebView) e instalação como app pelo Chrome (PWA)</li>
+    <li class="n">Tocha, pets do Tobias, marcações e zoom do minimapa, HUD redondo sem sobreposição</li>
+    <li class="n">IA com esquiva e cerco; chefes com 2 fases; efeitos das habilidades; build minificado</li>
+    <li class="n">Classes (Guerreiro, Mago, Caçador), Leão Dourado, Mercante Sombrio, trilha sonora épica, suporte a 120 Hz, tela cheia ao tocar</li>
+    <li class="n">Casas, árvores e objetos proporcionais ao herói</li>
+    <li class="n">Clima (chuva, tempestade, neblina), parallax por bioma, corrida e dash, árvore de habilidades, itens mais raros</li>
+    <li class="f">Céu preto no celular e água piscando</li>
+    <li class="n">Mapa por pedaços com 6 regiões (vila, planície, campo de flores, floresta, mangue, caldeira), mecânicas do Diablo 3, 27 missões, mercenários contratáveis</li>
+  </ul></div></section>
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">V10</span><h2>Ponto de partida</h2></div><ul>
+    <li class="n">Redesenho da V9 com visual da imagem de referência: inventário, sombras, luz, partículas</li>
+    <li class="f">Perfil leve para celular (o jogo travava no Redmi Note 10 Pro)</li>
+    <li class="n">Publicado no GitHub Pages (repositório amplitude-lab)</li>
+  </ul></div></section>
+
+  </div>
+</main>
+<footer>Para retomar o projeto numa nova conversa, use a <a href="MEMORIA.txt" style="color:var(--gold2)">memória em texto</a>: ela tem onde está cada coisa, como publicar, a arquitetura, os saves, as decisões e as pendências.</footer>
+</body>
+</html>

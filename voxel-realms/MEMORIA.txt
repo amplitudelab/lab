@@ -1,0 +1,117 @@
+VOXEL REALMS — MEMÓRIA DO PROJETO
+=================================
+Atualizado em 19/10/2026 · versão atual do jogo: 13.3
+Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
+
+
+1. ONDE ESTÁ TUDO
+-----------------
+Repositório ...... github.com/symbiozyy/amplitude-lab (branch main)
+Jogo publicado ... https://symbiozyy.github.io/amplitude-lab/voxel-realms/
+Histórico visual . https://symbiozyy.github.io/amplitude-lab/voxel-realms/HISTORICO.html
+APK Android ...... https://github.com/symbiozyy/amplitude-lab/releases/download/apk/voxel-realms.apk
+                   (WebView que abre o link do jogo; o Play Protect bloqueia, então o
+                   recomendado é instalar pelo Chrome como app: botão "INSTALAR APP")
+Versão antiga .... voxel-realms/v10.html (arquivo único da V10)
+
+Estrutura dentro de voxel-realms/:
+  index.html, css/style.min.css, js/game.min.js, js/three.min.js  -> versão publicada (gerada)
+  src/                    -> CÓDIGO-FONTE (é aqui que se edita)
+  src/build.js            -> junta e minifica tudo em game.min.js (terser + clean-css)
+  sw.js                   -> service worker (rede primeiro, cache para jogar sem internet)
+  manifest.json, icons/   -> instalação como app (PWA), tela cheia e horizontal
+  README.md               -> resumo das funções do jogo
+voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado pelo
+                             GitHub Actions (.github/workflows/android.yml) e publicado na release "apk"
+
+
+2. COMO PUBLICAR UMA VERSÃO NOVA
+--------------------------------
+1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
+2) Subir a versão no topo do src/index.html:
+     const VR_VERSION='13.4'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+   Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
+   ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
+3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
+4) Copiar dist/ para voxel-realms/ (index.html, css/, js/, icons/, sw.js, manifest.json)
+   e o código-fonte para voxel-realms/src/.
+5) Commit e push na main. O GitHub Pages publica sozinho em 1-2 minutos.
+Assinatura dos commits: Co-Authored-By: Claude <noreply@anthropic.com>
+
+
+3. ARQUITETURA (scripts em ordem de carregamento; escopo global compartilhado)
+------------------------------------------------------------------------------
+three.min.js (r128 local)
+core.js      renderizador, perfis de gráfico (LEVE/MÉDIO/ALTO), céu, dia/noite, pós-processo,
+             uniforms de sombreamento (SHU), luz da tocha calculada no shader, Bake (malha única),
+             limites de desempenho (MAXE, VISD, SHD), taxa de quadros (FPSC/HZ, T60/ev)
+world.js     terreno em pedaços (chunks), biomas, árvores, água, colisores, TB (construtor de estruturas)
+places.js    vila, casas (com chaminé), pontos de interesse, baús, placas, santuários, teleportes
+models.js    modelos (humanoide com rosto estilo Hytale, quadrúpedes etc.), animações
+             (combo de 4 golpes, magias, tiro, bloqueio, agachar), SkinnedMesh (1 chamada de desenho por modelo)
+weapons.js   arsenal (espadas, machados, martelos, arcos, bestas, lanças, cajados, adagas), poderes de arma
+fx.js        partículas, anéis, alertas de área, números de dano
+parallax.js  montanhas de fundo por bioma
+weather.js   clima e neblina por local
+items.js     itens, raridades, afixos, lendários, inventário, loja
+entities.js  monstros, NPCs, projéteis (flecha cai e crava no chão), IA base
+combat.js    status, dano, combate do jogador, chefes
+ai.js        esquiva, cerco, recuo, fase II dos chefes, chefe sempre presente, desatolar
+diablo.js    efeitos de morte, manchas, crítico, subir de nível, vitória de chefe, economia
+skills.js    habilidades, recurso (Fúria/Mana), dash, corrida
+classes.js   classes Guerreiro/Mago/Caçador, montarias (5), Mercante Sombrio
+vfx.js       efeitos das habilidades, círculo de runas, impactos, rastros
+archer.js    árvore do Arqueiro, armadilhas, falcão, drops por classe
+fpv.js       primeira pessoa (braços, arma, tocha, mira)
+guard.js     bloqueio/aparo, árvore só da classe, visão e audição dos inimigos
+necro.js     Necromante (servos) e Vampiro (roubo de vida)
+extras.js    tocha, pets, marcações do mapa, zoom do minimapa, resolução dinâmica, moradores
+ambience.js  spawn dinâmico, fauna dia/noite, fumaça, rotina dos aldeões, sons ambientes
+quests.js    missões, diálogos, bestiário, códice
+ui.js        HUD, câmera, controles, janelas
+world2.js    furtividade, masmorras, culinária, forja, missões de classe, conquistas, eventos
+music.js     trilha sonora procedural (Web Audio)
+main.js      saves, tela de personagens, laço do jogo, versão/atualização, PWA
+
+
+4. SAVES E PREFERÊNCIAS (localStorage)
+--------------------------------------
+vr11_save_guerreiro / _mago / _cacador / _necromante / _vampiro -> um personagem por classe
+vr11_gfx (0/1/2 gráficos) · vr11_fps (0=máx da tela, 60, 30; celular começa em 60)
+vr11_fp (primeira pessoa) · vr11_torch · vr11_mus · vr11_mk (filtros do mapa) · vr11_mmz (zoom do minimapa)
+O save antigo único (vr11_save) é migrado sozinho para o espaço da classe dele.
+
+
+5. DECISÕES IMPORTANTES (não desfazer sem motivo)
+------------------------------------------------
+- Celular é prioridade (o usuário joga num Redmi Note 10 Pro): perfil LEVE, 60 fps por padrão,
+  resolução dinâmica com histerese, limite de monstros (30 no LEVE), sombra a 15 Hz.
+- Modelos viram SkinnedMesh (skinModel em models.js): cortou as chamadas de desenho de 352 para ~100.
+- A tocha NÃO é PointLight: é somada no shader depois da sombra (senão a sombra da lua a apagava).
+- HUD é verificado por teste automático em 12 tamanhos de tela (zero sobreposição). Ao adicionar
+  botão, reposicionar e testar de novo.
+- IA "atenta sempre": visão 24-28 m com linha de visão; furtivo reduz.
+- Árvore de habilidades mostra só a classe do personagem; pontos de outras árvores são devolvidos.
+- Roubo de vida do Vampiro tem teto de 15%.
+- Animações seguem os princípios do Hytale (antecipação, corpo inteiro, continuação);
+  o assistente não consegue assistir vídeos do YouTube, só imagens.
+
+
+6. TESTES (Playwright + SwiftShader, sem celular real)
+-----------------------------------------------------
+O navegador de teste roda a ~3-4 fps, então ações levam mais tempo (esperar mais nos testes).
+Testes usados: HUD sem sobreposição (12 tamanhos), regressão geral (pets/tocha/mapa/save),
+perfil de desempenho (chamadas de desenho, geometrias), testes de cada sistema novo.
+FPS real no celular NUNCA foi medido: depende do retorno do usuário.
+
+
+7. PENDÊNCIAS E IDEIAS
+---------------------
+- Testar no Redmi: desempenho, sensibilidade da câmera na primeira pessoa, balanço da tocha.
+- Equilíbrio das 5 classes foi checado em números (vida/dano no nível 10), não jogando.
+- Texturas pintadas pixel a pixel (estilo das referências do Hytale) ainda não foram feitas;
+  o visual atual usa detalhes modelados em blocos coloridos.
+- APK bloqueado pelo Play Protect; para resolver de vez precisa de conta de desenvolvedor Google
+  verificada (só o usuário pode fazer). Enquanto isso, instalar como app pelo Chrome.
+- A chave que assina o APK está no repositório público (ok para uso pessoal; mover para
+  segredos do GitHub se for para a Play Store).
