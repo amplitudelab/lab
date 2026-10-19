@@ -109,6 +109,7 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
   if(zb){T.sLx=-1.35+sp*.15;T.sRx=-1.45-sp*.15;T.eL=T.eR=-.1;T.sLz=-.1;T.sRz=.1}
   if(s.aim){const pl=s.pull||.85;T.sLx=-1.55;T.sLz=0;T.sLy=.15;T.eL=-.05;T.sRx=-1.55;T.sRz=.1;T.eR=-.4-1.5*pl;T.try=-.85;T.hdy=.85;T.hry=-.35;T.tL=-.35;T.kL=.25;T.tR=.35;T.kR=.15;T.hy=.98}
   if(s.block){T.sLx=-1.25;T.eL=-1.25;T.sLz=-.35;T.sRx=-1.35;T.eR=-1.05;T.sRz=.55;T.sRy=-.5;T.trx=.12;T.tL=-.35;T.kL=.45;T.tR=.25;T.kR=.25;T.hy=.94}
+  if(s.sneak&&!s.atk){T.hy=.8;T.tL-=.6;T.tR-=.6;T.kL+=1.05;T.kR+=1.05;T.trx=.38;T.hdx=-.25;T.sLx-=.25;T.sRx-=.25;T.eL-=.4;T.eR-=.4}
   let k=s.dash?30:14;const a=s.atk;
   if(a){const p=a.p;k=28;switch(a.k){
     case 'slashA':{const w=seq(p,0,1,0,.32,.52),st=seq(p,0,.3,1,.32,.52);T.sRx=seq(p,T.sRx,-2.7,-.15,.32,.52);T.sRz=seq(p,T.sRz,.7,-.55,.32,.52);T.sRy=seq(p,0,.5,-.4,.32,.52);T.eR=seq(p,T.eR,-1.1,-.05,.32,.52);

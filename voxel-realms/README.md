@@ -74,6 +74,16 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 13 (13.0 → 13.3)
+- **Combate:** bloqueio 🛡️ (Z) com aparo perfeito; combo de 4 golpes com finalização; animações com o corpo inteiro para todas as classes; círculo de runas ao conjurar; impactos e rastros coloridos pelo poder da arma.
+- **Caçador:** arco virado para a frente com flecha encaixada, bestas e lanças.
+- **Classes novas:** Necromante (servos: esqueleto, arqueiro, golem de ossos) e Vampiro (roubo de vida com teto de 15%, magias com a mão, fraco a fogo). 5 personagens, um por classe. Menu de habilidades mostra só a árvore da classe.
+- **IA:** visão de 24–28 m com linha de visão, audição de corrida e montaria, alerta em grupo, busca no último ponto visto.
+- **Furtividade 🥷 (N):** inimigos te veem de mais perto; ataque pelas costas causa dano triplo.
+- **Masmorras:** Cripta (cemitério), Caverna (torre) e Ruína (templo): 3 ondas, chefe e baú; lendário garantido na primeira vez.
+- **Culinária** com a Marta (pratos com bônus de 4 min) e **forja** com o Durin (arma até +5).
+- **Missões de classe** em 3 partes com recompensa lendária; **conquistas** com títulos (Diário → Conquistas); **eventos**: invasão noturna da vila e chefe errante.
+
 ## Primeira pessoa (v12.1)
 Opcional: toque em 👁️ (ou tecla X) para alternar. Arraste para olhar em volta, o joystick anda na direção do olhar, a mira fica no centro (com mira assistida em um cone à frente). Braços, arma, arco e tocha aparecem na tela; o corpo some da imagem mas continua fazendo sombra. As florestas ficaram mais altas para as copas não taparem a visão.
 

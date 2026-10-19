@@ -52,7 +52,7 @@ Object.assign(SK,{
   chuvasangue:{t:'sangue',n:'Chuva de Sangue',ic:'🌧️',lv:9,cost:45,cd:14,anim:'castUp',dur:.7,d:r=>`Sangue cai numa área grande por 3 s (${50+10*(r-1)}% por pulso), deixa lentos e cura um pouco por pulso.`}});
 // ---------- passivas novas
 const _skp=skPassive;
-skPassive=function(s){_skp(s);s.mag+=10*rk('pacto');s.mreg=(s.mreg||8)+2*rk('pacto');s.ls+=3*rk('sede');if(P.cls=='vampiro')s.ls=Math.min(15,s.ls)};
+skPassive=function(s){_skp(s);s.mag+=10*rk('pacto');s.mreg=(s.mreg||8)+2*rk('pacto');s.ls+=3*rk('sede');foodPassive(s);if(P.cls=='vampiro')s.ls=Math.min(15,s.ls)};
 // vampiro: frenesi e noite aplicados em tempo real (sem recalcular o modelo)
 function vampUpd(dt){if(P.cls!='vampiro'||P.dead)return;if(NIGHT>.5&&rk('noturno'))P.hp=Math.min(ST.mx,P.hp+(1+P.lv*.3)*rk('noturno')*dt)}
 const vampDmg=()=>P.cls=='vampiro'&&NIGHT>.5?1+.08*rk('noturno'):1;

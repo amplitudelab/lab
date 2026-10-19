@@ -16,7 +16,7 @@ function spawnTable(x,z){const reg=regionAt(x,z),rid=REG[reg].id;let tbl=(SPAWN[
   return{reg,rid,tbl}}
 function spawnSpot(dmin,dmax){for(let i=0;i<10;i++){const a=R()*TAU,r=dmin+R()*(dmax-dmin),x=P.x+S(a)*r,z=P.z+C(a)*r;if(hy(x,z)<62||Math.abs(x)>WMAX-4||Math.abs(z)>WMAX-4)continue;if(!CHK.get(ckey(Math.floor(x/CS),Math.floor(z/CS))))continue;
     if(walkable(x,z)&&groundAt(x,z)>(regionAt(x,z)==RI.mang?-.5:.2))return[x,z]}return null}
-function spawnUpd(dt){bossCheck(dt);SPW.t-=dt;SPW.a-=dt;if(P.dead||hy(P.x,P.z)<70||aliveN()>=MAXE)return;
+function spawnUpd(dt){bossCheck(dt);if(DST.on)return;SPW.t-=dt;SPW.a-=dt;if(P.dead||hy(P.x,P.z)<70||aliveN()>=MAXE)return;
   if(SPW.t<=0){SPW.t=9+R()*5;const near=E.filter(e=>hostile(e)&&hy(e.x-P.x,e.z-P.z)<46).length,want=NIGHT>.5?10:7;
     if(near<want&&!E.some(e=>e.boss&&!e.dead&&hy(e.x-P.x,e.z-P.z)<40)){const sp=spawnSpot(26,38);if(sp){const{reg,tbl}=spawnTable(sp[0],sp[1]);if(tbl.length){
       const lv=mobLv(reg),t1=pick(tbl),n=Math.min(want-near,2+(R()*3|0)),ch=ckey(Math.floor(sp[0]/CS),Math.floor(sp[1]/CS)),el=R()<.07?1:0,afx=el?[pick(Object.keys(AFF))]:[];

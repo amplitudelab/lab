@@ -74,3 +74,6 @@ body.run #vrVer{display:none}
 #fuo.soul:before{background:radial-gradient(circle at 40% 30%,#d8ffe0,#2aa85a 55%,#0a3a1a)}#fuo.blood:before{background:radial-gradient(circle at 40% 30%,#ffb0b8,#b01a2a 55%,#3a0610)}
 #cls .clsr{gap:8px}.clsc.slot{width:min(176px,30vw);padding:10px 8px}.clsc.slot span{font-size:11.5px}
 @media (max-height:440px){.clsc.slot{width:min(150px,18.5vw);gap:3px;padding:7px 5px}.clsc.slot i{font-size:28px}.clsc.slot b{font-size:14px}.clsc.slot span{font-size:10px;line-height:1.25}#cls h2{font-size:18px;margin:0}}
+/* 13.3: furtividade */
+#snkb{width:var(--b);height:var(--b);font-size:calc(var(--b)*.46);right:calc(var(--ax) + var(--atk)/2 + 1.18*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 + 1.25*var(--D) - var(--b)/2)}
+#snkb.on{border-color:#c8a8ff;box-shadow:inset 0 0 0 3px #2a1a4a,inset 0 0 14px #000,0 0 16px #b08aff}

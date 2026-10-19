@@ -62,7 +62,7 @@ function placeTobias(){const n=NPC.find(n=>n.id=='tobias');if(!n)return;for(cons
 const MK={q:1,p:1,s:1,b:1};try{Object.assign(MK,JSON.parse(localStorage.getItem('vr11_mk')||'{}'))}catch(e){}
 const POIICONS={'Cemit':'⚰️','Acamp':'⛺','Moinho':'🌾','Colme':'🐝','Templo':'🏛️','Torre ':'🗼','Bosque':'🌳','Cabana':'🧪','Toca d':'🔥','Covil ':'🐉'};
 const poiIc=n=>{for(const k in POIICONS)if(n.startsWith(k))return POIICONS[k];return'📍'};
-function marks(){const L=[];
+function marks(){const L=[];if(typeof DNG!='undefined'&&MK.s){for(const D of DNG)L.push({x:D.ent[0],z:D.ent[1],ic:D.ic,c:'#c8a8ff',k:'s',n:D.n})}if(typeof EVT!='undefined'&&EVT.err&&!EVT.err.dead)L.push({x:EVT.err.x,z:EVT.err.z,ic:'👑',c:'#ffd34a',k:'b',n:'Chefe errante',big:1});
   if(MK.q)for(const q of QD)if(act(q.id)){const p=qPos(q);if(p)L.push({x:p[0],z:p[1],ic:q.cat=='main'?'❗':'❔',c:q.cat=='main'?'#ffd34a':'#7ab4ff',k:'q',n:q.n,big:q.cat=='main'})}
   if(MK.p)for(const p of POI)if(P.disc.has(REG[regionAt(p.x,p.z)].id))L.push({x:p.x,z:p.z,ic:poiIc(p.n),c:'#e8dcc0',k:'p',n:p.n});
   if(MK.s){L.push({x:21,z:-18,ic:'⚒️',c:'#ffd0a0',k:'s',n:'Forja da Helga'},{x:-10,z:-33,ic:'🧙',c:'#d0b0ff',k:'s',n:'Ancião Bram'},{x:11,z:-9.5,ic:'📋',c:'#ffe08a',k:'s',n:'Quadro de Recompensas'},{x:-20,z:-13,ic:'🍺',c:'#ffd070',k:'s',n:'Taverna (mercenários)'});
@@ -101,5 +101,7 @@ const FOLK=[{id:'cozinha',m:'cozinheira',nm:'Marta, a Cozinheira',ic:'🍲',w:'b
   {id:'nobre',m:'nobre',nm:'Lorde Ambrósio',ic:'🎩',w:'dagger',c:[[6,16],[9,13],[3,18]],L:['Hmpf. Um Guardião de botas sujas na praça. Que tempos.','Pago bem por relíquias antigas. Discretamente, claro.','O Mercante Sombrio? Nunca ouvi falar. Nunca.']},
   {id:'bruxinha',m:'bruxinha',nm:'Lili, a Aprendiz',ic:'🔮',w:'lantern',c:[[-20,6],[-22,2],[-18,9]],L:['Minha lanterna nunca apaga! Bom, quase nunca.','A Mirela da taverna é minha mestra. Ela explode coisas lindas.','Vi luzes estranhas no Bosque do Ancião ontem à noite...']}];
 function spawnFolk(){for(const f of FOLK){const[x,z]=f.c[0],n=mkNPC(f.id,f.m,x,z,{nm:f.nm,ic:f.ic,still:1,w:f.w,wh:f.w=='lantern'?'L':null});n.folk=f;
-    inter({x:n.x,z:n.z,r:2.8,npc:n,ic:'💬',label:()=>'Falar com '+f.nm,act:()=>say([[f.nm,pick(f.L),f.ic]]),kind:'npc'})}}
+    inter({x:n.x,z:n.z,r:2.8,npc:n,ic:'💬',label:()=>'Falar com '+f.nm,act:()=>{if(QD.some(q=>q.t=='talk'&&q.npc==f.id&&QS[q.id].st==1)){qEvent('talk',f.id);say([[f.nm,CLSTALK[P.cls]||pick(f.L),f.ic]]);return}say([[f.nm,pick(f.L),f.ic]],f.id=='cozinha'?openCook:f.id=='anao'?openForge:null)},kind:'npc'})}}
+const CLSTALK={guerreiro:'Então você é o Guardião de quem falam? Bandidos andam roubando o metal da minha bancada. Mostre do que é capaz.',mago:'Sinto a magia em você. O Códice de Aldor foi rasgado e espalhado... preciso de essência arcana para reuni-lo.',cacador:'Caçador! Os lobos estão rondando as cabras e minha despensa está vazia. Me ajuda?',vampiro:'Shhh. Feche a porta. Sim... eu também sou um filho da noite. Há séculos. Deixe-me ensiná-lo a caçar.',necromante:'Almas, almas... tenho compradores pacientes. Traga-me as dos mortos inquietos.'};
+function openCook(){openWin('cook');cookRender()}function openForge(){openWin('frg');forgeRender();$('frgg').textContent='🪙 '+fmt(P.gold)}
 function placeFolk(){for(const n of NPC){if(!n.folk)continue;for(const[x,z]of n.folk.c)if(STRC.every(c=>hy(c[0]-x,c[1]-z)>c[2]+1.6)){n.x=n.hx=x;n.z=n.hz=z;n.y=groundAt(x,z);break}}}

@@ -7,7 +7,7 @@
 let SK_SAVE='vr11_save_guerreiro';const SV=1,SKEY=c=>'vr11_save_'+c;
 (()=>{try{const o=localStorage.getItem('vr11_save');if(o){const s=JSON.parse(o),c=s&&s.P&&CLS[s.P.cls]?s.P.cls:'guerreiro';if(!localStorage.getItem(SKEY(c)))localStorage.setItem(SKEY(c),o);localStorage.removeItem('vr11_save')}}catch(e){}})();
 const slotInfo=c=>{try{const s=JSON.parse(localStorage.getItem(SKEY(c))||'null');return s&&s.P?s:null}catch(e){return null}};
-function save(){if(!run)return;try{localStorage.setItem(SK_SAVE,JSON.stringify({v:SV,t:Date.now(),P:{x:P.x,z:P.z,f:P.f,lv:P.lv,xp:P.xp,gold:P.gold,hp:P.hp,disc:[...P.disc],merc:P.merc&&P.merc.merc,cls:P.cls,mounts:P.mounts,mountSel:P.mountSel,pets:P.pets,pet:P.pet},
+function save(){if(!run)return;try{localStorage.setItem(SK_SAVE,JSON.stringify({v:SV,t:Date.now(),P:{x:P.x,z:P.z,f:P.f,lv:P.lv,xp:P.xp,gold:P.gold,hp:P.hp,disc:[...P.disc],merc:P.merc&&P.merc.merc,ach:[...P.ach],title:P.title,pst:P.st,cls:P.cls,mounts:P.mounts,mountSel:P.mountSel,pets:P.pets,pet:P.pet},
   INV,EQ,iid,QS,SKL:{sk:P.sk,sp:P.sp,bar:P.bar},WXT:WX.type,BOUNTY:BOUNTY.q,WP:WP.filter(w=>w.on).map(w=>w.id),CH:CHESTS.map(c=>c.o),LORE:[...LORE_FOUND],BEST,DAY:DAY.t,FOG:[...FOG],BDEF,SHOP}))}catch(e){}}
 function load(){try{const s=JSON.parse(localStorage.getItem(SK_SAVE)||'null');if(!s||!s.P)return 0;const p=s.P;for(const k of['x','z','f','lv','xp','gold','hp'])if(typeof p[k]=='number'&&isFinite(p[k]))P[k]=p[k];
   P.lv=cl(P.lv|0,1,40);(p.disc||[]).forEach(d=>P.disc.add(d));if(Array.isArray(s.INV))s.INV.slice(0,30).forEach((it,i)=>INV[i]=it&&it.slot?it:null);if(s.EQ)for(const k in EQ)if(s.EQ[k]&&s.EQ[k].slot==k)EQ[k]=s.EQ[k];iid=s.iid||1000;
@@ -15,7 +15,7 @@ function load(){try{const s=JSON.parse(localStorage.getItem(SK_SAVE)||'null');if
   (s.WP||[]).forEach(id=>{const w=WP.find(w=>w.id==id);if(w)w.on=1});(s.CH||[]).forEach((o,i)=>{if(o&&CHESTS[i]){CHESTS[i].o=1;CHESTS[i].lid.rotation.x=-1.95}});(s.LORE||[]).forEach(l=>LORE_FOUND.add(l));Object.assign(BEST,s.BEST||{});Object.assign(BDEF,s.BDEF||{});
   if(typeof s.DAY=='number')DAY.t=s.DAY;if(s.SKL){for(const k in s.SKL.sk||{})if(SK[k])P.sk[k]=cl(s.SKL.sk[k]|0,0,3);P.sp=Math.max(0,s.SKL.sp|0);if(Array.isArray(s.SKL.bar))P.bar=s.SKL.bar.slice(0,4).map(k=>k&&SK[k]&&P.sk[k]?k:null)}else P.sp=P.lv;if(WXT[s.WXT])WX.type=s.WXT;(s.FOG||[]).forEach(f=>FOG.add(f));if(Array.isArray(s.SHOP)&&s.SHOP.length)SHOP=s.SHOP;
   for(const q of QD)if(QS[q.id].st==1&&(q.t=='collect'||q.t=='interact'))qObjSpawn(q);
-  P.x=cl(P.x,-WMAX,WMAX);P.z=cl(P.z,-WMAX,WMAX);calcStats();if(P.hp<=0)P.hp=ST.mx;setClass(CLS[p.cls]?p.cls:'guerreiro');P.mounts=(p.mounts||[]).filter(k=>MOUNTS[k]);P.mountSel=MOUNTS[p.mountSel]?p.mountSel:P.mounts[0]||null;if(P.mounts.length){$('mntb').style.display='';$('mntb').querySelector('i').textContent=MOUNTS[P.mountSel].ic}P.pets=(p.pets||[]).filter(k=>PETS[k]);if(p.pet&&P.pets.includes(p.pet))setTimeout(()=>petSet(p.pet),0);if(p.merc){const n=NPC.find(n=>n.merc==p.merc);if(n){P.merc=n;n.follow=1;n.still=0}}return 1}catch(e){console.warn('save inválido',e);return 0}}
+  P.x=cl(P.x,-WMAX,WMAX);P.z=cl(P.z,-WMAX,WMAX);calcStats();if(P.hp<=0)P.hp=ST.mx;setClass(CLS[p.cls]?p.cls:'guerreiro');(p.ach||[]).forEach(a=>P.ach.add(a));P.title=p.title||'';if(p.pst)Object.assign(P.st,p.pst);P.mounts=(p.mounts||[]).filter(k=>MOUNTS[k]);P.mountSel=MOUNTS[p.mountSel]?p.mountSel:P.mounts[0]||null;if(P.mounts.length){$('mntb').style.display='';$('mntb').querySelector('i').textContent=MOUNTS[P.mountSel].ic}P.pets=(p.pets||[]).filter(k=>PETS[k]);if(p.pet&&P.pets.includes(p.pet))setTimeout(()=>petSet(p.pet),0);if(p.merc){const n=NPC.find(n=>n.merc==p.merc);if(n){P.merc=n;n.follow=1;n.still=0}}return 1}catch(e){console.warn('save inválido',e);return 0}}
 setInterval(save,15000);addEventListener('pagehide',save);document.addEventListener('visibilitychange',()=>{if(document.hidden)save()});
 
 // ---------- som (osciladores simples)
@@ -66,7 +66,7 @@ function frame(now){requestAnimationFrame(frame);if(FPSC&&now-last<1000/FPSC-1.5
   wxUpd(rdt,P.x,P.z);plxUpd(rdt,P.x,P.z);
   if(run){playerUpd(dt,t);mobsUpd(dt,t);npcUpd(dt,t);animalsUpd(dt,t);projUpd(dt);minionsUpd(dt,t);vampUpd(dt);mountUpd(dt,t);petUpd(dt,t);spawnUpd(dt);lootUpd(dt,t);qObjUpd(dt,t);interUpd();wpUpd()}
   else{CAMS.yawT+=rdt*.06;npcUpd(rdt,t);animalsUpd(rdt,t)}
-  placesUpd(rdt,t);fxUpd(dt,rdt,t);ambUpd(rdt,t,P.x,P.z);birdsUpd(rdt,t,P.x,P.z);torchUpd(rdt,t);drsUpd(raw);vfxUpd(dt);magicUpd(rdt);wglowUpd(rdt);decalUpd(rdt);ambienceUpd(rdt,t);musUpd(rdt);haloUpd(t);cloudsUpd(rdt,P.x,P.z);waterUpd(P.x,P.z,t);SHU.uT.value=t;SKU.t.value=t;
+  placesUpd(rdt,t);fxUpd(dt,rdt,t);ambUpd(rdt,t,P.x,P.z);birdsUpd(rdt,t,P.x,P.z);torchUpd(rdt,t);drsUpd(raw);vfxUpd(dt);world2Upd(dt);magicUpd(rdt);wglowUpd(rdt);decalUpd(rdt);ambienceUpd(rdt,t);musUpd(rdt);haloUpd(t);cloudsUpd(rdt,P.x,P.z);waterUpd(P.x,P.z,t);SHU.uT.value=t;SKU.t.value=t;
   INV_OPEN.k+=((UI.open=='inv'?1:0)-INV_OPEN.k)*damp(6,rdt);if(!run)P.m.g.position.set(P.x,P.y,P.z);if(!run)animate(P.m,rdt,t,{v:0});
   camUpd(rdt);fpvCam(rdt);vmUpd(rdt,t);dlgUpd(raw);
   if(run){hfT-=rdt;if(hfT<=0){hfT=.1;hudFast()}hT-=rdt;if(hT<=0){hT=.5;hud();regionUpd()}mmT-=rdt;if(mmT<=0){mmT=.15;minimap()}if(ev(2))npcLabels();

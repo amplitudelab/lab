@@ -30,13 +30,13 @@ function bindInput(){const jb=$('jb'),jk=$('jk');
   cv.onpointermove=e=>{if(e.pointerId!=cid)return;const k=900/Math.max(600,innerWidth);if(INV_OPEN.k>.5)P.f-=(e.clientX-lx)*.012;else if(FPV.on){CAMS.yawT-=(e.clientX-lx)*.0075*k;CAMS.yaw=CAMS.yawT;FPV.pitch=cl(FPV.pitch-(e.clientY-ly)*.0055*k,-1.2,1.15)}else{CAMS.yawT-=(e.clientX-lx)*.0065*k;CAMS.pitT=cl(CAMS.pitT+(e.clientY-ly)*.003*k,.22,1.15)}lx=e.clientX;ly=e.clientY};cv.onpointerup=cv.onpointercancel=e=>{if(e.pointerId==cid)cid=null};
   cv.addEventListener('wheel',e=>{CAMS.dT=cl(CAMS.dT+e.deltaY*.01,6,22)},{passive:true});
   const hold=(id,fn,up)=>{const b=$(id);b.onpointerdown=e=>{e.stopPropagation();b.setPointerCapture(e.pointerId);fn()};if(up)b.onpointerup=b.onpointercancel=up};
-  hold('atk',()=>{UI.atkHeld=1;attack()},()=>UI.atkHeld=0);hold('rolb',dash);hold('runb',()=>toggleRun());hold('mntb',mount);hold('torb',()=>torchToggle());hold('blkb',()=>blockSet(1),()=>blockSet(0));$('zmi').onclick=()=>mmZoom(1);$('zmo').onclick=()=>mmZoom(-1);hold('potb',potion);hold('itb',()=>INTN&&INTN.act());
+  hold('atk',()=>{UI.atkHeld=1;attack()},()=>UI.atkHeld=0);hold('rolb',dash);hold('runb',()=>toggleRun());hold('mntb',mount);hold('torb',()=>torchToggle());hold('blkb',()=>blockSet(1),()=>blockSet(0));hold('snkb',()=>sneakSet());$('zmi').onclick=()=>mmZoom(1);$('zmo').onclick=()=>mmZoom(-1);hold('potb',potion);hold('itb',()=>INTN&&INTN.act());
   [0,1,2,3].forEach(i=>hold('sk'+i,()=>useSkill(i)));$('treeb').onclick=()=>openTree();
   $('bagb').onclick=()=>openInv();$('mapb').onclick=()=>openMap(false);$('jrnb').onclick=()=>openJournal();$('menb').onclick=()=>openMenu();$('fpvb').onclick=()=>fpvToggle();$('fpvb').classList.toggle('on',FPV.on);$('qh').onclick=()=>$('qp').classList.toggle('min');
   addEventListener('keydown',e=>{if(e.repeat)return;kd[e.code]=1;if(!run)return;const c=e.code;
     if(DLG){if(c=='Enter'||c=='Space'||c=='KeyE')dlgNext();return}
     if(c=='Escape'){if(UI.open)closeAll();else openMenu();return}if(c=='KeyI'||c=='KeyB'){UI.open=='inv'?closeAll():openInv();return}if(c=='KeyM'){UI.open=='map'?closeAll():openMap(false);return}if(c=='KeyK'||c=='KeyT'){UI.open=='tree'?closeAll():openTree();return}if(c=='KeyJ'||c=='KeyL'){UI.open=='jrn'?closeAll():openJournal();return}
-    if(UI.open)return;if(c=='Space'){UI.atkHeld=1;attack()}if(/Digit[1-4]/.test(c))useSkill(+c[5]-1);if(c=='KeyQ')potion();if(c=='ShiftLeft'||c=='ShiftRight')toggleRun(1);if(c=='KeyC'||c=='ControlLeft'||c=='KeyV')dash();if(c=='KeyE'||c=='KeyF')INTN&&INTN.act();if(c=='KeyR')mount();if(c=='KeyG')torchToggle();if(c=='KeyZ')blockSet(1);if(c=='KeyX'||c=='F5'){e.preventDefault();fpvToggle()}if(c=='Equal'||c=='NumpadAdd')mmZoom(1);if(c=='Minus'||c=='NumpadSubtract')mmZoom(-1)});
+    if(UI.open)return;if(c=='Space'){UI.atkHeld=1;attack()}if(/Digit[1-4]/.test(c))useSkill(+c[5]-1);if(c=='KeyQ')potion();if(c=='ShiftLeft'||c=='ShiftRight')toggleRun(1);if(c=='KeyC'||c=='ControlLeft'||c=='KeyV')dash();if(c=='KeyE'||c=='KeyF')INTN&&INTN.act();if(c=='KeyR')mount();if(c=='KeyG')torchToggle();if(c=='KeyZ')blockSet(1);if(c=='KeyN')sneakSet();if(c=='KeyX'||c=='F5'){e.preventDefault();fpvToggle()}if(c=='Equal'||c=='NumpadAdd')mmZoom(1);if(c=='Minus'||c=='NumpadSubtract')mmZoom(-1)});
   addEventListener('keyup',e=>{kd[e.code]=0;if(e.code=='KeyZ')blockSet(0);if(e.code=='Space')UI.atkHeld=0;if(e.code=='ShiftLeft'||e.code=='ShiftRight')toggleRun(0)});
   addEventListener('blur',()=>{for(const k in kd)kd[k]=0;UI.atkHeld=0})}
 // ---------- avisos e faixas
@@ -54,7 +54,7 @@ function dlgEnd(ok){const cb=DLG.cb;DLG=null;$('dlg').classList.remove('on');doc
 function dlgUpd(rdt){if(DLG&&DLG.k<DLG.txt.length){DLG.k=Math.min(DLG.txt.length,DLG.k+rdt*52);$('dt').textContent=DLG.txt.slice(0,DLG.k|0);if(DLG.k>=DLG.txt.length)dlgChoice()}}
 // ---------- HUD
 function hud(){if(!ST.mx)return;const hp=cl(P.hp/ST.mx,0,1);$('hpo').style.setProperty('--f',hp);$('hpt').textContent=Math.ceil(P.hp)+'/'+ST.mx;$('fuo').style.setProperty('--f',P.fury/100);$('fut').textContent=Math.floor(P.fury);
-  $('xpf').style.width=(P.xp/XPN(P.lv)*100)+'%';$('lvl').textContent=P.lv;$('gold').textContent=fmt(P.gold);$('lvn').textContent='Kael · Nível '+P.lv;
+  $('xpf').style.width=(P.xp/XPN(P.lv)*100)+'%';$('lvl').textContent=P.lv;$('gold').textContent=fmt(P.gold);$('lvn').textContent=nameTag()+' · Nível '+P.lv;
   P.bar.forEach((k,i)=>{const b=$('sk'+i),S_=k&&SK[k];b.classList.toggle('lock',!S_);b.querySelector('i').textContent=S_?S_.ic:'＋';b.querySelector('em').textContent=S_?(S_.cost||''):'';b.title=S_?S_.n:'Escolher habilidade'});
   $('fuo').classList.toggle('mana',MANA()&&P.cls!='necromante');$('fuo').classList.toggle('soul',MANA()&&P.cls=='necromante');$('fuo').classList.toggle('blood',!MANA()&&P.cls=='vampiro');$('treeb').classList.toggle('nw',P.sp>0);
   $('atk').querySelector('i').textContent=bow()?'🏹':EQ.arma?EQ.arma.ic:'👊';$('rolb').querySelector('i').textContent='💨';$('mrc').textContent=P.merc?MERC[P.merc.merc].ic+' '+MERC[P.merc.merc].n:'';
@@ -89,6 +89,7 @@ function minimap(){const c=mm,W=160,M=80,s=MMZ[mmZi],X=x=>M+(x-P.x)*s,Z=z=>M+(z-
 function qTarget(){const q=QD.find(q=>q.cat=='main'&&act(q.id))||QD.find(q=>act(q.id)&&q.reg==REG[REGC]?.id);return q?qPos(q):null}
 function qPos(q){const s=QS[q.id];if(q.t=='talk'){const n=NPC.find(n=>n.id==q.npc);return n&&[n.x,n.z]}if(q.t=='wp'){const w=WP.find(w=>w.id==q.wp);return[w.x,w.z]}if(q.t=='boss'){const b=BOSS[q.boss];return[b.x,b.z]}
   if(q.t=='collect'||q.t=='interact'){let b=null,bd=1e9;for(const o of QOBJ)if(o.q===q){const d=hy(o.x-P.x,o.z-P.z);if(d<bd){bd=d;b=[o.x,o.z]}}return b}if(q.t=='zone')return q.at;if(q.t=='hire')return[-20,-13];
+  if(q.t=='dungeon'){let b=DNG[0].ent,bd=1e9;for(const D of DNG){const d=hy(D.ent[0]-P.x,D.ent[1]-P.z);if(d<bd){bd=d;b=D.ent}}return b}
   if(q.t=='kill'){const p={dwolf:[-10,-140],zombie:[-112,-96],ghoul:[-112,-96],skel:[-112,-96],spider:[-30,-160],boar:[10,150],croc:[-168,25],lslime:[155,-150]}[q.mob[0]];return p}return null}
 const QBEAM=beam(0,0,0xffd34a);QBEAM.material.opacity=.18;
 function trackUpd(){const L=[];for(const q of QD)if(act(q.id)&&q.cat=='main')L.push(q);const reg=REG[Math.max(0,REGC)]?.id;for(const q of QD)if(act(q.id)&&q.cat=='side'&&q.reg==reg)L.push(q);for(const q of QD)if(act(q.id)&&q.cat=='side'&&!L.includes(q))L.push(q);
@@ -105,7 +106,7 @@ function npcLabels(){let i=0;for(const n of NPC){if(n.hidden||!n.m.g.visible)con
   let el=NL[i];if(!el){el=document.createElement('div');el.className='nl';document.body.appendChild(el);NL.push(el)}i++;el.style.display='block';el.innerHTML=(has?'<i>!</i>':'')+(d<9?n.nm:'');el.style.transform=`translate(${(_pp.x*.5+.5)*innerWidth}px,${(-_pp.y*.5+.5)*innerHeight}px) translate(-50%,-100%)`}for(;i<NL.length;i++)NL[i].style.display='none'}
 
 // ---------- janelas
-function closeAll(){UI.open=null;for(const id of['inv','map','jrn','shop','menu','bty','tree','gmb','pets'])$(id).classList.remove('on');document.body.classList.remove('invo')}
+function closeAll(){UI.open=null;for(const id of['inv','map','jrn','shop','menu','bty','tree','gmb','pets','cook','frg'])$(id).classList.remove('on');document.body.classList.remove('invo')}
 function openWin(id){closeAll();UI.open=id;$(id).classList.add('on');jx=jy=0;UI.atkHeld=0;snd(520,.06,'sine')}
 // inventário (herói em 3D à esquerda)
 let ISEL=null;
@@ -132,9 +133,10 @@ function teleport(x,z){P.x=x;P.z=z;worldLoadAll(x,z);P.y=groundAt(x,z);CAMS.cx=x
 // diário: principal, secundárias, recompensas, códice, bestiário
 let JTAB='main';
 function openJournal(){if(!run||DLG)return;openWin('jrn');jrnRender()}
-function jrnRender(){const tabs=[['main','Principal'],['side','Secundárias'],['codex','Códice'],['best','Bestiário']];$('jtabs').innerHTML=tabs.map(([k,n])=>`<button class="jt ${JTAB==k?'on':''}" data-t="${k}">${n}</button>`).join('');let h='';
+function jrnRender(){const tabs=[['main','Principal'],['side','Secundárias'],['ach','Conquistas'],['codex','Códice'],['best','Bestiário']];$('jtabs').innerHTML=tabs.map(([k,n])=>`<button class="jt ${JTAB==k?'on':''}" data-t="${k}">${n}</button>`).join('');let h='';
   if(JTAB=='main'||JTAB=='side'){for(const r of REG){const L=QD.filter(q=>q.cat==JTAB&&q.reg==r.id&&QS[q.id].st);if(!L.length)continue;h+=`<h4 style="color:${r.map}">${r.n}</h4>`;for(const q of L){const s=QS[q.id];h+=`<div class="jq ${s.st==2?'ok':''}"><b>${s.st==2?'✓ ':'◆ '}${q.n}</b><p>${q.d}</p>${s.st==1&&q.n_>1?`<small>${s.p}/${q.n_}</small>`:''}</div>`}}
     if(!h)h='<p class="ihint">Nenhuma missão ainda.</p>';if(JTAB=='main')h='<p class="jact">Ato I — A Sombra sobre Aldoria</p>'+h}
+  else if(JTAB=='ach'){h=`<p class="jact">${P.ach.size}/${ACH.length} conquistas · Título: ${P.title||'nenhum'}</p>`+ACH.map(a=>{const ok=P.ach.has(a.id);return`<div class="jq ${ok?'ok':'lock'}" ${ok?`data-ti="${a.t}" style="cursor:pointer"`:''}><b>${ok?'🏆':'🔒'} ${a.n} <small>· título “${a.t}”${P.title==a.t?' (em uso)':ok?' — toque para usar':''}</small></b><p>${a.d}</p></div>`}).join('')}
   else if(JTAB=='codex'){const L=LORE.filter(l=>LORE_FOUND.has(l.id));h=L.length?L.map(l=>`<div class="jq"><b>📖 ${l.t}</b><p>${l.txt}</p></div>`).join(''):'<p class="ihint">Leia livros, lápides e placas para registrar a história de Aldoria.</p>';h=`<p class="jact">${L.length}/${LORE.length} registros</p>`+h}
   else{const ks=[...Object.keys(MT),...Object.keys(BOSS)];h=ks.map(k=>{const n=BEST[k]||0,t=MT[k]||BOSS[k];return n?`<div class="jq"><b>${BOSS[k]?'☠ ':''}${t.n} <small>· ${n} abatido${n>1?'s':''}</small></b><p>${BESTD[k]||''}</p></div>`:`<div class="jq lock"><b>???</b><p>Derrote esta criatura para registrá-la.</p></div>`}).join('')}
   $('jbody').innerHTML=h}
@@ -150,13 +152,14 @@ function openMenu(){if(!run)return;openWin('menu');$('gfx2').textContent='Gráfi
 function bindWindows(){
   $('inv').onclick=e=>{const b=e.target.closest('[data-a]');if(b){const a=b.dataset.a;if(a=='eq'){equip(ISEL);ISEL=null}else if(a=='un'){unequip(ISEL);ISEL=null}else if(a=='sell'){sellItem(ISEL);ISEL=null}invRender();return}const s=e.target.closest('[data-i],[data-e]');if(s){ISEL=s.dataset.i!=null?+s.dataset.i:s.dataset.e;invRender();snd(700,.04,'sine')}};
   $('map').onclick=e=>{const b=e.target.closest('[data-w]');if(!b)return;if(inCombat()){toast('⚔️','Em combate','Afaste-se dos inimigos para viajar.');return}const w=WP.find(w=>w.id==b.dataset.w);closeAll();teleport(w.x,w.z+3);toast('🌀','Viagem',w.n)};
-  $('jrn').onclick=e=>{const b=e.target.closest('[data-t]');if(b){JTAB=b.dataset.t;jrnRender()}};
+  $('jrn').onclick=e=>{const ti=e.target.closest('[data-ti]');if(ti){P.title=P.title==ti.dataset.ti?'':ti.dataset.ti;hud();jrnRender();save();return}const b=e.target.closest('[data-t]');if(b){JTAB=b.dataset.t;jrnRender()}};
   $('shop').onclick=e=>{const m=e.target.closest('[data-mt]');if(m){buyMount(m.dataset.mt);shopRender();return}const b=e.target.closest('[data-b]');if(b){buyItem(+b.dataset.b);shopRender()}};
   $('bty').onclick=e=>{const b=e.target.closest('[data-bt]');if(!b)return;const k=b.dataset.bt;if(k=='claim'){const B=BOUNTY.q;BOUNTY.q=null;grant({gold:B.gold,xp:B.xp,item:2});toast('📋','Contrato concluído','')}else if(k=='drop')BOUNTY.q=null;else BOUNTY.q=bountyGen(k);btyRender();trackUpd();save()};
   document.querySelectorAll('.wx').forEach(b=>b.onclick=closeAll);
   $('gfx2').onclick=()=>{try{localStorage.setItem('vr11_gfx',String((GL+1)%3))}catch(e){}save();location.reload()};$('sav').onclick=()=>{save();toast('💾','Jogo salvo','')};$('ret').onclick=()=>{save();location.reload()};
   $('rv').onclick=respawn;
   $('pets').onclick=e=>{const b=e.target.closest('[data-p]');if(b)buyPet(b.dataset.p)};$('mleg').onclick=e=>{const b=e.target.closest('[data-mk]');if(!b)return;const k=b.dataset.mk;MK[k]=MK[k]?0:1;try{localStorage.setItem('vr11_mk',JSON.stringify(MK))}catch(e){}mapRender();minimap()};
+  $('cook').onclick=e=>{const b=e.target.closest('[data-ck]');if(b)cook(b.dataset.ck)};$('frg').onclick=e=>{if(e.target.closest('[data-fu]'))forgeUp()};
   $('gmb').onclick=e=>{const b=e.target.closest('[data-g]');if(b)gamble(b.dataset.g)};
   $('fpsb').onclick=()=>{FPSC=FPSC==0?60:FPSC==60?30:0;try{localStorage.setItem('vr11_fps',String(FPSC))}catch(e){}fpsLbl()};fpsLbl();
   $('musb').onclick=()=>{musToggle();$('musb').textContent='Música: '+(MUS.on?'ligada':'desligada')};$('musb').textContent='Música: '+(MUS.on?'ligada':'desligada')}

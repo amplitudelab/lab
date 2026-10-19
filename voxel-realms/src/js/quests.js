@@ -72,14 +72,14 @@ function qObjClear(q){for(let i=QOBJ.length-1;i>=0;i--){const o=QOBJ[i];if(o.q==
 // ---------- ciclo das missões
 function qStart(q,silent){const s=QS[q.id];if(s.st)return;s.st=1;s.p=s.p||0;if(q.t=='collect'||q.t=='interact')qObjSpawn(q);if(q.t=='wp'&&WP.find(w=>w.id==q.wp).on){s.p=1}if(q.t=='lore')s.p=Math.min(q.n_,LORE.filter(l=>!l.sign&&LORE_FOUND.has(l.id)).length)
   if(!silent){toast(q.cat=='main'?'📜':'❕',q.cat=='main'?'NOVA MISSÃO':'Missão secundária',q.n);snd(660,.15,'sine')}trackUpd();if(!silent)qCheck(q)}
-function qAvail(){for(const q of QD){const s=QS[q.id];if(s.st)continue;if((q.req||[]).every(done)&&(!q.disc||P.disc.has(q.disc)))qStart(q)}}
+function qAvail(){for(const q of QD){const s=QS[q.id];if(s.st)continue;if((q.req||[]).every(done)&&(!q.disc||P.disc.has(q.disc))&&(!q.cls||q.cls==P.cls))qStart(q)}}
 function qCheck(q){const s=QS[q.id];if(s.st!=1)return;const need=q.n_||1;if(s.p<need)return;s.st=2;qObjClear(q);
   const fin=()=>{grant(q.rw);toast('✔','MISSÃO CONCLUÍDA',q.n);snd(784,.25,'sine');setTimeout(()=>snd(1046,.3,'sine'),160);qAvail();trackUpd();save()};
   if(q.done)say(q.done,fin);else fin()}
 function grant(rw){if(!rw)return;if(rw.gold){P.gold+=rw.gold;pop('+'+rw.gold+' 🪙',P.x,P.y+3,P.z,'#ffd34a')}if(rw.xp)gainXP(rw.xp);if(rw.item){const it=genItem(P.lv+1,rw.item>=3?3:rw.item*1.2,null,rw.item>=3);if(rw.item==2&&it.rar<2){it.rar=2;it.n=pick(RARE_N)}pickItem(it)||dropItem(P.x,P.z,it)}hud()}
 function qEvent(ev,a,b,e){for(const q of QD){const s=QS[q.id];if(s.st!=1)continue;let inc=0;
     if(ev=='kill'){if(q.t=='kill'&&q.mob.includes(a))inc=1;if(q.t=='boss'&&q.boss==a)inc=1;if(q.t=='zone'&&e&&hy(e.x-q.at[0],e.z-q.at[1])<q.r)inc=1;if(q.t=='elite'&&e&&(e.el==2||e.el==1&&!e.minion))inc=1}
-    else if(ev=='talk'&&q.t=='talk'&&q.npc==a)inc=1;else if(ev=='wp'&&q.t=='wp'&&q.wp==a)inc=1;else if(ev=='hire'&&q.t=='hire')inc=1;else if(ev=='lore'&&q.t=='lore')inc=1;
+    else if(ev=='talk'&&q.t=='talk'&&q.npc==a)inc=1;else if(ev=='dungeon'&&q.t=='dungeon')inc=1;else if(ev=='wp'&&q.t=='wp'&&q.wp==a)inc=1;else if(ev=='hire'&&q.t=='hire')inc=1;else if(ev=='lore'&&q.t=='lore')inc=1;
     if(inc){s.p=Math.min(q.n_||1,s.p+inc);if(q.n_>1&&(ev=='kill'))pop(q.n+' '+s.p+'/'+q.n_,P.x,P.y+3.6,P.z,'#ffe08a');qCheck(q)}}
   if(ev=='kill'){BEST[a]=(BEST[a]||0)+1;const B=BOUNTY.q;if(B&&!B.ok&&b==RI[B.reg]){B.p++;if(B.p>=B.n){B.ok=1;toast('📋','Recompensa cumprida!','Volte ao Quadro de Recompensas na vila.')}}}
   trackUpd()}

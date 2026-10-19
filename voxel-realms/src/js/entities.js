@@ -67,7 +67,7 @@ function mkMob(type,x,z,o){o=o||{};const t=BOSS[type]||MT[type],lv=o.lv||1,boss=
 function dropMob(e){dropModel(e.m);if(e.ring)sc.remove(e.ring);const i=E.indexOf(e);if(i>=0)E.splice(i,1)}
 
 // ---------- geração por pedaço: bandos de monstros, animais e baús são ligados ao pedaço
-function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2;if(hy(cx,cz)<75)return;const cl_=CLEARED.get(k);if(cl_&&performance.now()-cl_<90000)return;if(aliveN()>=MAXE)return;
+function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2;if(hy(cx,cz)<75)return;if(typeof DNG!='undefined'&&DNG.some(D=>hy(cx-D.at[0],cz-D.at[1])<46))return;const cl_=CLEARED.get(k);if(cl_&&performance.now()-cl_<90000)return;if(aliveN()>=MAXE)return;
   const r=rng(c.cx*92821^c.cz*68917^((performance.now()/90000)|0)),reg=regionAt(cx,cz),rid=REG[reg].id;
   let tbl=SPAWN[rid]||[];for(const p of POI)if(hy(cx-p.x,cz-p.z)<p.r+16){if(p.n.startsWith('Cemit'))tbl=['zombie','zombie','ghoul','skel'];if(p.n.startsWith('Acamp'))tbl=['bandit','bandarc'];if(p.n.startsWith('Colmeia'))tbl=['bee','bee','fairy']}
   const nt=NIGHT>.5;if(nt&&!tbl.some(t=>t=='zombie'||t=='bandit'&&tbl.length==2))tbl=tbl.concat(NIGHTB[rid]||[]);
