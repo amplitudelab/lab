@@ -46,13 +46,14 @@ const WPN={
   dagger:(k,c)=>{k.box(.08,.6,.05,0,.42,0,c||0xc8ccd0).box(.3,.08,.1,0,.12,0,0x4a3a2a).box(.08,.2,.08,0,0,0,0x3a2a1a)},
   club:(k,c)=>{k.box(.14,1.1,.14,0,.45,0,0x6a4424).box(.3,.5,.3,0,1,0,c||0x5a3a20)},
   shield:(k,c)=>{k.box(.12,.9,.8,0,0,0,c||0x8a8f99).box(.14,.32,.32,0,0,0,0xd9a948)}};
-function weapon(m,type,col,glowCol,hand){const h=hand||m.hR;for(let i=h.children.length-1;i>=0;i--)if(!h.children[i].userData.keep)h.remove(h.children[i]);if(h===m.hL)m.bowG=null;if(h===m.hR)m.wtip=null;if(!type||!WPN[type])return;const g=new THREE.Group();g.rotation.x=PI/2*.9;h.add(g);
+function weapon(m,type,col,glowCol,hand){const h=hand||m.hR;for(let i=h.children.length-1;i>=0;i--)if(!h.children[i].userData.keep)h.remove(h.children[i]);if(h===m.hL){m.bowG=null;m.nock=null}if(h===m.hR){m.wtip=null;m.spearG=null}if(!type||!WPN[type])return;const g=new THREE.Group();g.rotation.x=PI/2*.9;h.add(g);
   const k=new Bake(),e=new Bake(),bw=typeof BOWS!='undefined'&&BOWS.has(type);WPN[type](k,col,type=='sword'||type=='axe'||type=='mace'?null:0,e);const ms=k.mesh(MV);ms.castShadow=true;g.add(ms);const em=e.mesh(ME);if(em)g.add(em);
   if(glowCol){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:SPR,color:glowCol,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.3}));s.scale.set(.7,.7,1);s.position.y=type.startsWith('staff')?1.95:type=='wand'?1:bw?0:1.2;g.add(s)}
   const tip=new THREE.Object3D();tip.position.y=bw?.7:type.startsWith('staff')?1.95:type=='wand'?1:1.5;g.add(tip);if(h===m.hR||!m.wtip)m.wtip=tip;
-  if(bw){g.rotation.set(0,0,0);m.bowG=g} // o arco fica em pé na mão (ajustado a cada quadro em animHum)
+  if(bw){g.rotation.set(0,0,0);m.bowG=g;ms.position.z=BOWZ(type);if(em)em.position.z=BOWZ(type);m.nock=nockArrow(type);m.nockXb=type.startsWith("xbow");g.add(m.nock)} // o arco fica em pé na mão (ajustado a cada quadro em animHum)
   if(type=='shield'){g.rotation.set(0,0,0);ms.position.set(-.1,0,0)}
   if(type=='lantern'||type=='book')g.rotation.set(0,0,0);
+  if(type.startsWith('spear')&&h===m.hR){m.spearG=g;ms.position.y=-.75;if(em)em.position.y=-.75;tip.position.y=1.9} // lança: empunhada no terço, sempre apontada para a frente
   m.meshes=[];m.g.traverse(o=>{if(o.isMesh){m.meshes.push(o);if(!o.userData.mat)o.userData.mat=o.material}});return g}
 
 // ---------- humanoide
@@ -107,7 +108,7 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
   if(s.dash){T.trx=.55;T.sLx=T.sRx=1;T.sLz=-.3;T.sRz=.3;T.eL=T.eR=-.2;T.tL=-.7;T.tR=.6;T.kL=.4;T.kR=1.2;T.hdx=-.3}
   if(zb){T.sLx=-1.35+sp*.15;T.sRx=-1.45-sp*.15;T.eL=T.eR=-.1;T.sLz=-.1;T.sRz=.1}
   if(s.aim){const pl=s.pull||0;T.sLx=-1.55;T.sLz=0;T.eL=-.05;T.sRx=-1.55;T.sRz=.1;T.eR=-.4-1.5*pl;T.try=-.45;T.hdy=.45}
-  if(s.block){T.sLx=-1.2;T.eL=-1.2;T.sLz=-.3}
+  if(s.block){T.sLx=-1.25;T.eL=-1.25;T.sLz=-.35;T.sRx=-1.35;T.eR=-1.05;T.sRz=.55;T.sRy=-.5;T.trx=.12;T.tL=-.35;T.kL=.45;T.tR=.25;T.kR=.25;T.hy=.94}
   let k=s.dash?30:14;const a=s.atk;
   if(a){const p=a.p;k=28;switch(a.k){
     case 'slashA':T.sRx=seq(p,T.sRx,-2.55,-.25,.3,.5);T.sRz=seq(p,T.sRz,.5,-.35,.3,.5);T.eR=seq(p,T.eR,-.7,-.1,.3,.5);T.try=seq(p,T.try,.5,-.55,.3,.5);T.hry=seq(p,T.hry,.2,-.25,.3,.5);T.sLx=seq(p,T.sLx,.3,-.4,.3,.5);break;
@@ -127,7 +128,7 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
   sm(m.head.rotation,'x',T.hdx,dt,k);sm(m.head.rotation,'y',T.hdy,dt,8);sm(m.head.rotation,'z',T.hdz,dt,k);
   sm(m.tL.rotation,'x',T.tL,dt,k);sm(m.tR.rotation,'x',T.tR,dt,k);sm(m.kL.rotation,'x',T.kL,dt,k);sm(m.kR.rotation,'x',T.kR,dt,k);
   if(s.torch=='L'&&!a&&!s.dash&&!s.dead){T.sLx=-.5+T.sLx*.2;T.sLz=-.1;T.eL=-.8}else if(s.torch=='R'&&!a&&!s.dash&&!s.dead){T.sRx=-.5+T.sRx*.2;T.sRz=.1;T.eR=-.8}
-  sm(m.sL.rotation,'x',T.sLx,dt,k);sm(m.sR.rotation,'x',T.sRx,dt,k);sm(m.sL.rotation,'z',T.sLz,dt,k);sm(m.sR.rotation,'z',T.sRz,dt,k);sm(m.sL.rotation,'y',T.sLy,dt,k);sm(m.sR.rotation,'y',T.sRy,dt,k);if(m.bowG)m.bowG.rotation.x=-(m.sL.rotation.x+m.eL.rotation.x+m.torso.rotation.x)+.06;
+  sm(m.sL.rotation,'x',T.sLx,dt,k);sm(m.sR.rotation,'x',T.sRx,dt,k);sm(m.sL.rotation,'z',T.sLz,dt,k);sm(m.sR.rotation,'z',T.sRz,dt,k);sm(m.sL.rotation,'y',T.sLy,dt,k);sm(m.sR.rotation,'y',T.sRy,dt,k);if(m.spearG)m.spearG.rotation.x=PI/2-(m.sR.rotation.x+m.eR.rotation.x+m.torso.rotation.x)-.08;if(m.bowG){m.bowG.rotation.x=-(m.sL.rotation.x+m.eL.rotation.x+m.torso.rotation.x)+.06;if(m.nock){const sh=a&&a.k=='shoot',pl=sh?cl(a.p/.6,0,1):s.aim?.85:0;m.nock.visible=sh?a.p<.62:!!s.aim;m.nock.position.z=(m.nockXb?.26:.3)-pl*(m.nockXb?0:.45)}}
   sm(m.eL.rotation,'x',T.eL,dt,k);sm(m.eR.rotation,'x',T.eR,dt,k);
   if(m.cape)sm(m.cape.rotation,'x',.1+W*.6+S(t*5+A.ph)*.05*(.3+W)+(s.leap?.8:0),dt,8);
   if(m.wL){const f=S(t*30)*.6;m.wL.rotation.y=-.3-f;m.wR.rotation.y=.3+f}}

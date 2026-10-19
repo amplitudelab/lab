@@ -20,7 +20,8 @@ function vmBuild(){if(FPV.vm){cam.remove(FPV.vm);FPV.vm.traverse(o=>{if(o.isMesh
   FPV.armR=arm(1);FPV.armL=arm(-1);FPV.tt=null;
   const hold=new THREE.Group();hold.position.set(0,0,-.2);FPV.armR.add(hold);
   const bw=BOWS.has(wk);if(wk!='fist'&&!bw&&WPN[wk]){const w=new THREE.Group();w.rotation.x=-1.25;w.position.set(0,-.02,0);w.scale.setScalar(.34);hold.add(w);const eb=new Bake();vmPart(w,k=>WPN[wk](k,null,null,eb));const em=eb.mesh(VME);if(em){em.frustumCulled=false;em.renderOrder=5;w.add(em)}}
-  if(bw){const b=new THREE.Group();b.position.set(0,.02,-.22);b.rotation.set(0,0,.25);b.scale.setScalar(.6);FPV.armL.add(b);const eb=new Bake();vmPart(b,k=>WPN[wk](k,null,null,eb));const em=eb.mesh(VME);if(em){em.frustumCulled=false;b.add(em)}}
+  FPV.nock=null;if(bw){const b=new THREE.Group();b.position.set(wk.startsWith('xbow')?.3:0,.02,-.22);b.rotation.set(0,PI,wk.startsWith('xbow')?0:.25);b.scale.setScalar(.6);FPV.armL.add(b);const inner=new THREE.Group();inner.position.z=BOWZ(wk);b.add(inner);const eb=new Bake();vmPart(inner,k=>WPN[wk](k,null,null,eb));const em=eb.mesh(VME);if(em){em.frustumCulled=false;inner.add(em)}
+    const n=nockArrow(wk);n.traverse(o=>{if(o.isMesh){o.frustumCulled=false;o.renderOrder=5;o.material=VMM}});b.add(n);FPV.nock=n;FPV.nockXb=wk.startsWith('xbow')}
   else{const t=new THREE.Group();t.position.set(0,.02,-.2);t.rotation.x=-.3;t.scale.setScalar(.36);FPV.armL.add(t);
     vmPart(t,k=>k.box(.1,.82,.1,0,.2,0,0x6b4423).box(.17,.24,.17,0,.62,0,0x2a1a10).box(.23,.08,.23,0,.5,0,0x4a3220));
     FPV.fl=vmPart(t,k=>k.box(.19,.22,.19,0,.84,0,0xff7a1a).box(.12,.2,.12,0,1,0,0xffc040).box(.06,.12,.06,0,1.12,0,0xfff0b0),VME);
@@ -36,7 +37,9 @@ function vmUpd(dt,t){const show=fpOn()&&run&&!P.dead;if(!show){if(FPV.vm)FPV.vm.
     else if(k=='shoot'){pz=-.62+seq(p,0,.18,-.05,.55,.65)}
     else{pz=-.62-seq(p,0,.0,.25,.4,.55);rx=-seq(p,0,0,.3,.4,.55)}}
   R_.position.set(px,py,pz);R_.rotation.set(rx,ry,rz);
-  L.visible=ST.wk=='bow'||TCH.on;L.position.set(-.36,-.38+(ST.wk=='bow'?.06:0),-.62);L.rotation.set(ST.wk=='bow'?.05:.08,0,0);
+  const bw=bow();L.visible=bw||TCH.on;L.position.set(-.36,-.38+(bw?.06:0),-.62);L.rotation.set(bw?.05:.08,0,0);
+  if(FPV.nock){const sh=a&&a.k=='shoot',pl=sh?cl(a.t/a.dur/.6,0,1):UI.atkHeld?.8:0;FPV.nock.visible=sh?a.t/a.dur<.62:UI.atkHeld||!a;FPV.nock.position.z=(FPV.nockXb?.26:.3)-pl*(FPV.nockXb?0:.4)}
+  if(P.block>0){R_.position.set(.12,-.28,-.5);R_.rotation.set(.3,.9,.4)}
   if(FPV.fl){const f=.5+.3*S(t*13)+.2*S(t*23+1);FPV.fl.scale.set(1+f*.08,.9+f*.22,1+f*.08);FPV.fs.scale.setScalar(.75+f*.35);FPV.fs.material.opacity=.25+f*.2}}
 // ---------- corpo invisível na tela, mas com sombra
 const GHM=new Map();

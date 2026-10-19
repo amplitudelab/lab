@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script>const VR_VERSION='12.2';const VR_NOTE='3 personagens (um por classe), armas novas com poderes, moradores novos e correcoes';</script>
+<script>const VR_VERSION='13.0';const VR_NOTE='Bloqueio e aparo, arco virado para a frente com flecha, bestas e lancas, arvore so da classe, inimigos mais atentos';</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -51,7 +51,7 @@
     <div id="fuo" class="orb"><span id="fut"></span></div>
     <div id="xp"><i id="xpf"></i><b id="lvl">1</b></div>
   </div>
-  <button id="atk" class="rb"><i>⚔️</i></button><button id="rolb" class="rb" title="Dash (C)"><i>💨</i></button><button id="runb" class="rb" title="Correr (Shift)"><i>🏃</i></button><button id="torb" class="rb on" title="Tocha (G)"><i>🔥</i></button><button id="mntb" class="rb" title="Montaria (R)" style="display:none"><i>🦁</i></button>
+  <button id="atk" class="rb"><i>⚔️</i></button><button id="rolb" class="rb" title="Dash (C)"><i>💨</i></button><button id="runb" class="rb" title="Correr (Shift)"><i>🏃</i></button><button id="blkb" class="rb" title="Bloquear (Z)"><i>🛡️</i></button><button id="torb" class="rb on" title="Tocha (G)"><i>🔥</i></button><button id="mntb" class="rb" title="Montaria (R)" style="display:none"><i>🦁</i></button>
   <button id="itb"><i></i><span></span></button>
   <!-- diálogo -->
   <div id="dlg" class="wd"><i id="di"></i><b id="dn"></b><p id="dt"></p><div id="dch"></div><u>▶</u></div>
@@ -96,6 +96,7 @@
 <script src="js/vfx.js"></script>
 <script src="js/archer.js"></script>
 <script src="js/fpv.js"></script>
+<script src="js/guard.js"></script>
 <script src="js/extras.js"></script>
 <script src="js/ambience.js"></script>
 <script src="js/quests.js"></script>

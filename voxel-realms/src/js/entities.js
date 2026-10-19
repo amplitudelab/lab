@@ -169,8 +169,8 @@ function mobsUpd(dt,t){
     else if(e.act){e.act.t+=dt;const p=e.act.t/e.act.dur;if(!e.act.hit&&p>=e.act.hp){e.act.hit=1;mobStrike(e,d)}if(e.act.t>=e.act.dur){e.act=null;aiAfterAct(e)}if(e.act&&e.act.k=='charge'){dvx=e.act.dx*sp*3;dvz=e.act.dz*sp*3}}
     else{
       if(e.st=='idle'){e.wt-=dt;if(e.wt<=0){e.wt=2+R()*4;e.tx=e.home[0]+(R()-.5)*12;e.tz=e.home[1]+(R()-.5)*12}const dd=hy(e.tx-e.x,e.tz-e.z);if(dd>.8){dvx=(e.tx-e.x)/dd*sp*.35;dvz=(e.tz-e.z)/dd*sp*.35}
-        if(d<(T.ai=='ranged'?15:12)&&!P.dead){e.st='chase';alertPack(e)}}
-      else if(e.st=='chase'){if(P.dead||d>34||hy(e.x-e.home[0],e.z-e.home[1])>48){e.st='idle';e.hp=Math.min(e.mx,e.hp+e.mx*.3)}
+        if(aiSees(e,d,dt)){e.st='chase';alertPack(e);if(d>9){pop('!',e.x,e.y+2.6*(e.m.g.scale.y||1),e.z,'#ff5a4a',1)}}}
+      else if(e.st=='chase'){if(P.dead||d>42||hy(e.x-e.home[0],e.z-e.home[1])>60){e.st='idle';e.hp=Math.min(e.mx,e.hp+e.mx*.3);if(!P.dead){e.tx=P.x;e.tz=P.z;e.wt=6}}
         else if(T.ai=='ranged'){dodgeCheck(e,d,dx,dz);const mv=rangedMove(e,dt,d,dx,dz,sp,T);dvx=mv[0];dvz=mv[1];e.f=angStep(e.f,Math.atan2(dx,dz),dt*8);if(e.cd<=0&&d<T.rg+2){e.cd=T.cd*(.8+R()*.4);e.act={k:T.atk||'cast',t:0,dur:.8,hp:.62}}}
         else if(T.ai=='hopper'){e.hop=Math.max(0,e.hop-dt*1.6);if(e.hop<=0&&e.cd<=0){e.hop=1;e.cd=T.cd;e.hx=dx/d;e.hz=dz/d;e.hitd=0}if(e.hop>0){dvx=e.hx*sp*1.6;dvz=e.hz*sp*1.6;if(!e.hitd&&e.hop<.5&&d<T.rg+.3){e.hitd=1;hitPlayer(e.dmg,{psn:T.psn,src:e})}}e.f=angStep(e.f,Math.atan2(dx,dz),dt*8)}
         else{const rg=T.rg+e.r*.5;dodgeCheck(e,d,dx,dz);const mv=meleeMove(e,dt,d,dx,dz,sp,rg);dvx=mv[0];dvz=mv[1];if(d<=rg)e.f=angStep(e.f,Math.atan2(dx,dz),dt*10);
@@ -181,7 +181,7 @@ function mobsUpd(dt,t){
     if(e.act&&e.act.k=='charge'&&!e.act.hd&&d<e.r+1.1){e.act.hd=1;hitPlayer(e.dmg*1.4,{src:e,kb:4})}
     e.m.g.position.set(e.x,e.y+(T.hover?T.hover+S(t*2+e.id)*.25:0),e.z);e.m.g.rotation.y=e.f;if(e.ring)e.ring.position.set(e.x,e.y+.1,e.z);
     const sc_=e.m.g.scale;animate(e.m,dt,t,{v,atk:e.act&&e.act.k!='charge'?{k:e.act.k,p:e.act.t/e.act.dur}:e.act&&{k:'charge',p:.5},hurt:e.hurt,hop:e.hop})}}
-function alertPack(e){for(const o of E)if(!o.dead&&!o.t.passive&&o.st=='idle'&&hy(o.x-e.x,o.z-e.z)<12)o.st='chase'}
+function alertPack(e){for(const o of E)if(!o.dead&&!o.t.passive&&o.st=='idle'&&hy(o.x-e.x,o.z-e.z)<16)o.st='chase'}
 function mobStrike(e,d){const T=e.t,k=e.act.k;
   if(T.proj||k=='cast'||k=='shoot'){proj('m',T.proj||'orb',e.x+S(e.f)*.8,e.y+1.6*(e.m.g.scale.y),e.z+C(e.f)*.8,P,e.dmg,{c:T.pc||0xffffff,psn:T.psn,brn:T.brn});if(T.proj=='arrow')sweep(1100,400,.1,'triangle',.02);return}
   const reach=T.rg+e.r*.5+1;if(d<reach){const a=Math.abs(angDiff(e.f,Math.atan2(P.x-e.x,P.z-e.z)));if(a<1.3||d<1.4)hitPlayer(e.dmg,{psn:T.psn,brn:T.brn,src:e,kb:k=='slam'?3:0})}

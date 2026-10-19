@@ -18,9 +18,7 @@ Object.assign(SK,{
   falcao:{t:'arco',n:'Falcão Caçador',ic:'🦅',lv:8,cost:25,cd:16,d:r=>`Um falcão mergulha sobre os inimigos por ${8+2*r} s (${80+20*(r-1)}% de dano por mergulho).`},
   tempestade:{t:'arco',n:'Tempestade de Flechas',ic:'🌧️',lv:10,cost:45,cd:15,bow:1,d:r=>`Flechas caem do céu por 2,5 s numa área grande (${45+10*(r-1)}% por flecha).`}});
 // colunas da árvore: a da sua classe primeiro
-const CLS_TREE={guerreiro:'guerra',mago:'arcano',cacador:'arco'};
-function treeOrder(){const f=CLS_TREE[P.cls]||'guerra';return[TREE.find(t=>t.id==f),...TREE.filter(t=>t.id!=f)]}
-function archerPassive(s){if(!(EQ.arma&&EQ.arma.wk=='bow'))return;s.crit+=3*rk('aguia');s.dmg+=6*rk('aguia');s.ias+=8*rk('aljava')}
+function archerPassive(s){if(!(EQ.arma&&RNG(EQ.arma.wk)))return;s.crit+=3*rk('aguia');s.dmg+=6*rk('aguia');s.ias+=8*rk('aljava')}
 // mais flechas no pool (tempestade e tiro múltiplo)
 for(let i=0;i<26;i++){const s=spr(0xffffff,1.1,1);s.visible=false;sc.add(s);const a=arrowMesh();a.visible=false;sc.add(a);PJ.push({s,a,o:null,l:0,v:new V3,tg:null,dm:0,k:'',side:''})}
 
@@ -68,7 +66,7 @@ function archerUpd(dt,t){trapUpd(dt,t);falconUpd(dt,t)}
 
 // ---------- saque por classe
 // pesos das armas por classe (o resto ainda pode cair, só que bem menos)
-const CLS_WPN={guerreiro:{sword:9,axe:8,mace:8,bow:1.2,staff:1,wand:1},mago:{staff:10,wand:9,sword:1.2,axe:1,mace:1,bow:1},cacador:{bow:14,sword:1.5,axe:1,mace:1,staff:1,wand:1}};
+const CLS_WPN={guerreiro:{sword:9,axe:8,mace:8,bow:1,spear:1.5,xbow:.6,staff:1,wand:1},mago:{staff:10,wand:9,sword:1.2,axe:1,mace:1,bow:1,xbow:.6,spear:.6},cacador:{bow:10,xbow:5,spear:5,sword:1.2,axe:1,mace:1,staff:1,wand:1}};
 const CLS_AFX={guerreiro:{dmg:3,hp:3,arm:3,fury:3,ls:2.5,crit:1.5},mago:{mag:4,cdr:3,crit:2,hp:1.5,critd:1.5},cacador:{crit:3,critd:3,ias:3,ms:2.5,dmg:2.5}};
 const CLS_HELM={guerreiro:'helm',mago:'hood',cacador:'hood'};
 const CLS_LEG={guerreiro:['crepusculo','furia','sismo','guardiao'],mago:['trovao','meteoro'],cacador:['perfura','vampiro']};
@@ -80,5 +78,5 @@ function pickBase(slot,bl){const c=P.cls||'guerreiro';
 function pickAff(pool){const W=CLS_AFX[P.cls||'guerreiro']||{};return wpick(pool,a=>W[a.k]||1)}
 function pickLeg(slot){const L=slot?LEG.filter(l=>l.slot==slot):LEG;if(!L.length)return pick(LEG);const pref=CLS_LEG[P.cls||'guerreiro']||[];
   return L[wpick(L,l=>pref.includes(l.id)?4:l.slot=='arma'&&l.b!=null&&(CLS_WPN[P.cls||'guerreiro'][BASES.arma[l.b][2]]||1)<2?.4:1)]}
-const WPN_CLS={sword:'guerreiro',axe:'guerreiro',mace:'guerreiro',staff:'mago',wand:'mago',bow:'cacador'};
+const WPN_CLS={sword:'guerreiro',axe:'guerreiro',mace:'guerreiro',staff:'mago',wand:'mago',bow:'cacador',xbow:'cacador',spear:'cacador'};
 function clsTag(it){if(it.slot!='arma'||!it.wk)return'';const c=WPN_CLS[it.wk];return c==P.cls?'<span style="color:#7df08a">★ Arma da sua classe</span>':`<span style="color:#c8a888">Arma de ${CLS[c].n}</span>`}

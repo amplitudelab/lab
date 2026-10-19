@@ -67,3 +67,7 @@ body.run #vrVer{display:none}
 /* espaços de personagem */
 .clsc.slot{position:relative}.clsc.slot.has{border-color:#7df08a}.clsc .sb{font:800 12px var(--fn);font-style:normal;color:#ffd34a;margin-top:4px;padding:5px 12px;border:1px solid var(--g);border-radius:999px;background:rgba(217,169,72,.12)}
 .clsc .sdel{font-size:11px;color:#ff9a8a;text-decoration:none;margin-top:2px;padding:4px 8px}#slx{margin-top:4px}
+/* 13.0: botão de bloqueio (mesma linha do dash, mais à esquerda) e árvore de uma classe só */
+#blkb{width:var(--b);height:var(--b);font-size:calc(var(--b)*.46);right:calc(var(--ax) + var(--atk)/2 + 1.5*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 + .62*var(--D) - var(--b)/2)}
+#blkb.on{border-color:#9ac8ff;box-shadow:inset 0 0 0 3px #1a2a4a,inset 0 0 14px #000,0 0 16px #9ac8ff}
+#tcols{display:block}#tcols .tcol{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}#tcols .tcol h4{grid-column:1/-1;font-size:15px}

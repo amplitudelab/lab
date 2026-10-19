@@ -43,11 +43,11 @@ let wgT=0;
 function wglowUpd(dt){const w=EQ.arma;if(!w||w.rar<2||!P.m.wtip||P.dead)return;wgT-=dt;if(wgT>0)return;wgT=w.rar==3?.22:.5;
   P.m.wtip.updateWorldMatrix(true,false);P.m.wtip.getWorldPosition(_tv);if(typeof fpOn=='function'&&fpOn())return;fx(_tv.x+(R()-.5)*.2,_tv.y,_tv.z+(R()-.5)*.2,RAR[w.rar].h,1,.4,.06,1.2,-1)}
 // ---------- poderes das armas raras e lendárias
-const ALLW=['sword','axe','mace','staff','wand','bow'];
+const ALLW=['sword','axe','mace','staff','wand','bow','xbow','spear'];
 const POW={brasa:{n:'Brasa',ic:'🔥',d:'25% de chance de incendiar o alvo.',w:ALLW},geada:{n:'Geada',ic:'❄️',d:'20% de chance de congelar o alvo.',w:ALLW},
   trovao2:{n:'Trovão',ic:'⚡',d:'15% de chance de um raio saltar entre 3 inimigos.',w:ALLW},eco:{n:'Eco Arcano',ic:'🌀',d:'A cada 5 acertos, uma onda de choque atinge tudo ao redor.',w:['sword','axe','mace','staff','wand']},
-  sangue:{n:'Sede de Sangue',ic:'🩸',d:'Acertos críticos curam 4% da vida.',w:['sword','axe','mace']},multi:{n:'Rajada',ic:'🎯',d:'30% de chance de disparar 2 flechas extras.',w:['bow']},
-  explosiva:{n:'Flecha Explosiva',ic:'💥',d:'As flechas explodem em área.',w:['bow']}};
+  sangue:{n:'Sede de Sangue',ic:'🩸',d:'Acertos críticos curam 4% da vida.',w:['sword','axe','mace','spear']},multi:{n:'Rajada',ic:'🎯',d:'30% de chance de disparar 2 flechas extras.',w:['bow','xbow']},
+  explosiva:{n:'Flecha Explosiva',ic:'💥',d:'As flechas explodem em área.',w:['bow','xbow']}};
 const powFor=wk=>pick(Object.keys(POW).filter(k=>POW[k].w.includes(wk)));
 function powProc(e,d,crit){const w=EQ.arma;if(!w||!w.pw||e.dead)return;const k=w.pw,y=e.y+1.2*(e.m.g.scale.y||1);
   if(k=='brasa'&&R()<.25){e.burn=3;fx(e.x,y,e.z,0xff7a1a,8,3,.16,1.6,-1)}
@@ -56,3 +56,16 @@ function powProc(e,d,crit){const w=EQ.arma;if(!w||!w.pw||e.dead)return;const k=w
   else if(k=='eco'){P.eco=(P.eco||0)+1;if(P.eco>=5){P.eco=0;ring(P.x,P.z,4.2,0xb08aff,.5);flash(P.x,P.y+1,P.z,0xb08aff,4,.3);fx(P.x,P.y+.6,P.z,0xc8a8ff,16,9,.12,.4,0);for(const o of E)if(!o.dead&&!o.t.passive&&hy(o.x-P.x,o.z-P.z)<4.2)hurtMob(o,rollDmg(1.2)[0],0,'pow')}}
   else if(k=='sangue'&&crit){heal(ST.mx*.04);fx(P.x,P.y+1.4,P.z,0xff4a5a,6,2,.1,1.4,-1)}}
 function powShoot(a){const w=EQ.arma;if(!w||w.pw!='multi'||R()>.3)return;for(const s of[-1,1]){const an=P.f+s*.14;proj('p','arrow',P.x+S(an)*.6,P.y+1.7,P.z+C(an)*.6,{x:P.x+S(an)*20,z:P.z+C(an)*20,y:P.y},rollDmg(.8)[0],{dir:new V3(S(an),0,C(an)),home:0})}}
+// ---------- bestas e lanças (Caçador)
+Object.assign(WPN,{
+  xbow:(k,c,g,e)=>{k.box(.12,.14,.9,0,-.02,.12,0x6a4424).box(.14,.18,.2,0,-.12,-.3,0x4a2e18).box(.06,.24,.08,0,-.2,-.05,LTH2);arcLimbsX(k,.46,.14,.08,c||0x8a5a2b,6,GLD);k.box(.1,.1,.12,0,0,.55,GLD).box(.03,.03,.55,0,.08,.26,0xc8ccd0).box(.06,.06,.1,0,.08,.55,0xe0e4ea)},
+  xbow2:(k,c,g,e)=>{k.box(.13,.15,.95,0,-.02,.12,0x2a2a32).box(.16,.2,.22,0,-.12,-.32,0x1a1a22).box(.22,.16,.3,0,.12,.1,0x3a3a44);arcLimbsX(k,.5,.16,.09,0x3a3a44,6,0xa0202a);(e||k).box(.05,.05,.3,.09,.12,.1,0xff4a3a);k.box(.03,.03,.55,0,.1,.26,0xc8ccd0)},
+  spear:(k,c,g,e)=>{k.box(.09,2.3,.09,0,.75,0,0x6a4424);for(let i=0;i<3;i++)k.box(.12,.05,.12,0,-.1+i*.14,0,LTH2);k.box(.14,.08,.14,0,1.9,0,g||GLD).box(.16,.42,.05,0,2.15,0,c||STL).box(.1,.2,.06,0,2.42,0,STL2);(e||k).box(.05,.36,.06,0,2.16,0,0xf4f8fc)},
+  spear2:(k,c,g,e)=>{k.box(.1,2.4,.1,0,.78,0,0x2a1a3a);k.box(.16,.1,.16,0,1.98,0,0xa0202a).box(.18,.5,.05,0,2.28,0,0x9aa2ae).box(.32,.08,.05,0,2.08,0,0x9aa2ae,{rz:.5}).box(.32,.08,.05,0,2.08,0,0x9aa2ae,{rz:-.5}).box(.1,.22,.06,0,2.6,0,0xc8d0dc);(e||k).box(.06,.42,.06,0,2.28,0,0xff6a5a)}});
+function arcLimbsX(k,L,D,th,col,seg,tip){for(let i=-seg;i<=seg;i++){if(!i)continue;const t=i/seg;k.box(L/seg*1.12,th*(1-Math.abs(t)*.4),th,t*L,0,.5-D*t*t,Math.abs(t)>.8?tip:col,{ry:2*D*t/L})}k.box(2*L*.96,.02,.02,0,0,.5-D-.02,0xf5eed0)}
+BOWS.add('xbow');BOWS.add('xbow2');
+const RNG=k=>k=='bow'||k=='xbow';
+// arco: a empunhadura fica na mão (o modelo é deslocado para trás), a curva aponta para o alvo
+const BOWZ=t=>t=='xbow'||t=='xbow2'?0:-.22;
+// flecha encaixada no arco (aparece ao mirar/atirar)
+function nockArrow(type){const a=arrowMesh();a.userData.keep=1;a.position.set(.07,0,type.startsWith('xbow')?.26:.3);a.visible=false;return a}
