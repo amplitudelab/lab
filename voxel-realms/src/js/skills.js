@@ -41,7 +41,7 @@ function useSkill(slot){const id=P.bar[slot];if(!id){openTree();return}dismount(
   else if(id=='salto'){let tx,tz;if(t){tx=t.x-S(P.f)*.5;tz=t.z-C(P.f)*.5}else{tx=P.x+S(P.f)*8;tz=P.z+C(P.f)*8}if(!walkable(tx,tz)){tx=P.x;tz=P.z}P.leap={x0:P.x,z0:P.z,y0:P.y,x1:tx,z1:tz,t:0,dur:.6};sweep(200,700,.3,'triangle',.05)}
   else if(id=='grito')P.act={k:'shout',t:0,dur:.7,hp:.4,sk:id};
   else if(id=='sombra'){shadowStep(t)}
-  else P.act={k:S_.bow?'shoot':'cast',t:0,dur:id=='meteoro'?.7:S_.bow?.45:.5,hp:S_.bow?.6:.5,sk:id,tg:t};hud()}
+  else{if(!S_.bow)magicCircle(SK[id].t=='arcano'?0xb08aff:SK[id].t=='necro'?0x7dff9a:SK[id].t=='sangue'?0xff3a4a:0xffd070,.75);P.act={k:S_.anim||(S_.bow?'shoot':'cast'),t:0,dur:S_.dur||(id=='meteoro'?.7:S_.bow?.45:.5),hp:S_.hp||(S_.bow?.6:.5),sk:id,tg:t}}hud()}
 function skillHit(){const a=P.act,id=a.sk,r=rk(id),m=1+.3*(r-1)*0;const fx0=P.x+S(P.f),fz0=P.z+C(P.f);skillFx(id,a,r,fx0,fz0);
   if(SK[id].t=='arco'){archerSkill(id,a,r);return}
   if(id=='grito'){P.buff.grito=10;P.gritoK=.25+.05*r;addFury(40);ring(P.x,P.z,6,0xffd34a,.6);flash(P.x,P.y+2,P.z,0xffd34a,6,.5);snd(220,.5,'sawtooth');sweep(180,90,.6,'square',.05);SHK=.3;for(const e of E)if(!e.dead&&!e.t.passive&&hy(e.x-P.x,e.z-P.z)<6)e.stun=Math.max(e.stun,.6);return}

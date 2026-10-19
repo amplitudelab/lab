@@ -39,3 +39,16 @@ function boltFx(b){column(b.x,b.z,0xc8e0ff,Math.max(6,16-(b.y-groundAt(b.x,b.z))
 function spinFx(){const c=EQ.arma&&EQ.arma.rar>=2?RAR[EQ.arma.rar].h:0xe8ecff;for(let i=0;i<3;i++){const a=P.f+i*2.09;fx(P.x+S(a)*2.5,P.y+1.2,P.z+C(a)*2.5,c,2,3,.11,.2,0)}fx(P.x,P.y+.2,P.z,0xcdb894,3,6,.16,.3,2)}
 function leapFx(){column(P.x,P.z,0xffd8a0,6,1.8,.45);fx(P.x,P.y+.4,P.z,0xb8a888,16,13,.26,1.2,12);fx(P.x,P.y+.4,P.z,0xffe0b0,10,8,.14,1.6,8)}
 function sombraFx(x0,z0,x1,z1){for(let i=0;i<10;i++){const k=i/9,x=lerp(x0,x1,k),z=lerp(z0,z1,k);fx(x,groundAt(x,z)+1+R(),z,i%2?0x9a5acf:0x4a2a6a,2,1.5,.2,.8,-1)}fx(x0,P.y+1,z0,0x7a4aaa,14,6,.2,1,0);fx(x1,groundAt(x1,z1)+1,z1,0xb07aff,14,6,.2,1,0);ring(x1,z1,2.2,0xb07aff,.4)}
+
+// ---------- 13.1: impacto, finalização, rastro por poder e círculo mágico
+const PWC={brasa:0xff8a2a,geada:0x9ae4ff,trovao2:0x9ac8ff,eco:0xc8a8ff,sangue:0xff4a5a,multi:0xffe08a,explosiva:0xffa040};
+function trailCol(){const w=EQ.arma;if(!w)return 0xfff0d0;if(w.pw&&PWC[w.pw])return PWC[w.pw];return w.rar>=2?RAR[w.rar].h:0xfff0d0}
+function impactFx(e,big){const y=e.y+1.1*(e.m.g.scale.y||1),c=trailCol(),dx=e.x-P.x,dz=e.z-P.z,l=hy(dx,dz)||1;
+  for(let i=0;i<(big?7:4);i++){const sp=4+R()*5;fx(e.x-dx/l*.4,y,e.z-dz/l*.4,i%2?0xffffff:c,1,1.5,.07+R()*.05,.6,8)}flash(e.x-dx/l*.5,y,e.z-dz/l*.5,c,big?2.4:1.4,.12);if(big)ring(e.x,e.z,1.6,c,.25)}
+function finisherFx(){const x=P.x+S(P.f)*1.6,z=P.z+C(P.f)*1.6,c=trailCol();ring(x,z,4,c,.5);ring(x,z,2.2,0xffffff,.3);column(x,z,c,4,1.2,.35);fx(x,groundAt(x,z)+.3,z,0xb8a888,14,9,.24,1,10);for(let i=0;i<5;i++)puff(x+(R()-.5)*3,groundAt(x,z)+.4,z+(R()-.5)*3,0xcdb894,2);SHK=Math.max(SHK,.5);HITSTOP=Math.max(HITSTOP,.08);snd(80,.35,'sawtooth')}
+// círculo de runas sob os pés ao conjurar
+const MCV=document.createElement('canvas');MCV.width=MCV.height=128;{const x=MCV.getContext('2d');x.strokeStyle='#fff';x.fillStyle='#fff';x.lineWidth=3;x.beginPath();x.arc(64,64,60,0,7);x.stroke();x.lineWidth=2;x.beginPath();x.arc(64,64,46,0,7);x.stroke();
+  for(let i=0;i<6;i++){const a=i/6*6.283,b=a+2.094;x.beginPath();x.moveTo(64+Math.cos(a)*46,64+Math.sin(a)*46);x.lineTo(64+Math.cos(b)*46,64+Math.sin(b)*46);x.stroke()}x.font='bold 11px serif';x.textAlign='center';x.textBaseline='middle';const R_='ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃ';for(let i=0;i<12;i++){const a=i/12*6.283;x.save();x.translate(64+Math.cos(a)*53,64+Math.sin(a)*53);x.rotate(a+1.57);x.fillText(R_[i],0,0);x.restore()}}
+const MCT=new THREE.CanvasTexture(MCV),MCM=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:MCT,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));MCM.rotation.x=-PI/2;MCM.visible=false;MCM.renderOrder=2;sc.add(MCM);
+let MCt=0;function magicCircle(c,t){MCM.material.color.setHex(c);MCt=t;MCM.userData.mx=t;MCM.visible=true}
+function magicUpd(dt){if(MCt<=0){MCM.visible=false;return}MCt-=dt;const k=MCt/MCM.userData.mx;MCM.position.set(P.x,groundAt(P.x,P.z)+.09,P.z);MCM.rotation.z+=dt*1.6;MCM.scale.setScalar(3.4*(1.15-k*.15));MCM.material.opacity=Math.min(1,k*3)*.85}

@@ -34,3 +34,6 @@ function aiSees(e,d,dt){if(P.dead)return false;if(d<7)return true;              
   e.lsT=(e.lsT||R()*.4)-dt;if(e.lsT>0)return false;e.lsT=.35;
   const fv=Math.abs(angDiff(e.f,Math.atan2(P.x-e.x,P.z-e.z)))<1.6||d<12;                  // de costas enxergam menos
   return fv&&losClear(e.x,e.z,P.x,P.z)}
+// animações das magias do mago e do guerreiro
+Object.assign(SK.meteoro,{anim:'castUp',dur:.75});Object.assign(SK.cura,{anim:'castUp',dur:.6});Object.assign(SK.escudo,{anim:'castUp',dur:.55});
+Object.assign(SK.gelo,{anim:'stomp',dur:.6,hp:.56});Object.assign(SK.chama,{anim:'stomp',dur:.6,hp:.56});Object.assign(SK.raio,{anim:'palm',dur:.5,hp:.5});

@@ -102,24 +102,46 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
   T.hy=1.02+(Math.abs(sp)*.08-.04)*W;T.hry=sp*.14*W;T.hrx=0;T.trx=(zb?.25:.1*W*W);T.try=-sp*.2*W;T.trz=zb?S(t*1.3)*.08:0;T.hdx=zb?.25:0;T.hdy=A.look;T.hdz=zb?.2:0;
   T.tL=-sp*.75*W;T.tR=sp*.75*W;T.kL=Math.max(0,cp)*1.15*W+.03;T.kR=Math.max(0,-cp)*1.15*W+.03;
   T.sLx=sp*.65*W;T.sRx=-sp*.65*W;T.sLz=-.07-S(t*1.8)*.025*(1-W);T.sRz=.07+S(t*1.8)*.025*(1-W);T.sLy=0;T.sRy=0;T.eL=-(.18+.55*W);T.eR=-(.18+.55*W);
-  T.brs=1+S(t*2.2)*.012*(1-W);
+  T.brs=1+S(t*2.2)*.016*(1-W);if(W<.05&&!zb){const sw=S(t*.55+A.ph);T.hry+=sw*.05;T.trz+=sw*.025;T.tL+=.04+sw*.03;T.tR-=.04-sw*.03;T.kL+=Math.max(0,sw)*.08;T.kR+=Math.max(0,-sw)*.08}
   // corrida: passada longa, braços dobrados bombeando, tronco inclinado, quique maior
   const rk_=cl((v-6)/2.5,0,1);if(rk_>0&&!zb){T.tL*=1+.35*rk_;T.tR*=1+.35*rk_;T.kL+=Math.max(0,cp)*.6*rk_;T.kR+=Math.max(0,-cp)*.6*rk_;T.sLx=sp*(.65+.45*rk_)*W;T.sRx=-sp*(.65+.45*rk_)*W;T.eL=T.eR=-(.7+.8*rk_);T.sLz=-.15;T.sRz=.15;T.trx=.1+.28*rk_;T.hy+=Math.abs(sp)*.05*rk_;T.hdx=-.12*rk_}
   if(s.dash){T.trx=.55;T.sLx=T.sRx=1;T.sLz=-.3;T.sRz=.3;T.eL=T.eR=-.2;T.tL=-.7;T.tR=.6;T.kL=.4;T.kR=1.2;T.hdx=-.3}
   if(zb){T.sLx=-1.35+sp*.15;T.sRx=-1.45-sp*.15;T.eL=T.eR=-.1;T.sLz=-.1;T.sRz=.1}
-  if(s.aim){const pl=s.pull||0;T.sLx=-1.55;T.sLz=0;T.eL=-.05;T.sRx=-1.55;T.sRz=.1;T.eR=-.4-1.5*pl;T.try=-.45;T.hdy=.45}
+  if(s.aim){const pl=s.pull||.85;T.sLx=-1.55;T.sLz=0;T.sLy=.15;T.eL=-.05;T.sRx=-1.55;T.sRz=.1;T.eR=-.4-1.5*pl;T.try=-.85;T.hdy=.85;T.hry=-.35;T.tL=-.35;T.kL=.25;T.tR=.35;T.kR=.15;T.hy=.98}
   if(s.block){T.sLx=-1.25;T.eL=-1.25;T.sLz=-.35;T.sRx=-1.35;T.eR=-1.05;T.sRz=.55;T.sRy=-.5;T.trx=.12;T.tL=-.35;T.kL=.45;T.tR=.25;T.kR=.25;T.hy=.94}
   let k=s.dash?30:14;const a=s.atk;
   if(a){const p=a.p;k=28;switch(a.k){
-    case 'slashA':T.sRx=seq(p,T.sRx,-2.55,-.25,.3,.5);T.sRz=seq(p,T.sRz,.5,-.35,.3,.5);T.eR=seq(p,T.eR,-.7,-.1,.3,.5);T.try=seq(p,T.try,.5,-.55,.3,.5);T.hry=seq(p,T.hry,.2,-.25,.3,.5);T.sLx=seq(p,T.sLx,.3,-.4,.3,.5);break;
-    case 'slashB':T.sRx=seq(p,T.sRx,-1.45,-1.45,.3,.5);T.sRz=seq(p,T.sRz,1.35,-.7,.3,.5);T.sRy=seq(p,0,.4,-.6,.3,.5);T.eR=-.15;T.try=seq(p,T.try,.75,-.85,.3,.5);T.hry=seq(p,T.hry,.3,-.3,.3,.5);T.sLz=seq(p,T.sLz,-.6,-.2,.3,.5);break;
-    case 'slam':{const x=seq(p,T.sRx,-2.95,-.55,.38,.55);T.sRx=T.sLx=x;T.sLz=-.15;T.sRz=.15;T.eL=T.eR=seq(p,T.eR,-.35,-.05,.38,.55);T.trx=seq(p,T.trx,-.3,.55,.38,.55);T.hy=seq(p,1.02,1.08,.82,.38,.55);T.tL=T.tR=seq(p,0,0,-.55,.38,.55);T.kL=T.kR=seq(p,.03,.1,.9,.38,.55);break}
-    case 'spin':T.sRx=-1.5;T.sRz=1.4;T.sLx=-1.5;T.sLz=-1.4;T.eL=T.eR=-.1;T.trx=.1;break;
-    case 'cast':T.sLx=T.sRx=seq(p,T.sRx,-2.1,-1.45,.4,.55);T.sLz=-.25;T.sRz=.25;T.eL=T.eR=seq(p,-.2,-.9,-.05,.4,.55);T.trx=seq(p,0,-.2,.15,.4,.55);break;
+    case 'slashA':{const w=seq(p,0,1,0,.32,.52),st=seq(p,0,.3,1,.32,.52);T.sRx=seq(p,T.sRx,-2.7,-.15,.32,.52);T.sRz=seq(p,T.sRz,.7,-.55,.32,.52);T.sRy=seq(p,0,.5,-.4,.32,.52);T.eR=seq(p,T.eR,-1.1,-.05,.32,.52);
+      T.try=seq(p,T.try,.75,-.75,.32,.52);T.hry=seq(p,T.hry,.35,-.4,.32,.52);T.trx=.08+.12*st;T.trz=-.08*w;T.sLx=seq(p,T.sLx,.4,-.6,.32,.52);T.sLz=-.35*st;T.eL=-.6;T.tL=-.55*st;T.kL=.35*st;T.tR=.35*st;T.kR=.2*st;T.hy=1.02-.08*st;T.hdy=-T.try*.4;break}
+    case 'slashB':{const st=seq(p,0,.3,1,.3,.5);T.sRx=seq(p,T.sRx,-1.35,-1.5,.3,.5);T.sRz=seq(p,T.sRz,-.55,1.5,.3,.5);T.sRy=seq(p,0,-.7,.7,.3,.5);T.eR=seq(p,T.eR,-.9,-.1,.3,.5);
+      T.try=seq(p,T.try,-.8,.9,.3,.5);T.hry=seq(p,T.hry,-.35,.4,.3,.5);T.trx=.1*st;T.trz=.08*st;T.sLz=seq(p,T.sLz,-.2,-.8,.3,.5);T.sLx=-.3;T.eL=-.7;T.tR=-.55*st;T.kR=.35*st;T.tL=.35*st;T.kL=.2*st;T.hy=1.02-.08*st;T.hdy=-T.try*.4;break}
+    case 'slam':{const x=seq(p,T.sRx,-3.1,-.45,.4,.56),st=seq(p,0,0,1,.4,.56);T.sRx=T.sLx=x;T.sLz=-.2;T.sRz=.2;T.eL=T.eR=seq(p,T.eR,-.5,-.02,.4,.56);T.trx=seq(p,T.trx,-.35,.6,.4,.56);T.try=seq(p,0,.2,-.1,.4,.56);
+      T.hy=seq(p,1.02,1.1,.8,.4,.56);T.tL=seq(p,0,.2,-.85,.4,.56);T.kL=seq(p,.03,.1,.8,.4,.56);T.tR=seq(p,0,-.1,.5,.4,.56);T.kR=seq(p,.03,.2,.6,.4,.56);T.hdx=seq(p,0,-.2,.25,.4,.56);break}
+    case 'spin':T.sRx=-1.5;T.sRz=1.4;T.sLx=-1.5;T.sLz=-1.4;T.eL=T.eR=-.1;T.trx=.15;T.tL=-.3;T.tR=.3;T.kL=T.kR=.35;T.hy=.92;T.trz=S(p*20)*.06;break;
+    // finalização: salto com giro e corte para baixo (4º golpe do combo)
+    case 'finisher':{const u=seq(p,0,1,0,.45,.62);T.sRx=seq(p,T.sRx,-3.05,-.4,.45,.62);T.sLx=seq(p,T.sLx,-2.6,-.6,.45,.62);T.sRz=.25;T.sLz=-.25;T.eR=T.eL=seq(p,-.6,-.4,-.05,.45,.62);T.trx=seq(p,0,-.45,.5,.45,.62);
+      T.tL=T.tR=-1.1*u;T.kL=T.kR=1.5*u;T.hy=1.02+.0*u-.2*sstep(.55,.7,p)*(1-sstep(.85,1,p));T.hdx=seq(p,0,-.3,.3,.45,.62);break}
+    // invocação: braços abertos para cima e para baixo (necromante)
+    case 'summon':{const u=seq(p,0,1,.6,.45,.7);T.sLx=T.sRx=-2.4*u;T.sLz=-.9*u;T.sRz=.9*u;T.eL=T.eR=-.2;T.trx=-.25*u;T.hdx=-.4*u;T.hy=1.02+.05*u;T.tL=-.15*u;T.tR=.15*u;break}
+    // magia de uma mão: palma empurrada para a frente (vampiro)
+    case 'palm':{const st=seq(p,0,.2,1,.35,.5);T.sRx=seq(p,T.sRx,-.8,-1.65,.35,.5);T.eR=seq(p,T.eR,-1.9,-.05,.35,.5);T.sRz=.15;T.try=seq(p,0,.6,-.45,.35,.5);T.trx=.15*st;T.sLx=.4;T.sLz=-.35;T.eL=-.5;T.tL=-.5*st;T.kL=.3*st;T.tR=.3*st;T.hy=1.02-.06*st;break}
+    // conjurar (cajado/varinha): ergue, avança um passo e empurra a magia para a frente com recuo
+    case 'cast':{const st=seq(p,0,.2,1,.38,.52),rc=sstep(.5,.62,p)*(1-sstep(.7,1,p));T.sRx=seq(p,T.sRx,-2.5,-1.5,.38,.52);T.sRz=seq(p,.25,.1,.2,.38,.52);T.eR=seq(p,-.3,-1.2,-.05,.38,.52)+rc*.3;T.sLx=seq(p,T.sLx,-.9,-1.55,.38,.52);T.sLz=-.2;T.eL=seq(p,-.4,-1,-.1,.38,.52);
+      T.try=seq(p,0,.5,-.3,.38,.52);T.trx=seq(p,0,-.25,.2,.38,.52)-rc*.15;T.tL=-.45*st;T.kL=.3*st;T.tR=.3*st;T.hy=1.02-.06*st;T.hdx=-.1*st;break}
+    // magia para o alto (meteoro, cura, escudo, falcão): braços sobem, olhar para cima
+    case 'castUp':{const u=seq(p,0,1,.8,.45,.65);T.sLx=T.sRx=-2.9*u;T.sLz=-.35*u;T.sRz=.35*u;T.eL=T.eR=-.15;T.trx=-.3*u;T.hdx=-.5*u;T.hy=1.02+.06*u;T.tL=-.12*u;T.tR=.12*u;break}
+    // golpe do cajado no chão (nova gélida, explosão de chamas, armadilha)
+    case 'stomp':{const u=seq(p,0,1,0,.42,.56),dn=sstep(.42,.56,p)*(1-sstep(.75,1,p));T.sRx=T.sLx=seq(p,T.sRx,-2.8,-.6,.42,.56);T.sRz=.15;T.sLz=-.15;T.eL=T.eR=-.2;T.trx=seq(p,0,-.3,.55,.42,.56);T.hy=1.02+.08*u-.25*dn;T.tL=T.tR=-.6*dn;T.kL=T.kR=1*dn;T.hdx=.2*dn;break}
+    // tiro para o alto (chuva/tempestade de flechas)
+    case 'shootUp':{const pl=cl(p/.6,0,1),rel=p>.6;T.sLx=-2.5;T.sLz=0;T.eL=-.05;T.sRx=-2.4;T.sRz=.1;T.eR=rel?-.25:-.4-1.4*pl;T.try=-.7;T.hdy=.5;T.hdx=-.55;T.trx=-.25;T.tL=-.3;T.tR=.3;T.kL=.2;break}
+    // chamado: ergue um braço e assobia (falcão)
+    case 'call':{const u=seq(p,0,1,.6,.4,.6);T.sLx=-2.8*u;T.sLz=-.2*u;T.eL=-.2;T.hdx=-.45*u;T.trx=-.1*u;T.sRx=-.2;break}
     case 'shout':T.sLx=T.sRx=seq(p,0,-2.7,-2.4,.35,.5);T.sLz=seq(p,0,-.7,-.9,.35,.5);T.sRz=-T.sLz;T.hdx=seq(p,0,-.45,-.5,.35,.5);T.trx=seq(p,0,-.25,-.3,.35,.5);break;
-    case 'thrust':T.sRx=seq(p,T.sRx,-.6,-1.65,.3,.45);T.eR=seq(p,T.eR,-1.6,0,.3,.45);T.try=seq(p,0,.4,-.35,.3,.45);T.trx=seq(p,0,-.05,.25,.3,.45);break;
+    case 'thrust':{const st=seq(p,0,.2,1,.3,.46);T.sRx=seq(p,T.sRx,-.5,-1.7,.3,.46);T.eR=seq(p,T.eR,-1.8,0,.3,.46);T.sLx=seq(p,T.sLx,-1,-1.5,.3,.46);T.eL=seq(p,-.5,-1.2,-.4,.3,.46);
+      T.try=seq(p,0,.55,-.4,.3,.46);T.trx=seq(p,0,-.1,.35,.3,.46);T.hry=seq(p,0,.3,-.25,.3,.46);T.tL=-.75*st;T.kL=.45*st;T.tR=.5*st;T.kR=.15;T.hy=1.02-.12*st;break}
     case 'claw':{const x=seq(p,T.sRx,-2.2,-.9,.35,.5);T.sRx=x;T.sLx=seq(p,T.sLx,-2.2,-.9,.42,.58);T.eL=T.eR=-.3;T.trx=seq(p,T.trx,-.2,.45,.35,.5);break}
-    case 'shoot':{const pl=cl(p/.6,0,1),rel=p>.6;T.sLx=-1.55;T.sLz=0;T.eL=-.05;T.sRx=-1.55;T.sRz=.1;T.eR=rel?-.2:-.4-1.5*pl;T.try=-.45;T.hdy=.45;break}}}
+    case 'shoot':{const pl=cl(p/.6,0,1),rel=p>.6,rc=rel?sstep(.6,.68,p)*(1-sstep(.8,1,p)):0;T.sLx=-1.55;T.sLz=0;T.sLy=.15;T.eL=-.05;T.sRx=-1.55;T.sRz=.1;T.eR=rel?-.2-rc*.5:-.4-1.5*pl;T.sRy=-.25*pl;
+      T.try=-.85;T.hdy=.85;T.hry=-.35;T.trx=-.05-rc*.12;T.tL=-.35;T.kL=.25;T.tR=.35;T.kR=.15;T.hy=.98;break}}}
   if(s.leap){T.tL=T.tR=-1.1;T.kL=T.kR=1.7;T.sLx=T.sRx=-2.7;T.eL=T.eR=-.3;T.trx=.3}
   if(s.hurt>0){T.trx-=.4*s.hurt;T.hdx-=.3*s.hurt;T.sLz-=.3*s.hurt;T.sRz+=.3*s.hurt}
   if(s.dead){k=6;T.sLx=-.4;T.sRx=-.3;T.eL=T.eR=-.4;T.tL=.3;T.tR=-.2;T.kL=T.kR=.4;T.hdx=.3}
