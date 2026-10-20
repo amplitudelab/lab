@@ -29,7 +29,7 @@ function archerSkill(id,a,r){const t=a.tg,f=t?Math.atan2(t.x-P.x,t.z-P.z):P.f,ox
   if(id=='perfura'){const L=18,x1=P.x+S(f)*L,z1=P.z+C(f)*L;SHK=.25;HITSTOP=.04;sweep(200,1400,.3,'sawtooth',.06);flash(ox,oy,oz,0xffffff,3,.2);
     for(let i=0;i<26;i++){const k=i/25,x=lerp(ox,x1,k),z=lerp(oz,z1,k);fx(x,oy-.1,z,i%3?0xffe08a:0xffffff,1,.4,.13,.2,0)}column(ox,oz,0xffe08a,3,.4,.25,oy-1.5);
     for(const e of E)if(!e.dead&&segD(e.x,e.z,[P.x,P.z],[x1,z1])<e.r+.9){const[dm,c]=rollDmg(3+.6*(r-1));hurtMob(e,dm,c,'perfura');if(!e.boss){e.vx+=S(f)*12;e.vz+=C(f)*12}fx(e.x,e.y+1.2,e.z,0xffe08a,8,6,.12,.6)}return}
-  if(id=='recuo'){P.act=null;P.rdx=-S(f);P.rdz=-C(f);P.dash=.33;P.inv=Math.max(P.inv,.45);puff(P.x,P.y+.4,P.z,0xd8d0e0,1.8);fx(P.x,P.y+.4,P.z,0xcdb894,10,6,.16,.8);sweep(600,1500,.18,'triangle',.05);
+  if(id=='recuo'){P.act=null;P.rdx=-S(f);P.rdz=-C(f);P.dash=.24;P.dsp=19;P.dive=0;P.dodge={k:'back',v:0,dir:0,f:P.f};P.inv=Math.max(P.inv,.45);puff(P.x,P.y+.4,P.z,0xd8d0e0,1.8);fx(P.x,P.y+.4,P.z,0xcdb894,10,6,.16,.8);sweep(600,1500,.18,'triangle',.05);
     const n=2+r;for(let i=0;i<n;i++)setTimeout(()=>{const tg=bestTarget(16,1),an=tg?Math.atan2(tg.x-P.x,tg.z-P.z):f+(i-(n-1)/2)*.15;proj('p','arrow',P.x+S(an)*.6,P.y+1.7,P.z+C(an)*.6,tg||{x:P.x+S(an)*20,z:P.z+C(an)*20,y:P.y},rollDmg(.9+.2*(r-1))[0],{dir:tg?null:new V3(S(an),0,C(an))})},120+i*90);return}
   if(id=='armadilha'){const x=t?t.x:P.x+S(f)*3,z=t?t.z:P.z+C(f)*3;trapPlace(x,z,r);return}
   if(id=='falcao'){falconCall(r);return}

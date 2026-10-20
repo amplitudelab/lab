@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 14.7
+Atualizado em 20/10/2026 · versão atual do jogo: 15.0
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='14.8'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='15.1'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -81,6 +81,9 @@ gear.js      equipamento visível (gearLook/heroModel), qualidade (TIERS), duas 
 foes.js      classes de inimigo (role: shield/brute/healer/assassin/frost/summoner), Veteranos, Ignarok (dragon2,
              dragonUpd)
 trials.js    missões em etapas (STG: hunt/defend), dificuldade maior, missão s20
+bag.js       poções (POT, potItem, drinkAt; potion() usa a menor que cobre), mochilas (BAGS, EQ.costas, bagFit muda
+             INV.length = 24 + cap), inventário em painéis (invRender/openInv novos), ícones 3D (itemIcon/itemBake,
+             render em alvo 96px com o renderizador principal; materiais viram pixel art do emoji)
 hudcfg.js    HUD ajustável (HUDS em vr11_hud): leque ✦ (#qk), gaveta ☰ (#drw), painel 🎛️ (#hudw), modo de mover
              (hudEdit/hudBad), encaixe automático (hudApply reduz --hs/--bs até hudClash() dar falso), esmaecer (hudUpd)
 grimoire.js  grimório (árvore de habilidades em forma de livro), ícones pixel art (pixIcon/skIcon), elementos (ELM/SKEL)
@@ -92,6 +95,7 @@ main.js      saves, tela de personagens, laço do jogo, versão/atualização, P
 vr11_save_guerreiro / _mago / _cacador / _necromante / _vampiro -> um personagem por classe
 vr11_gfx (0/1/2 gráficos) · vr11_fps (0=máx da tela, 60, 30; celular começa em 60)
 vr11_fp (primeira pessoa) · vr11_torch · vr11_mus · vr11_mk (filtros do mapa) · vr11_mmz (zoom do minimapa)
+INV agora tem tamanho variável (30 a 48); o save guarda até 60. P.st.pot15 marca quem já ganhou as 3 poções iniciais.
 vr11_hud (tamanho da interface/botões, opacidade, o que aparece e posições arrastadas)
 O save antigo único (vr11_save) é migrado sozinho para o espaço da classe dele.
 
@@ -112,6 +116,10 @@ O save antigo único (vr11_save) é migrado sozinho para o espaço da classe del
   skinModel copia aFs, então personagens também ganham o chanfro.
 - Textura de voxel procedural no shader (VTEX em core.js): tipo pelo vertex color; MV/MW não usam mais a
   imagem NT. Terreno com franja de grama (grassFringe) e oclusão nos cantos do topo (AOK).
+- Desvio 15.0 (feel.js): P.dodge={k:'dive'|'side'|'back',v,dir}; fase 1 em P.dash, fase 2 em P.roll/P.rollD;
+  heroPoseUpd gira o grupo (ordem YXZ) e heroSpan() mede o ponto mais baixo (HPTS) para manter tudo acima do chão.
+  footY() (world.js) dá a altura do chão sob a pegada; moveEnt e playerY usam.
+- Modelos: torsoBake() e hatBake() saíram de hum() para o inventário reaproveitar; packBake() desenha a mochila (o.pack).
 - HUD 14.6 (css/hud.css bloco 14.6 + hudcfg.js): variáveis --hs (interface), --bs (botões), --ho (opacidade),
   --hc/--hi (esmaecer de botões/painéis fora de combate). Ataque com 4 botões em volta; correr/furtivo/tocha/
   montaria no leque #qk (14.7: #runb fixo acima do ✦ salvo HUDS.runf=0 -> body.runfan); zoom do minimapa por toque (#zm escondido). Teste: hud6.js mede sobreposição em 12 telas

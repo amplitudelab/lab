@@ -78,7 +78,7 @@ function gearLook(o){const H=EQ.elmo,B=EQ.peito,G=EQ.luvas,F=EQ.botas,T=it=>TIER
     if(B.rar>=2)o.capeE=acc(B)}
   if(G){fixItem(G);const t=T(G);o.gloves=G.vk=='gaunt'?t.met:t.lea}
   if(F){fixItem(F);const t=T(F);o.boots=F.vk=='greaves'?t.met:t.lea}return o}
-const gearSig=()=>['elmo','peito','luvas','botas'].map(k=>EQ[k]?EQ[k].id:0).join(',')+'|'+P.cls;
+const gearSig=()=>['elmo','peito','luvas','botas','costas'].map(k=>EQ[k]?EQ[k].id:0).join(',')+'|'+P.cls;
 let GEARSIG='';
 const _heroModel14=heroModel;heroModel=function(cls){const c=CLS[cls]||CLS.guerreiro,o=gearLook(Object.assign({skin:0xe0a878,hair:0x4a2a18,shirt:0x6d7684,pants:0x4a3a2e,boots:0x3a2a1e,cape:0xb3202a,capeE:0xd9a948,belt:0x5a3a20,shoulders:0x8a93a2},c.mdl));GEARSIG=gearSig();return hum(o)};
 // reconstrói o herói quando muda a armadura (um modelo só, desenhado de uma vez) e coloca as armas nas mãos

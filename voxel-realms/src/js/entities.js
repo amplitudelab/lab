@@ -13,7 +13,7 @@ const XPN=l=>Math.round(170*Math.pow(l,1.85)); // curva mais íngreme: cada nív
 function moveEnt(o,dvx,dvz,dt,acc,turn,r){o.vx+=(dvx-o.vx)*damp(acc,dt);o.vz+=(dvz-o.vz)*damp(acc,dt);const sp=hy(o.vx,o.vz),hp=o===P,W=hp?walkP:walkable,e=hp?.34:0;
   if(sp>.01){const nx=o.x+o.vx*dt,nz=o.z+o.vz*dt;if(W(nx,o.z,o.y)&&(!e||W(nx+Math.sign(o.vx)*e,o.z,o.y)))o.x=nx;else o.vx*=.2;if(W(o.x,nz,o.y)&&(!e||W(o.x,nz+Math.sign(o.vz)*e,o.y)))o.z=nz;else o.vz*=.2}
   if(sp>.35&&turn)o.f=angStep(o.f,Math.atan2(o.vx,o.vz),turn*dt);collide(o,r||.5);if(hp){playerY(dt);return sp}
-  const g=groundAt(o.x,o.z);o.y+=(Math.max(g,-.75)-o.y)*damp(g>o.y?16:10,dt);return sp}
+  const g=Math.max(footY(o.x,o.z,o.y,(r||.5)*.55),-.75);if(g>o.y)o.y=Math.max(o.y+(g-o.y)*damp(26,dt),g-.12);else o.y+=(g-o.y)*damp(10,dt);return sp}
 
 // ---------- tipos de monstro (por região) e chefes
 const MT={

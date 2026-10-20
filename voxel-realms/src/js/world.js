@@ -55,6 +55,9 @@ const ckey=(cx,cz)=>cx+','+cz;
 function chunkHeights(cx,cz){const h=new Float32Array(34*34),x0=cx*CS-1,z0=cz*CS-1;for(let j=0;j<34;j++)for(let i=0;i<34;i++)h[i+j*34]=cellH(x0+i,z0+j);return h}
 function groundAt(x,z){const b=onBridge(x,z);const ix=Math.floor(x),iz=Math.floor(z),cx=Math.floor(ix/CS),cz=Math.floor(iz/CS),c=CHK.get(ckey(cx,cz));
   const h=c?c.h[(ix-cx*CS+1)+(iz-cz*CS+1)*34]:cellH(ix,iz);return b?Math.max(h,b.y):h}
+// 15.0 · chão sob a pegada inteira (centro + 4 pontas): na beira de um degrau o corpo fica em cima dele
+// em vez de metade enterrada; paredes altas demais (degrau > 1,3) não contam
+function footY(x,z,cur,r){let h=groundAt(x,z);for(let i=0;i<4;i++){const g=groundAt(x+(i<2?(i?r:-r):0),z+(i>1?(i>2?r:-r):0));if(g>h&&(cur==null||g-cur<1.3))h=g}return h}
 // pode ficar de pé aqui? (água funda e penhascos bloqueiam)
 function walkable(x,z,fromY){if(Math.abs(x)>WMAX||Math.abs(z)>WMAX)return false;if(onBridge(x,z))return true;const h=groundAt(x,z);return h>-.8&&(fromY==null||h-fromY<1.3)}
 const STRC=[]; // colisores fixos das estruturas [x,z,r]

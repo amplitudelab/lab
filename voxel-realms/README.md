@@ -74,6 +74,13 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 15.0 — desvio refeito, poções, mochila e inventário completo
+- **Desvio:** para a frente o herói mergulha e rola encolhido (ou desliza de barriga e levanta com as mãos); perto de um inimigo, para os lados rola sem tirar os olhos dele e para trás dá um salto. O corpo gira em volta do próprio centro e nenhuma parte entra no chão.
+- **Colisão com o chão:** a altura do herói, dos inimigos e dos animais usa o chão sob a pegada inteira; subir degraus não deixa mais metade do corpo enterrada.
+- **Poções:** não são mais infinitas. A Forja da Helga vende Poção de Vida Menor, Poção de Vida, Poção de Vida Maior, Antídoto e Elixir de Ânimo; cada uma ocupa um espaço da mochila. O 🧪 mostra quantas você tem e bebe a menor que cobre o que falta. Monstros, elites e chefes às vezes deixam cair.
+- **Mochila:** todo herói usa uma mochila nas costas no lugar da capa. Bolsa Velha (30 espaços), Mochila de Viajante (36), de Aventureiro (42) e Real (48).
+- **Inventário:** painel com retrato do herói ao vivo (arma, mão esquerda, anel e amuleto nos cantos), atributos, mochila com ícones 3D dos próprios itens, coluna do equipado (cabeça, peito, costas, luvas, botas) e medidores de vida, recurso, nível, carga e poções. Tocar duas vezes num item equipa ou bebe; dá para organizar, vender, desmanchar e largar.
+
 ## Versão 14.7 — correr sempre visível
 - O botão 🏃 correr fica fixo acima do ✦ (o leque agora tem furtivo, tocha e montaria). No painel 🎛️ HUD, desligar "Correr sempre visível" devolve o correr para o leque; o 🏃 também pode ser arrastado no modo de mover.
 

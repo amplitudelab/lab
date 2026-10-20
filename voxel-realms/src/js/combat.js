@@ -112,8 +112,8 @@ function playerUpd(dt,t){for(const k in P.cd)P.cd[k]-=dt;for(const k in P.buff){
   blockUpd(dt);let[ix,iz]=inputDir(),runk=P.block?.45:P.sneak?.55:P.mounted?MOUNTS[P.mounted].sp:P.run&&!P.act?1.6:1,sp=5.2*runk*(1+ST.ms/100)*(P.slow>0?.55:1);{const wd=waterDepth();if(wd>0)sp*=1-Math.min(.5,wd*.42)}
   let dvx=ix*sp,dvz=iz*sp,turn=14;
   if(P.stun>0){dvx=dvz=0}
-  if(P.dash>0){P.dash-=dt;const ds=P.dive?16:21;dvx=P.rdx*ds;dvz=P.rdz*ds;turn=0;if(ev(2)){flash(P.x,P.y+1.3,P.z,0x9ae4ff,1.8,.22);fx(P.x,P.y+1,P.z,0xd8f0ff,2,1.5,.1,.2,0)}if(P.dash<=0&&P.dive)diveLand()}
-  else if(P.roll>0){P.roll-=dt;const k=Math.max(0,P.roll/.34);dvx=P.rdx*(2+8*k);dvz=P.rdz*(2+8*k);turn=0;if(P.roll<=0)P.dive=0}
+  if(P.dash>0){P.dash-=dt;const ds=P.dsp||(P.dive?16:21);dvx=P.rdx*ds;dvz=P.rdz*ds;turn=0;if(ev(2)){flash(P.x,P.y+1.3,P.z,0x9ae4ff,1.8,.22);fx(P.x,P.y+1,P.z,0xd8f0ff,2,1.5,.1,.2,0)}if(P.dash<=0&&(P.dive||P.dodge))diveLand()}
+  else if(P.roll>0){P.roll-=dt;const k=Math.max(0,P.roll/(P.rollD||.34));dvx=P.rdx*(2+8*k);dvz=P.rdz*(2+8*k);turn=0;if(P.roll<=0)P.dive=0}
   if(P.leap){const L=P.leap;L.t+=dt;const k=Math.min(1,L.t/L.dur);P.x=lerp(L.x0,L.x1,k);P.z=lerp(L.z0,L.z1,k);P.y=lerp(L.y0,groundAt(P.x,P.z),k)+S(k*PI)*4;P.vx=P.vz=0;if(k>=1)landLeap()}
   else if(P.act){const a=P.act,sp_=1+ST.ias/100;a.t+=dt;const p=a.t/a.dur;
     if(a.k=='spin'){dvx*=.75;dvz*=.75;turn=0;P.f+=dt*16;if(a.t>=a.ticks*.22){a.ticks++;spinTick()}if(a.t>=a.dur)P.act=null}
@@ -121,7 +121,7 @@ function playerUpd(dt,t){for(const k in P.cd)P.cd[k]-=dt;for(const k in P.buff){
   else if(UI.atkHeld)attack();
   if(!P.leap){const v=moveEnt(P,dvx,dvz,dt,P.dash>0?30:12,turn,.5);P.v=v;if(v>4&&!P.act&&!P.mounted&&ev(v>7?4:7))puff(P.x-S(P.f)*.4,P.y+.2,P.z-C(P.f)*.4,P.y<0?0xd8ecff:0xcdb894,.8);if(P.y<-.1&&v>1&&ev(5))fx(P.x,0,P.z,0xd8ecff,2,2,.1,.6)}
   const g=P.m.g;g.position.set(P.x,P.y+mountY(),P.z);g.rotation.y=P.f;P.m.hips.rotation.x=0;
-  const a=P.act;animate(P.m,dt,t,{dive:P.dash>0&&!!P.dive,roll:P.roll>0?1-P.roll/.34:0,air:!!P.air&&!P.dash,sneak:!!P.sneak,block:P.block>0,v:P.mounted?0:P.v||0,torch:TCH.on&&!P.mounted&&!handsBusy()?(bow()?'R':'L'):0,two:ST.two&&!bow(),dual:!!ST.dual,sit:!!P.mounted,dash:P.dash>0,atk:a&&{k:a.k,p:Math.min(1,a.t/a.dur)},hurt:P.hurt,leap:!!P.leap,aim:bow()&&UI.atkHeld&&!a});
+  const a=P.act;animate(P.m,dt,t,{dive:P.dash>0&&!!P.dive,roll:P.roll>0?1-P.roll/(P.rollD||.34):0,dk:P.dodge&&P.dodge.k,dv:P.dodge&&P.dodge.v,air:!!P.air&&!P.dash,sneak:!!P.sneak,block:P.block>0,v:P.mounted?0:P.v||0,torch:TCH.on&&!P.mounted&&!handsBusy()?(bow()?'R':'L'):0,two:ST.two&&!bow(),dual:!!ST.dual,sit:!!P.mounted,dash:P.dash>0,atk:a&&{k:a.k,p:Math.min(1,a.t/a.dur)},hurt:P.hurt,leap:!!P.leap,aim:bow()&&UI.atkHeld&&!a});
   trailUpd(dt,!FPV.on&&(!!a&&!bow()&&a.k!='cast'&&a.k!='shout'&&a.k!='summon'&&a.k!='palm'||!!P.leap||!!P.plunge),ST.dual&&a&&a.k=='slashB'?P.m.hL:P.m.hR,trailCol())}
 function hitDot(n,c){if(P.dead)return;P.hp-=Math.round(n);pop('-'+Math.round(n),P.x,P.y+3,P.z,c);if(P.hp<=0)die()}
 const inCombat=()=>E.some(e=>!e.dead&&e.st=='chase'&&hy(e.x-P.x,e.z-P.z)<20);
