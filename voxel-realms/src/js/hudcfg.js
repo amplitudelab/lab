@@ -1,24 +1,25 @@
 'use strict';
 /* =============================================================================
    VOXEL REALMS · HUD imersiva e ajustável (14.6)
-   - Leque ✦ com correr, furtivo, tocha e montaria (fecha sozinho).
+   - Correr fixo acima do ✦ (14.7; pode voltar para o leque no painel).
+   - Leque ✦ com furtivo, tocha e montaria (fecha sozinho).
    - Gaveta ☰ com mapa, diário, primeira pessoa, HUD e menu.
    - Minimapa: toque muda o zoom; segure para abrir o mapa.
    - Fora de combate a HUD esmaece; correr empurrando o joystick até a borda.
    - Painel 🎛️: tamanho da interface, tamanho dos botões, opacidade, o que aparece
      e modo de mover botões e painéis (não deixa soltar em cima de outro).
    ============================================================================= */
-const HUDDEF={hs:1,bs:1,op:1,fade:1,joy:1,quest:'min',mm:1,dmg:1,jmp:1,blk:1,pos:{}};
+const HUDDEF={hs:1,bs:1,op:1,fade:1,joy:1,quest:'min',mm:1,dmg:1,jmp:1,blk:1,runf:1,pos:{}};
 let HUDS=Object.assign({},HUDDEF,{pos:{}});try{const s=JSON.parse(localStorage.getItem('vr11_hud')||'null');if(s)HUDS=Object.assign(HUDS,s,{pos:s.pos||{}})}catch(e){}
 const hudSave=()=>{try{localStorage.setItem('vr11_hud',JSON.stringify(HUDS))}catch(e){}};
-const HMV=['tl','qp','mw','tbar','jb','bar','atk','rolb','jmpb','blkb','qkb'];
+const HMV=['tl','qp','mw','tbar','jb','bar','atk','rolb','jmpb','blkb','qkb','runb'];
 let hudCalm=0,hudCT=0,qkT=0;
 // fora de combate os botões esmaecem mais que os painéis de informação
 function hudOp(){const r=document.documentElement.style;r.setProperty('--ho',HUDS.op);r.setProperty('--hc',hudCalm?.45:1);r.setProperty('--hi',hudCalm?.75:1)}
 function hudApply(){const r=document.documentElement.style;hudOp();
   $('qp').classList.toggle('min',HUDS.quest=='min');$('qp').style.display=HUDS.quest=='off'?'none':'';
   $('mw').style.display=$('rg').style.display=HUDS.mm?'':'none';document.body.classList.toggle('nomm',!HUDS.mm);
-  $('jmpb').style.display=HUDS.jmp?'':'none';$('blkb').style.display=HUDS.blk?'':'none';
+  $('jmpb').style.display=HUDS.jmp?'':'none';$('blkb').style.display=HUDS.blk?'':'none';document.body.classList.toggle('runfan',!HUDS.runf);
   for(const id of HMV){const e=$(id),p=HUDS.pos[id];if(e)e.style.translate=p?`${p[0]}px ${p[1]}px`:''}$('qk').style.translate=$('qkb').style.translate;
   // tamanho escolhido, reduzido aos poucos só nesta tela se algo encostar em outra coisa
   const set=k=>{r.setProperty('--hs',(HUDS.hs*k).toFixed(3));r.setProperty('--bs',(HUDS.bs*k).toFixed(3))};HUDF=1;
@@ -28,18 +29,18 @@ function hudFitTxt(){const n=$('hudfit');if(n)n.textContent=HUDF<1?'Nesta tela a
 const FANS=['runb','snkb','torb','mntb'],HRND=new Set(['atk','rolb','jmpb','blkb','qkb','jb','mw',...FANS]),HFIX=['rg','ts','boss','tf'];let HUDF=1;
 function hudBox(id){const e=$(id);if(!e)return null;const cs=getComputedStyle(e),fan=FANS.includes(id);if(cs.display=='none'||(cs.visibility=='hidden'&&!fan))return null;
   // o leque anima com escala: mede pela posição de layout (sem a animação) dentro do contêiner
-  if(fan){const q=$('qk').getBoundingClientRect(),x=q.left+e.offsetLeft,y=q.top+e.offsetTop;return{id,x0:x,y0:y,x1:x+e.offsetWidth,y1:y+e.offsetHeight,r:true}}
+  if(fan){const q=$('qk').getBoundingClientRect(),t=(e.style.translate.match(/-?[\d.]+/g)||[0,0]).map(Number),x=q.left+e.offsetLeft+t[0],y=q.top+e.offsetTop+(t[1]||0);return{id,x0:x,y0:y,x1:x+e.offsetWidth,y1:y+e.offsetHeight,r:true}}
   const b=e.getBoundingClientRect();if(b.width<2)return null;return{id,x0:b.left,y0:b.top,x1:b.right,y1:b.bottom,r:HRND.has(id)}}
 function hudHit(a,b){const ox=Math.min(a.x1,b.x1)-Math.max(a.x0,b.x0),oy=Math.min(a.y1,b.y1)-Math.max(a.y0,b.y0);if(ox<=2||oy<=2)return false;if(!a.r&&!b.r)return true;
   const c=o=>[(o.x0+o.x1)/2,(o.y0+o.y1)/2,(o.x1-o.x0)/2];if(a.r&&b.r){const A=c(a),B=c(b);return hy(A[0]-B[0],A[1]-B[1])<A[2]+B[2]-1}
   const[o,q]=a.r?[a,b]:[b,a],C=c(o),nx=Math.max(q.x0,Math.min(C[0],q.x1)),ny=Math.max(q.y0,Math.min(C[1],q.y1));return hy(C[0]-nx,C[1]-ny)<C[2]-1}
 const hudOut=a=>a.x0<-1||a.y0<-1||a.x1>innerWidth+1||a.y1>innerHeight+1;
-function hudClash(){const L=HMV.concat(['rg'],FANS).map(hudBox).filter(Boolean);for(let i=0;i<L.length;i++){if(hudOut(L[i]))return true;for(let j=i+1;j<L.length;j++)if(hudHit(L[i],L[j]))return true}return false}
+function hudClash(){const L=[...new Set(HMV.concat(['rg'],FANS))].map(hudBox).filter(Boolean);for(let i=0;i<L.length;i++){if(hudOut(L[i]))return true;for(let j=i+1;j<L.length;j++)if(hudHit(L[i],L[j]))return true}return false}
 {let t=0;const f=()=>{clearTimeout(t);t=setTimeout(hudApply,150)};addEventListener('resize',f);if(window.visualViewport)visualViewport.addEventListener('resize',f)}
 // ---------- leque de ações rápidas e gaveta
 function qkToggle(v){const o=$('qk'),on=v==null?!o.classList.contains('open'):!!v;o.classList.toggle('open',on);$('qkb').classList.toggle('on',on);qkT=on?6:0;if(v==null)snd(on?820:520,.04,'sine')}
 $('qkb').onpointerdown=e=>{e.stopPropagation();qkToggle()};
-for(const id of['runb','snkb','torb','mntb'])$(id).addEventListener('pointerdown',()=>{qkT=1.4});
+for(const id of['runb','snkb','torb','mntb'])$(id).addEventListener('pointerdown',()=>{if($('qk').classList.contains('open'))qkT=1.4});
 function drwToggle(v){const d=$('drw'),on=v==null?!d.classList.contains('on'):!!v;d.classList.toggle('on',on);$('mnub').classList.toggle('on',on)}
 $('mnub').onclick=()=>{drwToggle();snd(700,.04,'sine')};
 $('drw').addEventListener('click',e=>{if(e.target.closest('button'))drwToggle(0)});
@@ -61,10 +62,10 @@ function openHud(){if(!run)return;openWin('hudw');hudRender()}
 function hudRender(){const pc=v=>Math.round(v*100)+'%',SL=(k,n,a,b,st)=>`<div class="hrow"><span>${n}</span><input type="range" min="${a}" max="${b}" step="${st}" value="${HUDS[k]}" data-hk="${k}"><b>${pc(HUDS[k])}</b></div>`,
     T=(k,n,v)=>`<button class="${(v!=null?HUDS[k]==v:HUDS[k])?'on':''}" data-ht="${k}"${v!=null?` data-hv="${v}"`:''}>${n}</button>`;
   $('hudl').innerHTML=SL('hs','Tamanho da interface',.8,1.25,.05)+SL('bs','Tamanho dos botões',.8,1.25,.05)+SL('op','Opacidade',.35,1,.05)+'<p id="hudfit" class="ihint" style="color:#9ae4ff"></p>'+
-    '<div class="htg">'+T('fade','Esmaecer fora de combate')+T('joy','Correr pelo joystick')+T('mm','Minimapa')+T('dmg','Números de dano')+T('jmp','Botão pular')+T('blk','Botão bloquear')+'</div>'+
+    '<div class="htg">'+T('fade','Esmaecer fora de combate')+T('joy','Correr pelo joystick')+T('mm','Minimapa')+T('dmg','Números de dano')+T('runf','Correr sempre visível')+T('jmp','Botão pular')+T('blk','Botão bloquear')+'</div>'+
     '<div class="htg"><span style="font:700 12px var(--fn);color:#cbb88a;align-self:center">Missões:</span>'+T('quest','Compactas','min')+T('quest','Completas','full')+T('quest','Ocultas','off')+'</div>'+
     '<div class="htg"><button class="on" data-hx="move">✥ Mover botões e painéis</button><button data-hx="reset">↺ Restaurar padrão</button></div>'+
-    '<p class="ihint">No leque ✦ ficam correr, furtivo, tocha e montaria. No ☰ ficam mapa, diário, primeira pessoa, HUD e menu. Toque no minimapa para mudar o zoom; segure para abrir o mapa. Empurrar o joystick até a borda faz correr.</p>';hudFitTxt()}
+    '<p class="ihint">O 🏃 correr fica acima do ✦ (ou dentro do leque, se desligar "Correr sempre visível"). No leque ✦ ficam furtivo, tocha e montaria. No ☰ ficam mapa, diário, primeira pessoa, HUD e menu. Toque no minimapa para mudar o zoom; segure para abrir o mapa. Empurrar o joystick até a borda faz correr.</p>';hudFitTxt()}
 $('hudl').addEventListener('input',e=>{const k=e.target.dataset.hk;if(!k)return;HUDS[k]=+e.target.value;e.target.nextElementSibling.textContent=Math.round(HUDS[k]*100)+'%';hudApply();hudSave()});
 $('hudl').addEventListener('click',e=>{const t=e.target.closest('[data-ht]');if(t){const k=t.dataset.ht;HUDS[k]=t.dataset.hv!=null?t.dataset.hv:HUDS[k]?0:1;hudApply();hudSave();hudRender();snd(760,.04,'sine');return}
   const x=e.target.closest('[data-hx]');if(!x)return;if(x.dataset.hx=='reset'){HUDS=Object.assign({},HUDDEF,{pos:{}});hudApply();hudSave();hudRender();toast('🎛️','HUD restaurada','')}else hudEdit(1)});
@@ -74,7 +75,7 @@ let HE=null;
 function hudEdit(on){if(on){closeAll();qkToggle(0);drwToggle(0);document.body.classList.add('hudedit');UI.open='hudedit';for(const id of HMV){const e=$(id);if(e)e.classList.add('hmv')}}
   else{document.body.classList.remove('hudedit');for(const id of HMV){const e=$(id);if(e)e.classList.remove('hmv','bad')}if(UI.open=='hudedit')UI.open=null;hudSave();toast('🎛️','HUD salva','')}}
 function hudBad(el){const mv=el.id=='qkb'?['qkb',...FANS]:[el.id],A=mv.map(hudBox).filter(Boolean);if(A.some(hudOut))return true;
-  const O=HMV.concat(HFIX,FANS).filter(id=>!mv.includes(id)&&(!HFIX.includes(id)||id=='rg'||$(id).classList.contains('on'))).map(hudBox).filter(Boolean);
+  const O=[...new Set(HMV.concat(HFIX,FANS))].filter(id=>!mv.includes(id)&&(!HFIX.includes(id)||id=='rg'||$(id).classList.contains('on'))).map(hudBox).filter(Boolean);
   return A.some(a=>O.some(o=>hudHit(a,o)))}
 addEventListener('pointerdown',e=>{if(!document.body.classList.contains('hudedit'))return;const el=e.target.closest('.hmv');if(!el)return;e.stopPropagation();e.preventDefault();const p0=HUDS.pos[el.id]||[0,0];HE={el,x:e.clientX,y:e.clientY,p0,p:p0.slice(),pid:e.pointerId};try{el.setPointerCapture(e.pointerId)}catch(_){}},true);
 addEventListener('pointermove',e=>{if(!HE||e.pointerId!==HE.pid)return;e.stopPropagation();HE.p=[Math.round(HE.p0[0]+e.clientX-HE.x),Math.round(HE.p0[1]+e.clientY-HE.y)];HE.el.style.translate=`${HE.p[0]}px ${HE.p[1]}px`;if(HE.el.id=='qkb')$('qk').style.translate=HE.el.style.translate;HE.el.classList.toggle('bad',hudBad(HE.el))},true);

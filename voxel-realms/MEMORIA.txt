@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 14.6
+Atualizado em 20/10/2026 · versão atual do jogo: 14.7
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='14.7'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='14.8'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -114,7 +114,7 @@ O save antigo único (vr11_save) é migrado sozinho para o espaço da classe del
   imagem NT. Terreno com franja de grama (grassFringe) e oclusão nos cantos do topo (AOK).
 - HUD 14.6 (css/hud.css bloco 14.6 + hudcfg.js): variáveis --hs (interface), --bs (botões), --ho (opacidade),
   --hc/--hi (esmaecer de botões/painéis fora de combate). Ataque com 4 botões em volta; correr/furtivo/tocha/
-  montaria no leque #qk; zoom do minimapa por toque (#zm escondido). Teste: hud6.js mede sobreposição em 12 telas
+  montaria no leque #qk (14.7: #runb fixo acima do ✦ salvo HUDS.runf=0 -> body.runfan); zoom do minimapa por toque (#zm escondido). Teste: hud6.js mede sobreposição em 12 telas
   com leque e gaveta abertos (o leque é medido com offsetLeft porque anima com escala).
 - Masmorras (world2.js): 3 salões com portões dinâmicos (colisores em STRC removidos ao abrir), totens,
   espinhos e jatos de fogo; estado em DST.st (0..5).

@@ -177,6 +177,8 @@ body.cine #atk,body.cine #rolb,body.cine #jmpb,body.cine #blkb,body.cine #qkb,bo
 #snkb{right:calc(var(--ax) + var(--atk)/2 + .12*var(--D) - var(--b)*.46);bottom:calc(var(--ay) + var(--atk)/2 + 1.97*var(--D) - var(--b)*.46)}
 #torb{right:calc(var(--ax) + var(--atk)/2 + .74*var(--D) - var(--b)*.46);bottom:calc(var(--ay) + var(--atk)/2 + 1.74*var(--D) - var(--b)*.46)}
 #mntb{right:calc(var(--ax) + var(--atk)/2 + 1.3*var(--D) - var(--b)*.46);bottom:calc(var(--ay) + var(--atk)/2 + 1.28*var(--D) - var(--b)*.46)}
+/* 14.7: correr fica sempre visível acima do ✦ (body.runfan devolve ele ao leque) */
+body:not(.runfan) #qk #runb{visibility:visible;opacity:1;transform:none;pointer-events:auto;transition:none}
 /* modo de mover botões */
 body.hudedit #ui *{animation:none!important}
 body.hudedit .hmv{outline:2px dashed #ffe08a;outline-offset:3px;opacity:1!important;cursor:move}

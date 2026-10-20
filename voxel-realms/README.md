@@ -74,6 +74,9 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 14.7 — correr sempre visível
+- O botão 🏃 correr fica fixo acima do ✦ (o leque agora tem furtivo, tocha e montaria). No painel 🎛️ HUD, desligar "Correr sempre visível" devolve o correr para o leque; o 🏃 também pode ser arrastado no modo de mover.
+
 ## Versão 14.6 — HUD imersiva e ajustável
 - **Menos botões na tela:** o ataque tem 4 botões em volta (mergulho, pulo, bloqueio e ✦). O ✦ abre um leque com correr, furtivo, tocha e montaria que fecha sozinho. Mapa, diário, primeira pessoa, HUD e menu ficam na gaveta ☰ ao lado do minimapa.
 - **Minimapa limpo:** toque para mudar o zoom, segure para abrir o mapa; a região aparece como legenda embaixo.
