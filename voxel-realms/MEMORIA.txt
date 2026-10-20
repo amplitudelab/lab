@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 14.0
+Atualizado em 20/10/2026 · versão atual do jogo: 14.5
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='14.1'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='14.6'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -74,6 +74,13 @@ quests.js    missões, diálogos, bestiário, códice
 ui.js        HUD, câmera, controles, janelas
 world2.js    furtividade, masmorras, culinária, forja, missões de classe, conquistas, eventos
 music.js     trilha sonora procedural (Web Audio)
+feel.js      pulo e golpe aéreo, mergulho com cambalhota, água (WADE_Y), colisão do herói (walkP, mobPush),
+             campo de visão (FOVB), escada de desempenho (PERF)
+gear.js      equipamento visível (gearLook/heroModel), qualidade (TIERS), duas mãos (isTwo), mão esquerda (EQ.mao2:
+             escudo/grimório/2ª arma), desmanchar/ascender, 2ª árvore (P.sub) com o Eremita
+foes.js      classes de inimigo (role: shield/brute/healer/assassin/frost/summoner), Veteranos, Ignarok (dragon2,
+             dragonUpd)
+trials.js    missões em etapas (STG: hunt/defend), dificuldade maior, missão s20
 grimoire.js  grimório (árvore de habilidades em forma de livro), ícones pixel art (pixIcon/skIcon), elementos (ELM/SKEL)
 main.js      saves, tela de personagens, laço do jogo, versão/atualização, PWA
 
@@ -100,6 +107,10 @@ O save antigo único (vr11_save) é migrado sozinho para o espaço da classe del
 - Visual "mais voxel" (14.0): o Bake grava o tamanho de cada face no atributo aFs e o shader (VOXB em core.js)
   escurece as bordas e ilumina a aresta de cima; no terreno aFs<0 desenha a grade de voxels. SHU.uBv=0 desliga.
   skinModel copia aFs, então personagens também ganham o chanfro.
+- Textura de voxel procedural no shader (VTEX em core.js): tipo pelo vertex color; MV/MW não usam mais a
+  imagem NT. Terreno com franja de grama (grassFringe) e oclusão nos cantos do topo (AOK).
+- Masmorras (world2.js): 3 salões com portões dinâmicos (colisores em STRC removidos ao abrir), totens,
+  espinhos e jatos de fogo; estado em DST.st (0..5).
 - Copas das árvores (world.js: blob, LEAF): discos em cruz empilhados + folhinhas; nos pedaços distantes (lod 2)
   só os discos, para não pesar.
 - Animações seguem os princípios do Hytale (antecipação, corpo inteiro, continuação);

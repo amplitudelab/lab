@@ -74,6 +74,13 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versões 14.1 → 14.5 — combate, equipamento, inimigos, masmorras e motor voxel
+- **Movimento (14.1):** pulo (⤒ / F) com golpe aéreo; mergulho com cambalhota no estilo Helldivers no lugar do dash; rios atravessáveis (água na cintura, mais lento); colisão pela borda do corpo; campo de visão no menu; chapéu não some mais; aviso de inventário cheio sem repetir; Vampiro mais resistente e servos do Necromante mais fracos.
+- **Equipamento (14.2):** o que você equipa aparece no herói; armas de duas mãos; mão esquerda com escudo, grimório de bolso ou segunda arma; qualidade por nível (Rústico → do Dragão) com nível mínimo; desmanchar em Fragmentos Arcanos e ascender raridade no Durin; segunda árvore de outra classe com o Eremita Ulric.
+- **Inimigos (14.3):** Escudeiro, Brutamontes, Xamã, Assassino, Feiticeiro de gelo e Cultista com comportamentos próprios; Veteranos; animais e aranhas mais detalhados; Ignarok refeito (voo, sopro em cone, rasantes, 3 fases).
+- **Missões e masmorras (14.4):** masmorras com 3 salões, portões, totens, espinhos e jatos de fogo; missões em etapas com caçadas e defesas por ondas; nova missão O Cerco de Pedraverde.
+- **Motor voxel (14.5):** textura de voxel no shader (grama, terra, madeira, pedra, folhas), franja de grama nas laterais, sombra nos cantos dos blocos; primeira pessoa com arcos de corte na tela, coice da câmera e mão esquerda; o herói não atravessa inimigos; ajuste automático de desempenho.
+
 ## Versão 14.0 — visual e grimório
 - **Grimório 📖 (K):** a árvore de habilidades virou um livro de magia aberto: selo do elemento, grade de habilidades, atalhos, detalhe com DANO / MANA (ou Fúria, Almas, Sangue) / RECARGA e abas por elemento. Ícones em pixel art gerados a partir dos emojis e recoloridos na paleta de cada elemento; os mesmos ícones aparecem nos atalhos do HUD.
 - **Ambientação por bioma:** floresta de outono (copas laranja e amarelas, pinheiros azul-petróleo, sombras azuladas, cervo branco), Campos de Lírio com bétulas roxas e templo de mármore branco, mangue com árvores azuis, cogumelos que brilham, água turquesa e lua verde gigante à noite, vila e planície mais vivas. Névoa, horizonte e partículas na cor de cada região.

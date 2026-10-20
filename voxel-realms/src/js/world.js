@@ -150,27 +150,35 @@ function* genChunk(ch){const lod=ch.lod,x0=ch.cx*CS,z0=ch.cz*CS,H=ch.h,k=new Bak
   const hAt=(i,j)=>{if(lod==1)return H[(i+1)+(j+1)*34];const ii=i*2,jj=j*2;let m=-99;for(let a=0;a<2;a++)for(let b=0;b<2;b++){const v=H[cl(ii+a+1,0,33)+cl(jj+b+1,0,33)*34];if(v>m)m=v}return m};
   for(let j=0;j<n;j++){for(let i=0;i<n;i++){const ix=x0+i*lod,iz=z0+j*lod,h=hAt(i,j),cx=ix+lod*.5,cz=iz+lod*.5;regW(cx,cz,RW);
       let b=0,acc=0;const rr=hash2(ix*3+1,iz*5+2);for(let q=0;q<REG.length;q++){acc+=RW[q];if(rr<=acc){b=q;break}}
-      const g=REG[b],v=hash2(ix,iz);let c=g.top[(v*g.top.length)|0],sc=g.side,emi=0;
+      const g=REG[b],v=hash2(ix,iz);let c=g.top[(v*g.top.length)|0],sc=g.side,emi=0,gt=b!=5;
       const e2=Math.max(Math.abs(cx),Math.abs(cz));
-      if(h<-.25)c=b==4?0x3e3626:h<-1?0x8a7a58:0xb0a070;else if(h<.6&&b!=4&&b!=5)c=v<.5?0xd8c890:0xcfbf86;
-      else if(e2>205){c=h>13?0xf2f4f8:v<.5?0x7a7a76:0x6a6a66;sc=0x5a5a56}
-      else if(roadD(cx,cz)<1.7){c=v<.5?0xa08458:0x94784e;sc=0x7a5a3a}
-      else if(b==0&&hy(cx,cz)<19.5){c=[0x9a9a92,0x8a8a84,0xa8a8a0][(v*3)|0];sc=0x7a7a74}
-      else if(b==5&&RW[5]>.6&&fbm(cx*.07,cz*.07,2)>.63){emi=1;c=v<.3?0xffd84a:v<.7?0xff7a1a:0xff5a10}
+      if(h<-.25){c=b==4?0x3e3626:h<-1?0x8a7a58:0xb0a070;gt=0}else if(h<.6&&b!=4&&b!=5){c=v<.5?0xd8c890:0xcfbf86;gt=0}
+      else if(e2>205){c=h>13?0xf2f4f8:v<.5?0x7a7a76:0x6a6a66;sc=0x5a5a56;gt=0}
+      else if(roadD(cx,cz)<1.7){c=v<.5?0xa08458:0x94784e;sc=0x7a5a3a;gt=0}
+      else if(b==0&&hy(cx,cz)<19.5){c=[0x9a9a92,0x8a8a84,0xa8a8a0][(v*3)|0];sc=0x7a7a74;gt=0}
+      else if(b==5&&RW[5]>.6&&fbm(cx*.07,cz*.07,2)>.63){emi=1;gt=0;c=v<.3?0xffd84a:v<.7?0xff7a1a:0xff5a10}
       const x1=ix+lod,z1=iz+lod,sh=.94+v*.1;
       if(emi){e.quad([ix,h-.25,z1],[x1,h-.25,z1],[x1,h-.25,iz],[ix,h-.25,iz],[0,1,0],c,null,lod,lod);ch.lava.push([cx,cz])}
-      else k.quad([ix,h,z1],[x1,h,z1],[x1,h,iz],[ix,h,iz],[0,1,0],c,[sh,sh,sh,sh],lod,lod);
+      else{const ao=(px,pz)=>{const sx=px?1:-1,sz=pz?1:-1,a=hAt(i+sx,j)>h+.1,bb=hAt(i,j+sz)>h+.1,cc=hAt(i+sx,j+sz)>h+.1;return AOK[a&&bb?3:(a?1:0)+(bb?1:0)+(cc?1:0)]};k.quad([ix,h,z1],[x1,h,z1],[x1,h,iz],[ix,h,iz],[0,1,0],c,[sh*ao(0,1),sh*ao(1,1),sh*ao(1,0),sh*ao(0,0)],lod,lod)}
       // laterais onde o vizinho é mais baixo (oclusão nas bases)
       const sides=[[1,0],[-1,0],[0,1],[0,-1]];for(const[dx,dz]of sides){const nh=hAt(i+dx,j+dz);if(nh>=h)continue;const lo=Math.max(nh,-2.5),H2=h-lo,sc2=H2>2.2?0x6a6a64:sc,top=.9,bot=H2>1?.55:.7;
         if(dx==1)k.quad([x1,lo,z1],[x1,lo,iz],[x1,h,iz],[x1,h,z1],[1,0,0],sc2,[bot,bot,top,top],lod,H2);
         else if(dx==-1)k.quad([ix,lo,iz],[ix,lo,z1],[ix,h,z1],[ix,h,iz],[-1,0,0],sc2,[bot*.92,bot*.92,top*.92,top*.92],lod,H2);
         else if(dz==1)k.quad([ix,lo,z1],[x1,lo,z1],[x1,h,z1],[ix,h,z1],[0,0,1],sc2,[bot*.96,bot*.96,top*.96,top*.96],lod,H2);
-        else k.quad([x1,lo,iz],[ix,lo,iz],[ix,h,iz],[x1,h,iz],[0,0,-1],sc2,[bot*.88,bot*.88,top*.88,top*.88],lod,H2)}}
+        else k.quad([x1,lo,iz],[ix,lo,iz],[ix,h,iz],[x1,h,iz],[0,0,-1],sc2,[bot*.88,bot*.88,top*.88,top*.88],lod,H2);
+        if(gt&&H2>.2&&lod==1)grassFringe(k,dx,dz,ix,iz,x1,z1,h,Math.min(.24,H2),c,hash2(ix*5+dx,iz*7+dz))}}
     if(j%8==7)yield 0}
   decorate(ch,k,f,e,lod);yield 0;
   for(const s of STR)if(s.cx==ch.cx&&s.cz==ch.cz){CUR_S=s;s.fn(k,e,f);s.cd=1;CUR_S=null}
   for(const b of BRIDGES)if(Math.floor(b.x/CS)==ch.cx&&Math.floor(b.z/CS)==ch.cz)bridgeMesh(k,b);
   const ms=[k.mesh(MV),f.mesh(MW),e.mesh(ME)];for(let i=0;i<3;i++){const m=ms[i];if(!m)continue;m.matrixAutoUpdate=false;m.receiveShadow=i<2;m.castShadow=i<2&&lod==1;ch.ms.push(m)}}
+const AOK=[1,.84,.72,.62];
+// franja de grama: faixa no alto da lateral de terra com "pingos" irregulares (lado de bloco de grama dos jogos de voxel)
+function grassFringe(k,dx,dz,ix,iz,x1,z1,h,fh,c,r){const o=.012,cs=shade(c,.92),cd=shade(c,.8),d=fh+.12+r*.1,u=.15+r*.55;
+  if(dx==1){k.quad([x1+o,h-fh,z1],[x1+o,h-fh,iz],[x1+o,h,iz],[x1+o,h,z1],[1,0,0],cs,[.85,.85,.95,.95],1,fh);k.quad([x1+o,h-d,iz+u+.22],[x1+o,h-d,iz+u],[x1+o,h-fh,iz+u],[x1+o,h-fh,iz+u+.22],[1,0,0],cd,null,.22,d-fh)}
+  else if(dx==-1){k.quad([ix-o,h-fh,iz],[ix-o,h-fh,z1],[ix-o,h,z1],[ix-o,h,iz],[-1,0,0],cs,[.8,.8,.9,.9],1,fh);k.quad([ix-o,h-d,iz+u],[ix-o,h-d,iz+u+.22],[ix-o,h-fh,iz+u+.22],[ix-o,h-fh,iz+u],[-1,0,0],cd,null,.22,d-fh)}
+  else if(dz==1){k.quad([ix,h-fh,z1+o],[x1,h-fh,z1+o],[x1,h,z1+o],[ix,h,z1+o],[0,0,1],cs,[.84,.84,.94,.94],1,fh);k.quad([ix+u,h-d,z1+o],[ix+u+.22,h-d,z1+o],[ix+u+.22,h-fh,z1+o],[ix+u,h-fh,z1+o],[0,0,1],cd,null,.22,d-fh)}
+  else{k.quad([x1,h-fh,iz-o],[ix,h-fh,iz-o],[ix,h,iz-o],[x1,h,iz-o],[0,0,-1],cs,[.78,.78,.88,.88],1,fh);k.quad([ix+u+.22,h-d,iz-o],[ix+u,h-d,iz-o],[ix+u,h-fh,iz-o],[ix+u+.22,h-fh,iz-o],[0,0,-1],cd,null,.22,d-fh)}}
 function bridgeMesh(k,b){const a=Math.atan2(b.ux,b.uz),n=Math.ceil(b.len/.7);for(let i=0;i<n;i++){const t=-b.len/2+i*.7+.35,x=b.x+b.ux*t,z=b.z+b.uz*t;k.box(b.w*2,.22,.62,x,b.y-.11,z,i%2?0x8a5a30:0x7a4e2a,{ry:a})}
   for(const sd of[-1,1]){const ox=-b.uz*b.w*sd,oz=b.ux*b.w*sd;k.box(.2,.2,b.len,b.x+ox,b.y+.9,b.z+oz,0x5a3a20,{ry:a});for(let t=-b.len/2;t<=b.len/2;t+=2.2){k.box(.24,1,.24,b.x+b.ux*t+ox,b.y+.4,b.z+b.uz*t+oz,0x5a3a20);k.box(.4,3,.4,b.x+b.ux*t+ox*.9,b.y-1.6,b.z+b.uz*t+oz*.9,0x4a3020)}}}
 

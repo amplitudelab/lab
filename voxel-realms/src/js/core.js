@@ -52,12 +52,27 @@ const VOXB='{vec2 fs=vFs;if(fs.x!=0.&&uBv>0.){vec2 q=vBv,e,sz;if(fs.x<0.){vec2 k
  'fd*=1.-smoothstep(w*.5,w*1.6,aa);float ed=1.-smoothstep(w*.35-aa,w+aa,m);vec3 Nv=normalize((vec4(normalize(vRN),0.)*viewMatrix).xyz);'+
  'float tp=fs.x>0.&&abs(Nv.y)<.5?step(fs.y-w*1.1,q.y)*step(w*.6,e.x):0.;gl_FragColor.rgb*=1.+fd*(tp*.2-ed*(1.-tp)*(fs.x<0.?.16:.26));}}';
 // 14.0 · gradação por bioma (vale também sem pós-processo, no perfil LEVE): saturação e sombras tingidas
+// 14.5 · textura de voxel procedural (sem imagem): cada bloco ganha texels de 1/8 (terreno) ou 1/6 (objetos)
+// com padrão pelo tipo deduzido da cor: grama, terra/madeira (veios), pedra (blocos), folhas (furos e brilhos).
+// Some com a distância (sem cintilar) e fica mais suave nos personagens.
+const VTEX='{vec2 fs=vFs;if(fs.x!=0.&&uBv>0.){vec3 Nw=normalize((vec4(normalize(vRN),0.)*viewMatrix).xyz);vec2 tc;float D;'+
+ 'if(fs.x<0.){D=8.;tc=abs(Nw.y)>.5?vWP.xz:(abs(Nw.x)>.5?vec2(vWP.z,vWP.y):vec2(vWP.x,vWP.y));}else{D=6.;tc=vBv;}'+
+ 'vec2 tp=floor(tc*D);float h1=fract(sin(dot(tp,vec2(12.9898,78.233)))*43758.5453),h2=fract(sin(dot(floor(tp/3.),vec2(39.346,11.135)))*24634.6345);'+
+ '\n#ifdef USE_COLOR\nvec3 vc=vColor;\n#else\nvec3 vc=diffuse;\n#endif\n'+
+ 'float mx=max(vc.r,max(vc.g,vc.b)),mn=min(vc.r,min(vc.g,vc.b)),sat=(mx-mn)/max(mx,.001),k;'+
+ '\n#ifdef VWIND\nk=(h1<.2?.74:h1>.84?1.13:.95+h1*.08)*(.95+h2*.1);\n#else\n'+
+ 'if(vc.g>=vc.r&&vc.g>vc.b&&sat>.25)k=.9+h1*.17+step(.9,h1)*.08-step(h1,.06)*.08;'+
+ 'else if(vc.r>vc.g&&vc.g>=vc.b&&sat>.2&&mx<.78)k=fs.x>0.?.9+fract(sin(tp.x*91.7+floor(tp.y/5.)*3.1)*437.5)*.18:.86+h1*.2;'+
+ 'else if(sat<.14)k=.86+h2*.15+h1*.08;else k=.93+h1*.12;\n#endif\n'+
+ '\n#ifdef USE_SKINNING\nk=mix(1.,k,.45);\n#endif\n'+
+ '\n#if __VERSION__>=300\nfloat ta=length(fwidth(tc*D));\n#else\nfloat ta=.4;\n#endif\n'+
+ 'gl_FragColor.rgb*=mix(k,1.,smoothstep(.35,1.1,ta));}}';
 const GRADE='{float l=dot(gl_FragColor.rgb,vec3(.299,.587,.114));gl_FragColor.rgb=max(mix(vec3(l),gl_FragColor.rgb,uSat),0.)+uShd*(1.-smoothstep(.04,.5,l));}';
 function obc(s,w){Object.assign(s.uniforms,SHU);
   s.vertexShader=s.vertexShader.replace('#include <common>','#include <common>\nuniform float uT,uW;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;attribute vec2 aFs;varying vec2 vFs;varying vec2 vBv;').replace('#include <begin_vertex>','#include <begin_vertex>'+(w?WIND:'')).replace('#include <project_vertex>','#include <project_vertex>\nvRN=normalize(transformedNormal);vRV=-mvPosition.xyz;vWP=(modelMatrix*vec4(transformed,1.)).xyz;vFs=aFs;vBv=uv;');
-  s.fragmentShader=s.fragmentShader.replace('#include <common>','#include <common>\nuniform vec3 uSunV,uRim,uCam,uPl,uTP,uTC,uShd;uniform float uTR,uSat,uBv;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;varying vec2 vFs;varying vec2 vBv;').replace('#include <fog_fragment>',XRAY+'{vec3 V=normalize(vRV),N=normalize(vRN);float up=abs((vec4(N,0.)*viewMatrix).y),fr=pow(1.-clamp(abs(dot(N,V)),0.,1.),3.)*(1.-up*.9),bk=.25+.75*max(dot(-V,uSunV),0.);gl_FragColor.rgb+=uRim*fr*bk*(.35+.65*diffuseColor.rgb)*.8;gl_FragColor.a*=.4;}{vec3 tl=uTP-vWP;float td=length(tl);float at=clamp(1.-td/uTR,0.,1.);at=at*at*.55+at*.45;vec3 Nw=normalize((vec4(normalize(vRN),0.)*viewMatrix).xyz);float nd=max(dot(Nw,tl/max(td,.001)),0.)*.75+.25;gl_FragColor.rgb+=diffuseColor.rgb*uTC*at*nd;}'+VOXB+GRADE+'\n#include <fog_fragment>')}
+  s.fragmentShader=s.fragmentShader.replace('#include <common>','#include <common>\n'+(w?'#define VWIND\n':'')+'uniform vec3 uSunV,uRim,uCam,uPl,uTP,uTC,uShd;uniform float uTR,uSat,uBv;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;varying vec2 vFs;varying vec2 vBv;').replace('#include <fog_fragment>',XRAY+VTEX+'{vec3 V=normalize(vRV),N=normalize(vRN);float up=abs((vec4(N,0.)*viewMatrix).y),fr=pow(1.-clamp(abs(dot(N,V)),0.,1.),3.)*(1.-up*.9),bk=.25+.75*max(dot(-V,uSunV),0.);gl_FragColor.rgb+=uRim*fr*bk*(.35+.65*diffuseColor.rgb)*.8;gl_FragColor.a*=.4;}{vec3 tl=uTP-vWP;float td=length(tl);float at=clamp(1.-td/uTR,0.,1.);at=at*at*.55+at*.45;vec3 Nw=normalize((vec4(normalize(vRN),0.)*viewMatrix).xyz);float nd=max(dot(Nw,tl/max(td,.001)),0.)*.75+.25;gl_FragColor.rgb+=diffuseColor.rgb*uTC*at*nd;}'+VOXB+GRADE+'\n#include <fog_fragment>')}
 const OBC=s=>obc(s,0),OBW=s=>obc(s,1);function enh(m,w){m.onBeforeCompile=w?OBW:OBC;return m}
-const MV=enh(new THREE.MeshLambertMaterial({vertexColors:true,map:NT})),MW=enh(new THREE.MeshLambertMaterial({vertexColors:true,map:NT}),1);
+const MV=enh(new THREE.MeshLambertMaterial({vertexColors:true})),MW=enh(new THREE.MeshLambertMaterial({vertexColors:true}),1);
 const ME=new THREE.MeshBasicMaterial({vertexColors:true}),MFL=new THREE.MeshBasicMaterial({color:0xffffff});
 const MC={},matc=c=>MC[c]||(MC[c]=enh(new THREE.MeshLambertMaterial({color:c,map:NT})));
 

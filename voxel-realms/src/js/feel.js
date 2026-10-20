@@ -38,7 +38,9 @@ function heroPoseUpd(){const g=P.m.g;if(g.rotation.order!='YXZ')g.rotation.order
 // ---------- água: respingos e ondas na superfície
 function splash(x,z,k){k=k||1;ring(x,z,1.2*k,0xd8f0ff,.5,1,WATER_Y+.03);fx(x,WATER_Y+.1,z,0xd8f0ff,Math.round(6*k),3.5*k,.1,1.4,9);fx(x,WATER_Y+.1,z,0x9ad8ff,Math.round(3*k),2.5,.14,1,9)}
 let wkT=0;
-function feelUpd(dt){if(!run)return;heroPoseUpd();if(innerWidth!==RSW||innerHeight!==RSH)rs();
+// o herói não atravessa os inimigos (nem entra no corpo deles na primeira pessoa)
+function mobPush(){if(P.dash>0||P.roll>0||P.leap)return;for(const e of E){if(e.dead||e.t.passive||e.air)continue;const dx=P.x-e.x,dz=P.z-e.z,m=e.r+.45;if(Math.abs(dx)>m||Math.abs(dz)>m)continue;const d=hy(dx,dz);if(d<m&&d>1e-3&&Math.abs(P.y-e.y)<2.2){const k=(m-d)/d;P.x+=dx*k*.8;P.z+=dz*k*.8;e.x-=dx*k*.2;e.z-=dz*k*.2;if(P.lunge>0)P.lunge=0}}}
+function feelUpd(dt){if(!run)return;mobPush();heroPoseUpd();if(innerWidth!==RSW||innerHeight!==RSH)rs();
   const wd=waterDepth();wkT-=dt;if(wd>.08&&(P.v||0)>1&&wkT<=0){wkT=.28;ring(P.x-S(P.f)*.3,P.z-C(P.f)*.3,1.1,0xd8f0ff,.6,1,WATER_Y+.03);if(R()<.6)fx(P.x,WATER_Y+.1,P.z,0xd8f0ff,2,2,.08,.8,9)}}
 // ---------- inventário cheio: avisa uma vez ao passar por cima (com intervalo), sem repetir a mensagem
 let invFullT=0;const _pick14=pickItem;
@@ -49,3 +51,8 @@ function fovLbl(){const b=$('fovb');if(b)b.textContent='Campo de visão: '+FOVB+
 function fovNext(){const i=FOVS.indexOf(FOVB);FOVB=FOVS[(i+1)%FOVS.length];try{localStorage.setItem('vr11_fov',String(FOVB))}catch(e){}rs();fovLbl()}
 // ---------- botões
 {const b=$('jmpb');b.onpointerdown=e=>{e.stopPropagation();b.setPointerCapture(e.pointerId);jump()};const f=$('fovb');if(f){f.onclick=fovNext;fovLbl()}}
+// ---------- 14.5: escada de desempenho — se mesmo na resolução mínima o jogo continuar lento,
+// desliga a textura/chanfro dos voxels e depois reduz as partículas (avisa uma vez)
+const PERF={lv:0,n:0,t:0};
+const _drs15=drsUpd;drsUpd=function(raw){_drs15(raw);if(!run||LOADING||document.hidden)return;PERF.n++;PERF.t+=raw;if(PERF.t<4)return;const fps=PERF.n/PERF.t;PERF.n=PERF.t=0;
+  const want=(FPSC||60)*.7;if(DRS.s<=DRS.min+.01&&fps<want&&PERF.lv<2){PERF.lv++;if(PERF.lv==1)SHU.uBv.value=0;else GFX.fx*=.6;if(PERF.lv==1)toast('⚙️','Detalhes reduzidos','Para manter o jogo fluido neste aparelho.')}};
