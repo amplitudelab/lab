@@ -6,14 +6,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script>const VR_VERSION='13.3';const VR_NOTE='Masmorras, furtividade, culinaria e forja, missoes de classe, conquistas e titulos, invasoes e chefes errantes';</script>
+<script>const VR_VERSION='14.0';const VR_NOTE='Grimorio de habilidades em pixel art, florestas de outono, bosque lilas e mangue com lua verde, visual mais voxel, efeitos com cores vivas e combate mais fluido';</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="theme-color" content="#140c14">
 <title>Voxel Realms</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/hud.css">
 </head>
@@ -40,7 +40,7 @@
   <div id="mw"><canvas id="mc" width="160" height="160"></canvas><span class="n">N</span></div>
   <div id="zm"><button id="zmi" class="rb" title="Aproximar">＋</button><button id="zmo" class="rb" title="Afastar">－</button></div>
   <div id="rg" class="wd"><b id="rn"></b><small id="rl"></small></div>
-  <div id="tbar"><button id="mapb" title="Mapa (M)">🗺️</button><button id="jrnb" title="Diário (J)">📜</button><button id="bagb" title="Inventário (I)">🎒</button><button id="treeb" title="Habilidades (K)">✨</button><button id="fpvb" title="Primeira pessoa (X)">👁️</button><button id="menb" title="Menu (Esc)">⚙️</button></div>
+  <div id="tbar"><button id="mapb" title="Mapa (M)">🗺️</button><button id="jrnb" title="Diário (J)">📜</button><button id="bagb" title="Inventário (I)">🎒</button><button id="treeb" title="Grimório (K)">📖</button><button id="fpvb" title="Primeira pessoa (X)">👁️</button><button id="menb" title="Menu (Esc)">⚙️</button></div>
   <!-- avisos -->
   <div id="ts" class="wd"></div><div id="bn"></div><div id="zt"></div><div id="mas"></div>
   <!-- controles -->
@@ -66,7 +66,7 @@
 <div id="jrn" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">📜 Diário</span><button class="wx">✕</button></div><div id="jtabs"></div><div id="jbody"></div></div></div>
 <div id="shop" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚒️ Forja da Helga</span><span id="shg"></span><button class="wx">✕</button></div><p class="ihint">Para vender, abra o inventário e escolha "Vender".</p><div id="shl"></div></div></div>
 <div id="bty" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">📋 Quadro de Recompensas</span><button class="wx">✕</button></div><div id="btyb"></div></div></div>
-<div id="tree" class="win"><div class="wd wbox tbox"><div class="wh"><span class="ttl">✨ Habilidades</span><small id="tpts"></small><button class="wx">✕</button></div><div id="tcols"></div><div id="tdet"></div></div></div>
+<div id="tree" class="win"><div class="book"><div class="pg bk-l"><div class="bk-h"><span id="bkSig"></span><div><b id="bkT"></b><small id="tpts"></small></div></div><div id="bkG"></div><div id="bkHb"></div></div><div class="pg bk-r"><div id="gdet"></div></div><div id="bkTabs"></div><button class="wx">✕</button></div></div>
 <div id="cook" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🍲 Cozinha da Marta</span><button class="wx">✕</button></div><p class="ihint">Pratos dão bônus por 4 minutos. Os ingredientes vêm dos animais.</p><div id="cookl"></div></div></div>
 <div id="frg" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚙️ Bancada do Durin</span><span id="frgg"></span><button class="wx">✕</button></div><p class="ihint">Aprimore a arma equipada até +5. Cada nível dá +9% de dano.</p><div id="frgl"></div></div></div>
 <div id="pets" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🐾 Tobias, o Mercador</span><span id="ptg"></span><button class="wx">✕</button></div><p class="ihint">Um pet segue você e dá um bônus. Só um fica com você por vez.</p><div id="ptl"></div></div></div>
@@ -86,6 +86,7 @@
 <script src="js/models.js"></script>
 <script src="js/weapons.js"></script>
 <script src="js/fx.js"></script>
+<script src="js/look.js"></script>
 <script src="js/parallax.js"></script>
 <script src="js/weather.js"></script>
 <script src="js/items.js"></script>
@@ -106,6 +107,7 @@
 <script src="js/ui.js"></script>
 <script src="js/world2.js"></script>
 <script src="js/music.js"></script>
+<script src="js/grimoire.js"></script>
 <script src="js/main.js"></script>
 <script>if("serviceWorker"in navigator&&location.protocol=="https:")navigator.serviceWorker.register("sw.js").catch(function(){})</script>
 </body>

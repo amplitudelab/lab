@@ -42,9 +42,10 @@ function sombraFx(x0,z0,x1,z1){for(let i=0;i<10;i++){const k=i/9,x=lerp(x0,x1,k)
 
 // ---------- 13.1: impacto, finalização, rastro por poder e círculo mágico
 const PWC={brasa:0xff8a2a,geada:0x9ae4ff,trovao2:0x9ac8ff,eco:0xc8a8ff,sangue:0xff4a5a,multi:0xffe08a,explosiva:0xffa040};
-function trailCol(){const w=EQ.arma;if(!w)return 0xfff0d0;if(w.pw&&PWC[w.pw])return PWC[w.pw];return w.rar>=2?RAR[w.rar].h:0xfff0d0}
+const CLSC={guerreiro:0xffa040,mago:0xb08aff,cacador:0x6affc8,necromante:0x7dff9a,vampiro:0xff4058}; // 14.0: cor viva da classe no rastro e no arco
+function trailCol(){const w=EQ.arma,d=CLSC[P.cls]||0xffc070;if(!w)return d;if(w.pw&&PWC[w.pw])return PWC[w.pw];return w.rar>=2?RAR[w.rar].h:d}
 function impactFx(e,big){const y=e.y+1.1*(e.m.g.scale.y||1),c=trailCol(),dx=e.x-P.x,dz=e.z-P.z,l=hy(dx,dz)||1;
-  for(let i=0;i<(big?7:4);i++){const sp=4+R()*5;fx(e.x-dx/l*.4,y,e.z-dz/l*.4,i%2?0xffffff:c,1,1.5,.07+R()*.05,.6,8)}flash(e.x-dx/l*.5,y,e.z-dz/l*.5,c,big?2.4:1.4,.12);if(big)ring(e.x,e.z,1.6,c,.25)}
+  for(let i=0;i<(big?7:4);i++)fx(e.x-dx/l*.4,y,e.z-dz/l*.4,i%3?c:0xffffff,1,4,.07+R()*.05,.7,8);flash(e.x-dx/l*.5,y,e.z-dz/l*.5,c,big?2:1.2,.1);star(e.x-dx/l*.6,y,e.z-dz/l*.6,big?0xffffff:c,big?2.8:1.8,big?.2:.15);if(big)ring(e.x,e.z,1.6,c,.25)}
 function finisherFx(){const x=P.x+S(P.f)*1.6,z=P.z+C(P.f)*1.6,c=trailCol();ring(x,z,4,c,.5);ring(x,z,2.2,0xffffff,.3);column(x,z,c,4,1.2,.35);fx(x,groundAt(x,z)+.3,z,0xb8a888,14,9,.24,1,10);for(let i=0;i<5;i++)puff(x+(R()-.5)*3,groundAt(x,z)+.4,z+(R()-.5)*3,0xcdb894,2);SHK=Math.max(SHK,.5);HITSTOP=Math.max(HITSTOP,.08);snd(80,.35,'sawtooth')}
 // círculo de runas sob os pés ao conjurar
 const MCV=document.createElement('canvas');MCV.width=MCV.height=128;{const x=MCV.getContext('2d');x.strokeStyle='#fff';x.fillStyle='#fff';x.lineWidth=3;x.beginPath();x.arc(64,64,60,0,7);x.stroke();x.lineWidth=2;x.beginPath();x.arc(64,64,46,0,7);x.stroke();

@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 19/10/2026 · versão atual do jogo: 13.3
+Atualizado em 20/10/2026 · versão atual do jogo: 14.0
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='13.4'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='14.1'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -50,7 +50,10 @@ places.js    vila, casas (com chaminé), pontos de interesse, baús, placas, san
 models.js    modelos (humanoide com rosto estilo Hytale, quadrúpedes etc.), animações
              (combo de 4 golpes, magias, tiro, bloqueio, agachar), SkinnedMesh (1 chamada de desenho por modelo)
 weapons.js   arsenal (espadas, machados, martelos, arcos, bestas, lanças, cajados, adagas), poderes de arma
-fx.js        partículas, anéis, alertas de área, números de dano
+fx.js        partículas (as "quentes" ganham casca aditiva e cor ao longo da vida), estrelas de impacto,
+             explosões (boom), anéis, alertas de área, números de dano, rastro suave da arma
+look.js      aparência por bioma: saturação e sombras tingidas (SHU.uSat/uShd), névoa e horizonte, lua verde
+             no mangue (SKU.mc/mg/ms), cor das partículas do ambiente
 parallax.js  montanhas de fundo por bioma
 weather.js   clima e neblina por local
 items.js     itens, raridades, afixos, lendários, inventário, loja
@@ -71,6 +74,7 @@ quests.js    missões, diálogos, bestiário, códice
 ui.js        HUD, câmera, controles, janelas
 world2.js    furtividade, masmorras, culinária, forja, missões de classe, conquistas, eventos
 music.js     trilha sonora procedural (Web Audio)
+grimoire.js  grimório (árvore de habilidades em forma de livro), ícones pixel art (pixIcon/skIcon), elementos (ELM/SKEL)
 main.js      saves, tela de personagens, laço do jogo, versão/atualização, PWA
 
 
@@ -93,6 +97,11 @@ O save antigo único (vr11_save) é migrado sozinho para o espaço da classe del
 - IA "atenta sempre": visão 24-28 m com linha de visão; furtivo reduz.
 - Árvore de habilidades mostra só a classe do personagem; pontos de outras árvores são devolvidos.
 - Roubo de vida do Vampiro tem teto de 15%.
+- Visual "mais voxel" (14.0): o Bake grava o tamanho de cada face no atributo aFs e o shader (VOXB em core.js)
+  escurece as bordas e ilumina a aresta de cima; no terreno aFs<0 desenha a grade de voxels. SHU.uBv=0 desliga.
+  skinModel copia aFs, então personagens também ganham o chanfro.
+- Copas das árvores (world.js: blob, LEAF): discos em cruz empilhados + folhinhas; nos pedaços distantes (lod 2)
+  só os discos, para não pesar.
 - Animações seguem os princípios do Hytale (antecipação, corpo inteiro, continuação);
   o assistente não consegue assistir vídeos do YouTube, só imagens.
 
@@ -109,8 +118,8 @@ FPS real no celular NUNCA foi medido: depende do retorno do usuário.
 ---------------------
 - Testar no Redmi: desempenho, sensibilidade da câmera na primeira pessoa, balanço da tocha.
 - Equilíbrio das 5 classes foi checado em números (vida/dano no nível 10), não jogando.
-- Texturas pintadas pixel a pixel (estilo das referências do Hytale) ainda não foram feitas;
-  o visual atual usa detalhes modelados em blocos coloridos.
+- Texturas pintadas pixel a pixel ainda não foram feitas; o visual usa blocos coloridos com ruído 8x8 e
+  o chanfro do shader. A floresta da 14.0 tem ~18% mais triângulos que a 13.3 (medir no Redmi).
 - APK bloqueado pelo Play Protect; para resolver de vez precisa de conta de desenvolvedor Google
   verificada (só o usuário pode fazer). Enquanto isso, instalar como app pelo Chrome.
 - A chave que assina o APK está no repositório público (ok para uso pessoal; mover para

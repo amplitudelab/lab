@@ -15,7 +15,7 @@ function camUpd(dt){const c=CAMS;c.yaw+=angDiff(c.yaw,c.yawT)*damp(12,dt);c.pit+
   if(INV_OPEN.k>.002){const k=INV_OPEN.k*INV_OPEN.k*(3-2*INV_OPEN.k),a=c.yaw+angDiff(c.yaw,P.f)*k,dd=lerp(d*C(c.pit),5.6,k);x=P.x+S(a)*dd;z=P.z+C(a)*dd;y=lerp(y,P.y+2.3,k);LTV.set(lerp(c.cx,P.x,k),lerp(c.cy+1.4,P.y+1.6,k),lerp(c.cz,P.z,k));cam.setViewOffset(innerWidth,innerHeight,innerWidth*INV_OPEN.off*k,0,innerWidth,innerHeight)}
   else{LTV.set(c.cx,c.cy+1.4,c.cz);if(cam.view&&cam.view.enabled)cam.clearViewOffset()}
   const tf=(innerHeight>innerWidth?60:52)+(P.run&&P.v>6?6:0)+(P.dash>0?4:0);if(Math.abs(tf-cam.fov)>.05){cam.fov+=(tf-cam.fov)*damp(5,dt);cam.updateProjectionMatrix()}
-  cam.position.set(x+(R()-.5)*SHK,y+(R()-.5)*SHK,z+(R()-.5)*SHK);SHK*=Math.pow(.02,dt);cam.lookAt(LTV);cam.updateMatrixWorld();SHU.uCam.value.copy(cam.position);SHU.uPl.value.set(P.x,P.y+1.4,P.z);
+  const tq=performance.now()/1000,sk=SHK*.42;cam.position.set(x+(S(tq*41)+S(tq*23.7+1.7)*.6)*sk,y+(S(tq*37.1+.6)+S(tq*19.3+2.1)*.6)*sk,z+(S(tq*29.3+3.3)+S(tq*45.9)*.5)*sk);SHK*=Math.pow(.02,dt);cam.lookAt(LTV);cam.updateMatrixWorld();SHU.uCam.value.copy(cam.position);SHU.uPl.value.set(P.x,P.y+1.4,P.z);
   SKY.position.copy(cam.position);for(const l of MTN)l.m.position.set(cam.position.x*l.f,0,cam.position.z*l.f);
   cam.getWorldDirection(_cd);const fc=_cd.dot(SUND);_pp.copy(SUND).multiplyScalar(400).add(cam.position).project(cam);SUNV=_pp.z<1&&fc>.05&&ELEV>-.05?cl((fc-.05)*1.6,0,1):0;SUNP.set(_pp.x*.5+.5,_pp.y*.5+.5);
   const t=SHU.uT.value;SUN.target.position.set(P.x,P.y,P.z);SUN.position.copy(SUN.target.position).addScaledVector(LD,70);}

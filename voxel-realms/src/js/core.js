@@ -40,14 +40,22 @@ const NT=(()=>{const c=document.createElement('canvas');c.width=c.height=8;const
 const SPR=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.22,'rgba(255,255,255,.75)');g.addColorStop(.55,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)})();
 
 // ---------- materiais com contraluz (rim light) e vento na folhagem; alfa = máscara de bloom
-const SHU={uSunV:{value:new V3(0,0,-1)},uT:{value:0},uW:{value:1},uRim:{value:new THREE.Color(0xffd0a0)},uCam:{value:new V3()},uPl:{value:new V3()},uTP:{value:new V3(0,-999,0)},uTC:{value:new THREE.Color(0,0,0)},uTR:{value:14}};
+const SHU={uSunV:{value:new V3(0,0,-1)},uT:{value:0},uW:{value:1},uRim:{value:new THREE.Color(0xffd0a0)},uCam:{value:new V3()},uPl:{value:new V3()},uTP:{value:new V3(0,-999,0)},uTC:{value:new THREE.Color(0,0,0)},uTR:{value:14},uSat:{value:1.12},uShd:{value:new THREE.Color(0,0,0)},uBv:{value:1}};
 // a malha com vento recebe só folhagem (copas, grama, flores): todo vértice balança, com fase pela posição
 const WIND='\n{vec4 wp=modelMatrix*vec4(transformed,1.);float ph=wp.x*.37+wp.z*.29;transformed.x+=sin(uT*1.6*(.7+uW*.3)+ph)*.06*uW;transformed.z+=cos(uT*1.25+ph*1.31)*.045*uW;}\n';
 // "raio-x": o que fica entre a câmera e o herói vira pontilhado (como as paredes no Diablo)
 const XRAY='{vec3 ab=uPl-uCam;float L=length(ab);vec3 dd=ab/L;float tt=dot(vWP-uCam,dd);if(tt>0.&&tt<L-1.4){float rr=mix(.8,2.6,tt/L),r=length(vWP-uCam-dd*tt);if(r<rr){float th=mod(floor(gl_FragCoord.x)+floor(gl_FragCoord.y)*2.,4.)*.25;if(th<(1.-r/rr)*1.6)discard;}}}';
+// 14.0 · chanfro voxel: cada caixa ganha bordas escurecidas e a aresta de cima iluminada (aFs = tamanho da face);
+// no terreno (aFs<0) a grade marca cada voxel 1×1 no topo e fatias de 0,5 nas laterais. Some com a distância.
+const VOXB='{vec2 fs=vFs;if(fs.x!=0.&&uBv>0.){vec2 q=vBv,e,sz;if(fs.x<0.){vec2 k=vec2(1.,fs.y<-1.5?2.:1.),f=fract(q*k);e=min(f,1.-f)/k;sz=1./k;}else{e=min(q,fs-q);sz=fs;}'+
+ 'float m=min(e.x,e.y),w=min(.075,.22*min(sz.x,sz.y)),fd=(1.-smoothstep(22.,46.,length(vRV)))*uBv;\n#if __VERSION__>=300\nfloat aa=fwidth(m);\n#else\nfloat aa=.015;\n#endif\n'+
+ 'fd*=1.-smoothstep(w*.5,w*1.6,aa);float ed=1.-smoothstep(w*.35-aa,w+aa,m);vec3 Nv=normalize((vec4(normalize(vRN),0.)*viewMatrix).xyz);'+
+ 'float tp=fs.x>0.&&abs(Nv.y)<.5?step(fs.y-w*1.1,q.y)*step(w*.6,e.x):0.;gl_FragColor.rgb*=1.+fd*(tp*.2-ed*(1.-tp)*(fs.x<0.?.16:.26));}}';
+// 14.0 · gradação por bioma (vale também sem pós-processo, no perfil LEVE): saturação e sombras tingidas
+const GRADE='{float l=dot(gl_FragColor.rgb,vec3(.299,.587,.114));gl_FragColor.rgb=max(mix(vec3(l),gl_FragColor.rgb,uSat),0.)+uShd*(1.-smoothstep(.04,.5,l));}';
 function obc(s,w){Object.assign(s.uniforms,SHU);
-  s.vertexShader=s.vertexShader.replace('#include <common>','#include <common>\nuniform float uT,uW;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;').replace('#include <begin_vertex>','#include <begin_vertex>'+(w?WIND:'')).replace('#include <project_vertex>','#include <project_vertex>\nvRN=normalize(transformedNormal);vRV=-mvPosition.xyz;vWP=(modelMatrix*vec4(transformed,1.)).xyz;');
-  s.fragmentShader=s.fragmentShader.replace('#include <common>','#include <common>\nuniform vec3 uSunV,uRim,uCam,uPl,uTP,uTC;uniform float uTR;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;').replace('#include <fog_fragment>',XRAY+'{vec3 V=normalize(vRV),N=normalize(vRN);float up=abs((vec4(N,0.)*viewMatrix).y),fr=pow(1.-clamp(abs(dot(N,V)),0.,1.),3.)*(1.-up*.9),bk=.25+.75*max(dot(-V,uSunV),0.);gl_FragColor.rgb+=uRim*fr*bk*(.35+.65*diffuseColor.rgb)*.8;gl_FragColor.a*=.4;}{vec3 tl=uTP-vWP;float td=length(tl);float at=clamp(1.-td/uTR,0.,1.);at=at*at*.55+at*.45;vec3 Nw=normalize((vec4(normalize(vRN),0.)*viewMatrix).xyz);float nd=max(dot(Nw,tl/max(td,.001)),0.)*.75+.25;gl_FragColor.rgb+=diffuseColor.rgb*uTC*at*nd;}\n#include <fog_fragment>')}
+  s.vertexShader=s.vertexShader.replace('#include <common>','#include <common>\nuniform float uT,uW;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;attribute vec2 aFs;varying vec2 vFs;varying vec2 vBv;').replace('#include <begin_vertex>','#include <begin_vertex>'+(w?WIND:'')).replace('#include <project_vertex>','#include <project_vertex>\nvRN=normalize(transformedNormal);vRV=-mvPosition.xyz;vWP=(modelMatrix*vec4(transformed,1.)).xyz;vFs=aFs;vBv=uv;');
+  s.fragmentShader=s.fragmentShader.replace('#include <common>','#include <common>\nuniform vec3 uSunV,uRim,uCam,uPl,uTP,uTC,uShd;uniform float uTR,uSat,uBv;varying vec3 vRN;varying vec3 vRV;varying vec3 vWP;varying vec2 vFs;varying vec2 vBv;').replace('#include <fog_fragment>',XRAY+'{vec3 V=normalize(vRV),N=normalize(vRN);float up=abs((vec4(N,0.)*viewMatrix).y),fr=pow(1.-clamp(abs(dot(N,V)),0.,1.),3.)*(1.-up*.9),bk=.25+.75*max(dot(-V,uSunV),0.);gl_FragColor.rgb+=uRim*fr*bk*(.35+.65*diffuseColor.rgb)*.8;gl_FragColor.a*=.4;}{vec3 tl=uTP-vWP;float td=length(tl);float at=clamp(1.-td/uTR,0.,1.);at=at*at*.55+at*.45;vec3 Nw=normalize((vec4(normalize(vRN),0.)*viewMatrix).xyz);float nd=max(dot(Nw,tl/max(td,.001)),0.)*.75+.25;gl_FragColor.rgb+=diffuseColor.rgb*uTC*at*nd;}'+VOXB+GRADE+'\n#include <fog_fragment>')}
 const OBC=s=>obc(s,0),OBW=s=>obc(s,1);function enh(m,w){m.onBeforeCompile=w?OBW:OBC;return m}
 const MV=enh(new THREE.MeshLambertMaterial({vertexColors:true,map:NT})),MW=enh(new THREE.MeshLambertMaterial({vertexColors:true,map:NT}),1);
 const ME=new THREE.MeshBasicMaterial({vertexColors:true}),MFL=new THREE.MeshBasicMaterial({color:0xffffff});
@@ -56,17 +64,17 @@ const MC={},matc=c=>MC[c]||(MC[c]=enh(new THREE.MeshLambertMaterial({color:c,map
 // ---------- "Bake": junta caixas coloridas numa única malha (poucas chamadas de desenho)
 const UB=(()=>{const g=new THREE.BoxGeometry(1,1,1);return{p:g.attributes.position.array,n:g.attributes.normal.array,u:g.attributes.uv.array,i:g.index.array}})();
 const _m4=new THREE.Matrix4(),_eu=new THREE.Euler(),_qu=new THREE.Quaternion(),_pv=new V3(),_sv=new V3(),_nv=new V3(),_col=new THREE.Color(),_n3=new THREE.Matrix3();
-class Bake{constructor(){this.p=[];this.n=[];this.c=[];this.u=[];this.i=[];this.k=0}
+class Bake{constructor(){this.p=[];this.n=[];this.c=[];this.u=[];this.fs=[];this.i=[];this.k=0}
   box(w,h,d,x,y,z,col,o){const rx=o&&o.rx||0,ry=o&&o.ry||0,rz=o&&o.rz||0,g=o&&o.g,b=this.k;
     _eu.set(rx,ry,rz);_qu.setFromEuler(_eu);_m4.compose(_pv.set(x,y,z),_qu,_sv.set(w,h,d));_n3.getNormalMatrix(_m4);_col.setHex(col);
     for(let v=0;v<24;v++){const ly=UB.p[v*3+1];_pv.set(UB.p[v*3],ly,UB.p[v*3+2]).applyMatrix4(_m4);this.p.push(_pv.x,_pv.y,_pv.z);
       const nx=UB.n[v*3],ny=UB.n[v*3+1];_nv.set(nx,ny,UB.n[v*3+2]).applyMatrix3(_n3).normalize();this.n.push(_nv.x,_nv.y,_nv.z);
-      const f=v>>2;let u=UB.u[v*2],t=UB.u[v*2+1];if(f<2){u*=d;t*=h}else if(f<4){u*=w;t*=d}else{u*=w;t*=h}this.u.push(u,t);
+      const f=v>>2;let u=UB.u[v*2],t=UB.u[v*2+1];if(f<2){u*=d;t*=h;this.fs.push(d,h)}else if(f<4){u*=w;t*=d;this.fs.push(w,d)}else{u*=w;t*=h;this.fs.push(w,h)}this.u.push(u,t);
       let k=ny>.5?1:ny<-.5?.6:(Math.abs(nx)>.5?.86:.94);if(ny<.5&&ny>-.5&&ly<0)k*=g?.62:.8;this.c.push(_col.r*k,_col.g*k,_col.b*k)}
     for(let j=0;j<36;j++)this.i.push(UB.i[j]+b);this.k+=24;return this}
   quad(a,b,c,d,n,col,sh,uw,uh){const k=this.k;this.p.push(...a,...b,...c,...d);for(let i=0;i<4;i++)this.n.push(n[0],n[1],n[2]);_col.setHex(col);
-    for(let i=0;i<4;i++){const s=sh?sh[i]:1;this.c.push(_col.r*s,_col.g*s,_col.b*s)}this.u.push(0,0,uw||1,0,uw||1,uh||1,0,uh||1);this.i.push(k,k+1,k+2,k,k+2,k+3);this.k+=4;return this}
-  geo(){if(!this.k)return null;const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(this.p,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(this.n,3));g.setAttribute('color',new THREE.Float32BufferAttribute(this.c,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(this.u,2));g.setIndex(this.k>65000?new THREE.Uint32BufferAttribute(this.i,1):new THREE.Uint16BufferAttribute(this.i,1));g.computeBoundingSphere();return g}
+    for(let i=0;i<4;i++){const s=sh?sh[i]:1;this.c.push(_col.r*s,_col.g*s,_col.b*s)}this.u.push(0,0,uw||1,0,uw||1,uh||1,0,uh||1);const gy=Math.abs(n[1])>.5?-1:-2;for(let i=0;i<4;i++)this.fs.push(-1,gy);this.i.push(k,k+1,k+2,k,k+2,k+3);this.k+=4;return this}
+  geo(){if(!this.k)return null;const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(this.p,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(this.n,3));g.setAttribute('color',new THREE.Float32BufferAttribute(this.c,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(this.u,2));g.setAttribute('aFs',new THREE.Float32BufferAttribute(this.fs,2));g.setIndex(this.k>65000?new THREE.Uint32BufferAttribute(this.i,1):new THREE.Uint16BufferAttribute(this.i,1));g.computeBoundingSphere();return g}
   mesh(m){const g=this.geo();return g?new THREE.Mesh(g,m||MV):null}}
 
 // ---------- luzes e ciclo dia / pôr do sol / noite
@@ -82,10 +90,10 @@ const PAL={day:{top:0x2a6ad4,mid:0x5a9be6,hor:0xc4e0f4,horS:0xfff2d6,sun:0xfff0d
 const _ca=new THREE.Color(),_cb=new THREE.Color();
 function palC(k,out){_ca.setHex(PAL.day[k]).lerp(_cb.setHex(PAL.gold[k]),GOLD);return out.copy(_ca).lerp(_cb.setHex(PAL.night[k]),NIGHT)}
 function palS(k){return lerp(lerp(PAL.day[k],PAL.gold[k],GOLD),PAL.night[k],NIGHT)}
-const SKU={top:{value:new THREE.Color()},mid:{value:new THREE.Color()},hor:{value:new THREE.Color()},horS:{value:new THREE.Color()},sunC:{value:new THREE.Color()},sd:{value:SUND},md:{value:MOOND},nf:{value:0},t:{value:0},cv:{value:0},fl:{value:0}};
+const SKU={top:{value:new THREE.Color()},mid:{value:new THREE.Color()},hor:{value:new THREE.Color()},horS:{value:new THREE.Color()},sunC:{value:new THREE.Color()},sd:{value:SUND},md:{value:MOOND},nf:{value:0},t:{value:0},cv:{value:0},fl:{value:0},mc:{value:new THREE.Color(.85,.9,1)},mg:{value:new THREE.Color(.3,.4,.8)},ms:{value:.9984}};
 const SKY=new THREE.Mesh(new THREE.SphereGeometry(600,32,16),new THREE.ShaderMaterial({uniforms:SKU,side:THREE.BackSide,depthWrite:false,depthTest:false,fog:false,
   vertexShader:'varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-  fragmentShader:`uniform vec3 top,mid,hor,horS,sunC,sd,md;uniform float nf,t,cv,fl;varying vec3 vP;
+  fragmentShader:`uniform vec3 top,mid,hor,horS,sunC,sd,md,mc,mg;uniform float nf,t,cv,fl,ms;varying vec3 vP;
 void main(){vec3 d=normalize(vP);float h=d.y,s=max(dot(d,sd),0.),m=max(dot(d,md),0.),sv=smoothstep(-.12,.03,sd.y);
 float az=pow(max(dot(normalize(d.xz+1e-4),normalize(sd.xz+1e-4)),0.),2.)*sv;
 vec3 hz=mix(hor,horS,az*.8+pow(s,4.)*.35*sv),up=mix(mid,top,smoothstep(.15,.75,h));
@@ -93,10 +101,10 @@ vec3 c=mix(hz,up,smoothstep(0.,.4,max(h,0.)));c=mix(c,hor*.85,1.-smoothstep(-.15
 float b=sin(d.x*9.+d.z*3.+t*.02)*sin(d.z*7.-d.x*2.)*.5+.5;c=mix(c,mix(hor,vec3(1.),.5),smoothstep(.6,.95,b)*smoothstep(.05,.16,h)*(1.-smoothstep(.22,.5,h))*.22*(1.-nf));
 float gr=dot(c,vec3(.3,.59,.11));c=mix(c,vec3(gr)*mix(vec3(.9,.93,.98),vec3(.4,.45,.55),nf),cv*.78);sv*=1.-cv*.85;
 c+=sunC*(pow(s,6.)*.3+pow(s,48.)*.5)*sv+vec3(1.,.97,.88)*smoothstep(.9966,.9986,s)*1.4*sv;
-c+=(vec3(.85,.9,1.)*smoothstep(.9984,.9991,m)*1.3+vec3(.3,.4,.8)*pow(m,24.)*.35)*nf*(1.-cv*.8);
+c+=(mc*smoothstep(ms,ms+.0007,m)*1.3+mg*(pow(m,24.)*.35+pow(m,6.)*.12*step(ms,.998)))*nf*(1.-cv*.8);
 if(nf>.01&&h>0.){vec3 q=floor(d*170.);float n=fract(sin(dot(q,vec3(12.99,78.23,37.72)))*4375.85);c+=vec3(step(.9965,n)*smoothstep(.04,.5,h)*nf*.95*(1.-cv));}
 c+=vec3(.8,.85,1.)*fl;
-gl_FragColor=vec4(c,clamp(pow(s,12.)*1.3*sv+smoothstep(.9984,.9991,m)*nf,0.,1.));}`}));
+gl_FragColor=vec4(c,clamp(pow(s,12.)*1.3*sv+smoothstep(ms,ms+.0007,m)*nf,0.,1.));}`}));
 SKY.renderOrder=-10;SKY.frustumCulled=false;sc.add(SKY);
 // nuvens voxel instanciadas (1 chamada), tingidas pela hora do dia
 const CLD=[],CLM=new THREE.MeshBasicMaterial({fog:false,opacity:.3});

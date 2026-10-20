@@ -36,6 +36,7 @@ const MT={
   // animais (passivos: fogem e deixam materiais)
   sheep:{n:'Ovelha',m:'sheep',hp:18,dmg:0,sp:3.2,rg:1,cd:9,xp:2,ai:'animal',passive:1,r:.6,mats:[['la',.8],['carne',.5]]},
   cow:{n:'Vaca',m:'cow',hp:30,dmg:0,sp:2.6,rg:1,cd:9,xp:3,ai:'animal',passive:1,r:.8,mats:[['couro',.7],['carne',.8]]},
+  wdeer:{n:'Cervo Branco',m:'wdeer',hp:30,dmg:0,sp:8,rg:1,cd:9,xp:8,ai:'animal',passive:1,r:.6,mats:[['chifre',.8],['couro',.6]]},
   deer:{n:'Cervo',m:'deer',hp:22,dmg:0,sp:7.5,rg:1,cd:9,xp:4,ai:'animal',passive:1,r:.6,mats:[['chifre',.5],['couro',.6]]},
   rabbit:{n:'Coelho',m:'rabbit',hp:8,dmg:0,sp:6.5,rg:1,cd:9,xp:1,ai:'animal',passive:1,r:.35,mats:[['coelho',.4],['carne',.3]]},
   fox:{n:'Raposa',m:'fox',hp:14,dmg:0,sp:7,rg:1,cd:9,xp:3,ai:'animal',passive:1,r:.45,mats:[['raposa',.7]]},
@@ -50,7 +51,7 @@ const BOSS={
 const SPAWN={plan:['boar','wolf','bandit','bandarc'],flor:['bee','golem','fairy','wolf'],mata:['dwolf','spider','skel'],mang:['croc','frog','slime','zombie'],cald:['lslime','imp','skel']};
 // à noite, feras agressivas se somam aos monstros da região
 const NIGHTB={plan:['wolf','wolf','boar'],flor:['wolf','dwolf'],mata:['dwolf','dwolf','spider'],mang:['croc','croc'],cald:['imp']};
-const FAUNA={vila:[],plan:['sheep','cow','rabbit','deer'],flor:['rabbit','deer','fox'],mata:['deer','fox','rabbit'],mang:['tfrog'],cald:[]};
+const FAUNA={vila:[],plan:['sheep','cow','rabbit','deer'],flor:['rabbit','deer','fox'],mata:['deer','wdeer','fox','rabbit','wdeer'],mang:['tfrog'],cald:[]};
 const AFF={rapido:{n:'Rápido'},blindado:{n:'Blindado'},vampiro:{n:'Vampírico'},fundido:{n:'Fundido'},gelido:{n:'Gélido'},peconha:{n:'Peçonhento'},vortice:{n:'Vórtice'}};
 const E=[],ANI=[],NPC=[],CLEARED=new Map();let eid=0;
 
@@ -89,7 +90,7 @@ function rareName(r){return pick(RN1,r)+' '+pick(RN2,r)}
 function mkAnimal(ty,x,z,ch){const m=MDL[ty](),a={ty,m,x,z,y:groundAt(x,z),vx:0,vz:0,f:R()*TAU,ch,tx:x,tz:z,t:R()*3,hx:x,hz:z,hop:0,hp:1};if(ty=='frog')m.g.scale.setScalar(.55);m.g.position.set(x,a.y,z);ANI.push(a);return a}
 function animalsUpd(dt,t){for(const a of ANI){const dx=a.x-P.x,dz=a.z-P.z,d=hy(dx,dz);a.m.g.visible=d<70&&!invHide(d);if(d>70)continue;
   const flee=d<(a.ty=='cow'||a.ty=='sheep'?4:8)&&!P.dead;let tx=a.tx,tz=a.tz,sp=0;
-  if(flee){tx=a.x+dx/(d||1)*6;tz=a.z+dz/(d||1)*6;sp=a.ty=='deer'||a.ty=='fox'?7:a.ty=='rabbit'?6:3}else{a.t-=dt;if(a.t<=0){a.t=3+R()*5;a.tx=a.hx+(R()-.5)*16;a.tz=a.hz+(R()-.5)*16}const dd=hy(a.tx-a.x,a.tz-a.z);sp=dd>.6?(a.ty=='cow'?1:1.4):0}
+  if(flee){tx=a.x+dx/(d||1)*6;tz=a.z+dz/(d||1)*6;sp=a.ty=='deer'||a.ty=='wdeer'||a.ty=='fox'?7:a.ty=='rabbit'?6:3}else{a.t-=dt;if(a.t<=0){a.t=3+R()*5;a.tx=a.hx+(R()-.5)*16;a.tz=a.hz+(R()-.5)*16}const dd=hy(a.tx-a.x,a.tz-a.z);sp=dd>.6?(a.ty=='cow'?1:1.4):0}
   const dd=hy(tx-a.x,tz-a.z)||1;if(a.ty=='frog'){a.hop=Math.max(0,a.hop-dt*1.8);if(a.hop<=0&&sp>0&&R()<.03)a.hop=1;sp*=a.hop>0?1.4:0}
   moveEnt(a,sp?(tx-a.x)/dd*sp:0,sp?(tz-a.z)/dd*sp:0,dt,6,6,.4);a.m.g.position.set(a.x,a.y,a.z);a.m.g.rotation.y=a.f;animate(a.m,dt,t,{v:hy(a.vx,a.vz),hop:a.hop})}}
 
@@ -149,7 +150,7 @@ function projUpd(dt){stickUpd(dt);for(const p of PJ){if(p.l<=0)continue;p.l-=dt;
 const STK=[];let stkI=0;
 function stickArrow(o){let a=STK[stkI%14];if(!a){a=arrowMesh();sc.add(a);STK.push(a)}stkI++;a.position.copy(o.position);a.quaternion.copy(o.quaternion);a.visible=true;a.userData.t=4;a.scale.setScalar(1)}
 function stickUpd(dt){for(const a of STK){if(!a.visible)continue;a.userData.t-=dt;if(a.userData.t<.5)a.scale.setScalar(Math.max(.01,a.userData.t*2));if(a.userData.t<=0)a.visible=false}}
-function hitProj(p,e){const q=p.o.position;if(e){p.hits.push(e);hurtMob(e,p.dm,0,'proj');if(p.lh)heal(p.dm*.1,1)}if(p.aoe){for(const o of E)if(o!==e&&!o.dead&&hy(o.x-q.x,o.z-q.z)<p.aoe)hurtMob(o,p.dm*.6,0,'proj');fx(q.x,q.y,q.z,p.c,14,6,.18,1.2);flash(q.x,q.y,q.z,p.c,3.5,.3);ring(q.x,q.z,p.aoe,p.c,.35);snd(300,.12,'sine')}else{fx(q.x,q.y,q.z,0xffe9a0,5,4,.12);flash(q.x,q.y,q.z,0xfff0b0,1.1,.12)}}
+function hitProj(p,e){const q=p.o.position;if(e){p.hits.push(e);hurtMob(e,p.dm,0,'proj');if(p.lh)heal(p.dm*.1,1)}if(p.aoe){for(const o of E)if(o!==e&&!o.dead&&hy(o.x-q.x,o.z-q.z)<p.aoe)hurtMob(o,p.dm*.6,0,'proj');fx(q.x,q.y,q.z,p.c,14,6,.18,1.2);flash(q.x,q.y,q.z,p.c,3.5,.3);ring(q.x,q.z,p.aoe,p.c,.35);if(p.k=='fire'||p.aoe>=2.2)boom(q.x,Math.max(groundAt(q.x,q.z),q.y-1),q.z,p.aoe/2.4,p.k=='fire'?0xff7a1a:p.c);snd(300,.12,'sine')}else{fx(q.x,q.y,q.z,0xffe9a0,5,4,.12);flash(q.x,q.y,q.z,0xfff0b0,1.1,.12)}}
 
 // ---------- IA dos monstros
 function mobsUpd(dt,t){

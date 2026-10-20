@@ -15,7 +15,7 @@ const GORE={skel:0xe8e0c8,zombie:0x5a7a3a,ghoul:0x5a7a3a,golem:0x8a8a84,slime:0x
 function deathFx(e){if(e.t.passive){decal(e.x,e.z,.8,0x6a1a14,10,.45);return}
   const c=GORE[e.type]||0x8a1a14,h=e.m.g.scale.y||1;fx(e.x,e.y+1.1*h,e.z,c,MOB?8:14,7,.26,1.6,16);fx(e.x,e.y+1*h,e.z,shade(c,1.5),MOB?4:8,5,.14,2,12);
   decal(e.x,e.z,(e.boss?3.5:1.2)*(.8+R()*.4),c==0x8a1a14?0x5a0e0a:shade(c,.6),e.boss?20:10,.5);if(e.el){ring(e.x,e.z,3,e.el==2?0xffe14a:0x6a9cff,.5);column(e.x,e.z,e.el==2?0xffe14a:0x6a9cff,5,.7,.5)}}
-function critFx(e){const y=e.y+1.4*(e.m.g.scale.y||1);flash(e.x,y,e.z,0xffffff,2.6,.18);fx(e.x,y,e.z,0xffe08a,MOB?6:10,9,.08,.5,0);ring(e.x,e.z,1.4,0xffd060,.25)}
+function critFx(e){const y=e.y+1.4*(e.m.g.scale.y||1);flash(e.x,y,e.z,0xffffff,2.6,.18);star(e.x,y,e.z,0xffe08a,3.4,.26);fx(e.x,y,e.z,0xffe08a,MOB?6:10,9,.08,.5,0);ring(e.x,e.z,1.4,0xffd060,.25)}
 function levelFx(){column(P.x,P.z,0xffe27a,18,2.2,1.4);ring(P.x,P.z,7,0xffe27a,1);setTimeout(()=>ring(P.x,P.z,4,0xffffff,.7),200);swirl(()=>({x:P.x,y:P.y,z:P.z}),1.6,0xffe27a,1.6,3,4,9);
   [523,659,784,1047].forEach((f,i)=>setTimeout(()=>snd(f,.35,'triangle'),i*110))}
 // vitória contra chefe: câmera lenta, chuva de ouro, saque e subida de nível garantidos

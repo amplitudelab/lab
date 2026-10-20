@@ -74,6 +74,13 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 14.0 — visual e grimório
+- **Grimório 📖 (K):** a árvore de habilidades virou um livro de magia aberto: selo do elemento, grade de habilidades, atalhos, detalhe com DANO / MANA (ou Fúria, Almas, Sangue) / RECARGA e abas por elemento. Ícones em pixel art gerados a partir dos emojis e recoloridos na paleta de cada elemento; os mesmos ícones aparecem nos atalhos do HUD.
+- **Ambientação por bioma:** floresta de outono (copas laranja e amarelas, pinheiros azul-petróleo, sombras azuladas, cervo branco), Campos de Lírio com bétulas roxas e templo de mármore branco, mangue com árvores azuis, cogumelos que brilham, água turquesa e lua verde gigante à noite, vila e planície mais vivas. Névoa, horizonte e partículas na cor de cada região.
+- **Mais voxel, menos quadrado:** copas arredondadas feitas de camadas de voxels com folhinhas soltas; bordas chanfradas em todos os blocos e personagens (shader), grade de voxels no terreno.
+- **Efeitos:** partículas "quentes" nascem brancas, ganham a cor e uma casca brilhante; estrelas de impacto; explosões de fogo (meteoro, bola de fogo, flecha explosiva, cadáver); arco do corte com gradiente; rastro da arma suave na cor da classe.
+- **Combate mais fluido:** toques durante o golpe encadeiam o próximo do combo; tremor de câmera suave; personagens com tufos de cabelo, bolsinha no cinto, polegares e dobras na capa.
+
 ## Versão 13 (13.0 → 13.3)
 - **Combate:** bloqueio 🛡️ (Z) com aparo perfeito; combo de 4 golpes com finalização; animações com o corpo inteiro para todas as classes; círculo de runas ao conjurar; impactos e rastros coloridos pelo poder da arma.
 - **Caçador:** arco virado para a frente com flecha encaixada, bestas e lanças.

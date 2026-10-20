@@ -53,7 +53,7 @@ function skillHit(){const a=P.act,id=a.sk,r=rk(id),m=1+.3*(r-1)*0;const fx0=P.x+
   if(id=='raio'){let src={x:P.x,y:P.y+1.6,z:P.z},hit=[],n=3+r;for(let i=0;i<n;i++){let b=null,bd=i?7:12;for(const e of E){if(e.dead||hit.includes(e))continue;const d=hy(e.x-src.x,e.z-src.z);if(d<bd){bd=d;b=e}}if(!b)break;hit.push(b);bolt(src,{x:b.x,y:b.y+1.2,z:b.z});const[dm,c]=spellDmg(1.4+.3*(r-1));hurtMob(b,dm,c,'raio');src={x:b.x,y:b.y+1.2,z:b.z}}
     if(!hit.length)bolt({x:P.x,y:P.y+1.6,z:P.z},{x:fx0+S(P.f)*7,y:P.y+1,z:fz0+C(P.f)*7});snd(1600,.2,'sawtooth');return}
   if(id=='escudo'){P.shield=ST.mx*(.2+.1*r);P.shT=8;snd(520,.4,'sine');flash(P.x,P.y+1.4,P.z,0xa88aff,4,.4);return}
-  if(id=='meteoro'){const t=a.tg,x=t?t.x:P.x+S(P.f)*9,z=t?t.z:P.z+C(P.f)*9;tele(x,z,5,1.05,T=>{SHK=.8;HITSTOP=.08;const y=groundAt(T.x,T.z);flash(T.x,y+1,T.z,0xff8a30,10,.5);fx(T.x,y+.5,T.z,0xff6a1a,50,14,.32,1.8);ring(T.x,T.z,5,0xffa040,.5);snd(60,.7,'sawtooth');
+  if(id=='meteoro'){const t=a.tg,x=t?t.x:P.x+S(P.f)*9,z=t?t.z:P.z+C(P.f)*9;tele(x,z,5,1.05,T=>{SHK=.8;HITSTOP=.08;const y=groundAt(T.x,T.z);flash(T.x,y+1,T.z,0xff8a30,10,.5);boom(T.x,y,T.z,2,0xff6a1a);fx(T.x,y+.5,T.z,0xff6a1a,50,14,.32,1.8);ring(T.x,T.z,5,0xffa040,.5);snd(60,.7,'sawtooth');
       for(const e of E)if(!e.dead&&hy(e.x-T.x,e.z-T.z)-e.r<5){const[dm,c]=spellDmg(4+.8*(r-1));hurtMob(e,dm,c,'meteoro');e.burn=4}},0xff8a30);
     for(let i=0;i<8;i++)setTimeout(()=>fx(x+(R()-.5),groundAt(x,z)+20-i*2.4,z+(R()-.5),0xff8a30,3,1,.4,0,0),i*110);return}
   if(id=='cura'){const h=ST.mx*(.2+.06*r);heal(h);P.psn=0;fx(P.x,P.y+1,P.z,0x7dff8a,24,4,.16,2);ring(P.x,P.z,3,0x7dff8a,.5);snd(660,.3,'sine');setTimeout(()=>snd(990,.3,'sine'),120);return}}
@@ -68,7 +68,7 @@ function shadowStep(t){let tx,tz;if(t){tx=t.x+S(P.f)*1.5;tz=t.z+C(P.f)*1.5}else{
   const r=rk('sombra');for(const e of E)if(!e.dead&&segD(e.x,e.z,[x0,z0],[lx,lz])<e.r+1){const[dm,c]=rollDmg(1.5+.4*(r-1));hurtMob(e,dm,c,'sombra')}
   flash(x0,P.y+1.4,z0,0x7a4aaa,3,.3);P.x=lx;P.z=lz;P.inv=Math.max(P.inv,.3);flash(lx,groundAt(lx,lz)+1.4,lz,0xb07aff,3,.3);sweep(900,200,.25,'sawtooth',.04);sombraFx(x0,z0,lx,lz)}
 // ---------- dash (esquiva) e corrida
-function dash(){if(P.dead||P.dash>0||P.cd.dash>0||P.leap||UI.block())return;dismount();P.act=null;P.cd.dash=cdOf('dash');P.dash=.22;P.inv=Math.max(P.inv,.34);P.pfd=0;
+function dash(){if(P.dead||P.dash>0||P.cd.dash>0||P.leap||UI.block())return;dismount();P.act=null;P.buf=0;P.cd.dash=cdOf('dash');P.dash=.22;P.inv=Math.max(P.inv,.34);P.pfd=0;
   const[x,z]=inputDir();if(x||z){P.rdx=x;P.rdz=z;P.f=Math.atan2(x,z)}else{P.rdx=S(P.f);P.rdz=C(P.f)}sweep(500,1600,.14,'triangle',.05);puff(P.x,P.y+.4,P.z,0xd8d0e0,1.6);flash(P.x,P.y+1.3,P.z,0x9ae4ff,2.4,.2)}
 const roll=dash;
 function perfectDodge(){if(P.pfd)return;P.pfd=1;HITSTOP=.22;P.buff.pf=2;pop('ESQUIVA PERFEITA!',P.x,P.y+3.6,P.z,'#9ae4ff',1);ring(P.x,P.z,3,0x9ae4ff,.4);flash(P.x,P.y+1.4,P.z,0x9ae4ff,4,.4);snd(1500,.18,'sine')}

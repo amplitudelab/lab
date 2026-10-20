@@ -97,8 +97,15 @@ addStr(192,46,0,(k,e,f)=>{const t=new TB(k,e,f,192,46,0,null,1.3);t.b(2.6,12,2.6
   for(let i=0;i<7;i++){const w=4.2-Math.abs(i-3)*.9;t.b(w,1,w,3.2,9.5-i,0,i%2?0xd9a030:0xc08a20)}t.e_(.8,.8,.2,3.2,7,2.1,0xffb020);for(let i=0;i<5;i++)t.e_(.25,.6,.25,1.6+i*.7,4.6-(i%2)*.4,0,0xffc840);t.col(0,0,1.8);bookStand(t,-6,-6)});
 // Templo de Lírio (colunas de mármore)
 flat(138,-30,17);
-addStr(138,-30,0,(k,e,f)=>{const t=new TB(k,e,f,138,-30,.2,null,1.3);t.b(12,.6,12,0,.3,0,0xe8e4dc,{g:1}).b(10,.4,10,0,.8,0,0xf0ece4);for(let i=0;i<10;i++){const a=i/10*TAU,h=i%3==0?2.5:5.5;t.b(.9,h,.9,C(a)*4.4,1+h/2,S(a)*4.4,0xf4f0e8);if(h>3){t.b(1.2,.3,1.2,C(a)*4.4,6.6,S(a)*4.4,0xe0dcd4);t.col(C(a)*4.4,S(a)*4.4,.6)}}
-  t.b(1.6,1.2,1,0,1.6,0,0xd8d4cc);t.e_(.5,.5,.5,0,2.5,0,0xc0f0ff);for(let i=0;i<6;i++)t.f_(.3,.3,.3,C(i)*2.4,1.2,S(i)*2.4,FLC[i]);bookStand(t,0,6)});
+addStr(138,-30,0,(k,e,f)=>{const t=new TB(k,e,f,138,-30,.2,null,1.3),W=0xf6f2ea,W2=0xe2ddd2,G=0xdcb04a;
+  // 14.0: templo branco de mármore com degraus, colunata, telhado escalonado e cristal violeta (referência do bosque lilás)
+  t.b(15,.5,15,0,.25,0,0xd6d0c4,{g:1}).b(13,.5,13,0,.75,0,W2).b(11,.5,11,0,1.25,0,W);
+  for(let i=0;i<8;i++){const a=i/8*TAU+PI/8,x=C(a)*4.6,z=S(a)*4.6,br=0;t.b(1.3,.4,1.3,x,1.7,z,W2).b(.9,br?2.6:5.2,.9,x,br?3:4.3,z,W);if(!br)t.b(1.3,.45,1.3,x,7.1,z,W2);t.col(x,z,.65)}
+  for(let i=0;i<8;i++){const m=i/8*TAU+PI/4,r=4.6*C(PI/8);t.b(3.9,.6,1.1,C(m)*r,7.6,S(m)*r,W,{ry:-m-PI/2})}
+  t.b(11.2,.15,11.2,0,7.95,0,G).b(10.6,.5,10.6,0,8.2,0,W2).b(9.2,.6,9.2,0,8.75,0,W,{ry:PI/4}).b(7.4,.6,7.4,0,9.3,0,W2).b(5.2,.6,5.2,0,9.85,0,W,{ry:PI/4}).b(3,.6,3,0,10.4,0,W2).b(.45,1.4,.45,0,11.4,0,G);t.e_(.7,.7,.7,0,12.4,0,0xffe8a0);
+  t.b(1.8,1.2,1.8,0,2.1,0,W2).b(2.2,.3,2.2,0,2.85,0,G);t.e_(.75,1,.75,0,3.6,0,0xc890ff);t.e_(.4,.4,.4,0,4.45,0,0xffffff);
+  for(const s_ of[-1,1])t.b(1.1,2.6,.1,s_*1.9,5.6,C(PI/8)*4.6-.1,0x8a3ac8).b(1.1,.3,.12,s_*1.9,6.9,C(PI/8)*4.6-.1,G);
+  for(let i=0;i<10;i++){const a=i/10*TAU;t.f_(.3,.32,.3,C(a)*6.1,1.66,S(a)*6.1,FLL[i%FLL.length])}bookStand(t,0,6)});
 // Torre Arruinada
 flat(-48,-132,14);
 addStr(-48,-132,0,(k,e,f)=>{const t=new TB(k,e,f,-48,-132,0,null,1.35);for(let y=0;y<12;y++)for(let i=0;i<12;i++){const a=i/12*TAU;if(y>6&&hash2(i,y)<.4+y*.04)continue;if(i==3&&y<2)continue;t.b(1.4,1,1,C(a)*3,.5+y,S(a)*3,y%2?0x8a8a84:0x7a7a74,{ry:-a})}
