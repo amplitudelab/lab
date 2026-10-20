@@ -17,13 +17,13 @@ function spawnTable(x,z){const reg=regionAt(x,z),rid=REG[reg].id;let tbl=(SPAWN[
 function spawnSpot(dmin,dmax){for(let i=0;i<10;i++){const a=R()*TAU,r=dmin+R()*(dmax-dmin),x=P.x+S(a)*r,z=P.z+C(a)*r;if(hy(x,z)<62||Math.abs(x)>WMAX-4||Math.abs(z)>WMAX-4)continue;if(!CHK.get(ckey(Math.floor(x/CS),Math.floor(z/CS))))continue;
     if(walkable(x,z)&&groundAt(x,z)>(regionAt(x,z)==RI.mang?-.5:.2))return[x,z]}return null}
 function spawnUpd(dt){bossCheck(dt);if(DST.on)return;SPW.t-=dt;SPW.a-=dt;if(P.dead||hy(P.x,P.z)<70||aliveN()>=MAXE)return;
-  if(SPW.t<=0){SPW.t=9+R()*5;const near=E.filter(e=>hostile(e)&&hy(e.x-P.x,e.z-P.z)<46).length,want=NIGHT>.5?10:7;
-    if(near<want&&!E.some(e=>e.boss&&!e.dead&&hy(e.x-P.x,e.z-P.z)<40)){const sp=spawnSpot(26,38);if(sp){const{reg,tbl}=spawnTable(sp[0],sp[1]);if(tbl.length){
+  if(SPW.t<=0){SPW.t=9+R()*5;const near=E.filter(e=>hostile(e)&&hy(e.x-P.x,e.z-P.z)<FOGR.far+4).length,want=NIGHT>.5?13:9;
+    if(near<want&&!E.some(e=>e.boss&&!e.dead&&hy(e.x-P.x,e.z-P.z)<40)){const sp=spawnSpot(FOGR.far*.66,FOGR.far*.86);if(sp){const{reg,tbl}=spawnTable(sp[0],sp[1]);if(tbl.length){
       const lv=mobLv(reg),t1=pick(tbl),n=Math.min(want-near,2+(R()*3|0)),ch=ckey(Math.floor(sp[0]/CS),Math.floor(sp[1]/CS)),el=R()<.07?1:0,afx=el?[pick(Object.keys(AFF))]:[];
       for(let i=0;i<n;i++)mkMob(i==0||R()<.6?t1:pick(tbl),sp[0]+(R()-.5)*5,sp[1]+(R()-.5)*5,{lv,ch,el:i==0?el:0,afx:i==0?afx:[]})}}}}
   // fauna: mais animais passivos de dia, poucos à noite
-  if(SPW.a<=0){SPW.a=14+R()*8;const pas=E.filter(e=>!e.dead&&e.t.passive&&hy(e.x-P.x,e.z-P.z)<50).length,want=NIGHT>.5?1:5;
-    if(pas<want){const sp=spawnSpot(24,40);if(sp){const reg=regionAt(sp[0],sp[1]),fa=FAUNA[REG[reg].id]||[];if(fa.length){const ty=pick(fa),nn=ty=='sheep'||ty=='cow'?2+(R()*2|0):1,ch=ckey(Math.floor(sp[0]/CS),Math.floor(sp[1]/CS));
+  if(SPW.a<=0){SPW.a=14+R()*8;const pas=E.filter(e=>!e.dead&&e.t.passive&&hy(e.x-P.x,e.z-P.z)<FOGR.far+6).length,want=NIGHT>.5?1:5;
+    if(pas<want){const sp=spawnSpot(FOGR.far*.6,FOGR.far*.86);if(sp){const reg=regionAt(sp[0],sp[1]),fa=FAUNA[REG[reg].id]||[];if(fa.length){const ty=pick(fa),nn=ty=='sheep'||ty=='cow'?2+(R()*2|0):1,ch=ckey(Math.floor(sp[0]/CS),Math.floor(sp[1]/CS));
       for(let j=0;j<nn;j++){const a=mkMob(ty,sp[0]+(R()-.5)*4,sp[1]+(R()-.5)*4,{lv:REG[reg].lv,ch});if(ty=='tfrog')a.m.g.scale.setScalar(.55)}}}}}}
 
 // ---------- fumaça das chaminés

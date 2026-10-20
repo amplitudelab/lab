@@ -16,7 +16,7 @@ function camUpd(dt){const c=CAMS;c.yaw+=angDiff(c.yaw,c.yawT)*damp(12,dt);c.pit+
   else{LTV.set(c.cx,c.cy+1.4,c.cz);if(cam.view&&cam.view.enabled)cam.clearViewOffset()}
   const tf=fovT()+(P.run&&P.v>6?6:0)+(P.dash>0?6:0)+(P.air?3:0);if(Math.abs(tf-cam.fov)>.05){cam.fov+=(tf-cam.fov)*damp(5,dt);cam.updateProjectionMatrix()}
   const tq=performance.now()/1000,sk=SHK*.42;cam.position.set(x+(S(tq*41)+S(tq*23.7+1.7)*.6)*sk,y+(S(tq*37.1+.6)+S(tq*19.3+2.1)*.6)*sk,z+(S(tq*29.3+3.3)+S(tq*45.9)*.5)*sk);SHK*=Math.pow(.02,dt);cam.lookAt(LTV);cam.updateMatrixWorld();SHU.uCam.value.copy(cam.position);SHU.uPl.value.set(P.x,P.y+1.4,P.z);
-  SKY.position.copy(cam.position);for(const l of MTN)l.m.position.set(cam.position.x*l.f,0,cam.position.z*l.f);
+  SKY.position.copy(cam.position);for(const l of MTN)l.m.position.set(cam.position.x,Math.max(0,P.y-4)*.6,cam.position.z);
   cam.getWorldDirection(_cd);const fc=_cd.dot(SUND);_pp.copy(SUND).multiplyScalar(400).add(cam.position).project(cam);SUNV=_pp.z<1&&fc>.05&&ELEV>-.05?cl((fc-.05)*1.6,0,1):0;SUNP.set(_pp.x*.5+.5,_pp.y*.5+.5);
   const t=SHU.uT.value;SUN.target.position.set(P.x,P.y,P.z);SUN.position.copy(SUN.target.position).addScaledVector(LD,70);}
 const INV_OPEN={k:0,off:.27};

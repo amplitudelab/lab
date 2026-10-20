@@ -33,7 +33,9 @@ rd.setPixelRatio(Math.min(devicePixelRatio||1,GFX.pr));rd.shadowMap.enabled=true
 document.body.prepend(rd.domElement);
 rd.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();const d=document.createElement('div');d.className='lost';d.textContent='A placa de vídeo reiniciou. Recarregando no modo leve...';document.body.appendChild(d);try{if(typeof save=='function')save();localStorage.setItem('vr11_gfx','0')}catch(_){}setTimeout(()=>location.reload(),1400)});
 const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(52,1,.5,900);
-sc.fog=new THREE.Fog(0xc0dcf0,GFX.view*14,GFX.view*32+24);
+// 15.8: a névoa termina antes do raio carregado — pedaços, LOD e monstros aparecem já dentro da névoa
+const FOGR={far:GFX.view>=3?104:70};FOGR.near=Math.round(FOGR.far*.3);FOGR.load=FOGR.far+16;
+sc.fog=new THREE.Fog(0xc0dcf0,FOGR.near,FOGR.far);
 
 // ---------- texturas procedurais
 const NT=(()=>{const c=document.createElement('canvas');c.width=c.height=8;const x=c.getContext('2d');for(let i=0;i<8;i++)for(let j=0;j<8;j++){const v=R()<.14?200+R()*22:226+R()*29|0;x.fillStyle=`rgb(${v|0},${v|0},${v|0})`;x.fillRect(i,j,1,1)}const t=new THREE.CanvasTexture(c);t.magFilter=t.minFilter=THREE.NearestFilter;t.wrapS=t.wrapT=THREE.RepeatWrapping;return t})();
@@ -184,7 +186,7 @@ function pass(m,o){FQ.material=m;rd.setRenderTarget(o);rd.render(FS,FC)}
 let FPSC=MOB?60:0;try{const f=localStorage.getItem('vr11_fps');if(f!=null&&f!=='')FPSC=+f||0}catch(e){} // celular: 60 fps por padrão (menos calor e bateria); o menu libera 120 Hz
 let HZ=60; // limite de quadros (0 = taxa da tela, ex.: 120 Hz)
 // limites de desempenho: quantos monstros existem ao mesmo tempo e até onde são desenhados/fazem sombra
-const MAXE=MOB?(GL==0?30:42):70,VISD=MOB?46:62,SHD=MOB?20:34;
+const MAXE=MOB?(GL==0?30:42):70,VISD=FOGR.far-4,SHD=MOB?20:34;
 const aliveN=()=>{let n=0;for(const e of E)if(!e.dead)n++;return n};
 let frameN=0,T60=0,T60p=0;const ev=n=>Math.floor(T60/n)>Math.floor(T60p/n);
 function render(){SHU.uSunV.value.copy(ELEV>-.04?SUND:MOOND).transformDirection(cam.matrixWorldInverse);frameN++;

@@ -5,7 +5,7 @@
    velocidades diferentes. Cada região tem seu próprio horizonte, trocado com
    transição suave quando o jogador muda de região.
    ============================================================================= */
-function plxMat(haze){return new THREE.ShaderMaterial({uniforms:{uHor:MTU.uHor,uTint:MTU.uTint,uOp:{value:0},uHz:{value:haze}},fog:false,vertexColors:true,transparent:true,depthWrite:false,
+function plxMat(haze){return new THREE.ShaderMaterial({uniforms:{uHor:MTU.uHor,uTint:MTU.uTint,uOp:{value:0},uHz:{value:Math.min(.85,haze+.25)}},fog:false,vertexColors:true,transparent:true,depthWrite:false,
   vertexShader:'varying vec3 vC;varying float vH;void main(){vC=color;vH=position.y;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
   fragmentShader:'uniform vec3 uHor,uTint;uniform float uOp,uHz;varying vec3 vC;varying float vH;void main(){float g=max(vC.r,max(vC.g,vC.b))>1.?1.:0.;vec3 c=mix(vC*uTint,uHor,uHz-clamp(vH/90.,0.,1.)*.22);gl_FragColor=vec4(mix(c,vC*.6,g),uOp);}'})}
 // formas de silhueta (todas montadas a partir de caixas)

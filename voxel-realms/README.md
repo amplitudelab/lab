@@ -74,6 +74,11 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 15.8 — horizonte, névoa e moeda de ouro
+- **Fim dos blocos gigantes:** as montanhas e colinas do horizonte (camadas de paralaxe) seguiam a câmera pela metade do caminho; com o mundo maior, longe da vila elas entravam no mapa a 20–70 m do herói. Agora acompanham a câmera e ficam sempre a mais de 180 m, esmaecidas atrás da névoa.
+- **Nada surge mais na tela:** a névoa termina antes do limite do que está carregado. O mundo carrega em círculo além da névoa, a troca de detalhe (LOD) acontece já dentro dela e monstros e animais nascem e aparecem dentro da névoa, chegando até você em vez de brotar na frente.
+- **Moeda de ouro com o V de Voxel Realms** em pixel art no HUD, na loja, no inventário, nos avisos e nos números de ouro; no chão, pilhas de moedas douradas com uma moeda de pé cunhada com o V.
+
 ## Versão 15.7 — biomas 3× maiores, os Seis Fragmentos e chefes únicos
 - **Cada bioma ficou 3× maior.** O mundo agora vai de −645 a +645 (antes ±372). Tudo o que existia — vilas, chefes, baús, santuários, livros, missões, masmorras — foi junto com a sua região, e o espaço novo ganhou flora, fauna e monstros da região. O rio também acompanhou.
 - **12 Pedras de Teleporte novas** nos confins de cada região (Colina dos Pastores, Trigais do Leste, Prado das Fadas, Clareira das Corujas, Charco Profundo, Fendas de Magma, Vale das Folhas, Passo do Vento, Poço das Manadas, Oásis Perdido, Enseada dos Naufrágios e Geodo Cantante).

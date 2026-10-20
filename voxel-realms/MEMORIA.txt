@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 15.7
+Atualizado em 20/10/2026 · versão atual do jogo: 15.8
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='15.8'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='15.9'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -114,6 +114,13 @@ world4.js    15.7: biomas 3× maiores. WMAX 645 (era 372), centros de REG ×√3
              (construções), chefes sylvara/vorn/juba/sarkhan/carapaca/nihil (BOSS.sc escala o modelo), habilidades
              frostring/shield/tidal/stampede (BDUR/BCD/BNAME + bossStart2/bossAct2; shield = pilares totem com e.shT),
              missões mf0 → mf_<região>1 (wp) → mf_<região>2 (chefe) → mselo → m13 (req trocado) e s4_<região>a/b/c
+coin.js      15.8: ícone da moeda (VCOIN, pixel art 16×16 com V) — um MutationObserver troca todo "🪙" do DOM por <vr-c>
+             (elemento próprio para nenhum CSS antigo pegar); dropGold refeito com moedas octogonais e moeda de pé com V
+névoa/carga  15.8: FOGR (core.js) define névoa (far 70 em LEVE/MÉDIO, 104 em ALTO; near = 30%) e o raio carregado
+             (far+16). worldUpd carrega pedaços em círculo pela distância ao retângulo (chD), LOD 1 até 62% da névoa
+             (histerese até 70%), esconde pedaços além do raio e só descarta além de raio+32. VISD = far−4. Monstros e
+             animais nascem entre 60–86% da névoa (ambience.js). Paralaxe (MTN) centrada na câmera (ui.js): antes era
+             câmera×0,5/0,75 e entrava no mapa longe da origem (os "blocos gigantes").
 ragdoll.js   morte: ragInit/ragUpd (tomba pelos pés com quaternion, molas nos membros, ragLow mantém acima do chão),
              corpos ficam ~10 s (RAG.max 14) e encolhem em poeira; mobsUpd chama ragUpd; herói usa P.rgE
 drops.js     dropItem/dropGold/dropGlobe com modelo do item (itemGroup do bag.js) + círculo de raridade

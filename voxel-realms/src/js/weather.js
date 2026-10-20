@@ -51,6 +51,6 @@ function wxUpd(dt,px,pz){const reg=REG[regionAt(px,pz)].id;if(reg!=WX.reg){WX.re
 function wxApply(){const k=WX.k,cv=Math.min(1,k.cloud),f=WXF;SKU.cv.value=cv;SKU.fl.value=WX.fl*.6;
   SUN.intensity*=1-cv*.62;HEM.intensity*=(1-cv*.2)+WX.fl*.8;CLM.color.lerp(_cb.setHex(NIGHT>.5?0x2a3040:0x7a808a),cv*.7);
   const fogC=_ca.copy(sc.fog.color);sc.fog.color.lerp(_cb.setHex(0x8a929c).multiplyScalar(1-NIGHT*.7),cv*.5+f*.4);
-  const base=GFX.view*32+24;sc.fog.far=Math.max(62,base*(1-f*.5-k.rain*.22));sc.fog.near=Math.max(14,GFX.view*14*(1-f*.6-k.rain*.25));
+  const base=FOGR.far;sc.fog.far=Math.max(base*.55,base*(1-f*.5-k.rain*.22));sc.fog.near=Math.max(10,FOGR.near*(1-f*.6-k.rain*.25));
   SKU.hor.value.lerp(sc.fog.color,f*.6);MTU.uHor.value.copy(SKU.hor.value)}
 const wxIcon=()=>WXT[WX.type].ic;

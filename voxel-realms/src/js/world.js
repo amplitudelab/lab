@@ -231,17 +231,19 @@ function bridgeMesh(k,b){const a=Math.atan2(b.ux,b.uz),n=Math.ceil(b.len/.7);for
 function chunkNew(cx,cz,lod){const c={cx,cz,lod,h:chunkHeights(cx,cz),ms:[],col:[],lava:[],gen:null,ready:false,old:null};c.gen=genChunk(c);return c}
 function chunkDrop(c){for(const m of c.ms){sc.remove(m);m.geometry.dispose()}c.ms.length=0}
 let lastCX=1e9,lastCZ=1e9;
-function worldUpd(px,pz,budget){const cx=Math.floor(px/CS),cz=Math.floor(pz/CS),V=GFX.view;
-  if(cx!=lastCX||cz!=lastCZ){lastCX=cx;lastCZ=cz;
-    for(let dz=-V;dz<=V;dz++)for(let dx=-V;dx<=V;dx++){const ring=Math.max(Math.abs(dx),Math.abs(dz)),lod=ring>=2?2:1,k=ckey(cx+dx,cz+dz),c=CHK.get(k);
-      if(!c){const n=chunkNew(cx+dx,cz+dz,lod);CHK.set(k,n);BQ.push(n)}else if(c.lod!=lod&&!c.gen){const n=chunkNew(cx+dx,cz+dz,lod);n.old=c;n.spawned=c.spawned;CHK.set(k,n);BQ.push(n)}}
-    for(const[k,c]of CHK){if(Math.max(Math.abs(c.cx-cx),Math.abs(c.cz-cz))>V+1){chunkDrop(c);if(c.old)chunkDrop(c.old);CHK.delete(k);onChunkDrop(c)}}
-    BQ.sort((a,b)=>hy(a.cx-cx,a.cz-cz)-hy(b.cx-cx,b.cz-cz))}
+const chD=(px,pz,X,Z)=>hy(Math.max(X*CS-px,0,px-(X+1)*CS),Math.max(Z*CS-pz,0,pz-(Z+1)*CS));let lastPX=1e9,lastPZ=1e9;
+function worldUpd(px,pz,budget){const cx=Math.floor(px/CS),cz=Math.floor(pz/CS),RL=FOGR.load,V=Math.ceil(RL/CS)+1,L1=FOGR.far*.62,L2=FOGR.far*.7;
+  if(cx!=lastCX||cz!=lastCZ||hy(px-lastPX,pz-lastPZ)>4){lastCX=cx;lastCZ=cz;lastPX=px;lastPZ=pz;
+    for(let dz=-V;dz<=V;dz++)for(let dx=-V;dx<=V;dx++){const X=cx+dx,Z=cz+dz,d=chD(px,pz,X,Z);if(d>RL)continue;const k=ckey(X,Z),c=CHK.get(k);
+      let lod=d<L1?1:2;if(c&&c.lod==1&&d<L2)lod=1;
+      if(!c){const n=chunkNew(X,Z,lod);CHK.set(k,n);BQ.push(n)}else if(c.lod!=lod&&!c.gen){const n=chunkNew(X,Z,lod);n.old=c;n.spawned=c.spawned;CHK.set(k,n);BQ.push(n)}}
+    for(const[k,c]of CHK){const d=chD(px,pz,c.cx,c.cz);if(d>RL+CS){chunkDrop(c);if(c.old)chunkDrop(c.old);CHK.delete(k);onChunkDrop(c)}else{const v=d<=RL+4;for(const m of c.ms)m.visible=v;c.hid=!v}}
+    BQ.sort((a,b)=>chD(px,pz,a.cx,a.cz)-chD(px,pz,b.cx,b.cz))}
   const t0=performance.now();
   while(BQ.length&&performance.now()-t0<budget){const c=BQ[0];if(CHK.get(ckey(c.cx,c.cz))!==c){BQ.shift();continue}
     const r=c.gen.next();if(r.done){BQ.shift();c.gen=null;c.ready=true;if(c.old){chunkDrop(c.old);c.old=null}for(const m of c.ms)sc.add(m);if(!c.spawned){c.spawned=true;onChunkReady(c)}}}}
 // carrega tudo ao redor de uma vez (início do jogo e teleporte)
-function worldLoadAll(px,pz){lastCX=1e9;worldUpd(px,pz,0);while(BQ.length)worldUpd(px,pz,1e9)}
+function worldLoadAll(px,pz){lastCX=1e9;lastPX=1e9;worldUpd(px,pz,0);while(BQ.length)worldUpd(px,pz,1e9)}
 
 // ---------- água (plano que acompanha o jogador) com reflexo do céu e brilhos
 const WTEX=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.fillStyle='#2f8fd5';x.fillRect(0,0,64,64);for(let i=0;i<46;i++){x.fillStyle=R()<.5?'#6cc3f2':'#2478b8';x.fillRect(R()*64,R()*64,4+R()*10,2)}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t})();
