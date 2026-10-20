@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 15.8
+Atualizado em 20/10/2026 · versão atual do jogo: 15.9
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='15.9'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='16.0'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -121,6 +121,16 @@ névoa/carga  15.8: FOGR (core.js) define névoa (far 70 em LEVE/MÉDIO, 104 em 
              (histerese até 70%), esconde pedaços além do raio e só descarta além de raio+32. VISD = far−4. Monstros e
              animais nascem entre 60–86% da névoa (ambience.js). Paralaxe (MTN) centrada na câmera (ui.js): antes era
              câmera×0,5/0,75 e entrava no mapa longe da origem (os "blocos gigantes").
+weather2.js  15.9: climas por bioma. WX2 (k = canais, d = duração, p = precipitação, c = dia/noite/manhã, a/ac =
+             partículas de fx.js e cores, t = cor da névoa, nt = avisa), WXR2 (tabelas), WXMAP (equivalentes ao trocar de
+             região), W2.clk relógio do jogo e W2.rain0 (resfriamento de 4–7 min após precipitação), wxNext com frente
+             de nuvens e arco-íris; BOW (arco-íris oposto ao sol) e AUR (aurora em anel, cilindros); wxAmb chamado de
+             ambUpd (fx.js); wxUpd/wxApply substituídos. Sem clima em masmorra.
+audio2.js    15.9 (carrega DEPOIS do main.js): mesa AU2 (master+compressor, canais sfx/amb/wx/ui, reverb), snd/sweep
+             suavizados, spat() = som no mundo (pan pela câmera, volume e filtro pela distância), passos stepKind/
+             stepAt/sfxStep (superfícies, armadura, montarias), VFAM/VOX vozes dos bichos (idle/alert/hurt/die) via
+             creaturesUpd e hurtMob, camadas BED + eventos AMBE por bioma, thunder/rainSound refeitos, ELS magias por
+             elemento no skillHit, botão "Sons" (vr11_sfx). ambSndUpd antigo desligado.
 ragdoll.js   morte: ragInit/ragUpd (tomba pelos pés com quaternion, molas nos membros, ragLow mantém acima do chão),
              corpos ficam ~10 s (RAG.max 14) e encolhem em poeira; mobsUpd chama ragUpd; herói usa P.rgE
 drops.js     dropItem/dropGold/dropGlobe com modelo do item (itemGroup do bag.js) + círculo de raridade

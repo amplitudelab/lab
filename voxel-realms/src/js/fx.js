@@ -72,7 +72,7 @@ const LEAFT=(()=>{const c=document.createElement('canvas');c.width=c.height=16;c
 const AMB={mot:pset(120,.3,0xffe8a0,1),fly:pset(90,.55,0xc8ff70,1),pet:pset(80,.42,0xffb8d8,0,LEAFT,.95),leaf:pset(60,.5,0xd88a3a,0,LEAFT,.95),mist:pset(50,4.5,0xd8e4d0,0,null,.22),emb:pset(90,.42,0xff8a2a,1)};
 const AMBW={mot:0,fly:0,pet:0,leaf:0,mist:0,emb:0};
 function ambUpd(dt,t,px,pz){regW(px,pz,RW);const day=1-NIGHT;
-  const wx=WX.k;AMBW.mot=day*(RW[0]+RW[1]+RW[2])*.9*(1-wx.rain);AMBW.fly=(NIGHT*(1-RW[5])+RW[4]*.5)*(1-wx.rain*.8);AMBW.pet=Math.min(1,RW[2]+(WX.type=='petalas'?.8:0));AMBW.leaf=Math.min(1,RW[3]+wx.wind*.4*(1-RW[5]));AMBW.mist=Math.min(1,RW[4]*.6+WXF*1.1);AMBW.emb=Math.min(1,RW[5]+wx.ash*.5);
+  const wx=WX.k;AMBW.mot=day*(RW[0]+RW[1]+RW[2])*.9*(1-wx.rain);AMBW.fly=(NIGHT*(1-RW[5])+RW[4]*.5)*(1-wx.rain*.8);AMBW.pet=Math.min(1,RW[2]+(WX.type=='petalas'?.8:0));AMBW.leaf=Math.min(1,RW[3]+wx.wind*.4*(1-RW[5]));AMBW.mist=Math.min(1,RW[4]*.6+WXF*1.1);AMBW.emb=Math.min(1,RW[5]+wx.ash*.5);if(typeof wxAmb=='function')wxAmb(AMBW);
   for(const k in AMB){const P_=AMB[k],a=P_.a,w=AMBW[k],act=Math.round(P_.n*w);P_.m.visible=act>0;if(!act)continue;
     for(let i=0;i<P_.n;i++){const j=i*3;if(i>=act){a[j+1]=1e5;continue}let x=a[j],y=a[j+1],z=a[j+2];const far=Math.abs(x-px)>24||Math.abs(z-pz)>24||y>1e4;
       if(k=='mot'){y+=dt*(.12+(i%7)*.04);x+=S(t*.7+i)*.008;if(far||y>groundAt(x,z)+8){x=px+(R()-.5)*44;z=pz+(R()-.5)*44;y=groundAt(x,z)+.3}}

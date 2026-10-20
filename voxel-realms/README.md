@@ -74,6 +74,14 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 15.9 — climas por bioma e remake sonoro
+- **30 climas, cada bioma com os seus:** Vila e Planície (sol, poucas nuvens, ventania, bruma da manhã, garoa, vaga-lumes), Campos de Lírio (pólen dourado, brisa de pétalas), Floresta (neblina, folhas ao vento), Mangue (mormaço, esporos, neblina), Caldeira (chuva de cinzas, chuva de brasas, fumaça vulcânica, raios secos), Bosque Carmesim (folhas ao vento), Picos Gelados (neve, nevasca, pó de diamante, aurora boreal), Savana (calor escaldante, vento de poeira, raios secos), Dunas (calor, tempestade de areia, céu estrelado), Costa (brisa marinha, nevoeiro do mar), Vale de Cristal (aurora prismática, chuva de cristais, tempestade arcana).
+- **Chuva rara e curta:** cada chuva dura 40–100 s e depois fica pelo menos 4–7 minutos sem chover (em média 1–5% do tempo nos biomas temperados). O céu fecha antes de chover e, com sol, aparece um **arco-íris** depois. Mudar de região não sorteia outro clima: a chuva vira neve nos Picos e some no deserto.
+- **Remake sonoro completo, tudo sintetizado e espacial** (vem do lado certo e abafa com a distância): passos para grama, terra, pedra, madeira, areia, neve, lama, folhas, cascalho, cristal, capim seco e água; cota de malha e placas tilintam; cada montaria tem o seu andar; monstros grandes tremem o chão; pulo e aterrissagem.
+- **Voz para cada bicho:** lobos uivam à noite e rosnam, hienas riem, javalis grunhem, ovelhas, cabras, vacas e cervos, sapos, abelhas, aranhas e escorpiões, esqueletos chacoalham, mortos-vivos gemem, slimes borbulham, golens rangem, fadas tilintam, bandidos gritam, bruxas cacarejam, Ignarok e o Rei Leão rugem — parados, ao notar você, feridos e ao morrer.
+- **Ambiente de cada bioma:** vento, folhas, rio, ondas, lava, pássaros, pica-pau, corvos, gaivotas, cigarras, grilos, corujas, sapos, uivos distantes, cristais cantando, gelo rangendo, a forja da Helga e, nas masmorras, gotas e correntes. Chuva com pingos, trovão perto e longe, nevasca assobiando, areia e brasas.
+- Magias com o som do elemento e botão **Sons** no menu para o volume.
+
 ## Versão 15.8 — horizonte, névoa e moeda de ouro
 - **Fim dos blocos gigantes:** as montanhas e colinas do horizonte (camadas de paralaxe) seguiam a câmera pela metade do caminho; com o mundo maior, longe da vila elas entravam no mapa a 20–70 m do herói. Agora acompanham a câmera e ficam sempre a mais de 180 m, esmaecidas atrás da névoa.
 - **Nada surge mais na tela:** a névoa termina antes do limite do que está carregado. O mundo carrega em círculo além da névoa, a troca de detalhe (LOD) acontece já dentro dela e monstros e animais nascem e aparecem dentro da névoa, chegando até você em vez de brotar na frente.
