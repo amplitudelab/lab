@@ -166,16 +166,21 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
   if(m.wL){const f=S(t*30)*.6;m.wL.rotation.y=-.3-f;m.wR.rotation.y=.3+f}}
 
 // ---------- quadrúpede (javali, lobo, cervo, ovelha, vaca, raposa, crocodilo)
-function quad(o){const m={kind:'quad',g:new THREE.Group(),o},L=o.len||1.4,H=o.h||.7,W=o.wid||.6;
-  m.body=part(m.g,0,H+.15,0,k=>{k.box(W,o.bh||.62,L,0,0,0,o.c);if(o.c2)k.box(W*1.02,(o.bh||.62)*.4,L*.6,0,-(o.bh||.62)*.25,0,o.c2);if(o.mane)k.box(W*1.12,(o.bh||.62)*.9,L*.4,0,.1,L*.25,o.mane);if(o.wool)k.box(W*1.2,(o.bh||.62)*1.2,L*1.05,0,.05,0,o.wool);if(o.spots)for(let i=0;i<4;i++)k.box(W*1.03,.22,.3,0,.05,(i-1.5)*L*.22,o.spots);if(o.back)for(let i=0;i<4;i++)k.box(.18,.2,.25,0,(o.bh||.62)*.55,(i-1.5)*L*.22,o.back)});
-  m.neck=part(m.body,0,.12,L/2,k=>{k.box(W*.7,.5,.5,0,.05,.12,o.c)});
-  m.head=part(m.neck,0,.15,.38,k=>{const hl=o.hl||.55;k.box(W*.78,.5,hl,0,0,hl/2,o.hc||o.c);k.box(W*.5,.26,.26,0,-.08,hl+.08,o.snout||0x3a2a2a);k.box(.12,.12,.04,-W*.28,.1,hl*.75,o.eye||0x1a1a1a).box(.12,.12,.04,W*.28,.1,hl*.75,o.eye||0x1a1a1a);
-    if(o.ears)k.box(.14,.3,.1,-W*.25,.34,hl*.3,o.c).box(.14,.3,.1,W*.25,.34,hl*.3,o.c);if(o.tusk)k.box(.07,.26,.07,-.16,-.12,hl+.1,0xf0e8d0).box(.07,.26,.07,.16,-.12,hl+.1,0xf0e8d0);
-    if(o.antler)for(const s of[-1,1]){const ac=o.ac||0x8a6a4a;k.box(.08,.7,.08,s*.2,.6,.2,ac,{rz:-s*.3}).box(.08,.4,.08,s*.42,.85,.25,ac,{rz:-s*.9}).box(.08,.35,.08,s*.3,.95,.05,ac,{rx:.5})}
+function quad(o){const m={kind:'quad',g:new THREE.Group(),o},L=o.len||1.4,H=o.h||.7,W=o.wid||.6,BH=o.bh||.62,c=o.c,lt=shade(c,1.12),dk=shade(c,.78);
+  // 14.3: corpo com peito, ancas e barriga; cabeça com crânio, focinho, nariz, olhos com íris, orelhas com parte interna; cauda em dois segmentos; patas com garras
+  m.body=part(m.g,0,H+.15,0,k=>{k.box(W,BH,L*.5,0,0,0,c);k.box(W*1.08,BH*1.06,L*.32,0,.02,L*.3,lt);k.box(W*1.02,BH*.98,L*.3,0,0,-L*.32,c);k.box(W*.86,BH*.3,L*.9,0,-BH*.42,0,o.c2||dk);
+    if(o.mane){k.box(W*1.14,BH*.95,L*.42,0,.1,L*.26,o.mane);k.box(W*.5,.18,L*.3,0,BH*.55,L*.22,shade(o.mane,1.12))}if(o.wool)k.box(W*1.2,BH*1.2,L*1.05,0,.05,0,o.wool);if(o.spots)for(let i=0;i<4;i++)k.box(W*1.03,.22,.3,0,.05,(i-1.5)*L*.22,o.spots);
+    if(o.back)for(let i=0;i<4;i++)k.box(.18,.2,.25,0,BH*.55,(i-1.5)*L*.22,o.back);if(o.fur)for(let i=0;i<5;i++)k.box(.16,.14,.2,0,BH*.52,(i-2)*L*.18,shade(c,.9))});
+  m.neck=part(m.body,0,.12,L/2,k=>{k.box(W*.72,.52,.55,0,.05,.12,c);if(o.mane)k.box(W*.86,.6,.45,0,.12,.05,o.mane)});
+  m.head=part(m.neck,0,.15,.38,k=>{const hl=o.hl||.55,HW=W*.78,hc=o.hc||c;k.box(HW,.5,hl*.72,0,.02,hl*.36,hc).box(HW*.96,.12,hl*.62,0,.28,hl*.32,shade(hc,1.12)).box(W*.52,.3,hl*.56,0,-.06,hl*.86,hc).box(W*.3,.14,.1,0,0,hl*1.14,o.snout||0x2a1a1a);
+    for(const s_ of[-1,1]){k.box(.15,.14,.05,s_*HW*.36,.12,hl*.72,0xf0eadc).box(.08,.1,.05,s_*HW*.36,.11,hl*.74,o.eye||0x1a1a1a);if(o.ears)k.box(.15,.32,.1,s_*W*.26,.36,hl*.25,hc).box(.08,.2,.04,s_*W*.26,.36,hl*.25+.05,shade(hc,.65));if(o.mane||o.fur)k.box(.12,.22,.22,s_*HW*.52,-.06,hl*.42,o.mane||lt)}
+    if(o.tusk)k.box(.07,.26,.07,-.16,-.12,hl+.1,0xf0e8d0).box(.07,.26,.07,.16,-.12,hl+.1,0xf0e8d0);
+    if(o.antler)for(const s_ of[-1,1]){const ac=o.ac||0x8a6a4a;k.box(.08,.7,.08,s_*.2,.6,.2,ac,{rz:-s_*.3}).box(.08,.4,.08,s_*.42,.85,.25,ac,{rz:-s_*.9}).box(.08,.35,.08,s_*.3,.95,.05,ac,{rx:.5})}
     if(o.horn)k.box(.12,.4,.12,-.2,.35,.25,0xe8dcc0,{rz:.3}).box(.12,.4,.12,.2,.35,.25,0xe8dcc0,{rz:-.3})});
-  m.jaw=part(m.head,0,-.2,.1,k=>{k.box(W*.66,.14,(o.hl||.55)*.95,0,0,(o.hl||.55)*.5,o.jc||o.hc||o.c);if(o.teeth)k.box(W*.6,.08,.05,0,.08,(o.hl||.55)*.95,0xf0f0e0)});
-  m.tail=part(m.body,0,.15,-L/2,k=>{const tl=o.tl||.5;k.box(o.tw||.16,o.tw||.16,tl,0,0,-tl/2,o.tc||o.c)});
-  m.legs=[];for(const[sx,sz]of[[-1,1],[1,1],[-1,-1],[1,-1]]){const u=part(m.body,sx*(W/2-.1),-.15,sz*L*.36,k=>k.box(.22,H*.6,.26,0,-H*.28,0,o.lc||o.c));const lo=part(u,0,-H*.55,0,k=>{k.box(.2,H*.5,.22,0,-H*.24,0,o.lc||o.c);k.box(.22,.12,.26,0,-H*.5,.03,o.hoof||0x2a2018)});m.legs.push([u,lo])}
+  m.jaw=part(m.head,0,-.2,.1,k=>{const hl=o.hl||.55;k.box(W*.5,.12,hl*.95,0,0,hl*.5,o.jc||o.hc||c);if(o.teeth)k.box(.06,.13,.06,-W*.18,.11,hl*.92,0xf4f0e0).box(.06,.13,.06,W*.18,.11,hl*.92,0xf4f0e0).box(W*.4,.06,.05,0,.07,hl*.96,0xf0f0e0)});
+  const tl=o.tl||.5,tw=o.tw||.16;m.tail=part(m.body,0,.15,-L/2,k=>k.box(tw,tw,tl*.55,0,0,-tl*.27,o.tc||c));m.tail2=part(m.tail,0,0,-tl*.55,k=>{k.box(tw*1.12,tw*1.12,tl*.5,0,0,-tl*.25,o.tc||c);if(tl>.6)k.box(tw*1.35,tw*1.3,tl*.22,0,0,-tl*.44,shade(o.tc||c,1.15))});
+  m.legs=[];for(const[sx,sz]of[[-1,1],[1,1],[-1,-1],[1,-1]]){const lc=o.lc||c,u=part(m.body,sx*(W/2-.1),-.15,sz*L*.36,k=>{k.box(.26,H*.62,.3,0,-H*.28,0,lc);if(sz>0)k.box(.28,.3,.32,0,-.02,0,shade(lc,1.08))});
+    const lo=part(u,0,-H*.55,0,k=>{k.box(.2,H*.5,.22,0,-H*.24,0,lc);if(o.grazer||o.hoof)k.box(.22,.12,.26,0,-H*.5,.03,o.hoof||0x2a2018);else{k.box(.26,.11,.32,0,-H*.5,.06,shade(lc,.8));if(o.teeth)for(const q of[-.08,0,.08])k.box(.05,.05,.09,q,-H*.53,.24,0x1a1410)}});m.legs.push([u,lo])}
   if(o.wings){m.wL=part(m.body,-W/2,.3,0,k=>k.box(2.4,.1,1.4,-1.2,0,0,o.wings));m.wR=part(m.body,W/2,.3,0,k=>k.box(2.4,.1,1.4,1.2,0,0,o.wings))}
   m.g.scale.setScalar(o.scale||1);return finish(m)}
 function animQuad(m,dt,t,s){const A=m.A,v=s.v||0,o=m.o;sm(A,'w',cl(v/(o.run||5),0,1.4),dt,7);const W=A.w;A.ph+=dt*(3+v*2.2)*(W>.04?1:0);
@@ -186,16 +191,21 @@ function animQuad(m,dt,t,s){const A=m.A,v=s.v||0,o=m.o;sm(A,'w',cl(v/(o.run||5),
   let nx=.0,hy_=A.lookT*(1-cl(W*2,0,1)),jaw=0;if(A.graze&&W<.1)nx=.9;
   const a=s.atk;if(a){k=26;const p=a.p;if(a.k=='bite'){nx=seq(p,0,-.4,.35,.35,.5);jaw=seq(p,0,.7,0,.35,.5)}else if(a.k=='charge'){nx=.35}else if(a.k=='roar'){nx=-.5;jaw=.8}}
   if(s.hurt>0)nx-=.3*s.hurt;sm(m.neck.rotation,'x',nx,dt,k);sm(m.neck.rotation,'y',hy_,dt,4);sm(m.jaw.rotation,'x',jaw,dt,k*1.2);
-  sm(m.tail.rotation,'y',S(t*(o.wag||5)+ph)*.5*(.4+W),dt,10);sm(m.tail.rotation,'x',o.tailUp||-.3,dt,6);
+  sm(m.tail.rotation,'y',S(t*(o.wag||5)+ph)*.5*(.4+W),dt,10);if(m.tail2)sm(m.tail2.rotation,'y',S(t*(o.wag||5)+ph-1.1)*.55*(.4+W),dt,10);sm(m.tail.rotation,'x',o.tailUp||-.3,dt,6);
   if(m.wL){const f=S(t*(s.fly?6:2))*(s.fly?.7:.15);m.wL.rotation.z=f;m.wR.rotation.z=-f}}
 
 // ---------- aranha
-function spider(o){const m={kind:'spider',g:new THREE.Group(),o};
-  m.body=part(m.g,0,.65,0,k=>{k.box(.9,.5,.9,0,0,.3,o.c);k.box(1.3,.9,1.3,0,.2,-.7,o.c2||o.c);if(o.mark)k.box(.5,.1,.5,0,.66,-.7,o.mark);k.box(.12,.12,.06,-.2,.1,.76,0xff2a2a).box(.12,.12,.06,.2,.1,.76,0xff2a2a).box(.08,.25,.08,-.12,-.2,.78,0x1a1220).box(.08,.25,.08,.12,-.2,.78,0x1a1220)});
-  m.legs=[];for(let i=0;i<8;i++){const sx=i<4?-1:1,j=i%4,u=part(m.body,sx*.4,0,.5-j*.32,k=>k.box(.9,.1,.1,sx*.45,.15,0,o.c,{rz:sx*-.35}));u.rotation.y=sx*(j-1.5)*.32;const lo=part(u,sx*.85,.3,0,k=>k.box(.1,.8,.1,0,-.4,0,o.c));m.legs.push([u,lo,sx])}
+function spider(o){const m={kind:'spider',g:new THREE.Group(),o},c=o.c,c2=o.c2||c;
+  m.body=part(m.g,0,.65,0,k=>{k.box(.95,.5,.95,0,0,.3,c).box(.8,.16,.8,0,.28,.3,shade(c,1.15));k.box(1.35,.95,1.4,0,.22,-.72,c2).box(1.1,.25,1.2,0,.72,-.72,shade(c2,1.12)).box(1.15,.3,1.25,0,-.25,-.72,shade(c2,.8));
+    if(o.mark){k.box(.5,.08,.5,0,.86,-.72,o.mark).box(.18,.08,.5,0,.86,-.3,o.mark).box(.5,.08,.16,0,.86,-1.1,o.mark)}
+    for(const s_ of[-1,1]){k.box(.13,.13,.06,s_*.2,.12,.79,0xff2a2a).box(.08,.08,.06,s_*.36,.2,.74,0xff4a3a).box(.07,.07,.06,s_*.1,.24,.78,0xff6a4a).box(.06,.06,.06,s_*.4,.05,.72,0xff4a3a);
+      k.box(.1,.28,.1,s_*.14,-.22,.8,0x1a1220,{rx:.2}).box(.06,.12,.06,s_*.14,-.38,.86,0xe8e0d0)}
+    for(let i=0;i<6;i++)k.box(.08,.1,.08,(R()-.5)*1.1,.55+R()*.3,-.3-R()*.9,shade(c2,1.3))});
+  m.legs=[];for(let i=0;i<8;i++){const sx=i<4?-1:1,j=i%4,u=part(m.body,sx*.42,.05,.55-j*.3,k=>{k.box(.9,.12,.12,sx*.45,.17,0,c,{rz:sx*-.4});k.box(.14,.14,.14,sx*.88,.33,0,shade(c,1.2))});u.rotation.y=sx*(j-1.5)*.34;
+    const lo=part(u,sx*.88,.33,0,k=>{k.box(.11,.7,.11,0,-.33,0,c);k.box(.13,.13,.13,0,-.66,0,shade(c,1.2))});const ta=part(lo,0,-.66,0,k=>k.box(.08,.42,.08,sx*.05,-.2,0,shade(c,.8),{rz:sx*.2}));m.legs.push([u,lo,sx,ta])}
   m.g.scale.setScalar(o.scale||1);return finish(m)}
 function animSpider(m,dt,t,s){const A=m.A,v=s.v||0;sm(A,'w',cl(v/5,0,1.3),dt,8);A.ph+=dt*(4+v*3)*(A.w>.04?1:0);
-  m.legs.forEach(([u,lo,sx],i)=>{const q=A.ph+(i%2?PI:0)+(i>3?PI/2:0);u.rotation.z=sx*(S(q)*.25*A.w+(s.atk?-.3:0));u.rotation.x=C(q)*.25*A.w});
+  m.legs.forEach(([u,lo,sx,ta],i)=>{const q=A.ph+(i%2?PI:0)+(i>3?PI/2:0);u.rotation.z=sx*(S(q)*.25*A.w+(s.atk&&i%4<2?-.6*seq(s.atk.p,0,1,0,.3,.5):s.atk?-.2:0));u.rotation.x=C(q)*.25*A.w;if(ta)ta.rotation.z=sx*Math.max(0,S(q))*.3*A.w});
   m.body.position.y=.65+S(A.ph*2)*.04*A.w+(s.atk?seq(s.atk.p,0,.25,-.1,.3,.5):0)}
 
 // ---------- abelha / fada (voadores)

@@ -22,7 +22,7 @@ function jump(){if(P.dead||P.air||P.leap||P.dash>0||P.roll>0||UI.block()||P.stun
 function landJump(vy){P.air=0;P.vy=0;const wd=waterDepth();
   if(P.plunge){P.plunge=0;P.act=null;const x=P.x+S(P.f)*.6,z=P.z+C(P.f)*.6;SHK=Math.max(SHK,.5);HITSTOP=Math.max(HITSTOP,.06);ring(x,z,3.4,trailCol(),.4);ring(x,z,1.8,0xffffff,.25);star(x,P.y+.6,z,0xffffff,2.6,.18);
     fx(x,P.y+.3,z,0xb8a888,16,9,.22,1,10);for(let i=0;i<4;i++)puff(x+C(i*1.6)*1.6,P.y+.3,z+S(i*1.6)*1.6,0xd8c8a8,2);if(wd>0)splash(x,z,2.4);snd(70,.35,'sawtooth');
-    let h=0;for(const e of E)if(!e.dead&&!e.t.passive&&hy(e.x-x,e.z-z)-e.r<3.4){const[dm,c]=rollDmg(1.9);hurtMob(e,dm,c,'golpe');e.stun=Math.max(e.stun,.7);impactFx(e,1);h++}if(h)addFury(10*Math.min(3,h));return}
+    let h=0;P.heavyHit=1;for(const e of E)if(!e.dead&&!e.t.passive&&hy(e.x-x,e.z-z)-e.r<3.4){const[dm,c]=rollDmg(1.9);hurtMob(e,dm,c,'golpe');e.stun=Math.max(e.stun,.7);impactFx(e,1);h++}P.heavyHit=0;if(h)addFury(10*Math.min(3,h));return}
   if(vy<-9){puff(P.x,P.y+.2,P.z,0xcdb894,1.4);SHK=Math.max(SHK,.12);snd(120,.08,'square')}if(wd>0)splash(P.x,P.z,1.4)}
 // golpe aéreo: atacar no ar (com altura) mergulha a arma no chão
 function plunge(){P.plunge=1;P.vy=-18;P.act={k:'slam',t:.12,dur:.5,hp:9,sk:'aereo'};sweep(900,200,.2,'sawtooth',.04)}
