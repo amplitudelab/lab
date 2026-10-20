@@ -11,33 +11,65 @@ function sneakSet(v){if(P.dead||UI.block()||P.mounted){v=0}P.sneak=v==null?(P.sn
 function backstab(e,d){if(P.bsT>0&&e.st!='chase'&&!e.t.passive&&!e.boss){P.bsT=0;P.st.back++;pop('PELAS COSTAS!',e.x,e.y+2.8,e.z,'#c8a8ff',1);flash(e.x,e.y+1.2,e.z,0xb08aff,3,.25);fx(e.x,e.y+1.2,e.z,0xb08aff,12,6,.1,.6,6);HITSTOP=.08;return d*3}return d}
 
 // ---------- masmorras: arenas fechadas com ondas, chefe e baú
-const DNG=[{id:'cripta',n:'Cripta Esquecida',ic:'⚰️',ent:[-106,-90],at:[-196,-196],mob:['zombie','ghoul','skel'],boss:'ghoul',c:0x7dff9a,wall:0x4a4a52,floor:0x3a3a40},
-  {id:'caverna',n:'Caverna das Tecelãs',ic:'🕸️',ent:[-44,-126],at:[-196,196],mob:['spider','spider','dwolf'],boss:'spider',c:0xb07aff,wall:0x3a3028,floor:0x2e2620},
-  {id:'ruina',n:'Ruína do Templo',ic:'🏛️',ent:[132,-24],at:[196,196],mob:['golem','fairy','imp'],boss:'golem',c:0xffd060,wall:0xd8ccb0,floor:0xb8ac90}];
+const DNG=[{id:'cripta',n:'Cripta Esquecida',ic:'⚰️',ent:[-106,-90],at:[-196,-196],mob:['zombie','ghoul','skel','skelwar','skelmage'],boss:'cultist',bn:'Lich da Cripta',c:0x7dff9a,wall:0x4a4a52,floor:0x3a3a40},
+  {id:'caverna',n:'Caverna das Tecelãs',ic:'🕸️',ent:[-44,-126],at:[-196,196],mob:['spider','spider','dwolf','bassassin'],boss:'spider',bn:'Rainha Tecelã',c:0xb07aff,wall:0x3a3028,floor:0x2e2620},
+  {id:'ruina',n:'Ruína do Templo',ic:'🏛️',ent:[132,-24],at:[196,196],mob:['golem','fairy','imp','bshield','bshaman'],boss:'golem',bn:'Colosso da Ruína',c:0xffd060,wall:0xd8ccb0,floor:0xb8ac90}];
 const DST={on:null,w:0,live:[],t:0,boss:null,done:0};
-for(const D of DNG){flat(D.at[0],D.at[1],24,1.5);
-  addStr(D.at[0],D.at[1],0,(k,e,f)=>{const t=new TB(k,e,f,D.at[0],D.at[1],0,1.5,1);const n=36,R_=19;
-    for(let i=0;i<n;i++){const a=i/n*TAU,x=C(a)*R_,z=S(a)*R_;t.b(3.4,5+(i%3)*.8,1.2,x,2.5,z,i%5==0?shade(D.wall,.75):D.wall,{ry:-a+PI/2});if(i%3==0)t.col(x,z,1.9)}
-    for(let i=0;i<8;i++){const a=i/8*TAU+.2,x=C(a)*13,z=S(a)*13;t.b(1.2,4.2,1.2,x,2.1,z,shade(D.wall,1.15)).b(1.6,.4,1.6,x,4.3,z,shade(D.wall,.8));t.e_(.4,.4,.4,x,4.7,z,D.c);t.col(x,z,.8)}
-    t.b(26,.12,26,0,.06,0,D.floor);for(let i=0;i<6;i++)t.e_(.5,.08,2.8,C(i*1.05)*5,.13,S(i*1.05)*5,D.c)});
+// 14.4: cada masmorra é um complexo de 3 salões (28×42) ligado por portões: ondas no primeiro, totens que
+// chamam reforços e armadilhas de espinhos no segundo, chefe com jatos de fogo giratórios no terceiro.
+for(const D of DNG){flat(D.at[0],D.at[1],46,1.5);flat(D.at[0]+8,D.at[1]+14,3.2,2.5);flat(D.at[0]-9,D.at[1]+1,2.8,2.5);flat(D.at[0]+9,D.at[1]-1,2.8,2.5);
+  addStr(D.at[0],D.at[1],0,(k,e,f)=>{const t=new TB(k,e,f,D.at[0],D.at[1],0,1.5,1),W=D.wall,W2=shade(D.wall,.75);
+    for(let x=-14;x<=14.1;x+=2.8)for(const z of[-21,21]){t.b(3,5.5+(Math.abs(x*7)|0)%3*.6,1.4,x,2.75,z,(Math.abs(x*3)|0)%2?W:W2);t.col(x,z,1.6)}
+    for(let z=-21;z<=21.1;z+=2.8)for(const x of[-14,14]){t.b(1.4,5.5+(Math.abs(z*7)|0)%3*.6,3,x,2.75,z,(Math.abs(z*3)|0)%2?W:W2);t.col(x,z,1.6)}
+    for(const z of[7,-7]){for(let i=0;i<5;i++)for(const s_ of[-1,1]){const x=s_*(4.6+i*2.4);t.b(2.6,4.6,1.2,x,2.3,z,W);t.col(x,z,1.4)}for(const s_ of[-1,1]){t.b(1.4,6,1.6,s_*3.2,3,z,shade(W,1.15)).b(1.8,.5,2,s_*3.2,6.2,z,W2);t.col(s_*3.2,z,.8)}}
+    t.b(28,.12,42,0,.06,0,D.floor);for(let i=0;i<6;i++)t.e_(.4,.06,3.2,0,.14,17-i*7,D.c);
+    for(const[x,z]of[[-8,15],[7,4],[-7,-4],[9,-12],[-9,-12]]){t.b(1.4,4.4,1.4,x,2.2,z,shade(W,1.1)).b(1.8,.4,1.8,x,4.5,z,W2);t.e_(.4,.4,.4,x,4.9,z,D.c);t.col(x,z,.9)}
+    t.b(3.2,.5,3.2,0,.25,-15,W2).b(1.2,3,1.2,0,1.7,-15,shade(W,.6));t.e_(.6,.6,.6,0,3.5,-15,D.c);t.col(0,-15,1.1)});
   inter({x:D.ent[0],z:D.ent[1],r:3,ic:D.ic,label:()=>DST.on?'Masmorra em andamento':'Entrar: '+D.n+(P.st.dng.includes(D.id)?' (concluída)':''),act:()=>dngEnter(D)});
   addStr(D.ent[0],D.ent[1],0,(k,e,f)=>{const t=new TB(k,e,f,D.ent[0],D.ent[1],0,null,1.3);t.b(.8,3.4,.8,-1.4,1.7,0,D.wall).b(.8,3.4,.8,1.4,1.7,0,D.wall).b(3.6,.8,.9,0,3.6,0,shade(D.wall,.8));t.e_(2,2.6,.2,0,1.5,0,D.c);t.col(-1.4,0,.6);t.col(1.4,0,.6)})}
-function dngEnter(D){if(DST.on)return;if(inCombat()){toast('⚔️','Em combate','Afaste-se dos inimigos para entrar.');return}DST.on=D;DST.w=0;DST.live=[];DST.t=2.5;DST.boss=null;DST.done=0;DST.back=[P.x,P.z];
-  teleport(D.at[0],D.at[1]+10);banner(D.n);toast(D.ic,D.n,'3 ondas de inimigos e um chefe. Vença para abrir o baú.');snd(110,.8,'sawtooth')}
-function dngWave(){const D=DST.on,lv=Math.max(P.lv,3),n=4+DST.w*2;DST.live=[];
-  for(let i=0;i<n;i++){const a=i/n*TAU+R(),x=D.at[0]+C(a)*12,z=D.at[1]+S(a)*12,m=mkMob(pick(D.mob),x,z,{lv,ch:'dng',el:DST.w==2&&i==0?1:0,afx:DST.w==2&&i==0?[pick(Object.keys(AFF))]:[]});m.st='chase';m.home=[D.at[0],D.at[1]];DST.live.push(m);column(x,z,D.c,4,.8,.5)}
-  toast(D.ic,'Onda '+(DST.w+1)+' de 3','');snd(220,.3,'sawtooth')}
-function dngUpd(dt){const D=DST.on;if(!D)return;if(P.dead){DST.on=null;for(const m of DST.live)m.dead=1;if(DST.boss)DST.boss.dead=1;return}
-  if(hy(P.x-D.at[0],P.z-D.at[1])>22){P.x=D.at[0];P.z=D.at[1]+8}
-  if(DST.done)return;DST.t-=dt;if(DST.t>0)return;
-  if(DST.boss){if(DST.boss.dead){DST.done=1;dngWin(D)}return}
-  if(DST.live.length&&DST.live.some(m=>!m.dead))return;
-  if(DST.w<3){dngWave();DST.w++;DST.t=1.5;return}
-  const b=mkMob(D.boss,D.at[0],D.at[1]-8,{lv:Math.max(P.lv,3)+2,ch:'dng',el:2,afx:[pick(Object.keys(AFF)),pick(Object.keys(AFF))],name:'Guardião da '+D.n.split(' ').slice(-1)[0]});b.hp=b.mx=b.mx*2.2;b.m.g.scale.multiplyScalar(1.35);b.st='chase';b.home=[D.at[0],D.at[1]];DST.boss=b;
-  banner('CHEFE DA MASMORRA');column(b.x,b.z,D.c,10,1.6,.9);SHK=.6;snd(80,.9,'sawtooth')}
-function dngWin(D){banner('MASMORRA CONCLUÍDA');const x=D.at[0],z=D.at[1];column(x,z,0xffd060,16,2,1.2);ring(x,z,8,0xffd060,1);fx(x,groundAt(x,z)+1,z,0xffd34a,40,10,.2,2,8);
-  const first=!P.st.dng.includes(D.id);if(first)P.st.dng.push(D.id);for(let i=0;i<3;i++)setTimeout(()=>dropItem(x+(R()-.5)*3,z+(R()-.5)*3,genItem(P.lv+1,i==0?2.5:1.2,null,first&&i==0)),300+i*200);dropGold(x,z,Math.round(80+P.lv*30));gainXP(Math.round(XPN(P.lv)*.35));
-  qEvent('dungeon',D.id);inter({x,z:z+6,r:3,ic:'🌀',label:()=>'Sair da masmorra',act:function(){const i=INTER.indexOf(this);if(i>=0)INTER.splice(i,1);DST.on=null;teleport(DST.back[0],DST.back[1]+3);toast('🌀','De volta ao mundo','')}});save()}
+const DNGM=new THREE.MeshLambertMaterial({color:0x3a3a42}),DNGS=new THREE.MeshLambertMaterial({color:0xc8ccd4});
+function dngBuild(D){const L=(x,z)=>[D.at[0]+x,D.at[1]+z],y0=groundAt(D.at[0],D.at[1]);DST.dyn=[];DST.gates=[];DST.traps=[];DST.totems=[];
+  for(const gz of[7,-7]){const k=new Bake();for(let i=0;i<6;i++)k.box(.18,4.4,.18,-2.6+i*1.04,2.2,0,0x2a2a30);k.box(5.6,.24,.24,0,3.6,0,0x3a3a42).box(5.6,.24,.24,0,1.6,0,0x3a3a42);const m=k.mesh();const[x,z]=L(0,gz);m.position.set(x,y0,z);sc.add(m);DST.dyn.push(m);
+    const cols=[-1.8,0,1.8].map(q=>{const c=[x+q,z,1.1];STRC.push(c);return c});DST.gates.push({m,cols,open:0,t:0,y0})}
+  for(const[lx,lz]of[[-4.5,3],[4.5,3],[-4.5,-3.5],[4.5,-3.5],[0,0],[-4,12],[4,12]]){const[x,z]=L(lx,lz),gy=groundAt(x,z),pl=new THREE.Mesh(new THREE.BoxGeometry(2.2,.08,2.2),new THREE.MeshBasicMaterial({color:0x2a2228}));pl.position.set(x,gy+.05,z);sc.add(pl);
+    const k=new Bake();for(let i=0;i<3;i++)for(let j=0;j<3;j++)k.box(.16,.9,.16,-.7+i*.7,.45,-.7+j*.7,0xd8dce4).box(.08,.25,.08,-.7+i*.7,1,-.7+j*.7,0xffffff);const sp=k.mesh();sp.position.set(x,gy-.95,z);sc.add(sp);DST.dyn.push(pl,sp);DST.traps.push({x,z,gy,pl,sp,ph:R()*3,hit:0})}
+  const[jx,jz]=L(0,-15);DST.jet={x:jx,z:jz,a:0,on:0,cd:[0,0]}}
+function dngClear(){for(const m of DST.dyn||[]){sc.remove(m);m.geometry&&m.geometry.dispose()}DST.dyn=[];for(const g of DST.gates||[])for(const c of g.cols){const i=STRC.indexOf(c);if(i>=0)STRC.splice(i,1)}DST.gates=[];DST.traps=[];
+  for(const m of DST.live||[])m.dead=1;for(const m of DST.totems||[])m.dead=1;if(DST.boss&&!DST.boss.dead)DST.boss.dead=1;DST.totems=[];DST.live=[]}
+function dngEnter(D){if(DST.on)return;if(inCombat()){toast('⚔️','Em combate','Afaste-se dos inimigos para entrar.');return}DST.on=D;DST.st=0;DST.live=[];DST.t=2.5;DST.boss=null;DST.done=0;DST.adds=0;DST.back=[P.x,P.z];
+  teleport(D.at[0],D.at[1]+17);dngBuild(D);banner(D.n);toast(D.ic,D.n,'Três salões: vença as ondas, destrua os totens e derrote o chefe.');snd(110,.8,'sawtooth')}
+function gateOpen(i){const g=DST.gates[i];if(!g||g.open)return;g.open=1;for(const c of g.cols){const j=STRC.indexOf(c);if(j>=0)STRC.splice(j,1)}snd(120,.8,'sawtooth');SHK=Math.max(SHK,.25);fx(g.m.position.x,g.y0+.4,g.m.position.z,0xb8a888,14,5,.2,.8,8)}
+function dngMob(ty,x,z,o){const D=DST.on,m=mkMob(ty,x,z,Object.assign({lv:Math.max(P.lv,3)+1,ch:'dng'},o||{}));m.st='chase';m.home=[D.at[0],D.at[1]];DST.live.push(m);column(x,z,D.c,4,.8,.5);return m}
+function dngWave(w){const D=DST.on,n=w==1?6:5,cz=w==1?14:0;for(let i=0;i<n;i++){const a=i/n*TAU+R(),x=D.at[0]+C(a)*6,z=D.at[1]+cz+S(a)*4;dngMob(pick(D.mob),x,z,{el:w==2&&i==0?1:0,afx:w==2&&i==0?[pick(Object.keys(AFF))]:[]})}toast(D.ic,w==1?'Salão da Entrada':'Salão dos Totens','');snd(220,.3,'sawtooth')}
+MT.totem={n:'Totem Sombrio',m:'totem',hp:90,dmg:0,sp:0,rg:0,cd:99,xp:24,ai:'melee',r:.9};DG.totem=0;
+MDL.totem=()=>{const m={kind:'totem',g:new THREE.Group(),o:{}};m.body=part(m.g,0,0,0,k=>{k.box(1.6,.6,1.6,0,.3,0,0x3a3440).box(1.2,1,1.2,0,1.1,0,0x4a4250).box(1.3,.9,1.3,0,2,0,0x5a5060).box(1.1,.8,1.1,0,2.85,0,0x4a4250).box(1.8,.2,.3,0,3.3,0,0x2a2430).box(.25,.6,.25,-.8,3.55,0,0xe8e0cc,{rz:.4}).box(.25,.6,.25,.8,3.55,0,0xe8e0cc,{rz:-.4})});
+  const g=new Bake();g.box(.24,.18,.06,-.28,2.1,.66,0xb07aff).box(.24,.18,.06,.28,2.1,.66,0xb07aff).box(.5,.08,.06,0,1.75,.66,0xb07aff).box(.3,.3,.06,0,1.1,.61,0xb07aff);m.body.add(g.mesh(ME));return finish(m)};
+function dngTotems(){const D=DST.on;for(const[lx,lz]of[[-9,1],[9,-1],[0,-5]]){const m=mkMob('totem',D.at[0]+lx,D.at[1]+lz,{lv:Math.max(P.lv,3)+1,ch:'dng'});m.st='chase';m.hx=m.x;m.hz=m.z;m.spT=3+R()*3;m.cd=1e9;m.f=Math.atan2(-lx,17-lz);DST.totems.push(m);column(m.x,m.z,0xb07aff,6,1,.6)}}
+function dngTotemSpawn(dt){const alive=DST.live.filter(m=>!m.dead).length;for(const t of DST.totems){if(t.dead)continue;t.spT-=dt;if(t.spT<=0&&alive<8){t.spT=7;const a=R()*TAU;dngMob(pick(DST.on.mob),t.x+C(a)*2.5,t.z+S(a)*2.5);fx(t.x,t.y+2,t.z,0xb07aff,10,3,.12,1.4,-1)}}}
+function dngBoss(){const D=DST.on;const b=mkMob(D.boss,D.at[0],D.at[1]-11,{lv:Math.max(P.lv,3)+2,ch:'dng',el:2,afx:[pick(Object.keys(AFF)),pick(Object.keys(AFF))],name:D.bn});b.hp=b.mx=b.mx*3;b.dmg*=1.15;b.m.g.scale.multiplyScalar(1.4);b.st='chase';b.home=[D.at[0],D.at[1]];DST.boss=b;
+  banner('CHEFE: '+D.bn);column(b.x,b.z,D.c,10,1.6,.9);SHK=.6;snd(80,.9,'sawtooth')}
+function dngAdds(){const D=DST.on,b=DST.boss;pop('Reforços!',P.x,P.y+3.4,P.z,'#ff9a6a');for(let i=0;i<3;i++){const a=i/3*TAU;dngMob(pick(D.mob),b.x+C(a)*4,b.z+S(a)*4)}}
+// espinhos: 2,2 s escondidos, 0,5 s de aviso (placa vermelha), 1 s para cima
+function dngTraps(dt){for(const T of DST.traps||[]){T.ph=(T.ph+dt)%3.7;const up=T.ph>2.7,warn=T.ph>2.2&&!up;const ty=up?T.gy-.05:T.gy-.95;T.sp.position.y+=(ty-T.sp.position.y)*Math.min(1,dt*(up?30:6));T.pl.material.color.setHex(warn?(((T.ph*10)|0)%2?0xff3a2a:0x5a1a14):up?0x6a2a24:0x2a2228);
+  if(!up)T.hit=0;else if(!T.hit&&!P.air&&!P.dead&&Math.abs(P.x-T.x)<1.15&&Math.abs(P.z-T.z)<1.15){T.hit=1;hitPlayer(ST.mx*.12,{});fx(P.x,P.y+.5,P.z,0xff4a3a,8,4,.1,.8,8);snd(900,.08,'square')}}}
+// jatos de fogo giratórios no salão do chefe (pule ou mergulhe por cima)
+function dngJets(dt){const J=DST.jet;if(!J||!J.on)return;const c=DST.on.c;J.a+=dt*.85;for(let k=0;k<2;k++){const an=J.a+k*PI;J.cd[k]-=dt;
+  for(let i=0;i<3;i++){const r=1.5+R()*10;fx(J.x+S(an)*r,groundAt(J.x,J.z)+.8+R()*.6,J.z+C(an)*r,R()<.5?c:0xffd060,1,.8,.24,.5,-1)}
+  const dx=P.x-J.x,dz=P.z-J.z,d=hy(dx,dz);if(J.cd[k]<=0&&d>1.4&&d<11.6&&!P.air&&!P.dead&&Math.abs(angDiff(an,Math.atan2(dx,dz)))<.13+.6/Math.max(d,1)){J.cd[k]=.6;hitPlayer(ST.mx*.1,{brn:1})}}}
+function dngGates(dt){for(const g of DST.gates||[]){if(!g.open||g.t>=1)continue;g.t=Math.min(1,g.t+dt*.7);g.m.position.y=g.y0-g.t*4.3}}
+function dngUpd(dt){const D=DST.on;if(!D)return;if(P.dead){dngClear();DST.on=null;return}
+  const lx=P.x-D.at[0],lz=P.z-D.at[1];if(Math.abs(lx)>13.2||Math.abs(lz)>20.2){P.x=D.at[0]+cl(lx,-13,13);P.z=D.at[1]+cl(lz,-20,20)}
+  dngTraps(dt);dngJets(dt);dngGates(dt);for(const t of DST.totems)if(!t.dead){t.x=t.hx;t.z=t.hz;t.vx=t.vz=0}
+  if(DST.done)return;DST.t-=dt;if(DST.t>0)return;const clr=L=>L.every(m=>m.dead);
+  if(DST.st==0){dngWave(1);DST.st=1}
+  else if(DST.st==1&&clr(DST.live)){gateOpen(0);DST.st=2;toast(D.ic,'O primeiro portão se abriu','Avance para o salão do meio.')}
+  else if(DST.st==2&&lz<6){DST.st=3;dngTotems();dngWave(2);toast(D.ic,'Destrua os 3 totens','Eles chamam reforços enquanto estiverem de pé.')}
+  else if(DST.st==3){dngTotemSpawn(dt);if(clr(DST.live)&&DST.totems.every(t=>t.dead)){gateOpen(1);DST.st=4;toast(D.ic,'O salão do chefe se abriu','Cuidado com os jatos de fogo: pule ou mergulhe por cima.')}}
+  else if(DST.st==4&&lz<-8){DST.st=5;dngBoss();DST.jet.on=1}
+  else if(DST.st==5){const b=DST.boss;if(b&&!b.dead&&!DST.adds&&b.hp<b.mx*.5){DST.adds=1;dngAdds()}if(b&&b.dead){DST.done=1;DST.jet.on=0;dngWin(D)}}}
+function dngWin(D){banner('MASMORRA CONCLUÍDA');const x=D.at[0],z=D.at[1]-11;column(x,z,0xffd060,16,2,1.2);ring(x,z,8,0xffd060,1);fx(x,groundAt(x,z)+1,z,0xffd34a,40,10,.2,2,8);for(const m of DST.live)if(!m.dead)m.dead=1;
+  const first=!P.st.dng.includes(D.id);if(first)P.st.dng.push(D.id);for(let i=0;i<4;i++)setTimeout(()=>dropItem(x+(R()-.5)*3,z+(R()-.5)*3,genItem(P.lv+1,i==0?2.5:1.3,null,first&&i==0)),300+i*200);dropGold(x,z,Math.round(120+P.lv*40));gainXP(Math.round(XPN(P.lv)*.45));
+  qEvent('dungeon',D.id);inter({x,z:z+5,r:3,ic:'🌀',label:()=>'Sair da masmorra',act:function(){const i=INTER.indexOf(this);if(i>=0)INTER.splice(i,1);dngClear();DST.on=null;teleport(DST.back[0],DST.back[1]+3);toast('🌀','De volta ao mundo','')}});save()}
 
 // ---------- culinária (Marta) e forja (Durin)
 const MATN=k=>INV.reduce((s,it)=>s+(it&&it.slot=='mat'&&it.mid==k?(it.q||1):0),0);

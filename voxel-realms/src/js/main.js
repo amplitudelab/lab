@@ -11,7 +11,7 @@ function save(){if(!run)return;try{localStorage.setItem(SK_SAVE,JSON.stringify({
   INV,EQ,iid,QS,SKL:{sk:P.sk,sp:P.sp,bar:P.bar},WXT:WX.type,BOUNTY:BOUNTY.q,WP:WP.filter(w=>w.on).map(w=>w.id),CH:CHESTS.map(c=>c.o),LORE:[...LORE_FOUND],BEST,DAY:DAY.t,FOG:[...FOG],BDEF,SHOP}))}catch(e){}}
 function load(){try{const s=JSON.parse(localStorage.getItem(SK_SAVE)||'null');if(!s||!s.P)return 0;const p=s.P;for(const k of['x','z','f','lv','xp','gold','hp'])if(typeof p[k]=='number'&&isFinite(p[k]))P[k]=p[k];
   P.lv=cl(P.lv|0,1,40);(p.disc||[]).forEach(d=>P.disc.add(d));if(Array.isArray(s.INV))s.INV.slice(0,30).forEach((it,i)=>INV[i]=it&&it.slot?it:null);if(s.EQ)for(const k in EQ)if(s.EQ[k]&&s.EQ[k].slot==k)EQ[k]=s.EQ[k];iid=s.iid||1000;
-  if(s.QS)for(const k in s.QS)if(QS[k]){QS[k].st=s.QS[k].st|0;QS[k].p=s.QS[k].p|0;QS[k].got=Array.isArray(s.QS[k].got)?s.QS[k].got:[]}BOUNTY.q=s.BOUNTY||null;
+  if(s.QS)for(const k in s.QS)if(QS[k]){QS[k].st=s.QS[k].st|0;QS[k].p=s.QS[k].p|0;QS[k].stg=s.QS[k].stg|0;QS[k].got=Array.isArray(s.QS[k].got)?s.QS[k].got:[]}BOUNTY.q=s.BOUNTY||null;
   (s.WP||[]).forEach(id=>{const w=WP.find(w=>w.id==id);if(w)w.on=1});(s.CH||[]).forEach((o,i)=>{if(o&&CHESTS[i]){CHESTS[i].o=1;CHESTS[i].lid.rotation.x=-1.95}});(s.LORE||[]).forEach(l=>LORE_FOUND.add(l));Object.assign(BEST,s.BEST||{});Object.assign(BDEF,s.BDEF||{});
   if(typeof s.DAY=='number')DAY.t=s.DAY;if(s.SKL){for(const k in s.SKL.sk||{})if(SK[k])P.sk[k]=cl(s.SKL.sk[k]|0,0,3);P.sp=Math.max(0,s.SKL.sp|0);if(Array.isArray(s.SKL.bar))P.bar=s.SKL.bar.slice(0,4).map(k=>k&&SK[k]&&P.sk[k]?k:null)}else P.sp=P.lv;if(WXT[s.WXT])WX.type=s.WXT;(s.FOG||[]).forEach(f=>FOG.add(f));if(Array.isArray(s.SHOP)&&s.SHOP.length)SHOP=s.SHOP;
   for(const q of QD)if(QS[q.id].st==1&&(q.t=='collect'||q.t=='interact'))qObjSpawn(q);
@@ -40,7 +40,7 @@ const isFull=()=>!!(document.fullscreenElement||document.webkitFullscreenElement
 document.addEventListener('pointerdown',()=>{if(!isFull())goFull();musStart()},true);document.addEventListener('keydown',()=>musStart(),true);
 function goFull(){try{const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;if(!f||isFull())return;const p=f.call(d);const lk=()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}};if(p&&p.then)p.then(lk).catch(()=>{});else lk()}catch(e){}}
 function begin(fresh){if(run)return;document.activeElement&&document.activeElement.blur&&document.activeElement.blur();$('title').classList.add('off');document.body.classList.add('run');run=1;goFull();try{au=au||new AudioContext();au.resume&&au.resume()}catch(e){}snd(440,.1,'sine');
-  teleport(P.x,P.z);P.y=groundAt(P.x,P.z);skillPurge();calcStats();hud();trackUpd();regionUpd();qAvail();
+  teleport(P.x,P.z);P.y=groundAt(P.x,P.z);skillPurge();calcStats();stageRestore();hud();trackUpd();regionUpd();qAvail();
   if(fresh){if(!EQ.arma)startClass('guerreiro');calcStats();P.hp=ST.mx;hud();qStart(QIDX.m1,1);say([['Narrador','Aldoria, cem anos depois da Guerra das Brasas. O dragão Ignarok dorme selado sob a Caldeira, ao nordeste.','📜'],['Narrador','Esta noite, a Estátua de Aldor rachou. Uma Sombra se espalha pelas colmeias, florestas, cemitérios e pântanos.','🌑'],['Narrador','Você é Kael, '+(P.cls=='mago'?'aprendiz de magia e':P.cls=='cacador'?'batedor das florestas e':'espadachim e')+' o novo Guardião de Pedraverde. O Ancião Bram espera por você na vila.',KA],['Dica','Mova-se com o joystick e segure ⚔️ para atacar. 🏃 corre, 💨 dá dash para desviar. Sua habilidade de classe já está na barra, e você tem 1 ponto extra: toque em ✨. Junte ouro para comprar uma montaria (do cavalo ao raptor) na Forja da Helga.','💡']],()=>{trackUpd()})}
   else toast('💾','Bem-vindo de volta',REG[regionAt(P.x,P.z)].n);save()}
 // versão no canto e aviso de versão nova (mesmo esquema do Quebrada Z)
@@ -66,7 +66,7 @@ function frame(now){requestAnimationFrame(frame);if(FPSC&&now-last<1000/FPSC-1.5
   wxUpd(rdt,P.x,P.z);plxUpd(rdt,P.x,P.z);
   if(run){playerUpd(dt,t);feelUpd(dt);mobsUpd(dt,t);npcUpd(dt,t);animalsUpd(dt,t);projUpd(dt);minionsUpd(dt,t);vampUpd(dt);mountUpd(dt,t);petUpd(dt,t);spawnUpd(dt);lootUpd(dt,t);qObjUpd(dt,t);interUpd();wpUpd()}
   else{CAMS.yawT+=rdt*.06;npcUpd(rdt,t);animalsUpd(rdt,t)}
-  placesUpd(rdt,t);fxUpd(dt,rdt,t);ambUpd(rdt,t,P.x,P.z);lookUpd();birdsUpd(rdt,t,P.x,P.z);torchUpd(rdt,t);drsUpd(raw);vfxUpd(dt);world2Upd(dt);magicUpd(rdt);wglowUpd(rdt);decalUpd(rdt);ambienceUpd(rdt,t);musUpd(rdt);haloUpd(t);cloudsUpd(rdt,P.x,P.z);waterUpd(P.x,P.z,t);SHU.uT.value=t;SKU.t.value=t;
+  placesUpd(rdt,t);fxUpd(dt,rdt,t);ambUpd(rdt,t,P.x,P.z);lookUpd();birdsUpd(rdt,t,P.x,P.z);torchUpd(rdt,t);drsUpd(raw);vfxUpd(dt);world2Upd(dt);trialsUpd(dt,t);magicUpd(rdt);wglowUpd(rdt);decalUpd(rdt);ambienceUpd(rdt,t);musUpd(rdt);haloUpd(t);cloudsUpd(rdt,P.x,P.z);waterUpd(P.x,P.z,t);SHU.uT.value=t;SKU.t.value=t;
   INV_OPEN.k+=((UI.open=='inv'?1:0)-INV_OPEN.k)*damp(6,rdt);if(!run)P.m.g.position.set(P.x,P.y,P.z);if(!run)animate(P.m,rdt,t,{v:0});
   camUpd(rdt);fpvCam(rdt);vmUpd(rdt,t);dlgUpd(raw);
   if(run){hfT-=rdt;if(hfT<=0){hfT=.1;hudFast()}hT-=rdt;if(hT<=0){hT=.5;hud();regionUpd()}mmT-=rdt;if(mmT<=0){mmT=.15;minimap()}if(ev(2))npcLabels();
