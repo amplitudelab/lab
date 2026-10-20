@@ -136,3 +136,59 @@ body.run #vrVer{display:none}
 #bkBooks{margin-left:auto;display:flex;gap:4px}
 .gbk{width:34px;height:34px;padding:0;font-size:18px;border:2px solid #3a1e0c;border-radius:6px;background:linear-gradient(#e8d6a8,#c8ae78);box-shadow:0 2px 0 rgba(60,30,10,.4);cursor:pointer;filter:grayscale(.6);opacity:.75}
 .gbk.on{filter:none;opacity:1;border-color:#2a1206;box-shadow:0 0 0 2px #ffd34a,0 2px 0 rgba(60,30,10,.4)}.gbk.add{font:700 18px var(--px);color:#7a4a20;filter:none;opacity:.9}
+/* =============================================================================
+   14.6 · HUD imersiva e ajustável
+   Menos botões fixos: ataque com 4 botões em volta (mergulho, pulo, bloqueio e ✦ ações rápidas);
+   correr, furtivo, tocha e montaria abrem em leque no ✦. Mapa, diário, 1ª pessoa, HUD e menu ficam na
+   gaveta ☰. Minimapa sem botões de zoom (toque no mapa para mudar o zoom). Escala, tamanho dos botões
+   e opacidade vêm do painel 🎛️ (variáveis --hs, --bs, --ho).
+   ============================================================================= */
+:root{--hs:1;--bs:1;--ho:1;--hc:1;--hi:1;--u:calc(clamp(30px,9vh,42px)*var(--hs));--ub:calc(clamp(28px,8.4vh,38px)*var(--hs));--mm:calc(clamp(76px,23vh,110px)*var(--hs));--orb:calc(clamp(46px,14.6vh,68px)*var(--hs));
+  --sk:calc(clamp(32px,10vh,48px)*var(--hs));--atk:calc(clamp(64px,20vh,88px)*var(--bs));--js:calc(clamp(94px,28vh,134px)*var(--bs));--side:calc(clamp(148px,21vw,196px)*var(--hs));--ax:calc(var(--m) + max(10px,var(--atk)*.3 - 8px))}
+#tl,#qp,#mw,#rg,#bar{opacity:calc(var(--ho)*var(--hi));transition:opacity .8s}#tbar,#atk,#rolb,#jmpb,#blkb,#qkb,#qk{opacity:calc(var(--ho)*var(--hc));transition:opacity .8s}#jb{opacity:var(--ho)}
+body.cine #atk,body.cine #rolb,body.cine #jmpb,body.cine #blkb,body.cine #qkb,body.cine #qk,body.cine #jb,body.cine #bar,body.cine #qp{opacity:0}
+/* topo esquerdo: ficha compacta; missões mostram só a primeira (toque no título para abrir) */
+#tl{padding:3px 9px 3px 3px;gap:6px}#lvn{font-size:11.5px}.gl{font-size:11px}
+#qp{padding:6px 10px}#qp .ttl{font-size:13px}#qp.min .q:not(:first-child){display:none}#qp.min .q .qd{display:none}#qp .q b{font-size:11.5px}
+/* topo direito: minimapa limpo, região como legenda, 3 botões em coluna e gaveta */
+#zm{display:none!important}
+#mw{right:var(--m);top:var(--m);width:var(--mm);height:var(--mm);pointer-events:auto;cursor:pointer}
+#rg{right:var(--m);top:calc(var(--m) + var(--mm) + 3px);width:var(--mm);background:none!important;border:0!important;box-shadow:none!important;padding:0;text-align:center}
+#rg #rn{font-size:11px;white-space:normal;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-shadow:0 1px 2px #000,0 0 6px #000}#rg #rl{font-size:10px;text-shadow:0 1px 2px #000,0 0 6px #000;color:#e8dcc0}
+#tbar{right:calc(var(--m) + var(--mm) + 8px);top:var(--m);flex-direction:column;gap:6px}
+#tbar button{width:var(--ub);height:var(--ub);font-size:calc(var(--ub)*.48)}
+#mnub{font:900 calc(var(--ub)*.5) var(--fn)!important;color:#ffe08a}#mnub.on{border-color:#ffe08a;box-shadow:0 0 10px rgba(255,224,138,.6)}
+#drw{right:calc(var(--m) + var(--mm) + var(--ub) + 16px);top:var(--m);display:none;flex-direction:column;gap:4px;padding:6px;border-radius:14px;pointer-events:auto;z-index:2}
+#drw.on{display:flex;animation:wf .2s ease-out}
+#drw button{display:flex;align-items:center;gap:8px;min-width:132px;padding:5px 10px 5px 6px;border:1px solid rgba(217,169,72,.4);border-radius:999px;background:rgba(0,0,0,.35);color:#f4ead2;font:700 12px var(--fn);text-align:left;cursor:pointer}
+#drw button i{font-style:normal;font-size:16px;width:20px;text-align:center}#drw button.on{border-color:#9ae4ff;color:#9ae4ff}
+/* ação: ataque com 4 botões ao redor (180°, 135°, 95°, 55°) */
+#rolb,#jmpb,#blkb,#qkb{width:var(--b);height:var(--b);font-size:calc(var(--b)*.46)}
+#rolb{right:calc(var(--ax) + var(--atk)/2 + var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 - var(--b)/2)}
+#jmpb{right:calc(var(--ax) + var(--atk)/2 + .707*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 + .707*var(--D) - var(--b)/2)}
+#blkb{right:calc(var(--ax) + var(--atk)/2 + .087*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 + .996*var(--D) - var(--b)/2)}
+#qkb{right:calc(var(--ax) + var(--atk)/2 - .574*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 + .819*var(--D) - var(--b)/2);font:900 calc(var(--b)*.48) var(--fn);color:#ffe08a}
+#qkb.on{border-color:#ffe08a;box-shadow:inset 0 0 0 3px #4a3208,inset 0 0 14px #000,0 0 14px #ffd060}
+/* leque de ações rápidas (arco externo, acima do ataque) */
+#qk{inset:0;pointer-events:none}
+#qk .rb{position:absolute;width:calc(var(--b)*.92);height:calc(var(--b)*.92);font-size:calc(var(--b)*.42);visibility:hidden;opacity:0;transform:scale(.5);transition:opacity .18s,transform .18s,visibility 0s .18s;pointer-events:none}
+#qk.open .rb{visibility:visible;opacity:1;transform:none;transition:opacity .18s,transform .18s;pointer-events:auto}
+#runb{right:calc(var(--ax) + var(--atk)/2 - .45*var(--D) - var(--b)*.46);bottom:calc(var(--ay) + var(--atk)/2 + 1.86*var(--D) - var(--b)*.46)}
+#snkb{right:calc(var(--ax) + var(--atk)/2 + .12*var(--D) - var(--b)*.46);bottom:calc(var(--ay) + var(--atk)/2 + 1.97*var(--D) - var(--b)*.46)}
+#torb{right:calc(var(--ax) + var(--atk)/2 + .74*var(--D) - var(--b)*.46);bottom:calc(var(--ay) + var(--atk)/2 + 1.74*var(--D) - var(--b)*.46)}
+#mntb{right:calc(var(--ax) + var(--atk)/2 + 1.3*var(--D) - var(--b)*.46);bottom:calc(var(--ay) + var(--atk)/2 + 1.28*var(--D) - var(--b)*.46)}
+/* modo de mover botões */
+body.hudedit #ui *{animation:none!important}
+body.hudedit .hmv{outline:2px dashed #ffe08a;outline-offset:3px;opacity:1!important;cursor:move}
+body.hudedit .hmv.bad{outline-color:#ff4a3a}
+#hudbar{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);z-index:20;display:none;align-items:center;gap:6px;padding:6px 8px 6px 14px;border:2px solid var(--g);border-radius:999px;background:linear-gradient(#2c1a26,#120a10);color:#ffe08a;font:700 12px var(--fn);box-shadow:0 4px 14px rgba(0,0,0,.6)}
+body.hudedit #hudbar{display:flex}#hudbar .ib{margin:0;padding:6px 12px;font-size:12px}
+/* painel 🎛️ */
+.hrow{display:flex;align-items:center;gap:10px;margin:6px 0;font:700 12px var(--fn);color:#f4ead2}.hrow span{flex:0 0 150px}.hrow b{flex:0 0 44px;text-align:right;color:#ffe08a}
+.hrow input[type=range]{flex:1;accent-color:#d9a948;height:22px}
+.htg{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.htg button{border:1px solid rgba(217,169,72,.45);border-radius:999px;background:rgba(0,0,0,.3);color:#cbb88a;font:700 11.5px var(--fn);padding:6px 11px}
+.htg button.on{background:rgba(217,169,72,.22);border-color:var(--g);color:#ffe08a}
+#hudw .wbox{overflow-y:auto}
+@media(max-height:340px){.hrow span{flex-basis:118px}}
+/* sem minimapa: a coluna de botões e a gaveta encostam na borda */
+body.nomm #tbar{right:var(--m)}body.nomm #drw{right:calc(var(--m) + var(--ub) + 8px)}

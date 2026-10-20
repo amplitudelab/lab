@@ -74,6 +74,12 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 14.6 — HUD imersiva e ajustável
+- **Menos botões na tela:** o ataque tem 4 botões em volta (mergulho, pulo, bloqueio e ✦). O ✦ abre um leque com correr, furtivo, tocha e montaria que fecha sozinho. Mapa, diário, primeira pessoa, HUD e menu ficam na gaveta ☰ ao lado do minimapa.
+- **Minimapa limpo:** toque para mudar o zoom, segure para abrir o mapa; a região aparece como legenda embaixo.
+- **Imersão:** fora de combate a HUD esmaece (botões mais que painéis) e volta ao tocar na tela ou entrar em luta; empurrar o joystick até a borda faz correr.
+- **Painel 🎛️ HUD:** tamanho da interface, tamanho dos botões, opacidade, esmaecer, minimapa, números de dano, botões pular/bloquear, missões compactas/completas/ocultas e modo de arrastar botões e painéis (não deixa soltar em cima de outro). Se o tamanho escolhido não couber na tela, a HUD diminui sozinha só naquela tela.
+
 ## Versões 14.1 → 14.5 — combate, equipamento, inimigos, masmorras e motor voxel
 - **Movimento (14.1):** pulo (⤒ / F) com golpe aéreo; mergulho com cambalhota no estilo Helldivers no lugar do dash; rios atravessáveis (água na cintura, mais lento); colisão pela borda do corpo; campo de visão no menu; chapéu não some mais; aviso de inventário cheio sem repetir; Vampiro mais resistente e servos do Necromante mais fracos.
 - **Equipamento (14.2):** o que você equipa aparece no herói; armas de duas mãos; mão esquerda com escudo, grimório de bolso ou segunda arma; qualidade por nível (Rústico → do Dragão) com nível mínimo; desmanchar em Fragmentos Arcanos e ascender raridade no Durin; segunda árvore de outra classe com o Eremita Ulric.

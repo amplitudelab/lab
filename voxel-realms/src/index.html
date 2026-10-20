@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script>const VR_VERSION='14.5';const VR_NOTE='Blocos com textura de voxel, grama descendo pela lateral, sombra nos cantos dos blocos, combate em primeira pessoa com arcos na tela e mao esquerda, heroi nao atravessa inimigos, ajuste automatico de desempenho';</script>
+<script>const VR_VERSION='14.6';const VR_NOTE='HUD mais limpa e imersiva: leque de acoes rapidas, gaveta de menus, minimapa por toque, HUD esmaece fora de combate e painel para ajustar tamanho, opacidade e posicao dos botoes';</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -40,7 +40,8 @@
   <div id="mw"><canvas id="mc" width="160" height="160"></canvas><span class="n">N</span></div>
   <div id="zm"><button id="zmi" class="rb" title="Aproximar">＋</button><button id="zmo" class="rb" title="Afastar">－</button></div>
   <div id="rg" class="wd"><b id="rn"></b><small id="rl"></small></div>
-  <div id="tbar"><button id="mapb" title="Mapa (M)">🗺️</button><button id="jrnb" title="Diário (J)">📜</button><button id="bagb" title="Inventário (I)">🎒</button><button id="treeb" title="Grimório (K)">📖</button><button id="fpvb" title="Primeira pessoa (X)">👁️</button><button id="menb" title="Menu (Esc)">⚙️</button></div>
+  <div id="tbar"><button id="bagb" title="Inventário (I)">🎒</button><button id="treeb" title="Grimório (K)">📖</button><button id="mnub" title="Mais">☰</button></div>
+  <div id="drw" class="wd"><button id="mapb" title="Mapa (M)"><i>🗺️</i>Mapa</button><button id="jrnb" title="Diário (J)"><i>📜</i>Diário</button><button id="fpvb" title="Primeira pessoa (X)"><i>👁️</i>1ª pessoa</button><button id="hudb" title="HUD"><i>🎛️</i>HUD</button><button id="menb" title="Menu (Esc)"><i>⚙️</i>Menu</button></div>
   <!-- avisos -->
   <div id="ts" class="wd"></div><div id="bn"></div><div id="zt"></div><div id="mas"></div>
   <!-- controles -->
@@ -51,7 +52,8 @@
     <div id="fuo" class="orb"><span id="fut"></span></div>
     <div id="xp"><i id="xpf"></i><b id="lvl">1</b></div>
   </div>
-  <button id="atk" class="rb"><i>⚔️</i></button><button id="rolb" class="rb" title="Mergulho (C)"><i>💨</i></button><button id="jmpb" class="rb" title="Pular (F)"><i>⤒</i></button><button id="runb" class="rb" title="Correr (Shift)"><i>🏃</i></button><button id="snkb" class="rb" title="Furtivo (N)"><i>🥷</i></button><button id="blkb" class="rb" title="Bloquear (Z)"><i>🛡️</i></button><button id="torb" class="rb on" title="Tocha (G)"><i>🔥</i></button><button id="mntb" class="rb" title="Montaria (R)" style="display:none"><i>🦁</i></button>
+  <button id="atk" class="rb"><i>⚔️</i></button><button id="rolb" class="rb" title="Mergulho (C)"><i>💨</i></button><button id="jmpb" class="rb" title="Pular (F)"><i>⤒</i></button><button id="blkb" class="rb" title="Bloquear (Z)"><i>🛡️</i></button><button id="qkb" class="rb" title="Ações rápidas"><i>✦</i></button>
+  <div id="qk"><button id="runb" class="rb" title="Correr (Shift)"><i>🏃</i></button><button id="snkb" class="rb" title="Furtivo (N)"><i>🥷</i></button><button id="torb" class="rb on" title="Tocha (G)"><i>🔥</i></button><button id="mntb" class="rb" title="Montaria (R)" style="display:none"><i>🦁</i></button></div>
   <button id="itb"><i></i><span></span></button>
   <!-- diálogo -->
   <div id="dlg" class="wd"><i id="di"></i><b id="dn"></b><p id="dt"></p><div id="dch"></div><u>▶</u></div>
@@ -67,6 +69,8 @@
 <div id="shop" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚒️ Forja da Helga</span><span id="shg"></span><button class="wx">✕</button></div><p class="ihint">Para vender, abra o inventário e escolha "Vender".</p><div id="shl"></div></div></div>
 <div id="bty" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">📋 Quadro de Recompensas</span><button class="wx">✕</button></div><div id="btyb"></div></div></div>
 <div id="subw" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🧓 Eremita Ulric · Segunda Árvore</span><button class="wx">✕</button></div><div id="subl"></div></div></div>
+<div id="hudw" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🎛️ HUD</span><button class="wx">✕</button></div><div id="hudl"></div></div></div>
+<div id="hudbar"><span>Arraste os botões e painéis</span><button id="hudok" class="ib">✔ Salvar</button><button id="hudrs" class="ib off">↺ Padrão</button></div>
 <div id="tree" class="win"><div class="book"><div class="pg bk-l"><div class="bk-h"><span id="bkSig"></span><div><b id="bkT"></b><small id="tpts"></small></div><div id="bkBooks"></div></div><div id="bkG"></div><div id="bkHb"></div></div><div class="pg bk-r"><div id="gdet"></div></div><div id="bkTabs"></div><button class="wx">✕</button></div></div>
 <div id="cook" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🍲 Cozinha da Marta</span><button class="wx">✕</button></div><p class="ihint">Pratos dão bônus por 4 minutos. Os ingredientes vêm dos animais.</p><div id="cookl"></div></div></div>
 <div id="frg" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚙️ Bancada do Durin</span><span id="frgg"></span><button class="wx">✕</button></div><p class="ihint">Aprimore a arma equipada até +5. Cada nível dá +9% de dano.</p><div id="frgl"></div></div></div>
@@ -76,8 +80,8 @@
 <div id="vrVer"></div>
 <div id="vrUpd" class="hidden"><b>VERSÃO NOVA DISPONÍVEL</b><span id="vrUpdTx"></span><button id="vrUpdGo">ATUALIZAR AGORA</button></div>
 <div id="menu" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚙️ Menu</span><button class="wx">✕</button></div>
-  <p id="dayl" class="ihint"></p><p id="menuVer" class="ihint"></p><button class="ib" id="gfx2">Gráficos</button><button class="ib" id="fpsb">Quadros</button><button class="ib" id="fovb">Campo de visão</button><button class="ib" id="musb">Música</button><button class="ib" id="sav">Salvar agora</button><button class="ib off" id="ret">Voltar ao título</button>
-  <div class="help"><b>Como jogar</b><p>Segure ⚔️ para atacar em combo. Cada nível dá 1 ponto de habilidade: abra ✨ para aprender magias e golpes e escolha os 4 atalhos da barra. O orbe da direita é Fúria (dourado, enche ao bater) ou Mana (azul, com cajado ou varinha). Use 💨 para mergulhar e rolar (estilo Helldivers) — desviar no último instante é uma Esquiva Perfeita (próximo golpe crítico). Use ⤒ (F) para pular; no ar, ataque para um golpe aéreo. Dá para atravessar rios: a água chega na cintura e deixa mais lento. Toque em 🏃 para correr e em 🔥 para guardar ou acender a tocha (G). Use ＋ e － ao lado do minimapa para aproximar ou afastar; no mapa, os filtros escolhem quais marcações aparecer. Chefes têm duas fases: na segunda ficam mais rápidos e usam novas habilidades. Compre pets com o Tobias, o Mercador, na praça da vila.</p>
+  <p id="dayl" class="ihint"></p><p id="menuVer" class="ihint"></p><button class="ib" id="gfx2">Gráficos</button><button class="ib" id="fpsb">Quadros</button><button class="ib" id="fovb">Campo de visão</button><button class="ib" id="hudm">🎛️ HUD</button><button class="ib" id="musb">Música</button><button class="ib" id="sav">Salvar agora</button><button class="ib off" id="ret">Voltar ao título</button>
+  <div class="help"><b>Como jogar</b><p>Segure ⚔️ para atacar em combo. Cada nível dá 1 ponto de habilidade: abra ✨ para aprender magias e golpes e escolha os 4 atalhos da barra. O orbe da direita é Fúria (dourado, enche ao bater) ou Mana (azul, com cajado ou varinha). Use 💨 para mergulhar e rolar (estilo Helldivers) — desviar no último instante é uma Esquiva Perfeita (próximo golpe crítico). Use ⤒ (F) para pular; no ar, ataque para um golpe aéreo. Dá para atravessar rios: a água chega na cintura e deixa mais lento. Toque em ✦ para abrir o leque com correr 🏃, furtivo 🥷, tocha 🔥 e montaria; empurrar o joystick até a borda também faz correr. No ☰ ficam mapa, diário, primeira pessoa, HUD e menu. Toque no minimapa para mudar o zoom e segure para abrir o mapa; no mapa, os filtros escolhem quais marcações aparecer. Em 🎛️ HUD você ajusta tamanho, opacidade, o que aparece e pode arrastar botões e painéis para outro lugar. Chefes têm duas fases: na segunda ficam mais rápidos e usam novas habilidades. Compre pets com o Tobias, o Mercador, na praça da vila.</p>
   <p>Monstros com nome azul são campeões; com nome amarelo, raros — e trazem tesouro. Feixes de luz amarela e laranja marcam itens raros e lendários. Toque em 💬, 📖 e 🌀 quando eles aparecerem para conversar, ler e viajar.</p></div></div></div>
 
 <script src="js/three.min.js"></script>
@@ -111,6 +115,7 @@
 <script src="js/gear.js"></script>
 <script src="js/foes.js"></script>
 <script src="js/trials.js"></script>
+<script src="js/hudcfg.js"></script>
 <script src="js/music.js"></script>
 <script src="js/grimoire.js"></script>
 <script src="js/main.js"></script>
