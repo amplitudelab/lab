@@ -50,10 +50,15 @@ const ROADS=[[[0,0],[17.3,259.8]],[[0,0],[285.8,17.3]],[[0,0],[-17.3,-273.7]],[[
 function segD(x,z,a,b){const dx=b[0]-a[0],dz=b[1]-a[1],t=cl(((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz),0,1);return hy(x-a[0]-dx*t,z-a[1]-dz*t)}
 function roadD(x,z){let m=1e9;for(const r of ROADS){const d=segD(x,z,r[0],r[1]);if(d<m)m=d}return m+(vnoise(x*.3,z*.3)-.5)*1.2}
 const FZ=[]; // zonas aplainadas para estruturas {x,z,r,h}
+const NOTREE=[]; // clareiras sem árvores e sem aplainar {x,z,r} (16.0)
 function rawH0(x,z){regW(x,z,RW);let h=0,s=0;for(let i=0;i<REG.length;i++)if(RW[i]>.01){h+=RW[i]*hReg(i,x,z);s+=RW[i]}h/=s;
   const rv=riverD(x,z);if(rv<11)h=Math.min(h,lerp(-1.7,h,sstep(2.4,10,rv)));
   const e=Math.max(Math.abs(x),Math.abs(z));if(e>WMAX-14)h+=(e-WMAX+14)*1.35*(.55+fbm(x*.05,z*.05,2)*.9);return h}
-function rawH(x,z){let h=rawH0(x,z);for(const f of FZ){const dx=x-f.x,dz=z-f.z;if(Math.abs(dx)<f.r&&Math.abs(dz)<f.r){const d=hy(dx,dz);if(d<f.r)h=lerp(h,f.h,1-sstep(f.r*.55,f.r,d))}}return h}
+// grade das zonas aplainadas (16.0): cada consulta só olha as zonas da célula de 32 m
+const FZC=32;let FZG=null,FZN=-1,FZL=null;
+function fzAt(x,z){if(FZ.length!==FZN||FZ[FZ.length-1]!==FZL){FZG=new Map();for(const f of FZ)for(let i=Math.floor((f.x-f.r)/FZC);i<=Math.floor((f.x+f.r)/FZC);i++)for(let j=Math.floor((f.z-f.r)/FZC);j<=Math.floor((f.z+f.r)/FZC);j++){const k=i*8192+j,L=FZG.get(k);if(L)L.push(f);else FZG.set(k,[f])}FZN=FZ.length;FZL=FZ[FZ.length-1]}
+  return FZG.get(Math.floor(x/FZC)*8192+Math.floor(z/FZC))}
+function rawH(x,z){let h=rawH0(x,z);const FL=fzAt(x,z);if(FL)for(const f of FL){const dx=x-f.x,dz=z-f.z;if(Math.abs(dx)<f.r&&Math.abs(dz)<f.r){const d=hy(dx,dz);if(d<f.r)h=lerp(h,f.h,1-sstep(f.r*.55,f.r,d))}}return h}
 const qh=h=>Math.round(h*2)/2,cellH=(ix,iz)=>qh(rawH(ix+.5,iz+.5));
 function flat(x,z,r,h){FZ.push({x,z,r,h:h==null?Math.max(.8,qh(rawH0(x,z))):h})}
 
@@ -147,7 +152,7 @@ function grass(f,x,y,z,c){f.box(.1,.55,.1,x,y+.27,z,c).box(.1,.42,.1,x+.18,y+.21
 class SB{constructor(k,ox,oy,oz,m){this.k=k;this.o=[ox,oy,oz];this.m=m}box(w,h,d,x,y,z,c,o){const m=this.m,O=this.o;this.k.box(w*m,h*m,d*m,O[0]+(x-O[0])*m,O[1]+(y-O[1])*m,O[2]+(z-O[2])*m,c,o);return this}}
 const TREE_S=1.6,ROCK_S=1.5,PROP_S=1.4; // árvores e objetos proporcionais ao herói (~2,9 de altura)
 function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*73856093^ch.cz*19349663^0x5bd1e995),col=ch.col;
-  const nearStr=(x,z)=>{for(const s of FZ)if(Math.abs(x-s.x)<s.r*.8&&Math.abs(z-s.z)<s.r*.8&&hy(x-s.x,z-s.z)<s.r*.8)return true;return false};
+  const nearStr=(x,z)=>{for(const s of NOTREE)if(Math.abs(x-s.x)<s.r&&Math.abs(z-s.z)<s.r&&hy(x-s.x,z-s.z)<s.r)return true;const FL=fzAt(x,z);if(FL)for(const s of FL)if(Math.abs(x-s.x)<s.r*.8&&Math.abs(z-s.z)<s.r*.8&&hy(x-s.x,z-s.z)<s.r*.8)return true;return false};
   const spot=(minH)=>{const x=x0+r()*CS,z=z0+r()*CS,ix=Math.floor(x)-x0,iz=Math.floor(z)-z0,h=ch.h[(ix+1)+(iz+1)*34];if(h<(minH==null?.25:minH)||roadD(x,z)<2.4||nearStr(x,z)||onBridge(x,z))return null;regW(x,z,RW);let b=0;for(let i=1;i<REG.length;i++)if(RW[i]>RW[b])b=i;return{x,z,h,b}};
   const N=[[3,0,1,40,20],[4,0,4,70,16],[5,0,2,40,150],[18,0,4,40,14],[10,0,3,10,6],[5,0,9,0,0],[14,0,3,40,16],[7,0,6,10,0],[2,0,2,80,10],[1.6,0,3,4,0],[3,0,2,30,10],[4,0,5,8,4]]; // árvores, -, pedras, grama, flores por região
   const db=regionAt(x0+CS/2,z0+CS/2);

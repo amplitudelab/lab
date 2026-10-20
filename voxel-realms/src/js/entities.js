@@ -107,7 +107,7 @@ function spawnNPCs(){mkNPC('bram','bram',-10,-33,{nm:'Ancião Bram',ic:'🧙',ta
 const invHide=d=>INV_OPEN.k>.2&&d<8;
 function npcUpd(dt,t){for(const n of NPC){const d=hy(n.x-P.x,n.z-P.z);n.m.g.visible=d<(MOB?50:80)&&!n.hidden&&!invHide(d);if(!n.m.g.visible)continue;let sp=0;
   if(n.follow){const M=n.follow;sp=mercUpd(n,dt,t);}
-  else if(n.wander){n.t-=dt;if(n.t<=0){n.t=4+R()*6;if(R()<.6){const a=R()*TAU,r=8+R()*30;n.tx=C(a)*r;n.tz=S(a)*r}}const dd=hy(n.tx-n.x,n.tz-n.z);if(dd>.8&&d>2.5){sp=1.5;moveEnt(n,(n.tx-n.x)/dd*sp,(n.tz-n.z)/dd*sp,dt,5,5,.45)}else moveEnt(n,0,0,dt,8,0,.45)}
+  else if(n.wander){n.t-=dt;if(n.t<=0){n.t=4+R()*6;if(R()<.6){const a=R()*TAU,r=n.wr?2+R()*n.wr:8+R()*30,ox=n.wr?n.hx:0,oz=n.wr?n.hz:0;n.tx=ox+C(a)*r;n.tz=oz+S(a)*r}}const dd=hy(n.tx-n.x,n.tz-n.z);if(dd>.8&&d>2.5){sp=1.5;moveEnt(n,(n.tx-n.x)/dd*sp,(n.tz-n.z)/dd*sp,dt,5,5,.45)}else moveEnt(n,0,0,dt,8,0,.45)}
   else{const dh=hy(n.hx-n.x,n.hz-n.z);if(dh>.5){sp=2;moveEnt(n,(n.hx-n.x)/dh*sp,(n.hz-n.z)/dh*sp,dt,6,6,.45)}else{n.vx=n.vz=0;if(d<6)n.f=angStep(n.f,Math.atan2(P.x-n.x,P.z-n.z),dt*3)}}
   for(const it of INTER)if(it.npc===n){it.x=n.x;it.z=n.z}
   n.m.g.position.set(n.x,n.y,n.z);n.m.g.rotation.y=n.f;if(!n.follow)animate(n.m,dt,t,{v:hy(n.vx,n.vz),atk:n.act&&{k:n.act.k,p:n.act.t/n.act.dur},sit:n.sit})}}

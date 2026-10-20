@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 15.9
+Atualizado em 20/10/2026 · versão atual do jogo: 16.0
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='16.0'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='16.1'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -131,6 +131,23 @@ audio2.js    15.9 (carrega DEPOIS do main.js): mesa AU2 (master+compressor, cana
              stepAt/sfxStep (superfícies, armadura, montarias), VFAM/VOX vozes dos bichos (idle/alert/hurt/die) via
              creaturesUpd e hurtMob, camadas BED + eventos AMBE por bioma, thunder/rainSound refeitos, ELS magias por
              elemento no skillHit, botão "Sons" (vr11_sfx). ambSndUpd antigo desligado.
+world5.js    16.0 (depois de weather2.js): baús de chefe BCH/bossChest/openBossChest/bossChestUpd (bossVictory chama
+             após 1,3 s; saque com 1º item raro ou melhor; some 45 s depois de aberto ou 10 min fechado). Os baús antigos
+             (CHESTS) ficam com vis=false, sem INTER, STR nem marcação no mapa; o salvamento continua igual. Vila: flats
+             com VY=1.5, sub() = TB em coordenadas do MUNDO, stoneTower(t,x,z,...) em coordenadas LOCAIS de t; 5 bairros
+             com addStr e POI; spawnNPCs ganha 12 moradores (wr = raio de passeio em volta de hx/hz, ver npcUpd em
+             entities.js) e 3 guardas. W5 = [região,x,z,tipo,ry?] (55 construções), W5P paletas por região, W5B
+             construtores; cais/palafitas ficam na margem (ry aponta para a água/terra).
+minimap2.js  16.0 (por último): minimapa em DPR, ladrilhos MM2 de 64 m feitos de chunk pronto (relevo, água, estradas,
+             pontes, árvores de chunk.col, prédios de STRC), LRU de 70; cores MMC (hostil vermelho, passivo azul,
+             aliado verde, morador branco, jogador laranja); MPL = jogadores remotos {x,z,f,n} para o multijogador;
+             MM2.hi mapa 768² gerado aos poucos (4 ms por quadro). mapRender SUBSTITUÍDO (não chama o de ui.js): MZ
+             {z 1–8, cx, cz} zoom/centro, mzSet/mzClamp/mzDraw, ladrilhos MM2 de perto (z>=2), névoa num canvas FN×FN
+             suavizado (MZ.fog), nomes de WP curtos (só ativadas; todas com z>=3), botões #mzi/#mzo/#mzh, pinça, roda e
+             arrastar (clique é anulado depois de arrastar). marks() filtra os bairros da vila (VPOI) com z<2,2.
+             Layout deitado: #map .mapbox em grade (coluna de filtros/legenda + mapa com 92vh−34px).
+world.js     16.0: fzAt() = grade de 32 m das zonas FZ (rawH e nearStr usam; se refaz quando FZ muda de tamanho/fim);
+             NOTREE [{x,z,r}] = clareiras sem árvores e sem aplainar (world5 põe uma em cada construção W5).
 ragdoll.js   morte: ragInit/ragUpd (tomba pelos pés com quaternion, molas nos membros, ragLow mantém acima do chão),
              corpos ficam ~10 s (RAG.max 14) e encolhem em poeira; mobsUpd chama ragUpd; herói usa P.rgE
 drops.js     dropItem/dropGold/dropGlobe com modelo do item (itemGroup do bag.js) + círculo de raridade
