@@ -106,11 +106,15 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
   // corrida: passada longa, braços dobrados bombeando, tronco inclinado, quique maior
   const rk_=cl((v-6)/2.5,0,1);if(rk_>0&&!zb){T.tL*=1+.35*rk_;T.tR*=1+.35*rk_;T.kL+=Math.max(0,cp)*.6*rk_;T.kR+=Math.max(0,-cp)*.6*rk_;T.sLx=sp*(.65+.45*rk_)*W;T.sRx=-sp*(.65+.45*rk_)*W;T.eL=T.eR=-(.7+.8*rk_);T.sLz=-.15;T.sRz=.15;T.trx=.1+.28*rk_;T.hy+=Math.abs(sp)*.05*rk_;T.hdx=-.12*rk_}
   if(s.dash){T.trx=.55;T.sLx=T.sRx=1;T.sLz=-.3;T.sRz=.3;T.eL=T.eR=-.2;T.tL=-.7;T.tR=.6;T.kL=.4;T.kR=1.2;T.hdx=-.3}
+  // 14.1: mergulho (corpo esticado, braços à frente), cambalhota encolhida e pose no ar
+  if(s.dive){T.trx=-.15;T.sLx=T.sRx=-2.9;T.sLz=-.12;T.sRz=.12;T.eL=T.eR=-.05;T.tL=T.tR=.2;T.kL=T.kR=.1;T.hdx=-.7;T.hry=0;T.try=0}
+  if(s.roll){T.trx=.6;T.tL=T.tR=-1.75;T.kL=T.kR=2.1;T.sLx=T.sRx=-1.1;T.sLz=-.2;T.sRz=.2;T.eL=T.eR=-1.7;T.hdx=.45;T.hy=.95;T.hry=0;T.try=0}
+  if(s.air&&!s.atk&&!s.dive){T.tL=-.8;T.kL=1.25;T.tR=.25;T.kR=.55;T.sLx=-.7;T.sRx=-.3;T.sLz=-.55;T.sRz=.55;T.eL=T.eR=-.5;T.trx=.05}
   if(zb){T.sLx=-1.35+sp*.15;T.sRx=-1.45-sp*.15;T.eL=T.eR=-.1;T.sLz=-.1;T.sRz=.1}
   if(s.aim){const pl=s.pull||.85;T.sLx=-1.55;T.sLz=0;T.sLy=.15;T.eL=-.05;T.sRx=-1.55;T.sRz=.1;T.eR=-.4-1.5*pl;T.try=-.85;T.hdy=.85;T.hry=-.35;T.tL=-.35;T.kL=.25;T.tR=.35;T.kR=.15;T.hy=.98}
   if(s.block){T.sLx=-1.25;T.eL=-1.25;T.sLz=-.35;T.sRx=-1.35;T.eR=-1.05;T.sRz=.55;T.sRy=-.5;T.trx=.12;T.tL=-.35;T.kL=.45;T.tR=.25;T.kR=.25;T.hy=.94}
   if(s.sneak&&!s.atk){T.hy=.8;T.tL-=.6;T.tR-=.6;T.kL+=1.05;T.kR+=1.05;T.trx=.38;T.hdx=-.25;T.sLx-=.25;T.sRx-=.25;T.eL-=.4;T.eR-=.4}
-  let k=s.dash?30:14;const a=s.atk;
+  let k=s.dash||s.roll?30:s.air?18:14;const a=s.atk;
   if(a){const p=a.p;k=28;switch(a.k){
     case 'slashA':{const w=seq(p,0,1,0,.32,.52),st=seq(p,0,.3,1,.32,.52);T.sRx=seq(p,T.sRx,-2.7,-.15,.32,.52);T.sRz=seq(p,T.sRz,.7,-.55,.32,.52);T.sRy=seq(p,0,.5,-.4,.32,.52);T.eR=seq(p,T.eR,-1.1,-.05,.32,.52);
       T.try=seq(p,T.try,.75,-.75,.32,.52);T.hry=seq(p,T.hry,.35,-.4,.32,.52);T.trx=.08+.12*st;T.trz=-.08*w;T.sLx=seq(p,T.sLx,.4,-.6,.32,.52);T.sLz=-.35*st;T.eL=-.6;T.tL=-.55*st;T.kL=.35*st;T.tR=.35*st;T.kR=.2*st;T.hy=1.02-.08*st;T.hdy=-T.try*.4;break}

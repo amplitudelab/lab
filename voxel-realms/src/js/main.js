@@ -64,7 +64,7 @@ function frame(now){requestAnimationFrame(frame);if(FPSC&&now-last<1000/FPSC-1.5
   fN++;fT+=raw;if(fT>2){const f=fN/fT;fN=fT=0;if(run&&f<22&&!LOADING){if(++lowF>=3&&PO.on){PO.on=false;toast('⚙️','Efeitos reduzidos','Para manter o jogo fluido.')}}else lowF=0}
   dayUpd(run?rdt:rdt*4);
   wxUpd(rdt,P.x,P.z);plxUpd(rdt,P.x,P.z);
-  if(run){playerUpd(dt,t);mobsUpd(dt,t);npcUpd(dt,t);animalsUpd(dt,t);projUpd(dt);minionsUpd(dt,t);vampUpd(dt);mountUpd(dt,t);petUpd(dt,t);spawnUpd(dt);lootUpd(dt,t);qObjUpd(dt,t);interUpd();wpUpd()}
+  if(run){playerUpd(dt,t);feelUpd(dt);mobsUpd(dt,t);npcUpd(dt,t);animalsUpd(dt,t);projUpd(dt);minionsUpd(dt,t);vampUpd(dt);mountUpd(dt,t);petUpd(dt,t);spawnUpd(dt);lootUpd(dt,t);qObjUpd(dt,t);interUpd();wpUpd()}
   else{CAMS.yawT+=rdt*.06;npcUpd(rdt,t);animalsUpd(rdt,t)}
   placesUpd(rdt,t);fxUpd(dt,rdt,t);ambUpd(rdt,t,P.x,P.z);lookUpd();birdsUpd(rdt,t,P.x,P.z);torchUpd(rdt,t);drsUpd(raw);vfxUpd(dt);world2Upd(dt);magicUpd(rdt);wglowUpd(rdt);decalUpd(rdt);ambienceUpd(rdt,t);musUpd(rdt);haloUpd(t);cloudsUpd(rdt,P.x,P.z);waterUpd(P.x,P.z,t);SHU.uT.value=t;SKU.t.value=t;
   INV_OPEN.k+=((UI.open=='inv'?1:0)-INV_OPEN.k)*damp(6,rdt);if(!run)P.m.g.position.set(P.x,P.y,P.z);if(!run)animate(P.m,rdt,t,{v:0});

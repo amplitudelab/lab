@@ -28,24 +28,24 @@ WPN_CLS.dagger='vampiro';ALLW.push('dagger');POW.sangue.w.push('dagger');
 // marca de classe: “da sua classe” se a classe dá preferência a esse tipo de arma
 function clsTag(it){if(it.slot!='arma'||!it.wk)return'';const w=(CLS_WPN[P.cls]||{})[it.wk]||1;if(w>=5)return'<span style="color:#7df08a">★ Arma da sua classe</span>';const c=Object.keys(CLS_WPN).find(k=>CLS_WPN[k][it.wk]>=5);return c?`<span style="color:#c8a888">Arma de ${CLS[c].n}</span>`:''}
 const _clsP=clsPassive;
-clsPassive=function(s){_clsP(s);if(P.cls=='necromante'){s.mag+=15;s.hpP=(s.hpP||0)-15;s.mreg=(s.mreg||8)+2}else if(P.cls=='vampiro'){s.ias+=10;s.ls+=3}};
+clsPassive=function(s){_clsP(s);if(P.cls=='necromante'){s.mag+=10;s.hpP=(s.hpP||0)-15;s.mreg=(s.mreg||8)+1}else if(P.cls=='vampiro'){s.ias+=10;s.ls+=6;s.hpP=(s.hpP||0)+12;s.arm+=8}}; // 14.1: Vampiro mais resistente, Necromante com menos poder
 
 // ---------- habilidades do Necromante
 Object.assign(SK,{
-  esqueleto:{t:'necro',n:'Erguer Esqueleto',ic:'💀',lv:1,cost:20,cd:1.5,mag:1,anim:'summon',dur:.6,hp:.55,d:r=>`Ergue um esqueleto guerreiro que luta por você por ${30+10*r} s (${60+15*(r-1)}% do seu dano por golpe).`},
+  esqueleto:{t:'necro',n:'Erguer Esqueleto',ic:'💀',lv:1,cost:24,cd:3,mag:1,anim:'summon',dur:.6,hp:.55,d:r=>`Ergue um esqueleto guerreiro que luta por você por ${30+10*r} s (${45+11*(r-1)}% do seu dano por golpe).`},
   lancaossos:{t:'necro',n:'Lança de Ossos',ic:'🦴',lv:2,cost:12,cd:.8,mag:1,anim:'palm',d:r=>`Dispara uma lança de ossos que atravessa os inimigos (${150+35*(r-1)}% de dano mágico).`},
-  arqueiroesq:{t:'necro',n:'Arqueiro Esquelético',ic:'🏹',lv:3,cost:25,cd:3,mag:1,anim:'summon',dur:.6,hp:.55,d:r=>`Ergue um esqueleto arqueiro por ${30+10*r} s que atira de longe (${55+15*(r-1)}% do seu dano).`},
-  senhor:{t:'necro',n:'Senhor dos Mortos',ic:'👑',lv:4,pas:1,d:r=>`Passiva: servos com +${20*r}% de vida e dano.${r>=3?' Limite de servos +1.':' No nível 3: limite de servos +1.'}`},
+  arqueiroesq:{t:'necro',n:'Arqueiro Esquelético',ic:'🏹',lv:3,cost:25,cd:3,mag:1,anim:'summon',dur:.6,hp:.55,d:r=>`Ergue um esqueleto arqueiro por ${30+10*r} s que atira de longe (${42+11*(r-1)}% do seu dano).`},
+  senhor:{t:'necro',n:'Senhor dos Mortos',ic:'👑',lv:4,pas:1,d:r=>`Passiva: servos com +${15*r}% de vida e dano.${r>=3?' Limite de servos +1.':' No nível 3: limite de servos +1.'}`},
   colheita:{t:'necro',n:'Colheita de Almas',ic:'🌫️',lv:5,cost:0,cd:10,mag:1,anim:'castUp',dur:.6,d:r=>`Drena as almas ao redor (${120+30*(r-1)}% de dano), cura seus servos e devolve Almas por inimigo atingido.`},
   pacto:{t:'necro',n:'Pacto Sombrio',ic:'📜',lv:6,pas:1,d:r=>`Passiva: +${10*r}% de Poder Mágico e Almas voltam ${2*r} por segundo mais rápido.`},
-  golemossos:{t:'necro',n:'Golem de Ossos',ic:'🗿',lv:8,cost:45,cd:20,mag:1,anim:'summon',dur:.8,hp:.6,d:r=>`Ergue um golem de ossos enorme por ${45+15*r} s que atrai os inimigos e esmaga o chão (${140+30*(r-1)}% do seu dano).`},
-  explosao:{t:'necro',n:'Explosão de Cadáver',ic:'💥',lv:10,cost:30,cd:12,mag:1,anim:'stomp',dur:.55,hp:.56,d:r=>`Seus servos explodem em ossos e chamas verdes (${260+60*(r-1)}% de dano em área cada).`}});
+  golemossos:{t:'necro',n:'Golem de Ossos',ic:'🗿',lv:8,cost:45,cd:20,mag:1,anim:'summon',dur:.8,hp:.6,d:r=>`Ergue um golem de ossos enorme por ${45+15*r} s que atrai os inimigos e esmaga o chão (${110+28*(r-1)}% do seu dano).`},
+  explosao:{t:'necro',n:'Explosão de Cadáver',ic:'💥',lv:10,cost:30,cd:12,mag:1,anim:'stomp',dur:.55,hp:.56,d:r=>`Seus servos explodem em ossos e chamas verdes (${190+45*(r-1)}% de dano em área cada).`}});
 // ---------- habilidades do Vampiro
 Object.assign(SK,{
-  garra:{t:'sangue',n:'Garra de Sangue',ic:'🩸',lv:1,cost:0,cd:.9,anim:'claw',dur:.5,hp:.45,d:r=>`Rasga à sua frente (${150+30*(r-1)}% de dano) e cura ${12+3*r}% do dano causado. Enche Sangue.`},
+  garra:{t:'sangue',n:'Garra de Sangue',ic:'🩸',lv:1,cost:0,cd:.7,anim:'claw',dur:.5,hp:.45,d:r=>`Rasga à sua frente (${150+30*(r-1)}% de dano) e cura ${18+4*r}% do dano causado. Enche Sangue.`},
   lancacarmesim:{t:'sangue',n:'Lança Carmesim',ic:'🔻',lv:2,cost:20,cd:2,anim:'palm',d:r=>`Arremessa sangue cristalizado que atravessa (${170+35*(r-1)}% de dano) e cura um pouco por inimigo.`},
   sede:{t:'sangue',n:'Sede Eterna',ic:'🦇',lv:3,pas:1,d:r=>`Passiva: +${3*r}% de roubo de vida (o total nunca passa de 15%).`},
-  nevoa:{t:'sangue',n:'Névoa Rubra',ic:'🌫️',lv:3,cost:15,cd:6,d:r=>`Vira névoa e atravessa 9 m intocável, ferindo quem estiver no caminho (${140+40*(r-1)}%).`},
+  nevoa:{t:'sangue',n:'Névoa Rubra',ic:'🌫️',lv:3,cost:15,cd:4,d:r=>`Vira névoa e atravessa 9 m intocável, ferindo quem estiver no caminho (${140+40*(r-1)}%).`},
   frenesi:{t:'sangue',n:'Frenesi',ic:'💢',lv:5,cost:30,cd:16,anim:'shout',dur:.6,hp:.4,d:r=>`Por 8 s: +${20+10*r}% de velocidade de ataque e +5% de roubo de vida.`},
   noturno:{t:'sangue',n:'Filho da Noite',ic:'🌙',lv:5,pas:1,d:r=>`Passiva: à noite, +${8*r}% de dano e regeneração de vida.`},
   sifao:{t:'sangue',n:'Sifão Vital',ic:'🫀',lv:6,cost:25,cd:9,anim:'palm',dur:.5,d:r=>`Puxa a vida do inimigo mais próximo por 1,5 s (${200+40*(r-1)}% no total) e cura metade.`},
@@ -56,11 +56,11 @@ skPassive=function(s){_skp(s);s.mag+=10*rk('pacto');s.mreg=(s.mreg||8)+2*rk('pac
 // vampiro: frenesi e noite aplicados em tempo real (sem recalcular o modelo)
 function vampUpd(dt){if(P.cls!='vampiro'||P.dead)return;if(NIGHT>.5&&rk('noturno'))P.hp=Math.min(ST.mx,P.hp+(1+P.lv*.3)*rk('noturno')*dt)}
 const vampDmg=()=>P.cls=='vampiro'&&NIGHT>.5?1+.08*rk('noturno'):1;
-const MINCAP=()=>3+(rk('senhor')>=3?1:0),MINK=()=>1+.2*rk('senhor');
+const MINCAP=()=>2+(rk('senhor')>=3?1:0),MINK=()=>1+.15*rk('senhor'); // 14.1: servos mais fracos (o Necromante estava fácil demais)
 
 // ---------- servos
 const MIN=[];
-const MINDEF={guerreiro:{mdl:'skeleton',w:'sword',hp:60,sp:5.2,rg:1.8,cd:1.1,mul:.6,r:.5},arqueiro:{mdl:'skeleton',w:'bow',hp:40,sp:4.8,rg:11,cd:1.6,mul:.55,ranged:1,r:.5},golem:{mdl:'bgolem',hp:220,sp:3.6,rg:2.6,cd:1.8,mul:1.4,r:1.1,big:1}};
+const MINDEF={guerreiro:{mdl:'skeleton',w:'sword',hp:42,sp:5.2,rg:1.8,cd:1.2,mul:.45,r:.5},arqueiro:{mdl:'skeleton',w:'bow',hp:30,sp:4.8,rg:11,cd:1.8,mul:.42,ranged:1,r:.5},golem:{mdl:'bgolem',hp:160,sp:3.6,rg:2.6,cd:2,mul:1.1,r:1.1,big:1}};
 MDL.bgolem=()=>hum({skin:0xd8d0c0,shirt:0xe0d8c4,pants:0xc8c0ae,boots:0xb8b0a0,shoulders:0x7dff9a,bones:0x8a8474,arm:0xd8d0c0,eyes:0x111111,glowEyes:0x7dff9a,bulk:1.6,scale:1.35,noFace:1});
 function summon(kind,r){const D=MINDEF[kind];if(kind=='golem'){for(const m of MIN)if(m.kind=='golem')minionDie(m,1)}
   const others=MIN.filter(m=>m.kind!='golem');if(kind!='golem'&&others.length>=MINCAP())minionDie(others[0],1);
@@ -70,7 +70,7 @@ function summon(kind,r){const D=MINDEF[kind];if(kind=='golem'){for(const m of MI
 function minionDie(o,quiet){const i=MIN.indexOf(o);if(i<0)return;MIN.splice(i,1);sc.remove(o.m.g);dropModel(o.m);if(!quiet){}fx(o.x,o.y+1,o.z,0xe8e0cc,14,6,.18,1,12);fx(o.x,o.y+1,o.z,0x7dff9a,8,3,.12,1.5,-1);puff(o.x,o.y+.5,o.z,0x8a8474,1.6)}
 function minionHurt(o,d){o.hp-=d;o.hurt=1;pop('-'+Math.round(d),o.x,o.y+2.6,o.z,'#c8ffd0');if(o.hp<=0)minionDie(o)}
 function minionTarget(e){if(!MIN.length)return null;let b=null,bd=1e9;for(const o of MIN){const d=hy(o.x-e.x,o.z-e.z)-(o.D.big?3:0);if(d<bd){bd=d;b=o}}
-  const dp=hy(P.x-e.x,P.z-e.z);return b&&bd<dp-1.5&&bd<12?b:null}
+  const dp=hy(P.x-e.x,P.z-e.z);if(e.boss||e.el)return b&&bd<dp-4&&bd<6?b:null;if(e.tgS==null)e.tgS=R();return b&&e.tgS<.6&&bd<dp-2.5&&bd<10?b:null}
 function minionsUpd(dt,t){for(let i=MIN.length-1;i>=0;i--){const o=MIN[i],D=o.D;o.t-=dt;o.cd-=dt;o.hurt=Math.max(0,(o.hurt||0)-dt*4);if(o.t<=0||P.dead){minionDie(o);continue}
     if(o.rise>0){o.rise=Math.max(0,o.rise-dt*1.6)}
     // alvo: o que o jogador ataca, ou o inimigo mais perto do jogador
@@ -94,9 +94,9 @@ function newSkill(id,a,r){const t=a.tg,f=t?Math.atan2(t.x-P.x,t.z-P.z):P.f,ox=P.
       for(let i=0;i<4;i++)setTimeout(()=>fx(lerp(e.x,P.x,i/4),P.y+1.4,lerp(e.z,P.z,i/4),0x7dff9a,2,1,.12,.5,0),i*60)}
     P.fury=Math.min(100,P.fury+8*n);for(const o of MIN){o.hp=Math.min(o.mx,o.hp+o.mx*.35);fx(o.x,o.y+1.4,o.z,0x7dff9a,6,2,.1,1.6,-1)}snd(220,.5,'sine');return true}
   if(id=='explosao'){if(!MIN.length){pop('Sem servos',P.x,P.y+3,P.z,'#c8ffd0');return true}for(const o of MIN.slice()){const x=o.x,z=o.z;ring(x,z,4,0x7dff9a,.5);flash(x,o.y+1,z,0x7dff9a,6,.35);boom(x,o.y,z,1.4,0x7dff9a);fx(x,o.y+1,z,0xe8e0cc,18,10,.2,1.2,12);fx(x,o.y+1,z,0x7dff9a,14,8,.18,1.4,0);
-      for(const e of E)if(!e.dead&&hy(e.x-x,e.z-z)-e.r<4){const[dm,c]=spellDmg(2.6+.6*(r-1));hurtMob(e,dm,c,'explosao')}minionDie(o,1)}SHK=Math.max(SHK,.5);snd(70,.5,'sawtooth');return true}
+      for(const e of E)if(!e.dead&&hy(e.x-x,e.z-z)-e.r<4){const[dm,c]=spellDmg(1.9+.45*(r-1));hurtMob(e,dm,c,'explosao')}minionDie(o,1)}SHK=Math.max(SHK,.5);snd(70,.5,'sawtooth');return true}
   if(id=='garra'){let h=0;for(const e of E){if(e.dead)continue;const dx=e.x-P.x,dz=e.z-P.z,d=hy(dx,dz)-e.r;if(d<3&&(d<1.2||Math.abs(angDiff(f,Math.atan2(dx,dz)))<1.1)){const[dm,c]=rollDmg(1.5+.3*(r-1));hurtMob(e,dm,c,'garra');h+=dm;impactFx(e,1);fx(e.x,e.y+1.2,e.z,0xb01a2a,6,4,.12,1,8)}}
-    if(h){heal(h*(.12+.03*r));addFury(14)}for(let i=0;i<3;i++){const an=f-.6+i*.6;fx(P.x+S(an)*1.8,P.y+1.4,P.z+C(an)*1.8,0xff3a4a,3,2,.1,.3,0)}ring(ox,oz,1.6,0xff3a4a,.25);sweep(900,300,.12,'sawtooth',.04);return true}
+    if(h){heal(h*(.18+.04*r));addFury(16)}for(let i=0;i<3;i++){const an=f-.6+i*.6;fx(P.x+S(an)*1.8,P.y+1.4,P.z+C(an)*1.8,0xff3a4a,3,2,.1,.3,0)}ring(ox,oz,1.6,0xff3a4a,.25);sweep(900,300,.12,'sawtooth',.04);return true}
   if(id=='lancacarmesim'){proj('p','arrow',ox,P.y+1.6,oz,t||{x:P.x+S(f)*20,z:P.z+C(f)*20,y:P.y},rollDmg(1.7+.35*(r-1))[0],{pierce:1,c:0xff3a4a,dir:t?null:new V3(S(f),0,C(f)),home:0,lh:1});flash(ox,P.y+1.6,oz,0xff3a4a,2.4,.15);fx(ox,P.y+1.6,oz,0xff3a4a,8,3,.1,.5,0);sweep(500,200,.2,'sawtooth',.05);return true}
   if(id=='nevoa'){const sx=P.x,sz=P.z;let tx=P.x+S(f)*9,tz=P.z+C(f)*9;for(let i=0;i<9;i++){const x=lerp(sx,tx,i/8),z=lerp(sz,tz,i/8);if(!walkable(x,z)){tx=lerp(sx,tx,(i-1)/8);tz=lerp(sz,tz,(i-1)/8);break}puff(x,groundAt(x,z)+1,z,0x8a1020,1.8);fx(x,groundAt(x,z)+1,z,0xff3a4a,2,1.5,.15,.6,-1)}
     for(const e of E)if(!e.dead&&segD(e.x,e.z,[sx,sz],[tx,tz])<e.r+1){const[dm,c]=rollDmg(1.4+.4*(r-1));hurtMob(e,dm,c,'nevoa')}P.x=tx;P.z=tz;P.inv=Math.max(P.inv,.4);sweep(800,150,.3,'sawtooth',.04);return true}
@@ -107,4 +107,4 @@ function newSkill(id,a,r){const t=a.tg,f=t?Math.atan2(t.x-P.x,t.z-P.z):P.f,ox=P.
   return false}
 // vampiro é fraco contra fogo
 const _hp0=hitPlayer;
-hitPlayer=function(d,o){if(P.cls=='vampiro'&&o&&o.brn)d*=1.25;return _hp0(d,o)};
+hitPlayer=function(d,o){if(P.cls=='vampiro'&&o&&o.brn)d*=1.1;return _hp0(d,o)};

@@ -34,7 +34,7 @@ function puff(x,y,z,c,sz){const p=PUF[pfi++%PUF.length];p.l=p.m=.55+R()*.25;p.z=
 // ---------- anéis, alertas de área (estilo Diablo) e feixes de saque
 const RGG=new THREE.RingGeometry(.86,1,40),DSK=new THREE.CircleGeometry(1,40),RG=[];
 const RPL=[],TPL=[]; // anéis e alertas reaproveitados (nada de alocar a cada golpe)
-function ring(x,z,r,c,t,grow){const m=RPL.pop()||(()=>{const q=new THREE.Mesh(RGG,new THREE.MeshBasicMaterial({transparent:true,side:2,depthWrite:false,blending:THREE.AdditiveBlending}));q.rotation.x=-PI/2;return q})();m.material.color.setHex(c);m.material.opacity=1;m.position.set(x,groundAt(x,z)+.12,z);sc.add(m);RG.push({m,t,mx:t,r,grow:grow!==0})}
+function ring(x,z,r,c,t,grow,y){const m=RPL.pop()||(()=>{const q=new THREE.Mesh(RGG,new THREE.MeshBasicMaterial({transparent:true,side:2,depthWrite:false,blending:THREE.AdditiveBlending}));q.rotation.x=-PI/2;return q})();m.material.color.setHex(c);m.material.opacity=1;m.position.set(x,y==null?groundAt(x,z)+.12:y,z);sc.add(m);RG.push({m,t,mx:t,r,grow:grow!==0})}
 const TEL=[];
 function tele(x,z,r,t,cb,c){let u=TPL.pop();if(!u){const g=new THREE.Group(),o=new THREE.Mesh(RGG,new THREE.MeshBasicMaterial({transparent:true,side:2,depthWrite:false})),f=new THREE.Mesh(DSK,new THREE.MeshBasicMaterial({transparent:true,opacity:.28,side:2,depthWrite:false}));g.add(o,f);g.rotation.x=-PI/2;u={g,o,f}}
   const g=u.g,o=u.o,f=u.f;o.material.color.setHex(c||0xff3a1a);f.material.color.setHex(c||0xff3a1a);f.scale.setScalar(0);g.position.set(x,groundAt(x,z)+.14,z);g.scale.setScalar(r);sc.add(g);const T={g,f,o,t,mx:t,cb,x,z,r};TEL.push(T);return T}

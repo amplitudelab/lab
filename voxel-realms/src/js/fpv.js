@@ -53,8 +53,8 @@ function fpvCam(dt){const tgt=FPV.on&&run?1:0;FPV.k+=(tgt-FPV.k)*Math.min(1,dt*7
   if(k<.001){if(cam.near!==.5){cam.near=.5;cam.updateProjectionMatrix()}return}
   if(run&&!P.dead&&!P.leap)P.f=CAMS.yaw+PI;                 // o corpo acompanha o olhar (andar de lado funciona)
   const v=FPV.sv||0,bob=S(FPV.ph)*.016*v;FPV.tilt+=((P.dash>0?.06:0)-FPV.tilt)*Math.min(1,dt*10);
-  _fpo.set(P.x,P.y+2.5+mountY()+bob,P.z);_fe.set(FPV.pitch,CAMS.yaw,FPV.tilt+C(FPV.ph*.5)*.004*v);_fq.setFromEuler(_fe);
+  _fpo.set(P.x,P.y+2.5+mountY()+bob-(P.dash>0&&P.dive?1.2:P.roll>0?1.1*S((1-P.roll/.34)*PI)+.3:0),P.z);_fe.set(FPV.pitch,CAMS.yaw,FPV.tilt+C(FPV.ph*.5)*.004*v);_fq.setFromEuler(_fe);
   cam.position.lerp(_fpo,k);cam.quaternion.slerp(_fq,k);if(SHK>.01)cam.position.add(_fpo.set((R()-.5)*SHK*.3,(R()-.5)*SHK*.3,0));
   const nf=lerp(.5,.12,k);if(Math.abs(cam.near-nf)>.01){cam.near=nf;cam.updateProjectionMatrix()}
-  const ff=lerp(cam.fov,(innerHeight>innerWidth?75:68)+(P.run&&P.v>6?5:0),k);if(Math.abs(ff-cam.fov)>.05){cam.fov=ff;cam.updateProjectionMatrix()}
+  const ff=lerp(cam.fov,fovT()+22+(P.run&&P.v>6?5:0)+(P.dash>0?6:0),k);if(Math.abs(ff-cam.fov)>.05){cam.fov=ff;cam.updateProjectionMatrix()}
   cam.updateMatrixWorld();SHU.uCam.value.copy(cam.position);SKY.position.copy(cam.position)}

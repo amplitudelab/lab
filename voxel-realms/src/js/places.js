@@ -112,8 +112,8 @@ addStr(-48,-132,0,(k,e,f)=>{const t=new TB(k,e,f,-48,-132,0,null,1.35);for(let y
   for(let i=0;i<10;i++)t.b(.8+hash2(i,1),.6,.8,(hash2(i,2)-.5)*12,.3,(hash2(i,3)-.5)*12,0x7a7a74,{ry:i});t.col(0,0,3.4);bookStand(t,2,4)});
 // Cemitério Esquecido (zumbis!)
 flat(-112,-96,28);
-addStr(-112,-96,0,(k,e,f)=>{const t=new TB(k,e,f,-112,-96,0,null,1.25);for(let i=0;i<64;i++){const s=i>>4,j=(i%16)/16*28-14;const x=s==0?j:s==1?14:s==2?-j:-14,z=s==0?-14:s==1?j:s==2?14:-j;if(s==2&&Math.abs(j)<2.5)continue;t.b(.14,1.8,.14,x,.9,z,0x2a2a2e,{g:1}).b(.22,.22,.22,x,1.9,z,0x3a3a40);if(i%2)t.b(1.8,.1,.1,x+(s%2?0:.9),1.4,z+(s%2?.9:0),0x2a2a2e)}
-  for(let i=0;i<24;i++){const x=-10+(i%6)*4+(hash2(i,1)-.5),z=-9+((i/6)|0)*4.6,tp=hash2(i,4);t.b(1.1,.3,2,x,.15,z+1,0x4a3a2a,{g:1});if(tp<.5)t.b(.9,1.3,.25,x,.65,z,0x8a8a8a,{g:1}).b(.6,.2,.26,x,1.4,z,0x9a9a9a);else{t.b(.2,1.6,.2,x,.8,z,0x9a9a9a).b(.9,.2,.2,x,1.2,z,0x9a9a9a)}}
+addStr(-112,-96,0,(k,e,f)=>{const t=new TB(k,e,f,-112,-96,0,null,1.25);for(let i=0;i<64;i++){const s=i>>4,j=(i%16)/16*28-14;const x=s==0?j:s==1?14:s==2?-j:-14,z=s==0?-14:s==1?j:s==2?14:-j;if(s==2&&Math.abs(j)<2.5)continue;t.b(.14,1.8,.14,x,.9,z,0x2a2a2e,{g:1}).b(.22,.22,.22,x,1.9,z,0x3a3a40);t.col(x,z,.35);if(i%2)t.b(1.8,.1,.1,x+(s%2?0:.9),1.4,z+(s%2?.9:0),0x2a2a2e)}
+  for(let i=0;i<24;i++){const x=-10+(i%6)*4+(hash2(i,1)-.5),z=-9+((i/6)|0)*4.6,tp=hash2(i,4);t.b(1.1,.3,2,x,.15,z+1,0x4a3a2a,{g:1});t.col(x,z,.5);if(tp<.5)t.b(.9,1.3,.25,x,.65,z,0x8a8a8a,{g:1}).b(.6,.2,.26,x,1.4,z,0x9a9a9a);else{t.b(.2,1.6,.2,x,.8,z,0x9a9a9a).b(.9,.2,.2,x,1.2,z,0x9a9a9a)}}
   t.b(6,4.5,5,0,2.25,-11,0x5a5a5e,{g:1});for(let i=0;i<4;i++)t.b(7-i*1.6,.6,6-i*1,0,4.8+i*.6,-11,0x4a4a4e);t.b(1.6,2.4,.2,0,1.2,-8.4,0x1a1a1e);t.e_(.4,.4,.4,-1.4,2.6,-8.3,0x7dff6a).e_(.4,.4,.4,1.4,2.6,-8.3,0x7dff6a);t.col(0,-11,3.2);
   for(const[x,z]of[[-12,12],[12,12],[-12,-12],[12,-12]]){t.b(.2,2.4,.2,x,1.2,z,0x2a2a2a);t.e_(.4,.4,.4,x,2.6,z,0x7dff6a)}bookStand(t,0,-6)});
 // Bosque do Ancião (arena do chefe)

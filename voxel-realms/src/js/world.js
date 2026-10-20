@@ -129,7 +129,7 @@ function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*738560
     else if(p.b==4){if(p.h<-.7)continue;mangrove(k,f,p.x,p.h,p.z,s,lod,e);col.push([p.x,p.z,1.1*s])}
     else{if(p.h<.3)continue;deadTree(k,p.x,p.h,p.z,s);col.push([p.x,p.z,.6*s])}}
   // pedras
-  for(let i=0;i<N[db][2]+1;i++){const p=spot();if(!p)continue;const s=(.7+r()*1.1)*ROCK_S;rock(k,p.x,p.h,p.z,s,p.b==5?0x2a2224:p.b==4?0x5a5a4a:0x8a8a84,p.b==3||p.b==4);if(s>1.6)col.push([p.x,p.z,.7*s]);
+  for(let i=0;i<N[db][2]+1;i++){const p=spot();if(!p)continue;const s=(.7+r()*1.1)*ROCK_S;rock(k,p.x,p.h,p.z,s,p.b==5?0x2a2224:p.b==4?0x5a5a4a:0x8a8a84,p.b==3||p.b==4);col.push([p.x,p.z,.6*s]);
     if(p.b==5&&r()<.6){k.box(.5,2.5+r()*2,.5,p.x+1.4,p.h+1.2,p.z,0x1a1418,{rz:.3,ry:r()*3});}}
   if(lod>1)return;
   // detalhes pequenos (só perto): grama, flores, cogumelos, juncos, trigo, vitórias-régias

@@ -44,7 +44,7 @@ const SHU={uSunV:{value:new V3(0,0,-1)},uT:{value:0},uW:{value:1},uRim:{value:ne
 // a malha com vento recebe só folhagem (copas, grama, flores): todo vértice balança, com fase pela posição
 const WIND='\n{vec4 wp=modelMatrix*vec4(transformed,1.);float ph=wp.x*.37+wp.z*.29;transformed.x+=sin(uT*1.6*(.7+uW*.3)+ph)*.06*uW;transformed.z+=cos(uT*1.25+ph*1.31)*.045*uW;}\n';
 // "raio-x": o que fica entre a câmera e o herói vira pontilhado (como as paredes no Diablo)
-const XRAY='{vec3 ab=uPl-uCam;float L=length(ab);vec3 dd=ab/L;float tt=dot(vWP-uCam,dd);if(tt>0.&&tt<L-1.4){float rr=mix(.8,2.6,tt/L),r=length(vWP-uCam-dd*tt);if(r<rr){float th=mod(floor(gl_FragCoord.x)+floor(gl_FragCoord.y)*2.,4.)*.25;if(th<(1.-r/rr)*1.6)discard;}}}';
+const XRAY='{vec3 ab=uPl-uCam;float L=length(ab);vec3 dd=ab/L;float tt=dot(vWP-uCam,dd);if(tt>0.&&tt<L-1.4&&length(vWP-uPl)>2.5){float rr=mix(.8,2.6,tt/L),r=length(vWP-uCam-dd*tt);if(r<rr){float th=mod(floor(gl_FragCoord.x)+floor(gl_FragCoord.y)*2.,4.)*.25;if(th<(1.-r/rr)*1.6)discard;}}}';
 // 14.0 · chanfro voxel: cada caixa ganha bordas escurecidas e a aresta de cima iluminada (aFs = tamanho da face);
 // no terreno (aFs<0) a grade marca cada voxel 1×1 no topo e fatias de 0,5 nas laterais. Some com a distância.
 const VOXB='{vec2 fs=vFs;if(fs.x!=0.&&uBv>0.){vec2 q=vBv,e,sz;if(fs.x<0.){vec2 k=vec2(1.,fs.y<-1.5?2.:1.),f=fract(q*k);e=min(f,1.-f)/k;sz=1./k;}else{e=min(q,fs-q);sz=fs;}'+
@@ -157,5 +157,7 @@ function render(){SHU.uSunV.value.copy(ELEV>-.04?SUND:MOOND).transformDirection(
     const u=MBL.uniforms;for(let i=1;i<(GL==2?3:2);i++){u.t.value=RA.texture;u.d.value.set(i/PSZ[0],0);pass(MBL,RB);u.t.value=RB.texture;u.d.value.set(0,i/PSZ[1]);pass(MBL,RA)}
     const c=MCO.uniforms;c.t.value=RTM.texture;c.b.value=RA.texture;c.s.value=RS.texture;c.dp.value=RTM.depthTexture;c.si.value=si>.01?si:0;c.hv.value=frameN%64;c.nf.value=NIGHT;c.bi.value=.75+NIGHT*.35;pass(MCO,null)}
   catch(e){console.warn('pós desligado',e);PO.on=false}}
-function rs(){rd.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.fov=innerHeight>innerWidth?60:52;cam.updateProjectionMatrix();postSize()}
-addEventListener('resize',rs);addEventListener('orientationchange',()=>setTimeout(rs,300));rs();
+let FOVB=62;try{const f=+localStorage.getItem('vr11_fov');if(f>=50&&f<=90)FOVB=f}catch(e){} // campo de visão (3ª pessoa); a 1ª pessoa usa +22
+const fovT=()=>FOVB+(innerHeight>innerWidth?8:0);
+let RSW=0,RSH=0;function rs(){RSW=innerWidth;RSH=innerHeight;rd.setSize(RSW,RSH,false);rd.domElement.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;display:block';cam.aspect=RSW/RSH;cam.fov=fovT();cam.updateProjectionMatrix();postSize()}
+addEventListener('resize',rs);addEventListener('orientationchange',()=>setTimeout(rs,300));document.addEventListener('fullscreenchange',()=>{rs();setTimeout(rs,300)});if(window.visualViewport)visualViewport.addEventListener('resize',()=>setTimeout(rs,60));rs();

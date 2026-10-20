@@ -128,3 +128,7 @@ body.run #vrVer{display:none}
 /* atalhos do HUD com ícone em pixel art e anel na cor do elemento */
 .sk i.px{width:68%;height:68%;background:center/contain no-repeat;filter:drop-shadow(0 2px 1px #000)}
 .sk[style*="--ec"]{border-color:var(--ec);box-shadow:inset 0 0 10px rgba(0,0,0,.8),0 0 8px color-mix(in srgb,var(--ec) 55%,transparent)}
+/* 14.1: botão de pulo no anel externo, à esquerda do mergulho */
+#jmpb{width:var(--b);height:var(--b);font-size:calc(var(--b)*.5);font-weight:700;color:#ffe08a;right:calc(var(--ax) + var(--atk)/2 + 1.66*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 - .08*var(--D) - var(--b)/2)}
+#jmpb i{font-style:normal;text-shadow:0 2px 2px #000}
+@media (max-height:340px){#jmpb{right:calc(var(--ax) + var(--atk)/2 + .55*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 + 1.72*var(--D) - var(--b)/2)}}

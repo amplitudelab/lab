@@ -14,7 +14,7 @@ function camUpd(dt){const c=CAMS;c.yaw+=angDiff(c.yaw,c.yawT)*damp(12,dt);c.pit+
   let x=c.cx+sy*d,z=c.cz+cz*d,y=c.cy+1.6+sp*d;const g=groundAt(x,z)+1.2;if(y<g)y=g;
   if(INV_OPEN.k>.002){const k=INV_OPEN.k*INV_OPEN.k*(3-2*INV_OPEN.k),a=c.yaw+angDiff(c.yaw,P.f)*k,dd=lerp(d*C(c.pit),5.6,k);x=P.x+S(a)*dd;z=P.z+C(a)*dd;y=lerp(y,P.y+2.3,k);LTV.set(lerp(c.cx,P.x,k),lerp(c.cy+1.4,P.y+1.6,k),lerp(c.cz,P.z,k));cam.setViewOffset(innerWidth,innerHeight,innerWidth*INV_OPEN.off*k,0,innerWidth,innerHeight)}
   else{LTV.set(c.cx,c.cy+1.4,c.cz);if(cam.view&&cam.view.enabled)cam.clearViewOffset()}
-  const tf=(innerHeight>innerWidth?60:52)+(P.run&&P.v>6?6:0)+(P.dash>0?4:0);if(Math.abs(tf-cam.fov)>.05){cam.fov+=(tf-cam.fov)*damp(5,dt);cam.updateProjectionMatrix()}
+  const tf=fovT()+(P.run&&P.v>6?6:0)+(P.dash>0?6:0)+(P.air?3:0);if(Math.abs(tf-cam.fov)>.05){cam.fov+=(tf-cam.fov)*damp(5,dt);cam.updateProjectionMatrix()}
   const tq=performance.now()/1000,sk=SHK*.42;cam.position.set(x+(S(tq*41)+S(tq*23.7+1.7)*.6)*sk,y+(S(tq*37.1+.6)+S(tq*19.3+2.1)*.6)*sk,z+(S(tq*29.3+3.3)+S(tq*45.9)*.5)*sk);SHK*=Math.pow(.02,dt);cam.lookAt(LTV);cam.updateMatrixWorld();SHU.uCam.value.copy(cam.position);SHU.uPl.value.set(P.x,P.y+1.4,P.z);
   SKY.position.copy(cam.position);for(const l of MTN)l.m.position.set(cam.position.x*l.f,0,cam.position.z*l.f);
   cam.getWorldDirection(_cd);const fc=_cd.dot(SUND);_pp.copy(SUND).multiplyScalar(400).add(cam.position).project(cam);SUNV=_pp.z<1&&fc>.05&&ELEV>-.05?cl((fc-.05)*1.6,0,1):0;SUNP.set(_pp.x*.5+.5,_pp.y*.5+.5);
@@ -36,7 +36,7 @@ function bindInput(){const jb=$('jb'),jk=$('jk');
   addEventListener('keydown',e=>{if(e.repeat)return;kd[e.code]=1;if(!run)return;const c=e.code;
     if(DLG){if(c=='Enter'||c=='Space'||c=='KeyE')dlgNext();return}
     if(c=='Escape'){if(UI.open)closeAll();else openMenu();return}if(c=='KeyI'||c=='KeyB'){UI.open=='inv'?closeAll():openInv();return}if(c=='KeyM'){UI.open=='map'?closeAll():openMap(false);return}if(c=='KeyK'||c=='KeyT'){UI.open=='tree'?closeAll():openTree();return}if(c=='KeyJ'||c=='KeyL'){UI.open=='jrn'?closeAll():openJournal();return}
-    if(UI.open)return;if(c=='Space'){UI.atkHeld=1;attack()}if(/Digit[1-4]/.test(c))useSkill(+c[5]-1);if(c=='KeyQ')potion();if(c=='ShiftLeft'||c=='ShiftRight')toggleRun(1);if(c=='KeyC'||c=='ControlLeft'||c=='KeyV')dash();if(c=='KeyE'||c=='KeyF')INTN&&INTN.act();if(c=='KeyR')mount();if(c=='KeyG')torchToggle();if(c=='KeyZ')blockSet(1);if(c=='KeyN')sneakSet();if(c=='KeyX'||c=='F5'){e.preventDefault();fpvToggle()}if(c=='Equal'||c=='NumpadAdd')mmZoom(1);if(c=='Minus'||c=='NumpadSubtract')mmZoom(-1)});
+    if(UI.open)return;if(c=='Space'){UI.atkHeld=1;attack()}if(/Digit[1-4]/.test(c))useSkill(+c[5]-1);if(c=='KeyQ')potion();if(c=='ShiftLeft'||c=='ShiftRight')toggleRun(1);if(c=='KeyC'||c=='ControlLeft'||c=='KeyV')dash();if(c=='KeyE')INTN&&INTN.act();if(c=='KeyF')jump();if(c=='KeyR')mount();if(c=='KeyG')torchToggle();if(c=='KeyZ')blockSet(1);if(c=='KeyN')sneakSet();if(c=='KeyX'||c=='F5'){e.preventDefault();fpvToggle()}if(c=='Equal'||c=='NumpadAdd')mmZoom(1);if(c=='Minus'||c=='NumpadSubtract')mmZoom(-1)});
   addEventListener('keyup',e=>{kd[e.code]=0;if(e.code=='KeyZ')blockSet(0);if(e.code=='Space')UI.atkHeld=0;if(e.code=='ShiftLeft'||e.code=='ShiftRight')toggleRun(0)});
   addEventListener('blur',()=>{for(const k in kd)kd[k]=0;UI.atkHeld=0})}
 // ---------- avisos e faixas
