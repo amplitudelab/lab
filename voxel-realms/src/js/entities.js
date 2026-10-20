@@ -160,7 +160,7 @@ function mobsUpd(dt,t){
   for(let i=E.length-1;i>=0;i--){const e=E[i];e.tgm=e.st=='chase'&&!e.boss?minionTarget(e):null;const tgx=e.tgm?e.tgm.x:P.x,tgz=e.tgm?e.tgm.z:P.z,dx=tgx-e.x,dz=tgz-e.z,d=hy(dx,dz),T=e.t;
     if(e.dead){e.dt+=dt;if(ragUpd(e,dt))dropMob(e);continue}
     const vis=d<VISD||e.boss&&d<70;e.m.g.visible=vis&&!invHide(d);if(vis){const sh=d<SHD;if(sh!==e.sh){e.sh=sh;for(const o of e.m.meshes)o.castShadow=sh}}if(e.ring)e.ring.visible=vis;if(!vis&&e.st!='chase')continue;
-    e.hurt=Math.max(0,e.hurt-dt*4);e.stun-=dt;e.slow-=dt;e.cd-=dt;e.dcd-=dt;e.evade-=dt;if(e.fl>0){e.fl-=dt;if(e.fl<=0)flashModel(e.m,false)}
+    e.hurt=Math.max(0,e.hurt-dt*4);e.stun-=dt;e.slow-=dt;e.cd-=dt;e.dcd-=dt;e.evade-=dt;if(e.inv>0&&!e.boss)e.inv-=dt;if(e.fl>0){e.fl-=dt;if(e.fl<=0)flashModel(e.m,false)}
     let dvx=0,dvz=0,sp=e.sp*(e.slow>0?.5:1);
     if(e.boss){bossUpd(e,dt,t,d,dx,dz);continue}
     if(T.passive){e.flee-=dt;const sc_=d<(T.sp>5?7:3.5)&&!P.dead;if(e.flee>0||sc_){const k=e.flee>0?1:.7;dvx=-dx/(d||1)*e.sp*k;dvz=-dz/(d||1)*e.sp*k;if(e.flee>0&&ev(6))puff(e.x,e.y+.2,e.z,0xcdb894,.6)}else{e.wt-=dt;if(e.wt<=0){e.wt=3+R()*5;e.tx=e.home[0]+(R()-.5)*14;e.tz=e.home[1]+(R()-.5)*14}const dd=hy(e.tx-e.x,e.tz-e.z);if(dd>.8){dvx=(e.tx-e.x)/dd*1.3;dvz=(e.tz-e.z)/dd*1.3}}

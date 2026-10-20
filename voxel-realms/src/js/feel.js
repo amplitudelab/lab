@@ -66,7 +66,7 @@ function feelUpd(dt){if(!run)return;mobPush();heroPoseUpd();if(innerWidth!==RSW|
 let invFullT=0;const _pick14=pickItem;
 pickItem=function(it){const stack=it.slot=='mat'&&INV.some(o=>o&&o.mid==it.mid);if(!stack&&INV.indexOf(null)<0){const n=performance.now();if(!it.fullT||n-it.fullT>8000){if(n-invFullT>2500){pop('Inventário cheio!',P.x,P.y+3,P.z,'#ff8a5a');invFullT=n}}it.fullT=n;return false}return _pick14(it)};
 // ---------- campo de visão (menu)
-const FOVS=[56,62,70,78,86];
+const FOVS=[60,68,76,86,96,108];
 function fovLbl(){const b=$('fovb');if(b)b.textContent='Campo de visão: '+FOVB+'°'}
 function fovNext(){const i=FOVS.indexOf(FOVB);FOVB=FOVS[(i+1)%FOVS.length];try{localStorage.setItem('vr11_fov',String(FOVB))}catch(e){}rs();fovLbl()}
 // ---------- botões

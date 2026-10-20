@@ -67,7 +67,7 @@ function frame(now){requestAnimationFrame(frame);if(FPSC&&now-last<1000/FPSC-1.5
   if(run){playerUpd(dt,t);feelUpd(dt);mobsUpd(dt,t);npcUpd(dt,t);animalsUpd(dt,t);projUpd(dt);minionsUpd(dt,t);vampUpd(dt);mountUpd(dt,t);petUpd(dt,t);spawnUpd(dt);lootUpd(dt,t);qObjUpd(dt,t);interUpd();wpUpd()}
   else{CAMS.yawT+=rdt*.06;npcUpd(rdt,t);animalsUpd(rdt,t)}
   placesUpd(rdt,t);fxUpd(dt,rdt,t);ambUpd(rdt,t,P.x,P.z);lookUpd();birdsUpd(rdt,t,P.x,P.z);torchUpd(rdt,t);drsUpd(raw);vfxUpd(dt);world2Upd(dt);trialsUpd(dt,t);hudUpd(rdt);magicUpd(rdt);wglowUpd(rdt);decalUpd(rdt);ambienceUpd(rdt,t);musUpd(rdt);haloUpd(t);cloudsUpd(rdt,P.x,P.z);waterUpd(P.x,P.z,t);SHU.uT.value=t;SKU.t.value=t;
-  INV_OPEN.k+=((UI.open=='inv'?1:0)-INV_OPEN.k)*damp(6,rdt);if(!run)P.m.g.position.set(P.x,P.y,P.z);if(!run)animate(P.m,rdt,t,{v:0});
+  INV_OPEN.k+=((UI.open=='inv'||UI.open=='qbook'?1:0)-INV_OPEN.k)*damp(6,rdt);if(!run)P.m.g.position.set(P.x,P.y,P.z);if(!run)animate(P.m,rdt,t,{v:0});
   camUpd(rdt);fpvCam(rdt);vmUpd(rdt,t);dlgUpd(raw);
   if(run){hfT-=rdt;if(hfT<=0){hfT=.1;hudFast()}hT-=rdt;if(hT<=0){hT=.5;hud();regionUpd()}mmT-=rdt;if(mmT<=0){mmT=.15;minimap()}if(ev(2))npcLabels();
     const tg=qTarget();if(tg&&hy(tg[0]-P.x,tg[1]-P.z)>14){QBEAM.visible=true;QBEAM.position.set(tg[0],groundAt(tg[0],tg[1])+15,tg[1]);QBEAM.material.opacity=.14+.06*S(t*3)}else QBEAM.visible=false;

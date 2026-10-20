@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 16.0
+Atualizado em 20/10/2026 · versão atual do jogo: 16.1
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='16.1'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='16.2'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -148,6 +148,29 @@ minimap2.js  16.0 (por último): minimapa em DPR, ladrilhos MM2 de 64 m feitos d
              Layout deitado: #map .mapbox em grade (coluna de filtros/legenda + mapa com 92vh−34px).
 world.js     16.0: fzAt() = grade de 32 m das zonas FZ (rawH e nearStr usam; se refaz quando FZ muda de tamanho/fim);
              NOTREE [{x,z,r}] = clareiras sem árvores e sem aplainar (world5 põe uma em cada construção W5).
+entities.js  16.1: mobsUpd desconta e.inv de quem não é chefe (antes só bossUpd descontava: phaseUp deixava elites e
+             chefes de masmorra imunes para sempre). O jogo pausa com janela aberta (dt=0): use tempo real nas animações.
+mech.js      16.1: BMECH (nome, ícone, elemento, descrição de cada mecânica), BMKEYS(chefe), mechCard(e,k) mostra o
+             cartão #mech (fila MCQ, 7,2 s, toque fecha) nas 2 primeiras vezes; P.st.bmk[tipo][mecânica] = vezes visto
+             (salvo junto de P.st). Ganchos: bossStart, bossStart2, bossPhase2/3, phaseUp, dStart (DMK), bossUpd (vul), dragonUpd.
+qctx.js      16.1: QCHAP (capítulos da história principal), QCTX[id] (contexto de cada uma das 111 missões), QGIV (quem pede).
+book.js      16.1: BKD (desenhos dos livros: main, side, best, ach, codex, grim; f(u,v,...) pinta a capa), bookArt(key)
+             = livro inclinado 46×54 com espessura, fita e contorno; bookFlat(key) = capa reta 60×78 (animação de abrir).
+             Janela #qbook (UI.open='qbook'): #qbStage (o herói aparece aqui) + #qbk (páginas #qbL/#qbR, abas #qbTabs,
+             setas, .qcov = capa que gira). QB {s seção, p página, pages}; qbBuild monta as páginas (sumário em
+             chunkIdx de 15 linhas, questPage, bestPage), qbPaint, qbFlip (Web Animations), qbGo(id), qbSec(k).
+             openQBook substitui openJournal (tecla J). heroFrame(el,fill) enquadra o herói inteiro num elemento (usa a
+             altura real do modelo) — usado pelo livro e pelo inventário. main.js: INV_OPEN vale para 'inv' e 'qbook'.
+             Retratos 3D: portrait(tipo,silhueta) -> fila PTQ, ptPump (1 por quadro com o livro aberto) renderiza no
+             próprio sc a y=-600 com PTCAM e WebGLRenderTarget, recorta e reduz para 56 px; cache em localStorage
+             'vr16_pt_'+VR_VERSION. BOOK3 = livro 3D preso ao torso do herói com pose de leitura (bookPose, tempo real),
+             esconde o que estiver nas mãos; botões #qbkb (livro de missões) e #treeb ganham ícones bookArt animados.
+inv161.js    16.1: layout deitado do inventário (CSS no fim de hud.css): herói em #ivPor (coluna inteira), #ivEq e #eqW
+             como colunas de equipamento ao lado dele; arrastar sobre #ivPor gira (INV_OPEN.rot) com inércia.
+fada.js      16.1: PETS.fada (Fada-Lume, hum escala .3 com asas e brilho), fairyUpd (voa perto do ombro; com o livro
+             aberto paira ao lado da página; continua em tempo real com o jogo pausado), +4% de crítico em petPassive,
+             e a luz no shader (SHU.uTP/uTC/uTR=26, mais forte que a tocha, somando as duas).
+core.js/feel.js 16.1: FOVS=[60,68,76,86,96,108], padrão 76 (migração única 'vr16_fov').
 ragdoll.js   morte: ragInit/ragUpd (tomba pelos pés com quaternion, molas nos membros, ragLow mantém acima do chão),
              corpos ficam ~10 s (RAG.max 14) e encolhem em poeira; mobsUpd chama ragUpd; herói usa P.rgE
 drops.js     dropItem/dropGold/dropGlobe com modelo do item (itemGroup do bag.js) + círculo de raridade

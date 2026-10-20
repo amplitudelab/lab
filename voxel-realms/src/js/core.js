@@ -196,7 +196,7 @@ function render(){SHU.uSunV.value.copy(ELEV>-.04?SUND:MOOND).transformDirection(
     const u=MBL.uniforms;for(let i=1;i<(GL==2?3:2);i++){u.t.value=RA.texture;u.d.value.set(i/PSZ[0],0);pass(MBL,RB);u.t.value=RB.texture;u.d.value.set(0,i/PSZ[1]);pass(MBL,RA)}
     const c=MCO.uniforms;c.t.value=RTM.texture;c.b.value=RA.texture;c.s.value=RS.texture;c.dp.value=RTM.depthTexture;c.si.value=si>.01?si:0;c.hv.value=frameN%64;c.nf.value=NIGHT;c.bi.value=.75+NIGHT*.35;pass(MCO,null)}
   catch(e){console.warn('pós desligado',e);PO.on=false}}
-let FOVB=62;try{const f=+localStorage.getItem('vr11_fov');if(f>=50&&f<=90)FOVB=f}catch(e){} // campo de visão (3ª pessoa); a 1ª pessoa usa +22
+let FOVB=76;try{const f=+localStorage.getItem('vr11_fov');if(f>=50&&f<=110)FOVB=f;if(!localStorage.getItem('vr16_fov')){if(FOVB<76)FOVB=76;localStorage.setItem('vr16_fov','1');localStorage.setItem('vr11_fov',String(FOVB))}}catch(e){} // campo de visão (3ª pessoa); a 1ª pessoa usa +22
 const fovT=()=>FOVB+(innerHeight>innerWidth?8:0);
 let RSW=0,RSH=0;function rs(){RSW=innerWidth;RSH=innerHeight;rd.setSize(RSW,RSH,false);rd.domElement.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;display:block';cam.aspect=RSW/RSH;cam.fov=fovT();cam.updateProjectionMatrix();postSize()}
 addEventListener('resize',rs);addEventListener('orientationchange',()=>setTimeout(rs,300));document.addEventListener('fullscreenchange',()=>{rs();setTimeout(rs,300)});if(window.visualViewport)visualViewport.addEventListener('resize',()=>setTimeout(rs,60));rs();
