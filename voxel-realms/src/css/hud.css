@@ -178,7 +178,9 @@ body.cine #atk,body.cine #rolb,body.cine #jmpb,body.cine #blkb,body.cine #qkb,bo
 #torb{right:calc(var(--ax) + var(--atk)/2 + .74*var(--D) - var(--b)*.46);bottom:calc(var(--ay) + var(--atk)/2 + 1.74*var(--D) - var(--b)*.46)}
 #mntb{right:calc(var(--ax) + var(--atk)/2 + 1.3*var(--D) - var(--b)*.46);bottom:calc(var(--ay) + var(--atk)/2 + 1.28*var(--D) - var(--b)*.46)}
 /* 14.7: correr fica sempre visível acima do ✦ (body.runfan devolve ele ao leque) */
-body:not(.runfan) #qk #runb{visibility:visible;opacity:1;transform:none;pointer-events:auto;transition:none}
+/* 15.4: o olho (campo de visão) ocupa o lugar do correr, que agora é só pelo joystick */
+#qk #eyeb{visibility:visible;opacity:1;transform:none;pointer-events:auto;transition:none;right:calc(var(--ax) + var(--atk)/2 - .45*var(--D) - var(--b)*.46);bottom:calc(var(--ay) + var(--atk)/2 + 1.86*var(--D) - var(--b)*.46)}
+#qk #runb{display:none!important}#eyeb em{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);font:800 9px var(--fn);font-style:normal;color:#ffe08a;text-shadow:0 1px 2px #000;white-space:nowrap}
 /* modo de mover botões */
 body.hudedit #ui *{animation:none!important}
 body.hudedit .hmv{outline:2px dashed #ffe08a;outline-offset:3px;opacity:1!important;cursor:move}

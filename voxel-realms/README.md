@@ -74,6 +74,17 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 15.4 — regras de combate, progressão e luta final
+- **Sem primeira pessoa:** o 👁️ troca o campo de visão (56° a 86°) e fica no lugar do botão de correr; correr é pelo joystick (ou Shift).
+- **Colisão:** colunas, postes e pilares de construções (pedras de teleporte, santuários, templos) e o plano dos portais das masmorras não deixam mais o herói atravessar.
+- **Barra de vida flutuante** com nome sobre errantes, elites e chefes, com marcas das fases.
+- **Tocha:** só pode ser usada com uma mão livre (sem escudo, segunda arma, arco ou arma de duas mãos); o herói tira da cintura e acende na mão; a luz ficou mais forte e maior.
+- **Segunda classe (Eremita):** custa 6000 + 150 por nível; habilidades dela causam 30% menos dano e recarregam 30% mais devagar; itens de classe caem 60% da principal e 40% da segunda.
+- **Montarias:** de 650 a 8500 moedas; as mais caras correm um pouco mais (113% a 139% da corrida).
+- **Dificuldade:** monstros sempre no seu nível (ou no da região, o que for maior), escalam mais forte e campeões/raros aparecem mais conforme você sobe.
+- **Fases:** chefes do mundo têm 3 fases (50% e 22%), chefes de masmorra 3 fases (66% e 33%, chamando reforços), elites 2 (fúria aos 50%) e errantes 1.
+- **Ignarok é a luta final:** fica invulnerável e mata com um golpe até todas as outras missões principais estarem concluídas; ficou bem mais forte.
+
 ## Versão 15.3 — trilhas de batalha, efeitos sonoros, montarias e economia
 - **Trilhas de batalha diferentes:** cada luta escolhe um tema pelo inimigo mais perto e pela região — Choque de Aço (padrão), Fúria Selvagem (feras), Dança Macabra (mortos-vivos), Tempestade Gélida (neve e cristal), Maré Pirata (costa e bandidos) e Coração de Brasa (Ignarok). Cada tema tem andamento, harmonia, tambores e riff próprios.
 - **Efeitos sonoros:** o golpe corta o ar conforme a arma (leve, pesada, mágica); o acerto soa como metal, osso, carne ou flecha; o arco estala a corda; o escudo ressoa; equipar faz o som da peça (metal, cota de malha, couro, tecido, joia, mochila); poções borbulham; moedas tilintam; passos mudam com o chão (grama, pedra, areia, neve, água) e viram cascos na montaria.

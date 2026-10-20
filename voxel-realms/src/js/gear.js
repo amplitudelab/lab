@@ -118,7 +118,7 @@ $('inv').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
   if(a=='eq2')equip(ISEL,0,1);else salvage(ISEL);ISEL=null;invRender()},true);
 // ---------- segunda árvore (ensinada pelo Eremita Ulric)
 P.sub=null;
-const SUBCOST=()=>Math.round(250+P.lv*45);
+const SUBCOST=()=>Math.round(6000+P.lv*150);
 treeOrder=function(){const f=CLS_TREE[P.cls]||'guerra',a=[TREE.find(t=>t.id==f)];if(P.sub&&P.sub!=f){const t=TREE.find(t=>t.id==P.sub);if(t)a.push(t)}return a};
 skillPurge=function(){const ok=new Set(treeOrder().map(t=>t.id));let n=0;for(const k in P.sk){if(!SK[k]||!ok.has(SK[k].t)){n+=P.sk[k]|0;delete P.sk[k]}}P.bar=P.bar.map(k=>k&&P.sk[k]?k:null);if(n){P.sp+=n;toast('✨','Árvores do personagem',n+' ponto'+(n>1?'s':'')+' devolvido'+(n>1?'s':'')+' para aprender de novo.')}calcStats();hud()};
 function setSub(id){const f=CLS_TREE[P.cls]||'guerra';if(id==f||id==P.sub)return;const c=SUBCOST();if(P.gold<c){toast('🪙','Ouro insuficiente','O Eremita pede '+c+' moedas.');return}

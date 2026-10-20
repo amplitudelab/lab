@@ -134,10 +134,10 @@ function bossUpd(e,dt,t,d,dx,dz){const T=e.t,hd=hy(P.x-e.home[0],P.z-e.home[1]);
   if(!BOSSON&&hd<26&&!P.dead){BOSSON=e;e.st='chase';$('boss').classList.add('on');$('bn_').textContent=T.n;banner(T.n);snd(110,.8,'sawtooth');SHK=.5;qEvent('bossSeen',e.type)}
   if(BOSSON===e&&(hd>42||P.dead)){if(e.ph){e.ph=0;e.dmg=Math.round(e.dmg/1.22);e.sp/=1.18;e.inv=0;POOLS.length=0}$('boss').classList.remove('p2');bossOff(e);e.st='idle';e.hp=e.mx;e.x=e.home[0];e.z=e.home[1];e.flying=0}
   if(e.stun>0){animate(e.m,dt,t,{v:0,hurt:e.hurt});e.m.g.position.set(e.x,e.y,e.z);return}
-  let dvx=0,dvz=0;const enr=e.ph==2?1.5:1;if(e.inv>0)e.inv-=dt;if(BOSSON===e&&!e.ph&&!e.act&&e.hp<=e.mx*.5&&e.hp>0)bossPhase2(e);if(BOSSON===e)bossAura(e,t);
+  let dvx=0,dvz=0;const enr=e.ph==3?1.9:e.ph==2?1.5:1;if(e.inv>0)e.inv-=dt;if(BOSSON===e&&!e.ph&&!e.act&&e.hp<=e.mx*.5&&e.hp>0)bossPhase2(e);if(BOSSON===e)bossAura(e,t);
   if(BOSSON===e){for(const k in e.ab)e.ab[k]-=dt*enr;
     if(e.act){e.act.t+=dt;const p=e.act.t/e.act.dur;bossAct(e,dt,p,d,dx,dz);if(e.act&&e.act.mv){dvx=e.act.mv[0];dvz=e.act.mv[1]}if(e.act&&e.act.t>=e.act.dur)e.act=null}
-    else{const ready=(e.ph==2?T.ab.concat(T.ab2||[]):T.ab).find(k=>e.ab[k]<=0&&(k!='summon'||E.filter(o=>o.minion&&!o.dead).length<4));
+    else{const ready=(e.ph>=2?T.ab.concat(T.ab2||[]):T.ab).find(k=>e.ab[k]<=0&&(k!='summon'||E.filter(o=>o.minion&&!o.dead).length<4));
       if(ready&&d<24){e.ab[ready]=({charge:7,spin:9,summon:16,volley:6,dive:8,roots:7,slam:6,blink:7,poison:8,breath:9,fireballs:10,geysers:8,fly:18,...BCD})[ready]+R()*2;e.act={k:ready,t:0,dur:({charge:1.6,spin:2,summon:1,volley:1,dive:2.2,roots:1.6,slam:1.2,blink:.6,poison:1.2,breath:2.2,fireballs:1.8,geysers:1.6,fly:5,...BDUR})[ready]};if(BDUR[ready]&&ready!='phase')bossStart2(e,ready,dx,dz,d);else bossStart(e,ready,dx,dz,d)}
       else{const rg=T.rg+e.r*.4;if(T.proj&&!T.fly){if(d>T.rg){dvx=dx/d*e.sp;dvz=dz/d*e.sp}else if(d<5){dvx=-dx/d*e.sp;dvz=-dz/d*e.sp}}else if(d>rg){dvx=dx/d*e.sp;dvz=dz/d*e.sp}
         e.f=angStep(e.f,Math.atan2(dx,dz),dt*5);if(e.cd<=0&&d<(T.proj?T.rg+2:rg+.6)){e.cd=T.cd;e.act={k:'basic',t:0,dur:T.proj?.8:.9}}}}}
@@ -145,7 +145,7 @@ function bossUpd(e,dt,t,d,dx,dz){const T=e.t,hd=hy(P.x-e.home[0],P.z-e.home[1]);
   const v=moveEnt(e,dvx,dvz,dt,6,e.act&&e.act.k=='charge'?2:5,e.r);let yo=0;if(T.fly)yo=1.2+S(t*2)*.3;if(e.flying)yo+=8*Math.min(1,e.flyK=(e.flyK||0)+dt);else if(e.flyK>0)yo+=8*(e.flyK=Math.max(0,e.flyK-dt*.8));
   e.m.g.position.set(e.x,e.y+yo,e.z);e.m.g.rotation.y=e.f;const a=e.act,ak=a?(a.k=='phase'||a.k=='nova'?'roar':a.k=='quake'||a.k=='sweep'||a.k=='pools'?'slam':a.k=='spiral'||a.k=='meteors'?'cast':a.k=='basic'?T.atk:a.k=='breath'?'breath':a.k=='summon'||a.k=='geysers'?'roar':a.k=='spin'?'spin':a.k=='slam'||a.k=='roots'?'slam':a.k=='volley'||a.k=='poison'||a.k=='fireballs'?'cast':T.atk):null;
   animate(e.m,dt,t,{v,atk:ak&&{k:ak,p:Math.min(1,a.t/a.dur)},hurt:e.hurt,fly:e.flying||T.fly});
-  if(BOSSON===e){$('bf').style.width=Math.max(0,e.hp/e.mx*100)+'%';$('bph').textContent=e.ph==2?'FASE II':''}}
+  if(BOSSON===e){$('bf').style.width=Math.max(0,e.hp/e.mx*100)+'%';$('bph').textContent=e.ph==3?'FASE III':e.ph==2?'FASE II':''}}
 function bossStart(e,k,dx,dz,d){const T=e.t;if(k=='summon'){for(let i=0;i<3;i++){const a=R()*TAU;const m=mkMob(T.sum,e.x+C(a)*4,e.z+S(a)*4,{lv:e.lv-2,minion:1,ch:e.ch});m.st='chase';fx(m.x,m.y+.5,m.z,0x9a5aff,14,5,.2,1.4)}pop('Reforços!',P.x,P.y+3.4,P.z,'#ff9a6a')}
   if(k=='charge'){pop(T.n.split(',')[0]+' prepara uma investida!',P.x,P.y+3.6,P.z,'#ffb070')}
   if(k=='blink'){fx(e.x,e.y+1,e.z,0x5a3a7a,20,4,.3,1);const a=R()*TAU;e.x=e.home[0]+C(a)*9;e.z=e.home[1]+S(a)*9;e.y=groundAt(e.x,e.z);fx(e.x,e.y+1,e.z,0x9aff7a,20,4,.3,1);flash(e.x,e.y+1.5,e.z,0x9aff7a,4,.3)}

@@ -47,7 +47,7 @@ function bossPhaseTick(e,dt,p){ // durante o rugido: onda de choque que empurra 
   if(!e.pw&&p>.55){e.pw=1;SHK=1;ring(e.x,e.z,12,0xff3a1a,.6);flash(e.x,e.y+1,e.z,0xffa040,14,.5);fx(e.x,e.y+.5,e.z,0xffd060,40,14,.3,1.4);if(hy(P.x-e.x,P.z-e.z)<11)hitPlayer(e.dmg*.5,{kb:9,src:e})}
   if(ev(3))fx(e.x+(R()-.5)*e.r*2,e.y+.4,e.z+(R()-.5)*e.r*2,0xff7a2a,1,2,.3,2.4,-2);if(p>=.99)e.pw=0}
 function bossAura(e,t){ // brasas contínuas ao redor do chefe em fase II
-  if(e.ph==2&&ev(4))fx(e.x+(R()-.5)*e.r*2,e.y+R()*2.6*(e.m.g.scale.y||1),e.z+(R()-.5)*e.r*2,0xff5a2a,1,1.4,.3,1.6,-1)}
+  if(e.ph>=2&&ev(e.ph==3?2:4))fx(e.x+(R()-.5)*e.r*2,e.y+R()*2.6*(e.m.g.scale.y||1),e.z+(R()-.5)*e.r*2,0xff5a2a,1,1.4,.3,1.6,-1)}
 function bossStart2(e,k,dx,dz,d){const T=e.t,c=T.pc||0xff5a2a;pop(BNAME[k]+'!',P.x,P.y+3.6,P.z,'#ffb070');
   if(k=='quake'){const a=Math.atan2(dx,dz);for(let i=1;i<=6;i++){const x=e.x+S(a)*i*3.2,z=e.z+C(a)*i*3.2;setTimeout(()=>{tele(x,z,2.4,.9,T2=>{SHK=Math.max(SHK,.3);fx(T2.x,groundAt(T2.x,T2.z)+.4,T2.z,0xb8a888,16,7,.25,1.2);puff(T2.x,groundAt(T2.x,T2.z)+.5,T2.z,0x8a7a68,1.6);if(hy(P.x-T2.x,P.z-T2.z)<2.5)hitPlayer(e.dmg*.8,{kb:4,src:e})},0xffa040)},i*170)}}
   else if(k=='meteors'){for(let i=0;i<8;i++)setTimeout(()=>{const x=P.x+(R()-.5)*(i<2?1:12),z=P.z+(R()-.5)*(i<2?1:12);tele(x,z,2.6,1.1,T2=>{const y=groundAt(T2.x,T2.z);flash(T2.x,y+1,T2.z,0xff8a30,6,.3);fx(T2.x,y+.5,T2.z,0xff6a1a,24,9,.3,1.5);ring(T2.x,T2.z,2.8,0xff8a30,.4);SHK=Math.max(SHK,.3);if(hy(P.x-T2.x,P.z-T2.z)<2.7)hitPlayer(e.dmg*.75,{brn:1})},0xff4a1a)},i*260)}

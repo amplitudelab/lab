@@ -26,7 +26,7 @@ for(const D of DNG){flat(D.at[0],D.at[1],46,1.5);flat(D.at[0]+8,D.at[1]+14,3.2,2
     for(const[x,z]of[[-8,15],[7,4],[-7,-4],[9,-12],[-9,-12]]){t.b(1.4,4.4,1.4,x,2.2,z,shade(W,1.1)).b(1.8,.4,1.8,x,4.5,z,W2);t.e_(.4,.4,.4,x,4.9,z,D.c);t.col(x,z,.9)}
     t.b(3.2,.5,3.2,0,.25,-15,W2).b(1.2,3,1.2,0,1.7,-15,shade(W,.6));t.e_(.6,.6,.6,0,3.5,-15,D.c);t.col(0,-15,1.1)});
   inter({x:D.ent[0],z:D.ent[1],r:3,ic:D.ic,label:()=>DST.on?'Masmorra em andamento':'Entrar: '+D.n+(P.st.dng.includes(D.id)?' (concluída)':''),act:()=>dngEnter(D)});
-  addStr(D.ent[0],D.ent[1],0,(k,e,f)=>{const t=new TB(k,e,f,D.ent[0],D.ent[1],0,null,1.3);t.b(.8,3.4,.8,-1.4,1.7,0,D.wall).b(.8,3.4,.8,1.4,1.7,0,D.wall).b(3.6,.8,.9,0,3.6,0,shade(D.wall,.8));t.e_(2,2.6,.2,0,1.5,0,D.c);t.col(-1.4,0,.6);t.col(1.4,0,.6)})}
+  addStr(D.ent[0],D.ent[1],0,(k,e,f)=>{const t=new TB(k,e,f,D.ent[0],D.ent[1],0,null,1.3);t.b(.8,3.4,.8,-1.4,1.7,0,D.wall).b(.8,3.4,.8,1.4,1.7,0,D.wall).b(3.6,.8,.9,0,3.6,0,shade(D.wall,.8));t.e_(2,2.6,.2,0,1.5,0,D.c);t.col(-1.4,0,.6);t.col(1.4,0,.6);t.col(0,0,.9)})}
 const DNGM=new THREE.MeshLambertMaterial({color:0x3a3a42}),DNGS=new THREE.MeshLambertMaterial({color:0xc8ccd4});
 function dngBuild(D){const L=(x,z)=>[D.at[0]+x,D.at[1]+z],y0=groundAt(D.at[0],D.at[1]);DST.dyn=[];DST.gates=[];DST.traps=[];DST.totems=[];
   for(const gz of[7,-7]){const k=new Bake();for(let i=0;i<6;i++)k.box(.18,4.4,.18,-2.6+i*1.04,2.2,0,0x2a2a30);k.box(5.6,.24,.24,0,3.6,0,0x3a3a42).box(5.6,.24,.24,0,1.6,0,0x3a3a42);const m=k.mesh();const[x,z]=L(0,gz);m.position.set(x,y0,z);sc.add(m);DST.dyn.push(m);

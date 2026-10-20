@@ -9,10 +9,10 @@
    - Painel 🎛️: tamanho da interface, tamanho dos botões, opacidade, o que aparece
      e modo de mover botões e painéis (não deixa soltar em cima de outro).
    ============================================================================= */
-const HUDDEF={hs:1,bs:1,op:1,fade:1,joy:1,quest:'min',mm:1,dmg:1,jmp:1,blk:1,runf:1,pos:{}};
+const HUDDEF={hs:1,bs:1,op:1,fade:1,joy:1,quest:'min',mm:1,dmg:1,jmp:1,blk:1,runf:0,pos:{}};
 let HUDS=Object.assign({},HUDDEF,{pos:{}});try{const s=JSON.parse(localStorage.getItem('vr11_hud')||'null');if(s)HUDS=Object.assign(HUDS,s,{pos:s.pos||{}})}catch(e){}
 const hudSave=()=>{try{localStorage.setItem('vr11_hud',JSON.stringify(HUDS))}catch(e){}};
-const HMV=['tl','qp','mw','tbar','jb','bar','atk','rolb','jmpb','blkb','qkb','runb'];
+const HMV=['tl','qp','mw','tbar','jb','bar','atk','rolb','jmpb','blkb','qkb','eyeb'];
 let hudCalm=0,hudCT=0,qkT=0;
 // fora de combate os botões esmaecem mais que os painéis de informação
 function hudOp(){const r=document.documentElement.style;r.setProperty('--ho',HUDS.op);r.setProperty('--hc',hudCalm?.45:1);r.setProperty('--hi',hudCalm?.75:1)}
@@ -26,7 +26,7 @@ function hudApply(){const r=document.documentElement.style;hudOp();
   for(;;){set(HUDF);if(!hudClash())break;if(Math.min(HUDS.hs,HUDS.bs)*HUDF<=.66){HUDF=1;set(1);break}HUDF-=.05}hudFitTxt()}
 function hudFitTxt(){const n=$('hudfit');if(n)n.textContent=HUDF<1?'Nesta tela a HUD foi reduzida para '+Math.round(HUDF*100)+'% do tamanho escolhido, para nada ficar por cima de nada.':''}
 // ---------- caixas dos elementos e teste de sobreposição (botões redondos contam como círculo)
-const FANS=['runb','snkb','torb','mntb'],HRND=new Set(['atk','rolb','jmpb','blkb','qkb','jb','mw',...FANS]),HFIX=['rg','ts','boss','tf'];let HUDF=1;
+const FANS=['eyeb','snkb','torb','mntb'],HRND=new Set(['atk','rolb','jmpb','blkb','qkb','jb','mw',...FANS]),HFIX=['rg','ts','boss','tf'];let HUDF=1;
 function hudBox(id){const e=$(id);if(!e)return null;const cs=getComputedStyle(e),fan=FANS.includes(id);if(cs.display=='none'||(cs.visibility=='hidden'&&!fan))return null;
   // o leque anima com escala: mede pela posição de layout (sem a animação) dentro do contêiner
   if(fan){const q=$('qk').getBoundingClientRect(),t=(e.style.translate.match(/-?[\d.]+/g)||[0,0]).map(Number),x=q.left+e.offsetLeft+t[0],y=q.top+e.offsetTop+(t[1]||0);return{id,x0:x,y0:y,x1:x+e.offsetWidth,y1:y+e.offsetHeight,r:true}}
@@ -62,7 +62,7 @@ function openHud(){if(!run)return;openWin('hudw');hudRender()}
 function hudRender(){const pc=v=>Math.round(v*100)+'%',SL=(k,n,a,b,st)=>`<div class="hrow"><span>${n}</span><input type="range" min="${a}" max="${b}" step="${st}" value="${HUDS[k]}" data-hk="${k}"><b>${pc(HUDS[k])}</b></div>`,
     T=(k,n,v)=>`<button class="${(v!=null?HUDS[k]==v:HUDS[k])?'on':''}" data-ht="${k}"${v!=null?` data-hv="${v}"`:''}>${n}</button>`;
   $('hudl').innerHTML=SL('hs','Tamanho da interface',.8,1.25,.05)+SL('bs','Tamanho dos botões',.8,1.25,.05)+SL('op','Opacidade',.35,1,.05)+'<p id="hudfit" class="ihint" style="color:#9ae4ff"></p>'+
-    '<div class="htg">'+T('fade','Esmaecer fora de combate')+T('joy','Correr pelo joystick')+T('mm','Minimapa')+T('dmg','Números de dano')+T('runf','Correr sempre visível')+T('jmp','Botão pular')+T('blk','Botão bloquear')+'</div>'+
+    '<div class="htg">'+T('fade','Esmaecer fora de combate')+T('joy','Correr pelo joystick')+T('mm','Minimapa')+T('dmg','Números de dano')+T('jmp','Botão pular')+T('blk','Botão bloquear')+'</div>'+
     '<div class="htg"><span style="font:700 12px var(--fn);color:#cbb88a;align-self:center">Missões:</span>'+T('quest','Compactas','min')+T('quest','Completas','full')+T('quest','Ocultas','off')+'</div>'+
     '<div class="htg"><button class="on" data-hx="move">✥ Mover botões e painéis</button><button data-hx="reset">↺ Restaurar padrão</button></div>'+
     '<p class="ihint">O 🏃 correr fica acima do ✦ (ou dentro do leque, se desligar "Correr sempre visível"). No leque ✦ ficam furtivo, tocha e montaria. No ☰ ficam mapa, diário, primeira pessoa, HUD e menu. Toque no minimapa para mudar o zoom; segure para abrir o mapa. Empurrar o joystick até a borda faz correr.</p>';hudFitTxt()}

@@ -57,10 +57,10 @@ const E=[],ANI=[],NPC=[],CLEARED=new Map();let eid=0;
 
 function mobLv(reg){return Math.max(REG[reg].lv,Math.floor(P.lv*.85))}
 function mkMob(type,x,z,o){o=o||{};const t=BOSS[type]||MT[type],lv=o.lv||1,boss=!!BOSS[type],el=o.el||0;
-  const hpM=t.passive?1+.08*lv:(boss?.85:.62)*(1+.3*(lv-1))*(el==1?3:el==2?4.2:1)*(o.minion?1.4:1),m=MDL[t.m]();
+  const hpM=t.passive?1+.08*lv:(boss?.85:.62)*(1+.34*(lv-1))*(el==1?3:el==2?4.2:1)*(o.minion?1.4:1),m=MDL[t.m]();
   if(t.w)weapon(m,t.w,null,null,t.wh=='L'?m.hL:m.hR);
   if(el)m.g.scale.multiplyScalar(1.18);
-  const e={id:eid++,type,t,boss,el,afx:o.afx||[],minion:o.minion,x,z,y:groundAt(x,z),vx:0,vz:0,f:R()*TAU,hp:t.hp*hpM,mx:t.hp*hpM,lv,dmg:t.dmg*(1+.2*(lv-1))*(el?1.3:1),sp:t.sp*(o.afx&&o.afx.includes('rapido')?1.45:1),
+  const e={id:eid++,type,t,boss,el,afx:o.afx||[],minion:o.minion,x,z,y:groundAt(x,z),vx:0,vz:0,f:R()*TAU,hp:t.hp*hpM,mx:t.hp*hpM,lv,dmg:t.dmg*(1+.24*(lv-1))*(el?1.3:1),sp:t.sp*(o.afx&&o.afx.includes('rapido')?1.45:1),
     m,st:'idle',home:[x,z],ch:o.ch,cd:1+R(),act:null,hurt:0,stun:0,slow:0,dt:0,wt:R()*3,tx:x,tz:z,r:(t.r||.6)*(el?1.15:1),ab:{},hop:0,name:o.name||t.n};
   if(boss){e.st='idle';e.home=[t.x,t.z];for(const a of t.ab)e.ab[a]=4+R()*4}
   if(el){e.ring=new THREE.Mesh(RGG,new THREE.MeshBasicMaterial({color:el==1?0x6a9cff:0xffd84a,transparent:true,opacity:.7,depthWrite:false,side:2,blending:THREE.AdditiveBlending}));e.ring.rotation.x=-PI/2;e.ring.scale.setScalar(1.3);sc.add(e.ring)}
@@ -74,7 +74,7 @@ function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2
   const nt=NIGHT>.5;if(nt&&!tbl.some(t=>t=='zombie'||t=='bandit'&&tbl.length==2))tbl=tbl.concat(NIGHTB[rid]||[]);
   const packs=tbl.length?(r()<([0,.66,.7,.76,.74,.8,.74,.78,.7,.76,.72,.8][reg]||.75)?1:0)+(r()<(nt?.38:.26)?1:0):0;
   for(let p=0;p<packs;p++){let x=0,z=0,ok=false;for(let a=0;a<8&&!ok;a++){x=c.cx*CS+4+r()*(CS-8);z=c.cz*CS+4+r()*(CS-8);ok=walkable(x,z)&&groundAt(x,z)>(rid=='mang'?-.5:.2)}if(!ok)continue;
-    const lv=mobLv(reg),roll=r(),el=roll<.06?2:roll<.14?1:0,afx=[];if(el){const ks=Object.keys(AFF);while(afx.length<el){const a=pick(ks,r);if(!afx.includes(a))afx.push(a)}}
+    const lv=mobLv(reg),roll=r(),el=roll<.05+P.lv*.0025?2:roll<.13+P.lv*.004?1:0,afx=[];if(el){const ks=Object.keys(AFF);while(afx.length<el){const a=pick(ks,r);if(!afx.includes(a))afx.push(a)}}
     const t1=pick(tbl,r),n=el==1?3:el==2?1:2+(r()*3|0);
     for(let i=0;i<n;i++){const ty=el==2||i<n-1||r()<.5?t1:pick(tbl,r),e=mkMob(ty,x+(r()-.5)*5,z+(r()-.5)*5,{lv,el,afx,ch:k,name:el==2?rareName(r):null});e.pack=p}
     if(el==2)for(let i=0;i<3;i++)mkMob(t1,x+(r()-.5)*5,z+(r()-.5)*5,{lv,ch:k,minion:1})}

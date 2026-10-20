@@ -83,7 +83,8 @@ function pushOut(o,r,L){for(const k of L){const dx=o.x-k[0],dz=o.z-k[1];if(Math.
 // m = escala da construção (casas e prédios ficam proporcionais ao herói, que tem ~2,9 de altura)
 class TB{constructor(k,e,f,x,z,ry,y,m){this.k=k;this.e=e;this.f=f;this.x=x;this.z=z;this.ry=ry||0;this.y=y==null?groundAt(x,z):y;this.c=C(this.ry);this.s=S(this.ry);this.m=m||1}
   w(lx,lz){lx*=this.m;lz*=this.m;return[this.x+lx*this.c+lz*this.s,this.z-lx*this.s+lz*this.c]}
-  b(w,h,d,lx,ly,lz,col,o,tgt){const[x,z]=this.w(lx,lz),oo=Object.assign({},o||{}),m=this.m;oo.ry=(oo.ry||0)+this.ry;(tgt||this.k).box(w*m,h*m,d*m,x,this.y+ly*m,z,col,oo);return this}
+  b(w,h,d,lx,ly,lz,col,o,tgt){const[x,z]=this.w(lx,lz),oo=Object.assign({},o||{}),m=this.m;oo.ry=(oo.ry||0)+this.ry;(tgt||this.k).box(w*m,h*m,d*m,x,this.y+ly*m,z,col,oo);
+    if(!tgt&&CUR_S&&!CUR_S.cd&&h*m>=1.3&&ly-h/2<.8&&Math.max(w,d)*m<=2.6&&Math.min(w,d)*m>=.16)STRC.push([x,z,Math.max(w,d)*m*.48]);return this}
   e_(w,h,d,lx,ly,lz,col,o){return this.b(w,h,d,lx,ly,lz,col,o,this.e)}
   f_(w,h,d,lx,ly,lz,col,o){return this.b(w,h,d,lx,ly,lz,col,o,this.f)}
   col(lx,lz,r){if(CUR_S&&CUR_S.cd)return;const[x,z]=this.w(lx,lz);STRC.push([x,z,r*this.m])}}
