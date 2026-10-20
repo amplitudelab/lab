@@ -66,17 +66,17 @@ function hudFast(){const cdEl=(id,v,mx)=>$(id).style.setProperty('--c',mx?cl(v/m
 let REGC=-1,POIC='';
 function regionUpd(){const r=regionAt(P.x,P.z),p=POI.find(p=>hy(P.x-p.x,P.z-p.z)<p.r),nm=p?p.n:REG[r].n;$('rn').textContent=nm;$('rl').textContent='Nível '+mobLv(r)+' · '+clockStr()+' '+wxIcon();
   if(r!=REGC||nm!=POIC){if(REGC>=0||r){const R_=REG[r];$('zt').innerHTML=`<b>${nm}</b><span>${p?R_.n:R_.amb}</span>`;$('zt').classList.remove('on');void $('zt').offsetWidth;$('zt').classList.add('on')}REGC=r;POIC=nm;if(!P.disc.has(REG[r].id)){P.disc.add(REG[r].id);qAvail()}}
-  const gx=Math.floor((P.x+220)/10),gz=Math.floor((P.z+220)/10);for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)FOG.add((gx+a)+','+(gz+b))}
+  const gx=Math.floor((P.x+WMH)/10),gz=Math.floor((P.z+WMH)/10);for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)FOG.add((gx+a)+','+(gz+b))}
 const clockStr=()=>{const h=(DAY.t*24)%24;return(h|0).toString().padStart(2,'0')+':'+(((h%1)*60)|0).toString().padStart(2,'0')+(NIGHT>.5?' 🌙':ELEV<.3?' 🌅':' ☀️')};
 // ---------- mapa do mundo pré-desenhado (usado no minimapa e no mapa-múndi)
-const MAPS=220,MAPC=document.createElement('canvas');MAPC.width=MAPC.height=MAPS;const MAPX=MAPC.getContext('2d'),FOG=new Set();
-function* mapGen(){const img=MAPX.createImageData(MAPS,MAPS),d=img.data,k=440/MAPS;for(let j=0;j<MAPS;j++){for(let i=0;i<MAPS;i++){const x=-220+i*k+k/2,z=-220+j*k+k/2,h=rawH(x,z),r=regionAt(x,z);let c;
-    if(h<-.3)c=r==4?[62,74,52]:[52,128,196];else if(Math.max(Math.abs(x),Math.abs(z))>205)c=[120,118,112];else if(roadD(x,z)<2)c=[168,140,92];else{const hx=REG[r].map;c=[parseInt(hx.slice(1,3),16),parseInt(hx.slice(3,5),16),parseInt(hx.slice(5,7),16)];const sh=.85+cl(h,0,12)*.025;c=c.map(v=>v*sh)}
+const MAPS=304,MAPQ=MAPS/(2*WMH),MAPC=document.createElement('canvas');MAPC.width=MAPC.height=MAPS;const MAPX=MAPC.getContext('2d'),FOG=new Set();
+function* mapGen(){const img=MAPX.createImageData(MAPS,MAPS),d=img.data,k=2*WMH/MAPS;for(let j=0;j<MAPS;j++){for(let i=0;i<MAPS;i++){const x=-WMH+i*k+k/2,z=-WMH+j*k+k/2,h=rawH(x,z),r=regionAt(x,z);let c;
+    if(h<-.3)c=r==4?[62,74,52]:[52,128,196];else if(Math.max(Math.abs(x),Math.abs(z))>WMAX-9)c=[120,118,112];else if(roadD(x,z)<2)c=[168,140,92];else{const hx=REG[r].map;c=[parseInt(hx.slice(1,3),16),parseInt(hx.slice(3,5),16),parseInt(hx.slice(5,7),16)];const sh=.85+cl(h,0,12)*.025;c=c.map(v=>v*sh)}
     if(hy(x,z)<54.5&&hy(x,z)>52.5)c=[110,80,50];const o=(i+j*MAPS)*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255}if(j%6==5)yield j/MAPS}MAPX.putImageData(img,0,0);
-  MAPX.fillStyle='#d9a948';for(const b of BRIDGES){MAPX.fillRect((b.x+220)/2-2,(b.z+220)/2-2,4,4)}yield 1}
+  MAPX.fillStyle='#d9a948';for(const b of BRIDGES){MAPX.fillRect((b.x+WMH)*MAPQ-2,(b.z+WMH)*MAPQ-2,4,4)}yield 1}
 const mm=$('mc').getContext('2d');
 function minimap(){const c=mm,W=160,M=80,s=MMZ[mmZi],X=x=>M+(x-P.x)*s,Z=z=>M+(z-P.z)*s;c.save();c.clearRect(0,0,W,W);c.beginPath();c.arc(M,M,M-4,0,7);c.clip();c.fillStyle='#1a2a1a';c.fillRect(0,0,W,W);
-  c.imageSmoothingEnabled=false;const px=(P.x+220)/2,pz=(P.z+220)/2,span=W/s/2;c.drawImage(MAPC,px-span/2,pz-span/2,span,span,0,0,W,W);
+  c.imageSmoothingEnabled=false;const px=(P.x+WMH)*MAPQ,pz=(P.z+WMH)*MAPQ,span=W/s*MAPQ;c.drawImage(MAPC,px-span/2,pz-span/2,span,span,0,0,W,W);
   const dot=(x,z,col,r)=>{c.fillStyle=col;c.beginPath();c.arc(X(x),Z(z),r,0,7);c.fill()};
   for(const w of WP){c.fillStyle=w.on?'#8fe8ff':'#58607a';c.font='12px serif';c.textAlign='center';c.textBaseline='middle';c.fillText('◆',X(w.x),Z(w.z))}
   for(const s_ of SHRINES)if(!s_.used)dot(s_.x,s_.z,'#'+SHRN[s_.ty].c.toString(16).padStart(6,'0'),2.5);for(const ch of CHESTS)if(!ch.o){c.fillStyle='#ffd34a';c.fillRect(X(ch.x)-2.5,Z(ch.z)-2.5,5,5)}
@@ -123,12 +123,12 @@ function invRender(){if(UI.open!='inv')return;let h='';for(let i=0;i<30;i++){con
 // mapa-múndi (teleporte)
 let MAPTP=false;
 function openMap(fromWp){if(!run||DLG)return;MAPTP=fromWp;openWin('map');mapRender()}
-function mapRender(){const c=$('wm'),x=c.getContext('2d'),S_=c.width;x.imageSmoothingEnabled=false;x.drawImage(MAPC,0,0,S_,S_);const k=S_/440;x.fillStyle='rgba(10,6,18,.78)';
-  for(let i=0;i<44;i++)for(let j=0;j<44;j++)if(!FOG.has(i+','+j))x.fillRect(i*10*k,j*10*k,10*k+1,10*k+1);
-  x.font='bold '+Math.round(11*k*2)+'px Cinzel,Georgia';x.textAlign='center';x.fillStyle='#fff';x.strokeStyle='#000';x.lineWidth=3;for(const r of REG){if(!P.disc.has(r.id))continue;x.strokeText(r.n,(r.c[0]+220)*k,(r.c[1]+220)*k-14*k);x.fillText(r.n,(r.c[0]+220)*k,(r.c[1]+220)*k-14*k)}
+function mapRender(){const c=$('wm'),x=c.getContext('2d'),S_=c.width;x.imageSmoothingEnabled=false;x.drawImage(MAPC,0,0,S_,S_);const k=S_/(2*WMH),FN=Math.ceil(2*WMH/10);x.fillStyle='rgba(10,6,18,.78)';
+  for(let i=0;i<FN;i++)for(let j=0;j<FN;j++)if(!FOG.has(i+','+j))x.fillRect(i*10*k,j*10*k,10*k+1,10*k+1);
+  x.font='bold '+Math.round(11*k*2)+'px Cinzel,Georgia';x.textAlign='center';x.fillStyle='#fff';x.strokeStyle='#000';x.lineWidth=3;for(const r of REG){if(!P.disc.has(r.id))continue;x.strokeText(r.n,(r.c[0]+WMH)*k,(r.c[1]+WMH)*k-14*k);x.fillText(r.n,(r.c[0]+WMH)*k,(r.c[1]+WMH)*k-14*k)}
   drawWorldMarks(x,k);mapLegend();
-  x.save();x.translate((P.x+220)*k,(P.z+220)*k);x.rotate(PI-P.f);x.fillStyle='#ffd34a';x.strokeStyle='#000';x.lineWidth=2;x.beginPath();x.moveTo(0,-10);x.lineTo(7,7);x.lineTo(0,3);x.lineTo(-7,7);x.closePath();x.fill();x.stroke();x.restore();
-  $('wpl').innerHTML=WP.map(w=>`<button class="wpb ${w.on?'':'off'}" data-w="${w.id}" ${w.on?'':'disabled'} style="left:${(w.x+220)/440*100}%;top:${(w.z+220)/440*100}%">◆<span>${w.n}</span></button>`).join('');$('mph').textContent=inCombat()?'Não dá para viajar em combate.':'Toque numa pedra de teleporte ativada (◆ azul) para viajar.'}
+  x.save();x.translate((P.x+WMH)*k,(P.z+WMH)*k);x.rotate(PI-P.f);x.fillStyle='#ffd34a';x.strokeStyle='#000';x.lineWidth=2;x.beginPath();x.moveTo(0,-10);x.lineTo(7,7);x.lineTo(0,3);x.lineTo(-7,7);x.closePath();x.fill();x.stroke();x.restore();
+  $('wpl').innerHTML=WP.map(w=>`<button class="wpb ${w.on?'':'off'}" data-w="${w.id}" ${w.on?'':'disabled'} style="left:${(w.x+WMH)/(2*WMH)*100}%;top:${(w.z+WMH)/(2*WMH)*100}%">◆<span>${w.n}</span></button>`).join('');$('mph').textContent=inCombat()?'Não dá para viajar em combate.':'Toque numa pedra de teleporte ativada (◆ azul) para viajar.'}
 function teleport(x,z){P.x=x;P.z=z;worldLoadAll(x,z);P.y=groundAt(x,z);CAMS.cx=x;CAMS.cz=z;CAMS.cy=P.y;if(P.merc){P.merc.x=x-1.5;P.merc.z=z-1.5;P.merc.y=groundAt(P.merc.x,P.merc.z)}flash(x,P.y+1.5,z,0x8fe8ff,6,.6);ring(x,z,4,0x8fe8ff,.7)}
 // diário: principal, secundárias, recompensas, códice, bestiário
 let JTAB='main';

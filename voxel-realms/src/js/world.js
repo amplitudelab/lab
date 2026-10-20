@@ -4,14 +4,21 @@
    regiões (biomas), relevo em voxels, rio, estradas, pontes, estruturas,
    vegetação e carregamento de pedaços (chunks) conforme o jogador anda
    ============================================================================= */
-const CS=32,WMAX=214; // tamanho do pedaço e limite andável do mundo (±)
+const CS=32,WMAX=372,WMH=WMAX+8; // tamanho do pedaço, limite andável do mundo (±) e meia largura do mapa (15.2: área 3× maior)
 const REG=[
   {id:'vila',n:'Vila Pedraverde',lv:1,c:[0,0],k:1.5,top:[0x62b44a,0x5aaa44,0x6cbc52],side:0x7a5a3a,map:'#86b85e',amb:'Pedraverde, a última vila livre de Aldoria.'},
   {id:'plan',n:'Planície Dourada',lv:2,c:[10,150],k:1,top:[0xa6bc4c,0xb2c656,0x9ab246,0xbcc660],side:0x8a6a3a,map:'#c0c460',amb:'Trigais e moinhos — e bandidos nas estradas.'},
   {id:'flor',n:'Campos de Lírio',lv:5,c:[165,10],k:1,top:[0x5cbc74,0x54b06c,0x68c47e],side:0x7a5a3a,map:'#7ccc8e',amb:'Flores sem fim. Algo corrompeu as colmeias.'},
   {id:'mata',n:'Floresta Ancestral',lv:8,c:[-10,-158],k:1,top:[0x4a8a68,0x427e60,0x529470],side:0x5a4428,map:'#c8782e',amb:'Árvores mais velhas que o reino guardam segredos.'},
   {id:'mang',n:'Mangue Sombrio',lv:11,c:[-168,25],k:1,top:[0x3e6650,0x375c48,0x467058],side:0x3e3a2e,map:'#3e6a66',amb:'Lodo, névoa e a cabana da bruxa.'},
-  {id:'cald',n:'Caldeira de Brasas',lv:14,c:[155,-162],k:1.15,top:[0x4a3a34,0x3e302c,0x55443c],side:0x2e2420,map:'#6a3a2e',amb:'Onde Ignarok dorme sob a rocha fundida.'}];
+  {id:'cald',n:'Caldeira de Brasas',lv:14,c:[155,-162],k:1.15,top:[0x4a3a34,0x3e302c,0x55443c],side:0x2e2420,map:'#6a3a2e',amb:'Onde Ignarok dorme sob a rocha fundida.'},
+  // 15.2 · anel externo: seis terras novas
+  {id:'outono',n:'Bosque Carmesim',lv:9,c:[-205,-195],k:1,top:[0xb8642a,0xc87a30,0xa85424,0xd08a3a],side:0x5a3a22,map:'#c8642e',amb:'Folhas vermelhas caem o ano inteiro. Ruínas antigas dormem sob elas.'},
+  {id:'neve',n:'Picos Gelados',lv:18,c:[25,-308],k:1,top:[0xf0f4fa,0xe4ecf6,0xf8fbff,0xdce6f2],side:0x8a96a8,map:'#e8eef6',amb:'Vento cortante, gelo eterno e um mosteiro esquecido.'},
+  {id:'savana',n:'Savana Rubra',lv:8,c:[305,95],k:1,top:[0xc8a24a,0xd4ae54,0xbc943e,0xdcb860],side:0x8a5a2e,map:'#d2a850',amb:'Capim alto, acácias e manadas sob um sol vermelho.'},
+  {id:'deserto',n:'Dunas de Âmbar',lv:15,c:[225,250],k:1,top:[0xe8c888,0xf0d498,0xdcbc7a,0xf4dca8],side:0xc8a060,map:'#ecd09a',amb:'Areia sem fim e um templo do sol meio enterrado.'},
+  {id:'costa',n:'Costa das Conchas',lv:11,c:[-55,312],k:1,top:[0x7ac85a,0x86d064,0x6cbc50],side:0x8a6a3a,map:'#9ad478',amb:'Praias, coqueiros e um farol que ninguém acende há anos.'},
+  {id:'cristal',n:'Vale de Cristal',lv:20,c:[-280,220],k:1,top:[0x6a5a9a,0x5e4e8e,0x7a68aa,0x56488a],side:0x3a3058,map:'#7a6ab0',amb:'Cristais vivos cantam no escuro. Nada aqui é o que parece.'}];
 const RI={};REG.forEach((r,i)=>RI[r.id]=i);
 // pontos de interesse com nome próprio dentro das regiões
 const POI=[{n:'Cemitério Esquecido',x:-112,z:-96,r:24},{n:'Acampamento dos Bandidos',x:-38,z:178,r:18},{n:'Moinho de Hollow',x:46,z:122,r:14},{n:'Colmeia Real',x:192,z:46,r:18},
@@ -29,16 +36,23 @@ function hReg(i,x,z){switch(i){
   case 2:return 2+(fbm(x*.028,z*.028,3)-.5)*10;
   case 3:return 3+(fbm(x*.03,z*.03,4)-.5)*14;
   case 4:return .15+(fbm(x*.05,z*.05,3)-.5)*3.4;
-  default:return 2.6+(fbm(x*.035,z*.035,4)-.5)*16+(fbm(x*.1,z*.1,2)>.64?3:0)}}
+  case 5:return 2.6+(fbm(x*.035,z*.035,4)-.5)*16+(fbm(x*.1,z*.1,2)>.64?3:0);
+  case 6:return 2.4+(fbm(x*.03,z*.03,4)-.5)*12;
+  case 7:return 4.5+(fbm(x*.022,z*.022,4)-.5)*22+Math.max(0,fbm(x*.06,z*.06,2)-.55)*18;
+  case 8:return 1.5+(fbm(x*.016,z*.016,3)-.5)*5;
+  case 9:return 1.6+S(x*.07+fbm(x*.01,z*.01,2)*6)*1.3+(fbm(x*.02,z*.02,3)-.5)*5;
+  case 10:return .5+(fbm(x*.03,z*.03,3)-.5)*4.2;
+  default:return 2.2+(fbm(x*.03,z*.03,4)-.5)*11+(fbm(x*.09,z*.09,2)>.66?2.5:0)}}
 const riverZ=x=>48+30*S(x*.017)+12*S(x*.041+1),riverD=(x,z)=>Math.abs(z-riverZ(x));
 // estradas: da vila até cada região, e da região das flores até a caldeira
-const ROADS=[[[0,0],[10,150]],[[0,0],[165,10]],[[0,0],[-10,-158]],[[0,0],[-168,25]],[[165,10],[155,-162]],[[-10,-158],[-112,-96]],[[10,150],[-38,178]]];
+const ROADS=[[[0,0],[10,150]],[[0,0],[165,10]],[[0,0],[-10,-158]],[[0,0],[-168,25]],[[165,10],[155,-162]],[[-10,-158],[-112,-96]],[[10,150],[-38,178]],
+  [[-10,-158],[-205,-195]],[[-10,-158],[25,-300]],[[165,10],[300,92]],[[10,150],[220,245]],[[-38,178],[-55,305]],[[-168,25],[-275,215]]];
 function segD(x,z,a,b){const dx=b[0]-a[0],dz=b[1]-a[1],t=cl(((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz),0,1);return hy(x-a[0]-dx*t,z-a[1]-dz*t)}
 function roadD(x,z){let m=1e9;for(const r of ROADS){const d=segD(x,z,r[0],r[1]);if(d<m)m=d}return m+(vnoise(x*.3,z*.3)-.5)*1.2}
 const FZ=[]; // zonas aplainadas para estruturas {x,z,r,h}
 function rawH0(x,z){regW(x,z,RW);let h=0,s=0;for(let i=0;i<REG.length;i++)if(RW[i]>.01){h+=RW[i]*hReg(i,x,z);s+=RW[i]}h/=s;
   const rv=riverD(x,z);if(rv<11)h=Math.min(h,lerp(-1.7,h,sstep(2.4,10,rv)));
-  const e=Math.max(Math.abs(x),Math.abs(z));if(e>200)h+=(e-200)*1.35*(.55+fbm(x*.05,z*.05,2)*.9);return h}
+  const e=Math.max(Math.abs(x),Math.abs(z));if(e>WMAX-14)h+=(e-WMAX+14)*1.35*(.55+fbm(x*.05,z*.05,2)*.9);return h}
 function rawH(x,z){let h=rawH0(x,z);for(const f of FZ){const dx=x-f.x,dz=z-f.z;if(Math.abs(dx)<f.r&&Math.abs(dz)<f.r){const d=hy(dx,dz);if(d<f.r)h=lerp(h,f.h,1-sstep(f.r*.55,f.r,d))}}return h}
 const qh=h=>Math.round(h*2)/2,cellH=(ix,iz)=>qh(rawH(ix+.5,iz+.5));
 function flat(x,z,r,h){FZ.push({x,z,r,h:h==null?Math.max(.8,qh(rawH0(x,z))):h})}
@@ -59,7 +73,7 @@ function groundAt(x,z){const b=onBridge(x,z);const ix=Math.floor(x),iz=Math.floo
 // em vez de metade enterrada; paredes altas demais (degrau > 1,3) não contam
 function footY(x,z,cur,r){let h=groundAt(x,z);for(let i=0;i<4;i++){const g=groundAt(x+(i<2?(i?r:-r):0),z+(i>1?(i>2?r:-r):0));if(g>h&&(cur==null||g-cur<1.3))h=g}return h}
 // pode ficar de pé aqui? (água funda e penhascos bloqueiam)
-function walkable(x,z,fromY){if(Math.abs(x)>WMAX||Math.abs(z)>WMAX)return false;if(onBridge(x,z))return true;const h=groundAt(x,z);return h>-.8&&(fromY==null||h-fromY<1.3)}
+function walkable(x,z,fromY){if((Math.abs(x)>WMAX||Math.abs(z)>WMAX)&&!(typeof DST!='undefined'&&DST.on))return false;if(onBridge(x,z))return true;const h=groundAt(x,z);return h>-.8&&(fromY==null||h-fromY<1.3)}
 const STRC=[]; // colisores fixos das estruturas [x,z,r]
 function collide(o,r){const cx=Math.floor(o.x/CS),cz=Math.floor(o.z/CS);
   for(let dz=-1;dz<=1;dz++)for(let dx=-1;dx<=1;dx++){const c=CHK.get(ckey(cx+dx,cz+dz));if(c)pushOut(o,r,c.col)}pushOut(o,r,STRC)}
@@ -89,7 +103,19 @@ function blob(f,x,y,z,r,h,c,lod,sd){const P_=[.74,1,.6],sh=[.78,1,1.16],lh=h/3;s
   for(let i=0;i<2;i++){const a=sd*5+i*3.1,q=r*.2;f.box(q,q*1.3,q,x+C(a)*r*.55,y-h/2-q*.5,z+S(a)*r*.55,shade(c,.8))}}
 const LEAF={vila:[0x3f9a34,0x4cae3c,0x5cc046,0x6fd052],plan:[0x8ab838,0xa8c040,0xd8a830,0xe8b838],
   outono:[0xf08a1a,0xffb02a,0xe0601e,0xffd040,0xd84a22,0xf0a028],roxo:[0xb050d0,0xd070e8,0x9a48c8,0xe890f0,0xc860d8],
-  rosa:[0xf4a6c8,0xffc4dc,0xe890b8,0xffd8e8],azul:[0x2e6aa6,0x3a7cba,0x2a5e98,0x4a8ed0],pinho:[0x1e5a5a,0x24666a,0x2a6e66]};
+  rosa:[0xf4a6c8,0xffc4dc,0xe890b8,0xffd8e8],azul:[0x2e6aa6,0x3a7cba,0x2a5e98,0x4a8ed0],pinho:[0x1e5a5a,0x24666a,0x2a6e66],
+  rubro:[0xc8282a,0xe03a2a,0xa81e24,0xf05a32,0xd8401e],savana:[0x7a8a2a,0x8a9a32,0x6a7a24],palma:[0x3a9a3a,0x48aa42,0x2e8a34],gelo:[0x2a4a5a,0x2e5866,0x34606a]};
+// 15.2 · árvores e objetos das terras novas
+function acacia(k,f,x,y,z,s){const sd=hr(x,z,12),c=LEAF.savana[(sd*3)|0];k.box(.5*s,2.8*s,.5*s,x,y+1.4*s,z,0x6a4a2a,{g:1,rz:.12}).box(.32*s,1.8*s,.32*s,x+.55*s,y+2.9*s,z+.1*s,0x6a4a2a,{rz:-.55}).box(.3*s,1.5*s,.3*s,x-.45*s,y+2.8*s,z-.1*s,0x6a4a2a,{rz:.6});
+  f.box(4.6*s,.45*s,3.8*s,x+.3*s,y+3.7*s,z,c,{ry:sd*3}).box(3.2*s,.4*s,2.8*s,x+.5*s,y+4.1*s,z+.2*s,shade(c,1.15),{ry:sd*3+.4}).box(2.4*s,.35*s,2*s,x-.9*s,y+3.5*s,z-.4*s,shade(c,.9),{ry:sd*3+1})}
+function palm(k,f,x,y,z,s){const sd=hr(x,z,13),bx=C(sd*6)*.3*s,bz=S(sd*6)*.3*s;for(let i=0;i<6;i++)k.box(.42*s,.85*s,.42*s,x+bx*i*i*.12,y+(.42+i*.8)*s,z+bz*i*i*.12,i%2?0x8a6a42:0x7a5a38,{g:i==0?1:0});
+  const tx=x+bx*3,tz=z+bz*3,ty=y+5*s;for(let i=0;i<7;i++){const a=i/7*TAU+sd,c=LEAF.palma[i%3];f.box(.5*s,.1*s,2.6*s,tx+S(a)*1.2*s,ty-.25*s,tz+C(a)*1.2*s,c,{ry:a,rx:.35});f.box(.36*s,.08*s,1.2*s,tx+S(a)*2.4*s,ty-.75*s,tz+C(a)*2.4*s,shade(c,.9),{ry:a,rx:.8})}
+  k.box(.3*s,.3*s,.3*s,tx+.25*s,ty-.4*s,tz,0x5a3a1a).box(.3*s,.3*s,.3*s,tx-.2*s,ty-.45*s,tz+.2*s,0x5a3a1a)}
+function cactus(k,x,y,z,s){const sd=hr(x,z,14),h=(2+sd*1.4)*s,g=0x4a8a3a,d=shade(g,.82);k.box(.7*s,h,.7*s,x,y+h/2,z,g).box(.74*s,h*.96,.2*s,x,y+h/2,z,d).box(.2*s,h*.96,.74*s,x,y+h/2,z,d);
+  if(sd>.3)k.box(.7*s,.45*s,.45*s,x+.55*s,y+h*.45,z,g).box(.45*s,1.1*s,.45*s,x+.85*s,y+h*.45+.6*s,z,g);if(sd>.55)k.box(.6*s,.4*s,.4*s,x-.5*s,y+h*.6,z,g).box(.4*s,.9*s,.4*s,x-.75*s,y+h*.6+.5*s,z,g);if(sd>.7)k.box(.3*s,.2*s,.3*s,x,y+h+.1*s,z,0xff7ab0)}
+function crystalSpire(k,e,x,y,z,s){const sd=hr(x,z,15),cs=[0x8ae8ff,0xc08aff,0x6ad8ff,0xe0a8ff];k.box(1.6*s,.5*s,1.4*s,x,y+.2*s,z,0x2e2640,{g:1});
+  for(let i=0;i<4;i++){const a=sd*6+i*1.7,h=(1.4+((sd*7+i)%1)*2.6)*s;e.box(.45*s,h,.45*s,x+C(a)*.45*s,y+h/2,z+S(a)*.45*s,cs[i],{rx:C(a)*.25,rz:S(a)*.25})}}
+function bush(f,x,y,z,c,s){s=s||1;f.box(1*s,.6*s,.9*s,x,y+.3*s,z,c).box(.7*s,.45*s,.7*s,x+.2*s,y+.7*s,z-.1*s,shade(c,1.12)).box(.5*s,.35*s,.5*s,x-.3*s,y+.55*s,z+.25*s,shade(c,.92))}
 function oak(k,f,x,y,z,s,leaf,lift,lod){lift=lift||0;leaf=leaf||LEAF.vila;const sd=hr(x,z,1),c=leaf[(sd*leaf.length)|0],c2=leaf[((sd*leaf.length)|0)+1]||leaf[0];
   k.box(.9*s,(3.8+lift)*s,.9*s,x,y+(1.9+lift/2)*s,z,0x5a3b20,{g:1});k.box(1.5*s,.45*s,1.5*s,x,y+.22*s,z,0x4e331b,{g:1,ry:sd});y+=lift*s;
   k.box(.3*s,1.7*s,.3*s,x-.62*s,y+3.2*s,z+.2*s,0x5a3b20,{rz:.6});k.box(.3*s,1.6*s,.3*s,x+.6*s,y+3.5*s,z-.15*s,0x5a3b20,{rz:-.55});
@@ -122,7 +148,7 @@ const TREE_S=1.6,ROCK_S=1.5,PROP_S=1.4; // árvores e objetos proporcionais ao h
 function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*73856093^ch.cz*19349663^0x5bd1e995),col=ch.col;
   const nearStr=(x,z)=>{for(const s of FZ)if(Math.abs(x-s.x)<s.r*.8&&Math.abs(z-s.z)<s.r*.8&&hy(x-s.x,z-s.z)<s.r*.8)return true;return false};
   const spot=(minH)=>{const x=x0+r()*CS,z=z0+r()*CS,ix=Math.floor(x)-x0,iz=Math.floor(z)-z0,h=ch.h[(ix+1)+(iz+1)*34];if(h<(minH==null?.25:minH)||roadD(x,z)<2.4||nearStr(x,z)||onBridge(x,z))return null;regW(x,z,RW);let b=0;for(let i=1;i<REG.length;i++)if(RW[i]>RW[b])b=i;return{x,z,h,b}};
-  const N=[[3,0,1,40,20],[4,0,4,70,16],[5,0,2,40,150],[18,0,4,40,14],[10,0,3,10,6],[5,0,9,0,0]]; // árvores, -, pedras, grama, flores por região
+  const N=[[3,0,1,40,20],[4,0,4,70,16],[5,0,2,40,150],[18,0,4,40,14],[10,0,3,10,6],[5,0,9,0,0],[14,0,3,40,16],[7,0,6,10,0],[2,0,2,80,10],[1.6,0,3,4,0],[3,0,2,30,10],[4,0,5,8,4]]; // árvores, -, pedras, grama, flores por região
   const db=regionAt(x0+CS/2,z0+CS/2);
   for(let i=0;i<N[db][0]*1.5;i++){const p=spot(-.6);if(!p)continue;const s=(.85+r()*.6)*TREE_S;
     if(p.b==0){if(p.h<.3)continue;oak(k,f,p.x,p.h,p.z,s,LEAF.vila,0,lod);col.push([p.x,p.z,.9*s])}
@@ -130,13 +156,19 @@ function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*738560
     else if(p.b==2){if(p.h<.3)continue;r()<.3?blossom(k,f,p.x,p.h,p.z,s,lod):birch(k,f,p.x,p.h,p.z,s,lod);col.push([p.x,p.z,.8*s])}
     else if(p.b==3){if(p.h<.3)continue;const big=r()<.15?1.6:1;r()<.35?pine(k,f,p.x,p.h,p.z,s*big,0,1.6,lod):oak(k,f,p.x,p.h,p.z,s*big,LEAF.outono,1.2,lod);col.push([p.x,p.z,.9*s*big])}
     else if(p.b==4){if(p.h<-.7)continue;mangrove(k,f,p.x,p.h,p.z,s,lod,e);col.push([p.x,p.z,1.1*s])}
-    else{if(p.h<.3)continue;deadTree(k,p.x,p.h,p.z,s);col.push([p.x,p.z,.6*s])}}
+    else if(p.b==5){if(p.h<.3)continue;deadTree(k,p.x,p.h,p.z,s);col.push([p.x,p.z,.6*s])}
+    else if(p.b==6){if(p.h<.3)continue;const big=r()<.18?1.5:1;r()<.4?oak(k,f,p.x,p.h,p.z,s*big,LEAF.rubro,1,lod):oak(k,f,p.x,p.h,p.z,s*big,LEAF.outono,.8,lod);col.push([p.x,p.z,.9*s*big])}
+    else if(p.b==7){if(p.h<.3)continue;r()<.82?pine(k,f,p.x,p.h,p.z,s*(1+r()*.5),1,.8,lod,LEAF.gelo):deadTree(k,p.x,p.h,p.z,s);col.push([p.x,p.z,.9*s])}
+    else if(p.b==8){if(p.h<.3)continue;acacia(k,f,p.x,p.h,p.z,s);col.push([p.x,p.z,.6*s])}
+    else if(p.b==9){if(p.h<.3)continue;cactus(k,p.x,p.h,p.z,s*.8);col.push([p.x,p.z,.5*s])}
+    else if(p.b==10){if(p.h<.3)continue;p.h<1.6?palm(k,f,p.x,p.h,p.z,s*.9):oak(k,f,p.x,p.h,p.z,s,LEAF.vila,0,lod);col.push([p.x,p.z,.6*s])}
+    else{if(p.h<.3)continue;r()<.6?crystalSpire(k,e,p.x,p.h,p.z,s*.8):deadTree(k,p.x,p.h,p.z,s);col.push([p.x,p.z,.7*s])}}
   // pedras
-  for(let i=0;i<N[db][2]+1;i++){const p=spot();if(!p)continue;const s=(.7+r()*1.1)*ROCK_S;rock(k,p.x,p.h,p.z,s,p.b==5?0x2a2224:p.b==4?0x5a5a4a:0x8a8a84,p.b==3||p.b==4);col.push([p.x,p.z,.6*s]);
+  for(let i=0;i<N[db][2]+1;i++){const p=spot();if(!p)continue;const s=(.7+r()*1.1)*ROCK_S;rock(k,p.x,p.h,p.z,s,[0x8a8a84,0x8a8a84,0x8a8a84,0x8a8a84,0x5a5a4a,0x2a2224,0x7a6a5a,0xa8b4c4,0x9a6a4a,0xc8a070,0x8a8a84,0x3a3050][p.b],p.b==3||p.b==4||p.b==6);col.push([p.x,p.z,.6*s]);if(p.b==7)k.box(1.2*s,.22*s,1*s,p.x,p.h+1.1*s,p.z,0xf4f8fc);if(p.b==11&&r()<.7)e.box(.3*s,1.4*s,.3*s,p.x+.5*s,p.h+.9*s,p.z,0x9ae8ff,{rz:.3});
     if(p.b==5&&r()<.6){k.box(.5,2.5+r()*2,.5,p.x+1.4,p.h+1.2,p.z,0x1a1418,{rz:.3,ry:r()*3});}}
   if(lod>1)return;
   // detalhes pequenos (só perto): grama, flores, cogumelos, juncos, trigo, vitórias-régias
-  const K0=k,F0=f;for(let i=0;i<160;i++){const p=spot(-.5);if(!p)continue;const n=N[p.b],t=r(),sm_=p.h<-.05?1:PROP_S,k=new SB(K0,p.x,p.h,p.z,sm_),f=new SB(F0,p.x,p.h,p.z,sm_),g=new SB(e,p.x,p.h,p.z,sm_);
+  const K0=k,F0=f;for(let i=0;i<220;i++){const p=spot(-.5);if(!p)continue;const n=N[p.b],t=r(),sm_=p.h<-.05?1:PROP_S,k=new SB(K0,p.x,p.h,p.z,sm_),f=new SB(F0,p.x,p.h,p.z,sm_),g=new SB(e,p.x,p.h,p.z,sm_);
     if(p.b==4){if(p.h<-.05){if(t<.35){k.box(.9,.04,.9,p.x,.03,p.z,0x3a8a6a,{ry:r()*3});if(r()<.3)g.box(.22,.16,.22,p.x,.1,p.z,r()<.5?0xff9ad0:0x8affe8)}}
       else if(t<.5){f.box(.08,1.6,.08,p.x,p.h+.8,p.z,0x6a8a3a).box(.14,.4,.14,p.x,p.h+1.5,p.z,0x5a3a20).box(.08,1.3,.08,p.x+.2,p.h+.65,p.z+.1,0x7a9a4a)}else if(t<.62){const gc=r()<.6?0x40ffd8:0x6ac8ff;for(let a=0;a<3;a++){const ox=(a-1)*.32,oz=(a%2)*.25,hh=.25+a%2*.18;k.box(.12,hh,.12,p.x+ox,p.h+hh/2,p.z+oz,0xd8e8e0);g.box(.34-a*.04,.12,.34-a*.04,p.x+ox,p.h+hh+.05,p.z+oz,gc)}}continue}
     if(p.h<.3)continue;
@@ -147,21 +179,31 @@ function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*738560
     if(p.b==3&&t<.12){k.box(.18,.4,.18,p.x,p.h+.2,p.z,0xeee8d8).box(.55,.22,.55,p.x,p.h+.48,p.z,r()<.6?0xd03a2a:0x9a6a3a);continue}
     if(p.b==3&&t<.3){for(let a=0;a<4;a++)f.box(.5,.08,.16,p.x+C(a*1.6)*.25,p.h+.3,p.z+S(a*1.6)*.25,0x3a7a2a,{ry:a*1.6,rz:.4});continue}
     if(p.b==5){if(t<.2)k.box(.6,.12,.14,p.x,p.h+.07,p.z,0xe8e0d0,{ry:r()*3});continue}
+    if(p.b==6){if(t<.35){const lc=LEAF.rubro.concat(LEAF.outono);for(let a=0;a<4;a++)k.box(.36,.035,.28,p.x+(r()-.5)*1.6,p.h+.02,p.z+(r()-.5)*1.6,lc[(r()*lc.length)|0],{ry:r()*3})}else if(t<.42)k.box(.18,.4,.18,p.x,p.h+.2,p.z,0xeee8d8).box(.55,.22,.55,p.x,p.h+.48,p.z,0xd03a2a);else if(t<.5)bush(f,p.x,p.h,p.z,0xc0402a,.9);else if(t<.53){k.box(2.6,.5,.5,p.x,p.h+.25,p.z,0x5a3a22,{ry:r()*3}).box(1.2,.12,.52,p.x,p.h+.52,p.z,0x4a7a2a)}else grass(f,p.x,p.h,p.z,[0xc87a30,0xb8642a,0xd89040][(r()*3)|0]);continue}
+    if(p.b==7){if(t<.3)k.box(.9+r()*.8,.3,.8+r()*.6,p.x,p.h+.12,p.z,0xf4f8fc,{ry:r()*3});else if(t<.36)g.box(.25,.9+r()*.6,.25,p.x,p.h+.45,p.z,0xbfeaff,{rz:(r()-.5)*.5});else if(t<.5)grass(f,p.x,p.h,p.z,0xc8d4dc);continue}
+    if(p.b==8){if(t<.62){for(let a=0;a<3;a++)f.box(.1,1.1+r()*.6,.1,p.x+(r()-.5)*.6,p.h+.6,p.z+(r()-.5)*.6,[0xd8b85a,0xc8a04a,0xe0c46a][a])}else if(t<.64)k.box(.8,1.8,.8,p.x,p.h+.9,p.z,0x9a6a3a).box(.5,.6,.5,p.x,p.h+2,p.z,0x8a5a32);else if(t<.7)flower(f,p.x,p.h,p.z,0xff7a2a,1);else if(t<.74)bush(f,p.x,p.h,p.z,0x8a9a3a,.8);continue}
+    if(p.b==9){if(t<.14){for(let a=0;a<4;a++)k.box(.06,.5,.06,p.x+(r()-.5)*.5,p.h+.25,p.z+(r()-.5)*.5,0x8a6a42,{rz:(r()-.5)*.8})}else if(t<.19){k.box(.5,.42,.5,p.x,p.h+.2,p.z,0xeee4cc).box(.12,.12,.06,p.x-.1,p.h+.26,p.z+.25,0x2a2018).box(.12,.12,.06,p.x+.1,p.h+.26,p.z+.25,0x2a2018)}else if(t<.27)cactus(k,p.x,p.h,p.z,.35);continue}
+    if(p.b==10){if(p.h<1&&t<.45){k.box(.22,.08,.18,p.x,p.h+.04,p.z,r()<.5?0xffe8e0:0xffb0c0,{ry:r()*3});if(r()<.3)k.box(.3,.05,.3,p.x+.4,p.h+.03,p.z,0xff8a3a,{ry:.785})}else if(t<.6)grass(f,p.x,p.h,p.z,0x8ac860);else if(t<.66)bush(f,p.x,p.h,p.z,0x4aa040,.8);else if(t<.72)flower(f,p.x,p.h,p.z,FLC[(r()*FLC.length)|0],1);continue}
+    if(p.b==11){if(t<.35)g.box(.16,.5+r()*.5,.16,p.x,p.h+.3,p.z,r()<.5?0x9ae8ff:0xd8a8ff,{rz:(r()-.5)*.6});else if(t<.45){k.box(.14,.34,.14,p.x,p.h+.17,p.z,0xd8e0f0);g.box(.42,.16,.42,p.x,p.h+.4,p.z,0x6af0ff)}else if(t<.6)grass(f,p.x,p.h,p.z,0x8a7ac8);continue}
+    if(t>.93&&p.b<4){bush(f,p.x,p.h,p.z,[0x4a9a3a,0x8ab03a,0x9a5ac8,0x3a7a3a][p.b]);continue}
+    if(t>.915&&t<=.93&&(p.b==0||p.b==3)){k.box(2.6,.5,.5,p.x,p.h+.25,p.z,0x5a3a22,{ry:r()*3}).box(1.4,.12,.52,p.x,p.h+.52,p.z,0x4a8a3a);continue}
     if(i>n[3]+n[4])continue;
     if(t<n[4]/(n[3]+n[4]+1))flower(f,p.x,p.h,p.z,FLC[(r()*FLC.length)|0],1);else grass(f,p.x,p.h,p.z,[0x5aa94a,0x6cb44f,0x4f9b45][(r()*3)|0])}}
 function* genChunk(ch){const lod=ch.lod,x0=ch.cx*CS,z0=ch.cz*CS,H=ch.h,k=new Bake(),f=new Bake(),e=new Bake(),n=CS/lod;
   const hAt=(i,j)=>{if(lod==1)return H[(i+1)+(j+1)*34];const ii=i*2,jj=j*2;let m=-99;for(let a=0;a<2;a++)for(let b=0;b<2;b++){const v=H[cl(ii+a+1,0,33)+cl(jj+b+1,0,33)*34];if(v>m)m=v}return m};
   for(let j=0;j<n;j++){for(let i=0;i<n;i++){const ix=x0+i*lod,iz=z0+j*lod,h=hAt(i,j),cx=ix+lod*.5,cz=iz+lod*.5;regW(cx,cz,RW);
       let b=0,acc=0;const rr=hash2(ix*3+1,iz*5+2);for(let q=0;q<REG.length;q++){acc+=RW[q];if(rr<=acc){b=q;break}}
-      const g=REG[b],v=hash2(ix,iz);let c=g.top[(v*g.top.length)|0],sc=g.side,emi=0,gt=b!=5;
+      const g=REG[b],v=hash2(ix,iz);let c=g.top[(v*g.top.length)|0],sc=g.side,emi=0,gt=b!=5&&b!=7&&b!=9&&b!=11;
       const e2=Math.max(Math.abs(cx),Math.abs(cz));
-      if(h<-.25){c=b==4?0x3e3626:h<-1?0x8a7a58:0xb0a070;gt=0}else if(h<.6&&b!=4&&b!=5){c=v<.5?0xd8c890:0xcfbf86;gt=0}
-      else if(e2>205){c=h>13?0xf2f4f8:v<.5?0x7a7a76:0x6a6a66;sc=0x5a5a56;gt=0}
+      if(h<-.25){c=b==4?0x3e3626:h<-1?0x8a7a58:0xb0a070;gt=0}else if(h<.6&&b!=4&&b!=5&&b!=7&&b!=11){c=v<.5?0xd8c890:0xcfbf86;gt=0}
+      else if(e2>WMAX-9){c=h>13?0xf2f4f8:v<.5?0x7a7a76:0x6a6a66;sc=0x5a5a56;gt=0}
       else if(roadD(cx,cz)<1.7){c=v<.5?0xa08458:0x94784e;sc=0x7a5a3a;gt=0}
       else if(b==0&&hy(cx,cz)<19.5){c=[0x9a9a92,0x8a8a84,0xa8a8a0][(v*3)|0];sc=0x7a7a74;gt=0}
       else if(b==5&&RW[5]>.6&&fbm(cx*.07,cz*.07,2)>.63){emi=1;gt=0;c=v<.3?0xffd84a:v<.7?0xff7a1a:0xff5a10}
+      else if(b==11&&RW[11]>.6&&fbm(cx*.08,cz*.08,2)>.68){emi=2;gt=0;c=v<.5?0x6ad8ff:0xb88aff}
+      else if(b==7&&h<2.2&&fbm(cx*.05,cz*.05,2)>.6){c=v<.5?0xbfe0f0:0xa8d0e8;gt=0}
       const x1=ix+lod,z1=iz+lod,sh=.94+v*.1;
-      if(emi){e.quad([ix,h-.25,z1],[x1,h-.25,z1],[x1,h-.25,iz],[ix,h-.25,iz],[0,1,0],c,null,lod,lod);ch.lava.push([cx,cz])}
+      if(emi){e.quad([ix,h-(emi==1?.25:0),z1],[x1,h-(emi==1?.25:0),z1],[x1,h-(emi==1?.25:0),iz],[ix,h-(emi==1?.25:0),iz],[0,1,0],c,null,lod,lod);if(emi==1)ch.lava.push([cx,cz])}
       else{const ao=(px,pz)=>{const sx=px?1:-1,sz=pz?1:-1,a=hAt(i+sx,j)>h+.1,bb=hAt(i,j+sz)>h+.1,cc=hAt(i+sx,j+sz)>h+.1;return AOK[a&&bb?3:(a?1:0)+(bb?1:0)+(cc?1:0)]};k.quad([ix,h,z1],[x1,h,z1],[x1,h,iz],[ix,h,iz],[0,1,0],c,[sh*ao(0,1),sh*ao(1,1),sh*ao(1,0),sh*ao(0,0)],lod,lod)}
       // laterais onde o vizinho é mais baixo (oclusão nas bases)
       const sides=[[1,0],[-1,0],[0,1],[0,-1]];for(const[dx,dz]of sides){const nh=hAt(i+dx,j+dz);if(nh>=h)continue;const lo=Math.max(nh,-2.5),H2=h-lo,sc2=H2>2.2?0x6a6a64:sc,top=.9,bot=H2>1?.55:.7;

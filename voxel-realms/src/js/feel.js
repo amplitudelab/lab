@@ -10,7 +10,7 @@
 P.air=0;P.vy=0;P.roll=0;P.dive=0;P.plunge=0;
 const WATER_Y=-.2,WADE_Y=-1.45;
 // o herói pode entrar em qualquer água (o leito do rio fica a ~1,7 de fundo), mas não sobe paredes
-function walkP(x,z,fromY){if(Math.abs(x)>WMAX||Math.abs(z)>WMAX)return false;if(onBridge(x,z))return true;const h=groundAt(x,z);return h>-2.4&&(fromY==null||h-Math.max(fromY,WADE_Y)<1.3)}
+function walkP(x,z,fromY){if((Math.abs(x)>WMAX||Math.abs(z)>WMAX)&&!(typeof DST!='undefined'&&DST.on))return false;if(onBridge(x,z))return true;const h=groundAt(x,z);return h>-2.4&&(fromY==null||h-Math.max(fromY,WADE_Y)<1.3)}
 const waterDepth=()=>onBridge(P.x,P.z)?0:Math.max(0,WATER_Y-Math.max(groundAt(P.x,P.z),WADE_Y)+.05);
 // altura do herói: degraus suaves no chão, gravidade no ar, pés no fundo raso da água (meio corpo submerso)
 function playerY(dt){const g=footY(P.x,P.z,P.y,.3),fl=Math.max(g,WADE_Y);

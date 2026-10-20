@@ -19,12 +19,12 @@ function wxSet(type,quiet){if(WX.type==type)return;WX.type=type;WX.t=90+R()*120;
 const RN=Math.round(GFX.fx*300+60),RIM=new THREE.InstancedMesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshBasicMaterial({color:0xc8dcf0,transparent:true,opacity:.45,depthWrite:false}),RN);RIM.frustumCulled=false;RIM.instanceMatrix.setUsage(THREE.DynamicDrawUsage);sc.add(RIM);
 const RD=[];for(let i=0;i<RN;i++)RD.push({x:0,y:-999,z:0,v:0,on:0});
 const _wq=new THREE.Quaternion(),_wv=new V3(),_ws=new V3();
-function rainUpd(dt,px,py,pz){const k=WX.k,amt=Math.max(k.rain,k.ash),n=Math.round(RN*amt),ash=k.ash>k.rain,wind=k.wind;RIM.visible=n>0;if(!n)return;
-  RIM.material.color.setHex(ash?0x6a5a54:NIGHT>.5?0x8a9ab8:0xc8dcf0);RIM.material.opacity=ash?.75:.42;
+function rainUpd(dt,px,py,pz){const k=WX.k,sn=k.snow||0,sa=k.sand||0,amt=Math.max(k.rain,k.ash,sn,sa),n=Math.round(RN*amt),ash=Math.max(k.ash,sn,sa)>k.rain,wind=k.wind;RIM.visible=n>0;if(!n)return;
+  RIM.material.color.setHex(ash?(sn>.3?0xf4f8ff:sa>.3?0xd8b880:0x6a5a54):NIGHT>.5?0x8a9ab8:0xc8dcf0);RIM.material.opacity=ash?(sn>.3?.9:.75):.42;
   _wq.setFromAxisAngle(_wv.set(1,0,0),ash?0:wind*.35);
   for(let i=0;i<RN;i++){const d=RD[i];if(i>=n){if(d.on){d.on=0;_m4.makeScale(0,0,0);RIM.setMatrixAt(i,_m4)}continue}
-    if(!d.on||d.y<groundAt(d.x,d.z)-.2||Math.abs(d.x-px)>18||Math.abs(d.z-pz)>18){if(d.on&&!ash&&R()<.25&&hy(d.x-px,d.z-pz)<10)fx(d.x,groundAt(d.x,d.z)+.05,d.z,0xd8e8ff,1,1.2,.06,.6,4);d.on=1;d.x=px+(R()-.5)*34;d.z=pz+(R()-.5)*34;d.y=py+6+R()*14;d.v=ash?1.2+R():18+R()*6}
-    d.y-=d.v*dt;d.z+=wind*(ash?1.5:6)*dt;if(ash)d.x+=S(d.y+i)*.02;
+    if(!d.on||d.y<groundAt(d.x,d.z)-.2||Math.abs(d.x-px)>18||Math.abs(d.z-pz)>18){if(d.on&&!ash&&R()<.25&&hy(d.x-px,d.z-pz)<10)fx(d.x,groundAt(d.x,d.z)+.05,d.z,0xd8e8ff,1,1.2,.06,.6,4);d.on=1;d.x=px+(R()-.5)*34;d.z=pz+(R()-.5)*34;d.y=py+6+R()*14;d.v=ash?(sa>.3?.5+R()*.4:sn>.3?1.6+R():1.2+R()):18+R()*6}
+    d.y-=d.v*dt;d.z+=wind*(ash?(sa>.3?11:sn>.3?2.4:1.5):6)*dt;if(ash)d.x+=S(d.y+i)*.02;
     _m4.compose(_ws.set(d.x,d.y,d.z),_wq,ash?_wv.set(.12,.12,.12):_wv.set(.035,.9,.035));RIM.setMatrixAt(i,_m4)}RIM.instanceMatrix.needsUpdate=true}
 // ---------- raios
 const BOLTM=new THREE.MeshBasicMaterial({color:0xe8f0ff,transparent:true,opacity:1,depthWrite:false,blending:THREE.AdditiveBlending});let BOLT=null,boltT=0;

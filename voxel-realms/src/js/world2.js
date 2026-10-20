@@ -11,9 +11,9 @@ function sneakSet(v){if(P.dead||UI.block()||P.mounted){v=0}P.sneak=v==null?(P.sn
 function backstab(e,d){if(P.bsT>0&&e.st!='chase'&&!e.t.passive&&!e.boss){P.bsT=0;P.st.back++;pop('PELAS COSTAS!',e.x,e.y+2.8,e.z,'#c8a8ff',1);flash(e.x,e.y+1.2,e.z,0xb08aff,3,.25);fx(e.x,e.y+1.2,e.z,0xb08aff,12,6,.1,.6,6);HITSTOP=.08;return d*3}return d}
 
 // ---------- masmorras: arenas fechadas com ondas, chefe e baú
-const DNG=[{id:'cripta',n:'Cripta Esquecida',ic:'⚰️',ent:[-106,-90],at:[-196,-196],mob:['zombie','ghoul','skel','skelwar','skelmage'],boss:'cultist',bn:'Lich da Cripta',c:0x7dff9a,wall:0x4a4a52,floor:0x3a3a40},
-  {id:'caverna',n:'Caverna das Tecelãs',ic:'🕸️',ent:[-44,-126],at:[-196,196],mob:['spider','spider','dwolf','bassassin'],boss:'spider',bn:'Rainha Tecelã',c:0xb07aff,wall:0x3a3028,floor:0x2e2620},
-  {id:'ruina',n:'Ruína do Templo',ic:'🏛️',ent:[132,-24],at:[196,196],mob:['golem','fairy','imp','bshield','bshaman'],boss:'golem',bn:'Colosso da Ruína',c:0xffd060,wall:0xd8ccb0,floor:0xb8ac90}];
+const DNG=[{id:'cripta',n:'Cripta Esquecida',ic:'⚰️',ent:[-106,-90],at:[-470,-470],mob:['zombie','ghoul','skel','skelwar','skelmage'],boss:'cultist',bn:'Lich da Cripta',c:0x7dff9a,wall:0x4a4a52,floor:0x3a3a40},
+  {id:'caverna',n:'Caverna das Tecelãs',ic:'🕸️',ent:[-44,-126],at:[-470,470],mob:['spider','spider','dwolf','bassassin'],boss:'spider',bn:'Rainha Tecelã',c:0xb07aff,wall:0x3a3028,floor:0x2e2620},
+  {id:'ruina',n:'Ruína do Templo',ic:'🏛️',ent:[132,-24],at:[470,470],mob:['golem','fairy','imp','bshield','bshaman'],boss:'golem',bn:'Colosso da Ruína',c:0xffd060,wall:0xd8ccb0,floor:0xb8ac90}];
 const DST={on:null,w:0,live:[],t:0,boss:null,done:0};
 // 14.4: cada masmorra é um complexo de 3 salões (28×42) ligado por portões: ondas no primeiro, totens que
 // chamam reforços e armadilhas de espinhos no segundo, chefe com jatos de fogo giratórios no terceiro.
@@ -122,7 +122,7 @@ function eventsUpd(dt){if(!run||P.dead||DST.on)return;
   if(EVT.inv){EVT.invT-=dt;if(EVT.invT<=0&&!EVT.inv.some(m=>!m.dead)){if(EVT.invW>=3){EVT.inv=null;P.st.inv++;banner('VILA DEFENDIDA');dropGold(P.x,P.z,Math.round(60+P.lv*20));dropItem(P.x,P.z,genItem(P.lv+1,2));gainXP(Math.round(XPN(P.lv)*.2));save()}
       else{EVT.invW++;EVT.invT=2;const lv=Math.max(2,P.lv-1),n=4+EVT.invW*2;for(let i=0;i<n;i++){const a=-PI/2+(R()-.5)*.8,r=58+R()*6,x=C(a)*r,z=S(a)*r+60*0,m=mkMob(pick(['zombie','zombie','ghoul','skel']),x,z,{lv,ch:'evt'});m.st='chase';m.home=[0,0];EVT.inv.push(m)}toast('🧟','Onda '+EVT.invW+' de 3','')}}}
   // chefe errante
-  EVT.errT-=dt;if(EVT.errT<=0&&!EVT.err&&P.lv>=4){EVT.errT=6;const a=R()*TAU,r=55+R()*30,x=cl(P.x+C(a)*r,-200,200),z=cl(P.z+S(a)*r,-200,200);if(walkable(x,z)&&hy(x,z)>80){const reg=regionAt(x,z),tb=SPAWN[REG[reg].id]||['wolf'];
+  EVT.errT-=dt;if(EVT.errT<=0&&!EVT.err&&P.lv>=4){EVT.errT=6;const a=R()*TAU,r=55+R()*30,x=cl(P.x+C(a)*r,-WMAX+14,WMAX-14),z=cl(P.z+S(a)*r,-WMAX+14,WMAX-14);if(walkable(x,z)&&hy(x,z)>80){const reg=regionAt(x,z),tb=SPAWN[REG[reg].id]||['wolf'];
       const m=mkMob(pick(tb),x,z,{lv:Math.max(mobLv(reg),P.lv)+3,el:2,afx:[pick(Object.keys(AFF)),pick(Object.keys(AFF))],name:'Errante '+rareName(rng(Date.now()%9973))});m.hp=m.mx=m.mx*1.8;m.m.g.scale.multiplyScalar(1.25);m.errante=1;EVT.err=m;EVT.errT=420+R()*240;
       const dir=['norte','nordeste','leste','sudeste','sul','sudoeste','oeste','noroeste'][(Math.round((Math.atan2(x-P.x,-(z-P.z))/TAU)*8)+8)%8];toast('👑','Um chefe errante surgiu!','Ele vaga ao '+dir+'. Marcado no minimapa.');snd(150,.6,'sawtooth')}}
   if(EVT.err&&EVT.err.dead){if(!EVT.err.counted){EVT.err.counted=1;P.st.err++;dropItem(EVT.err.x,EVT.err.z,genItem(P.lv+1,2.5));toast('👑','Errante derrotado!','')}EVT.err=null}}

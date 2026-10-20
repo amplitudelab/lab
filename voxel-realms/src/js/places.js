@@ -71,8 +71,9 @@ addStr(0,0,0,(k,e,f)=>{const t=new TB(k,e,f,0,0,0,1.5,1.5);
   for(let i=0;i<14;i++){const a=i/14*TAU;t.b(.18,1,.18,24+C(a)*3,.5,24+S(a)*3,0x6b4524)}t.b(1.8,1.2,1.4,24,.6,24,0x8a5a30,{g:1})});
 
 // ---------- PEDRAS DE TELEPORTE (uma por região)
-const WP=[{id:'vila',n:'Praça de Pedraverde',x:-6,z:11},{id:'plan',n:'Planície Dourada',x:18,z:138},{id:'flor',n:'Campos de Lírio',x:154,z:-2},{id:'mata',n:'Floresta Ancestral',x:4,z:-146},{id:'mang',n:'Mangue Sombrio',x:-154,z:12},{id:'cald',n:'Caldeira de Brasas',x:142,z:-146}];
-for(const w of WP){if(w.id!='vila')flat(w.x,w.z,8);w.on=w.id=='vila';
+const WP=[{id:'vila',n:'Praça de Pedraverde',x:-6,z:11},{id:'plan',n:'Planície Dourada',x:18,z:138},{id:'flor',n:'Campos de Lírio',x:154,z:-2},{id:'mata',n:'Floresta Ancestral',x:4,z:-146},{id:'mang',n:'Mangue Sombrio',x:-154,z:12},{id:'cald',n:'Caldeira de Brasas',x:142,z:-146},
+  {id:'outono',n:'Bosque Carmesim',x:-200,z:-188},{id:'neve',n:'Picos Gelados',x:22,z:-296},{id:'savana',n:'Savana Rubra',x:298,z:90},{id:'deserto',n:'Dunas de Âmbar',x:216,z:238},{id:'costa',n:'Costa das Conchas',x:-50,z:300},{id:'cristal',n:'Vale de Cristal',x:-268,z:210}];
+for(const w of WP){if(w.id!='vila')flat(w.x,w.z,RI[w.id]>=6?13:8);w.on=w.id=='vila';
   addStr(w.x,w.z,0,(k,e,f)=>{const t=new TB(k,e,f,w.x,w.z,0,null,1.3);t.b(5,.3,5,0,.15,0,0x8a8a84,{g:1}).b(4,.3,4,0,.4,0,0x9a9a94);for(let i=0;i<6;i++){const a=i/6*TAU;t.b(.5,1.4,.5,C(a)*2.3,.9,S(a)*2.3,0x7a7a74)}
     t.b(.8,2.6,.8,0,1.8,0,0x6a6a7a);t.e_(.86,.25,.86,0,2.2,0,0x58c8ff).e_(.86,.25,.86,0,1.2,0,0x58c8ff);t.col(0,0,.8)});
   inter({x:w.x,z:w.z,r:3.2,ic:'🌀',label:()=>'Pedra de Teleporte',act:()=>openMap(true),kind:'wp',wp:w})}

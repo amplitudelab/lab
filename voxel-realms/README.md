@@ -74,6 +74,16 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 15.2 — mundo três vezes maior
+- **Seis terras novas** num anel em volta do mapa antigo (área 3×): **Bosque Carmesim** (nível 9, outono vermelho e ruínas), **Picos Gelados** (18, neve, pinheiros gelados e mosteiro), **Savana Rubra** (8, acácias, capim alto e aldeia de tendas), **Dunas de Âmbar** (15, dunas, cactos e o Templo do Sol), **Costa das Conchas** (11, praia, coqueiros e farol) e **Vale de Cristal** (20, chão roxo, cristais que brilham e um obelisco).
+- **Pedras de teleporte** em cada terra nova, estradas ligando ao mapa antigo e horizonte próprio em cada uma.
+- **Monstros e animais novos:** lobos da neve, yetis, esqueletos glaciais, lobos carmesim, hienas, escorpiões, múmias, caranguejos, piratas, golems de cristal; raposas do ártico, cabras, antílopes, camelos, caranguejinhos e raposas de cristal.
+- **NPCs e missões:** cada terra tem um NPC com 4 missões (conversa, caça, coleta e um líder com nome).
+- **Eventos aleatórios enquanto explora:** caravana atacada (2 ondas), tesouro enterrado, chuva de meteoros (fragmentos arcanos), santuário perdido (bênção) e fera lendária — marcados no mapa.
+- **Clima novo:** nevasca nos picos e tempestade de areia nas dunas.
+- **Mais flora:** arbustos, troncos caídos e mais detalhes pequenos em todas as regiões; **a grama, flores e arbustos se dobram quando o herói passa**.
+- As masmorras saíram dos cantos do mapa (agora só se chega pelo portal).
+
 ## Versão 15.1 — ragdoll, modelos, animações, drops e skills
 - **Morte com ragdoll:** o corpo é arremessado na direção do golpe (mais longe com golpe pesado), tomba, quica e os membros balançam soltos até assentar; fica caído ~10 s e se desfaz em poeira. Vale para humanoides, animais, aranhas, sapos, slimes, abelhas, dragões e o herói.
 - **Modelos menos quadrados:** as peças grandes dos personagens, monstros e animais têm bordas e cantos chanfrados de verdade, e os personagens perderam o ruído de "voxel" na pintura.

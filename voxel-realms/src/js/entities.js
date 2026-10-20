@@ -72,7 +72,7 @@ function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2
   const r=rng(c.cx*92821^c.cz*68917^((performance.now()/90000)|0)),reg=regionAt(cx,cz),rid=REG[reg].id;
   let tbl=SPAWN[rid]||[];for(const p of POI)if(hy(cx-p.x,cz-p.z)<p.r+16){if(p.n.startsWith('Cemit'))tbl=['zombie','zombie','ghoul','skel'];if(p.n.startsWith('Acamp'))tbl=['bandit','bandarc'];if(p.n.startsWith('Colmeia'))tbl=['bee','bee','fairy']}
   const nt=NIGHT>.5;if(nt&&!tbl.some(t=>t=='zombie'||t=='bandit'&&tbl.length==2))tbl=tbl.concat(NIGHTB[rid]||[]);
-  const packs=tbl.length?(r()<[0,.66,.7,.76,.74,.8][reg]?1:0)+(r()<(nt?.38:.26)?1:0):0;
+  const packs=tbl.length?(r()<([0,.66,.7,.76,.74,.8,.74,.78,.7,.76,.72,.8][reg]||.75)?1:0)+(r()<(nt?.38:.26)?1:0):0;
   for(let p=0;p<packs;p++){let x=0,z=0,ok=false;for(let a=0;a<8&&!ok;a++){x=c.cx*CS+4+r()*(CS-8);z=c.cz*CS+4+r()*(CS-8);ok=walkable(x,z)&&groundAt(x,z)>(rid=='mang'?-.5:.2)}if(!ok)continue;
     const lv=mobLv(reg),roll=r(),el=roll<.06?2:roll<.14?1:0,afx=[];if(el){const ks=Object.keys(AFF);while(afx.length<el){const a=pick(ks,r);if(!afx.includes(a))afx.push(a)}}
     const t1=pick(tbl,r),n=el==1?3:el==2?1:2+(r()*3|0);

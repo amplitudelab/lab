@@ -76,7 +76,7 @@ function drawMarks(c,X,Z,M){c.font='13px serif';c.textAlign='center';c.textBasel
     if(edge&&m.k!='q'&&m.k!='b')continue;                       // locais distantes só aparecem quando entram no raio
     c.save();c.globalAlpha=edge?.9:1;c.fillStyle='rgba(8,4,12,.75)';c.beginPath();c.arc(x,z,m.big?8:6.5,0,7);c.fill();c.strokeStyle=m.c;c.lineWidth=1.5;c.stroke();c.fillStyle='#fff';c.font=(m.big?'11px':'10px')+' serif';c.fillText(m.ic,x,z+.5);c.restore()}}
 function drawWorldMarks(x,k){x.textAlign='center';x.textBaseline='middle';
-  for(const m of marks()){const px=(m.x+220)*k,pz=(m.z+220)*k,r=m.big?11:9;x.fillStyle='rgba(8,4,12,.82)';x.beginPath();x.arc(px,pz,r,0,7);x.fill();x.strokeStyle=m.c;x.lineWidth=2;x.stroke();x.font=(m.big?15:13)+'px serif';x.fillStyle='#fff';x.fillText(m.ic,px,pz+1)}
+  for(const m of marks()){const px=(m.x+WMH)*k,pz=(m.z+WMH)*k,r=m.big?11:9;x.fillStyle='rgba(8,4,12,.82)';x.beginPath();x.arc(px,pz,r,0,7);x.fill();x.strokeStyle=m.c;x.lineWidth=2;x.stroke();x.font=(m.big?15:13)+'px serif';x.fillStyle='#fff';x.fillText(m.ic,px,pz+1)}
   x.textBaseline='alphabetic'}
 function mapLegend(){$('mleg').innerHTML=[['q','❗ Missões'],['p','📍 Locais'],['s','⚒️ Serviços'],['b','☠️ Chefes']].map(([k,n])=>`<button class="mlc ${MK[k]?'on':''}" data-mk="${k}">${n}</button>`).join('')}
 
