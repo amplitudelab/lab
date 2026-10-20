@@ -4,7 +4,7 @@
    esqueletos articulados (ombro/cotovelo, quadril/joelho) feitos de caixas
    assadas por osso; animação procedural com suavização em todas as juntas
    ============================================================================= */
-function part(parent,x,y,z,fn){const g=new THREE.Group();g.position.set(x,y,z);parent.add(g);if(fn){const k=new Bake();fn(k);const m=k.mesh(MV);if(m){m.castShadow=true;g.add(m)}}return g}
+function part(parent,x,y,z,fn){const g=new THREE.Group();g.position.set(x,y,z);parent.add(g);if(fn){const k=new Bake();k.ch=1;fn(k);const m=k.mesh(MV);if(m){m.castShadow=true;g.add(m)}}return g}
 function finish(m){try{skinModel(m)}catch(e){console.warn('skin',e)}m.meshes=[];m.g.traverse(o=>{if(o.isMesh){m.meshes.push(o);o.userData.mat=o.material}});m.A={w:0,ph:R()*6,look:0,lookT:0,lt:0,aw:0,fl:0};sc.add(m.g);return m}
 function flashModel(m,on){if(!!m.fl==on)return;m.fl=on;for(const o of m.meshes)o.material=on?(o.isSkinnedMesh?MFLS:MFL):o.userData.mat}
 // ---------- modelo numa malha só: cada parte (cabeça, braço, perna...) vira um "osso" e o corpo inteiro é
@@ -141,6 +141,14 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
   if(s.block){T.sLx=-1.25;T.eL=-1.25;T.sLz=-.35;T.sRx=-1.35;T.eR=-1.05;T.sRz=.55;T.sRy=-.5;T.trx=.12;T.tL=-.35;T.kL=.45;T.tR=.25;T.kR=.25;T.hy=.94}
   if(s.sneak&&!s.atk){T.hy=.8;T.tL-=.6;T.tR-=.6;T.kL+=1.05;T.kR+=1.05;T.trx=.38;T.hdx=-.25;T.sLx-=.25;T.sRx-=.25;T.eL-=.4;T.eR-=.4}
   let k=s.dash||s.roll?30:s.air?18:14;const a=s.atk;
+  // 15.1: cada golpe novo sorteia uma variação (0 = golpe base, 1 e 2 = alternativas)
+  if(a){if(a.k!==A.ak||a.p<A.ap-.05)A.av=R()*3|0;A.ak=a.k;A.ap=a.p}else A.ak=null;
+  // gestos parado: espreguiçar, conferir a arma, olhar em volta
+  if(W<.05&&!a&&!s.block&&!s.sit&&!s.dead&&!s.aim&&!zb&&!s.dash&&!s.roll&&!s.air){A.it=(A.it||0)+dt;if(!A.ig&&A.it>7+((A.ph*7)%5)){A.ig=1+(R()*3|0);A.it=0}
+    if(A.ig){const u=A.it/2.4,w=S(Math.min(1,u)*PI);if(u>=1){A.ig=0;A.it=0}
+      else if(A.ig==1){T.sLx=T.sRx=-2.6*w;T.sLz=-.45*w;T.sRz=.45*w;T.eL=T.eR=-.3*w-.2;T.trx=-.18*w;T.hdx=-.35*w;T.hy+=.03*w}
+      else if(A.ig==2){T.sRx=-1.25*w;T.eR=-1.25*w-.1;T.sRy=-.45*w;T.hdx=.35*w;T.hdy=-.4*w;T.try=-.15*w}
+      else{T.hdy=S(u*TAU)*.85*w;T.try=S(u*TAU)*.22*w;T.hry=S(u*TAU)*.08*w}}}else{A.it=0;A.ig=0}
   if(a){const p=a.p;k=28;switch(a.k){
     case 'slashA':{const w=seq(p,0,1,0,.32,.52),st=seq(p,0,.3,1,.32,.52);T.sRx=seq(p,T.sRx,-2.7,-.15,.32,.52);T.sRz=seq(p,T.sRz,.7,-.55,.32,.52);T.sRy=seq(p,0,.5,-.4,.32,.52);T.eR=seq(p,T.eR,-1.1,-.05,.32,.52);
       T.try=seq(p,T.try,.75,-.75,.32,.52);T.hry=seq(p,T.hry,.35,-.4,.32,.52);T.trx=.08+.12*st;T.trz=-.08*w;T.sLx=seq(p,T.sLx,.4,-.6,.32,.52);T.sLz=-.35*st;T.eL=-.6;T.tL=-.55*st;T.kL=.35*st;T.tR=.35*st;T.kR=.2*st;T.hy=1.02-.08*st;T.hdy=-T.try*.4;break}
@@ -173,6 +181,16 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
     case 'claw':{const x=seq(p,T.sRx,-2.2,-.9,.35,.5);T.sRx=x;T.sLx=seq(p,T.sLx,-2.2,-.9,.42,.58);T.eL=T.eR=-.3;T.trx=seq(p,T.trx,-.2,.45,.35,.5);break}
     case 'shoot':{const pl=cl(p/.6,0,1),rel=p>.6,rc=rel?sstep(.6,.68,p)*(1-sstep(.8,1,p)):0;T.sLx=-1.55;T.sLz=0;T.sLy=.15;T.eL=-.05;T.sRx=-1.55;T.sRz=.1;T.eR=rel?-.2-rc*.5:-.4-1.5*pl;T.sRy=-.25*pl;
       T.try=-.85;T.hdy=.85;T.hry=-.35;T.trx=-.05-rc*.12;T.tL=-.35;T.kL=.25;T.tR=.35;T.kR=.15;T.hy=.98;break}}}
+  // variações dos golpes (corte de cima na diagonal, corte subindo, giro com o corpo, varrida baixa, estocada em avanço)
+  if(a&&A.av){const p=a.p,v=A.av;
+    if(a.k=='slashA'){if(v==1){T.sRx=seq(p,T.sRx,-3.05,-.35,.32,.52);T.sRz=seq(p,.15,.35,-.95,.32,.52);T.trx=seq(p,0,-.25,.4,.32,.52);T.hy=seq(p,1.02,1.06,.9,.32,.52)}
+      else{T.sRx=seq(p,T.sRx,.5,-2.5,.34,.54);T.sRz=seq(p,.2,.55,-.2,.34,.54);T.eR=seq(p,-.4,-.9,-.1,.34,.54);T.hy=seq(p,1.02,.84,1.08,.34,.54);T.trx=seq(p,0,.35,-.25,.34,.54);T.tL=seq(p,0,-.8,-.2,.34,.54);T.kL=seq(p,.03,1.1,.2,.34,.54)}}
+    else if(a.k=='slashB'){if(v==1){T.try=seq(p,T.try,-1.5,1.3,.3,.5);T.hry=seq(p,T.hry,-.6,.8,.3,.5)}
+      else{T.hy=seq(p,1.02,.86,.82,.3,.5);T.tL=-.9;T.kL=1.1;T.tR=.3;T.kR=.5;T.sRx=seq(p,T.sRx,-.7,-.95,.3,.5);T.trx=seq(p,0,.25,.4,.3,.5)}}
+    else if(a.k=='thrust'&&v==1){T.hy=seq(p,1.02,.92,.86,.3,.46);T.tL=-1.05;T.kL=.7;T.trx=seq(p,0,0,.5,.3,.46)}
+    else if(a.k=='slam'&&v==2)T.try=seq(p,0,.6,-.3,.4,.56);
+    else if(a.k=='claw'&&v==1){T.sRx=seq(p,T.sRx,-1.2,-2.4,.35,.5);T.sLx=seq(p,T.sLx,-1.2,-2.4,.35,.5);T.trx=seq(p,0,-.3,.5,.35,.5)}}
+  if(s.hurt>0){if(!A.hon){A.hon=1;A.hv=(R()-.5)*2}T.try+=A.hv*.6*s.hurt;T.hdz+=A.hv*.3*s.hurt}else A.hon=0;
   if(s.leap){T.tL=T.tR=-1.1;T.kL=T.kR=1.7;T.sLx=T.sRx=-2.7;T.eL=T.eR=-.3;T.trx=.3}
   if(s.hurt>0){T.trx-=.4*s.hurt;T.hdx-=.3*s.hurt;T.sLz-=.3*s.hurt;T.sRz+=.3*s.hurt}
   if(s.dead){k=6;T.sLx=-.4;T.sRx=-.3;T.eL=T.eR=-.4;T.tL=.3;T.tR=-.2;T.kL=T.kR=.4;T.hdx=.3}
@@ -208,12 +226,14 @@ function quad(o){const m={kind:'quad',g:new THREE.Group(),o},L=o.len||1.4,H=o.h|
   if(o.wings){m.wL=part(m.body,-W/2,.3,0,k=>k.box(2.4,.1,1.4,-1.2,0,0,o.wings));m.wR=part(m.body,W/2,.3,0,k=>k.box(2.4,.1,1.4,1.2,0,0,o.wings))}
   m.g.scale.setScalar(o.scale||1);return finish(m)}
 function animQuad(m,dt,t,s){const A=m.A,v=s.v||0,o=m.o;sm(A,'w',cl(v/(o.run||5),0,1.4),dt,7);const W=A.w;A.ph+=dt*(3+v*2.2)*(W>.04?1:0);
-  let k=12;const ph=A.ph,off=[0,PI,PI,0];
-  for(let i=0;i<4;i++){const[u,lo]=m.legs[i],q=ph+off[i];sm(u.rotation,'x',S(q)*.7*W,dt,k);sm(lo.rotation,'x',Math.max(0,C(q))*.9*W,dt,k)}
-  sm(m.body.position,'y',(o.h||.7)+.15+Math.abs(S(ph))*.06*W,dt,k);sm(m.body.rotation,'x',S(ph*2)*.03*W,dt,k);
+  // 15.1: trote (pares em diagonal) e galope quando corre (patas da frente juntas, de trás juntas, corpo balançando)
+  let k=12;const ph=A.ph,gl=cl((v-(o.run||5)*.75)/2,0,1),off=[0,PI-gl*(PI-.35),PI-gl*0,gl*(PI+.35)];
+  for(let i=0;i<4;i++){const[u,lo]=m.legs[i],q=ph+off[i];sm(u.rotation,'x',S(q)*(.7+.25*gl)*W,dt,k);sm(lo.rotation,'x',Math.max(0,C(q))*(.9+.3*gl)*W,dt,k)}
+  sm(m.body.position,'y',(o.h||.7)+.15+Math.abs(S(ph))*(.06+.08*gl)*W,dt,k);sm(m.body.rotation,'x',S(ph*2)*.03*W+S(ph)*.12*gl*W,dt,k);
   A.lt-=dt;if(A.lt<=0){A.lt=2+R()*4;A.lookT=(R()-.5)*1.2;A.graze=o.grazer&&R()<.45}
   let nx=.0,hy_=A.lookT*(1-cl(W*2,0,1)),jaw=0;if(A.graze&&W<.1)nx=.9;
-  const a=s.atk;if(a){k=26;const p=a.p;if(a.k=='bite'){nx=seq(p,0,-.4,.35,.35,.5);jaw=seq(p,0,.7,0,.35,.5)}else if(a.k=='charge'){nx=.35}else if(a.k=='roar'){nx=-.5;jaw=.8}}
+  const a=s.atk;if(a){if(a.k!==A.ak||a.p<A.ap-.05)A.av=R()*3|0;A.ak=a.k;A.ap=a.p}else A.ak=null;
+  if(a){k=26;const p=a.p;if(a.k=='bite'){nx=seq(p,0,-.4,.35,.35,.5);jaw=seq(p,0,.7,0,.35,.5);if(A.av==1){hy_=S(p*28)*.45*(p>.35&&p<.75?1:0);jaw=Math.max(jaw,.4*(p>.35&&p<.75?1:0))}else if(A.av==2){sm(m.body.rotation,'x',-.45*seq(p,0,1,0,.3,.55),dt,20);nx=seq(p,0,-.7,.5,.3,.55)}}else if(a.k=='charge'){nx=.35}else if(a.k=='roar'){nx=-.5;jaw=.8}}
   if(s.hurt>0)nx-=.3*s.hurt;sm(m.neck.rotation,'x',nx,dt,k);sm(m.neck.rotation,'y',hy_,dt,4);sm(m.jaw.rotation,'x',jaw,dt,k*1.2);
   sm(m.tail.rotation,'y',S(t*(o.wag||5)+ph)*.5*(.4+W),dt,10);if(m.tail2)sm(m.tail2.rotation,'y',S(t*(o.wag||5)+ph-1.1)*.55*(.4+W),dt,10);sm(m.tail.rotation,'x',o.tailUp||-.3,dt,6);
   if(m.wL){const f=S(t*(s.fly?6:2))*(s.fly?.7:.15);m.wL.rotation.z=f;m.wR.rotation.z=-f}}

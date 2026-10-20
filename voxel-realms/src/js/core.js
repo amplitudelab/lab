@@ -64,7 +64,7 @@ const VTEX='{vec2 fs=vFs;if(fs.x!=0.&&uBv>0.){vec3 Nw=normalize((vec4(normalize(
  'if(vc.g>=vc.r&&vc.g>vc.b&&sat>.25)k=.9+h1*.17+step(.9,h1)*.08-step(h1,.06)*.08;'+
  'else if(vc.r>vc.g&&vc.g>=vc.b&&sat>.2&&mx<.78)k=fs.x>0.?.9+fract(sin(tp.x*91.7+floor(tp.y/5.)*3.1)*437.5)*.18:.86+h1*.2;'+
  'else if(sat<.14)k=.86+h2*.15+h1*.08;else k=.93+h1*.12;\n#endif\n'+
- '\n#ifdef USE_SKINNING\nk=mix(1.,k,.45);\n#endif\n'+
+ '\n#ifdef USE_SKINNING\nk=1.;\n#endif\n'+
  '\n#if __VERSION__>=300\nfloat ta=length(fwidth(tc*D));\n#else\nfloat ta=.4;\n#endif\n'+
  'gl_FragColor.rgb*=mix(k,1.,smoothstep(.35,1.1,ta));}}';
 const GRADE='{float l=dot(gl_FragColor.rgb,vec3(.299,.587,.114));gl_FragColor.rgb=max(mix(vec3(l),gl_FragColor.rgb,uSat),0.)+uShd*(1.-smoothstep(.04,.5,l));}';
@@ -80,13 +80,33 @@ const MC={},matc=c=>MC[c]||(MC[c]=enh(new THREE.MeshLambertMaterial({color:c,map
 const UB=(()=>{const g=new THREE.BoxGeometry(1,1,1);return{p:g.attributes.position.array,n:g.attributes.normal.array,u:g.attributes.uv.array,i:g.index.array}})();
 const _m4=new THREE.Matrix4(),_eu=new THREE.Euler(),_qu=new THREE.Quaternion(),_pv=new V3(),_sv=new V3(),_nv=new V3(),_col=new THREE.Color(),_n3=new THREE.Matrix3();
 class Bake{constructor(){this.p=[];this.n=[];this.c=[];this.u=[];this.fs=[];this.i=[];this.k=0}
-  box(w,h,d,x,y,z,col,o){const rx=o&&o.rx||0,ry=o&&o.ry||0,rz=o&&o.rz||0,g=o&&o.g,b=this.k;
+  box(w,h,d,x,y,z,col,o){if(this.ch){const mn=Math.min(w,h,d);if(mn>=.16)return this.cbox(w,h,d,x,y,z,col,o,Math.min(.13,mn*.24))}const rx=o&&o.rx||0,ry=o&&o.ry||0,rz=o&&o.rz||0,g=o&&o.g,b=this.k;
     _eu.set(rx,ry,rz);_qu.setFromEuler(_eu);_m4.compose(_pv.set(x,y,z),_qu,_sv.set(w,h,d));_n3.getNormalMatrix(_m4);_col.setHex(col);
     for(let v=0;v<24;v++){const ly=UB.p[v*3+1];_pv.set(UB.p[v*3],ly,UB.p[v*3+2]).applyMatrix4(_m4);this.p.push(_pv.x,_pv.y,_pv.z);
       const nx=UB.n[v*3],ny=UB.n[v*3+1];_nv.set(nx,ny,UB.n[v*3+2]).applyMatrix3(_n3).normalize();this.n.push(_nv.x,_nv.y,_nv.z);
       const f=v>>2;let u=UB.u[v*2],t=UB.u[v*2+1];if(f<2){u*=d;t*=h;this.fs.push(d,h)}else if(f<4){u*=w;t*=d;this.fs.push(w,d)}else{u*=w;t*=h;this.fs.push(w,h)}this.u.push(u,t);
       let k=ny>.5?1:ny<-.5?.6:(Math.abs(nx)>.5?.86:.94);if(ny<.5&&ny>-.5&&ly<0)k*=g?.62:.8;this.c.push(_col.r*k,_col.g*k,_col.b*k)}
     for(let j=0;j<36;j++)this.i.push(UB.i[j]+b);this.k+=24;return this}
+  // 15.1 · caixa chanfrada (bordas e cantos cortados de verdade): 6 faces, 12 chanfros e 8 cantos.
+  // Usada nas peças grandes dos personagens (this.ch=1, ligado em part()); as faces não recebem o
+  // chanfro desenhado do shader (aFs=0) porque a geometria já tem o canto.
+  cbox(w,h,d,x,y,z,col,o,e){const rx=o&&o.rx||0,ry=o&&o.ry||0,rz=o&&o.rz||0,g=o&&o.g,a=w/2,b=h/2,c=d/2,A=a-e,B=b-e,C_=c-e;
+    _eu.set(rx,ry,rz);_qu.setFromEuler(_eu);_m4.compose(_pv.set(x,y,z),_qu,_sv.set(1,1,1));_n3.getNormalMatrix(_m4);_col.setHex(col);
+    const ext=(v,s,fa,fb)=>v>0?fa:v<0?-fa:s*fb,P_=[];
+    for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++)for(let l=-1;l<=1;l++){const nz=(i!=0)+(j!=0)+(l!=0);if(!nz)continue;P_.length=0;
+      if(nz==1){const ax=i?0:j?1:2,u=(ax+1)%3,v=(ax+2)%3,L=[[-1,-1],[1,-1],[1,1],[-1,1]];for(const[su,sv]of L){const q=[0,0,0];q[ax]=[a,b,c][ax]*(i||j||l);q[u]=su*[A,B,C_][u];q[v]=sv*[A,B,C_][v];P_.push(q)}}
+      else if(nz==2){const fr=!i?0:!j?1:2,dv=[i,j,l],ax=[0,1,2].filter(k=>k!=fr),H=[a,b,c],I=[A,B,C_];
+        for(const[s0,s1,sf]of[[1,0,-1],[1,0,1],[0,1,1],[0,1,-1]]){const q=[0,0,0];q[fr]=sf*I[fr];q[ax[0]]=dv[ax[0]]*(s0?H[ax[0]]:I[ax[0]]);q[ax[1]]=dv[ax[1]]*(s1?H[ax[1]]:I[ax[1]]);P_.push(q)}}
+      else{P_.push([i*a,j*B,l*C_],[i*A,j*b,l*C_],[i*A,j*B,l*c])}
+      // vira a ordem se a normal calculada apontar para dentro
+      const p0=P_[0],p1=P_[1],p2=P_[2],ux=p1[0]-p0[0],uy=p1[1]-p0[1],uz=p1[2]-p0[2],vx=p2[0]-p0[0],vy=p2[1]-p0[1],vz=p2[2]-p0[2];
+      if((uy*vz-uz*vy)*i+(uz*vx-ux*vz)*j+(ux*vy-uy*vx)*l<0)P_.reverse();
+      const ln=Math.hypot(i,j,l);_nv.set(i/ln,j/ln,l/ln).applyMatrix3(_n3).normalize();const ny=_nv.y,nx=_nv.x,b0=this.k;
+      let k=ny>.5?1:ny<-.5?.6:(Math.abs(nx)>.5?.86:.94);if(nz>1&&ny>-.5&&ny<.5)k*=.97;
+      for(const q of P_){_pv.set(q[0],q[1],q[2]).applyMatrix4(_m4);this.p.push(_pv.x,_pv.y,_pv.z);this.n.push(_nv.x,_nv.y,_nv.z);this.u.push(0,0);this.fs.push(0,0);
+        let kk=k;if(ny<.5&&ny>-.5&&q[1]<0)kk*=g?.62:.8+.2*(1+q[1]/b)*.5;this.c.push(_col.r*kk,_col.g*kk,_col.b*kk)}
+      if(P_.length==4)this.i.push(b0,b0+1,b0+2,b0,b0+2,b0+3);else this.i.push(b0,b0+1,b0+2);this.k+=P_.length}
+    return this}
   quad(a,b,c,d,n,col,sh,uw,uh){const k=this.k;this.p.push(...a,...b,...c,...d);for(let i=0;i<4;i++)this.n.push(n[0],n[1],n[2]);_col.setHex(col);
     for(let i=0;i<4;i++){const s=sh?sh[i]:1;this.c.push(_col.r*s,_col.g*s,_col.b*s)}this.u.push(0,0,uw||1,0,uw||1,uh||1,0,uh||1);const gy=Math.abs(n[1])>.5?-1:-2;for(let i=0;i<4;i++)this.fs.push(-1,gy);this.i.push(k,k+1,k+2,k,k+2,k+3);this.k+=4;return this}
   geo(){if(!this.k)return null;const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(this.p,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(this.n,3));g.setAttribute('color',new THREE.Float32BufferAttribute(this.c,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(this.u,2));g.setAttribute('aFs',new THREE.Float32BufferAttribute(this.fs,2));g.setIndex(this.k>65000?new THREE.Uint32BufferAttribute(this.i,1):new THREE.Uint16BufferAttribute(this.i,1));g.computeBoundingSphere();return g}

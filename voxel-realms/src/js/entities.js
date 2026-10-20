@@ -158,7 +158,7 @@ function mobsUpd(dt,t){
   aiFrame();poolUpd(dt);
   for(let i=0;i<E.length;i++){const a=E[i];if(a.dead||a.boss&&a.flying)continue;for(let j=i+1;j<E.length;j++){const b=E[j];if(b.dead)continue;const dx=b.x-a.x,dz=b.z-a.z,m=a.r+b.r;if(Math.abs(dx)>m||Math.abs(dz)>m)continue;const d=hy(dx,dz);if(d<m&&d>1e-3){const k=(m-d)*.5/d;a.x-=dx*k;a.z-=dz*k;b.x+=dx*k;b.z+=dz*k}}}
   for(let i=E.length-1;i>=0;i--){const e=E[i];e.tgm=e.st=='chase'&&!e.boss?minionTarget(e):null;const tgx=e.tgm?e.tgm.x:P.x,tgz=e.tgm?e.tgm.z:P.z,dx=tgx-e.x,dz=tgz-e.z,d=hy(dx,dz),T=e.t;
-    if(e.dead){e.dt+=dt;const k=Math.min(1,e.dt*2.2);e.m.g.rotation.z=e.dfz*easeOut(k)*PI/2;e.m.g.position.y=e.y-Math.max(0,e.dt-1.6)*.6;if(e.dt>2.6){dropMob(e)}continue}
+    if(e.dead){e.dt+=dt;if(ragUpd(e,dt))dropMob(e);continue}
     const vis=d<VISD||e.boss&&d<70;e.m.g.visible=vis&&!invHide(d);if(vis){const sh=d<SHD;if(sh!==e.sh){e.sh=sh;for(const o of e.m.meshes)o.castShadow=sh}}if(e.ring)e.ring.visible=vis;if(!vis&&e.st!='chase')continue;
     e.hurt=Math.max(0,e.hurt-dt*4);e.stun-=dt;e.slow-=dt;e.cd-=dt;e.dcd-=dt;e.evade-=dt;if(e.fl>0){e.fl-=dt;if(e.fl<=0)flashModel(e.m,false)}
     let dvx=0,dvz=0,sp=e.sp*(e.slow>0?.5:1);

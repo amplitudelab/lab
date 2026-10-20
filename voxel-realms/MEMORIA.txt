@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 15.0
+Atualizado em 20/10/2026 · versão atual do jogo: 15.1
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='15.1'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='15.2'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -81,6 +81,11 @@ gear.js      equipamento visível (gearLook/heroModel), qualidade (TIERS), duas 
 foes.js      classes de inimigo (role: shield/brute/healer/assassin/frost/summoner), Veteranos, Ignarok (dragon2,
              dragonUpd)
 trials.js    missões em etapas (STG: hunt/defend), dificuldade maior, missão s20
+ragdoll.js   morte: ragInit/ragUpd (tomba pelos pés com quaternion, molas nos membros, ragLow mantém acima do chão),
+             corpos ficam ~10 s (RAG.max 14) e encolhem em poeira; mobsUpd chama ragUpd; herói usa P.rgE
+drops.js     dropItem/dropGold/dropGlobe com modelo do item (itemGroup do bag.js) + círculo de raridade
+sig.js       assinatura por elemento (runeCircle com textura desenhada por elemento, shards, bolt, flames, wisps,
+             crescent, debris); sigCast no useSkill e sigHit no skillHit (habilidades em volta do herói em SIGSELF)
 bag.js       poções (POT, potItem, drinkAt; potion() usa a menor que cobre), mochilas (BAGS, EQ.costas, bagFit muda
              INV.length = 24 + cap), inventário em painéis (invRender/openInv novos), ícones 3D (itemIcon/itemBake,
              render em alvo 96px com o renderizador principal; materiais viram pixel art do emoji)
@@ -119,6 +124,9 @@ O save antigo único (vr11_save) é migrado sozinho para o espaço da classe del
 - Desvio 15.0 (feel.js): P.dodge={k:'dive'|'side'|'back',v,dir}; fase 1 em P.dash, fase 2 em P.roll/P.rollD;
   heroPoseUpd gira o grupo (ordem YXZ) e heroSpan() mede o ponto mais baixo (HPTS) para manter tudo acima do chão.
   footY() (world.js) dá a altura do chão sob a pegada; moveEnt e playerY usam.
+- Bake.cbox (core.js): caixa chanfrada; part() liga k.ch=1 e box() chanfra peças com menor lado >= .16.
+  VTEX não pinta mais textura de voxel em malhas com skinning (k=1).
+- animHum sorteia A.av a cada golpe novo (variações) e faz gestos parado (A.ig); animQuad galopa (gl) e varia mordidas.
 - Modelos: torsoBake() e hatBake() saíram de hum() para o inventário reaproveitar; packBake() desenha a mochila (o.pack).
 - HUD 14.6 (css/hud.css bloco 14.6 + hudcfg.js): variáveis --hs (interface), --bs (botões), --ho (opacidade),
   --hc/--hi (esmaecer de botões/painéis fora de combate). Ataque com 4 botões em volta; correr/furtivo/tocha/

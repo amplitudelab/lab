@@ -74,6 +74,13 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 15.1 — ragdoll, modelos, animações, drops e skills
+- **Morte com ragdoll:** o corpo é arremessado na direção do golpe (mais longe com golpe pesado), tomba, quica e os membros balançam soltos até assentar; fica caído ~10 s e se desfaz em poeira. Vale para humanoides, animais, aranhas, sapos, slimes, abelhas, dragões e o herói.
+- **Modelos menos quadrados:** as peças grandes dos personagens, monstros e animais têm bordas e cantos chanfrados de verdade, e os personagens perderam o ruído de "voxel" na pintura.
+- **Variações de animação:** cada golpe sorteia uma variação (corte de cima na diagonal, corte subindo, giro com o corpo, varrida baixa, estocada em avanço); parado, o personagem espreguiça, confere a arma ou olha em volta; reação a dano varia; quadrúpedes galopam quando correm e mordem de jeitos diferentes.
+- **Drops:** o item cai mostrando o próprio modelo (arma, escudo, elmo, peitoral, poção, mochila, joia) sobre um círculo de luz na cor da raridade; materiais viram trouxinhas ou cristais, ouro é pilha de moedas e o globo de vida é uma esfera.
+- **Skills com assinatura por elemento:** círculo rúnico desenhado no chão com o símbolo do elemento; fogo com línguas de chama, gelo/ossos/sangue com cristais que brotam do chão, raio com descargas em zigue-zague, almas e sombras com espíritos em espiral, aço e vigor com meia-lua dourada e pedregulhos, vento com lâminas de ar.
+
 ## Versão 15.0 — desvio refeito, poções, mochila e inventário completo
 - **Desvio:** para a frente o herói mergulha e rola encolhido (ou desliza de barriga e levanta com as mãos); perto de um inimigo, para os lados rola sem tirar os olhos dele e para trás dá um salto. O corpo gira em volta do próprio centro e nenhuma parte entra no chão.
 - **Colisão com o chão:** a altura do herói, dos inimigos e dos animais usa o chão sob a pegada inteira; subir degraus não deixa mais metade do corpo enterrada.

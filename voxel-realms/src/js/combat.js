@@ -49,7 +49,7 @@ function hitPlayer(d,o){if(P.dead)return 0;o=o||{};if(P.dash>0||P.inv>0||P.leap)
   if(P.hp<=0)die();return 1}
 function heal(n,quiet){const a=Math.min(n,ST.mx-P.hp);if(a<=0)return;P.hp+=a;if(!quiet){pop('+'+Math.round(a),P.x,P.y+3.2,P.z,'#6fe07a');flash(P.x,P.y+1.4,P.z,0x6fe07a,2.5,.3)}}
 function die(){P.hp=0;P.dead=1;P.act=null;P.psn=P.brn=0;$('dd').classList.add('on');snd(70,1,'sawtooth')}
-function respawn(){const w=[...WP].filter(w=>w.on).sort((a,b)=>hy(a.x-P.x,a.z-P.z)-hy(b.x-P.x,b.z-P.z))[0]||WP[0];P.dead=0;P.hp=ST.mx;P.gold=Math.floor(P.gold*.9);$('dd').classList.remove('on');teleport(w.x,w.z+3);toast('🕯️','Você renasceu',w.n+' · perdeu 10% do ouro')}
+function respawn(){if(P.rgE){const g=P.m.g;g.quaternion.set(0,0,0,1);g.scale.setScalar(P.rgE.rg.sc);P.rgE=null}const w=[...WP].filter(w=>w.on).sort((a,b)=>hy(a.x-P.x,a.z-P.z)-hy(b.x-P.x,b.z-P.z))[0]||WP[0];P.dead=0;P.hp=ST.mx;P.gold=Math.floor(P.gold*.9);$('dd').classList.remove('on');teleport(w.x,w.z+3);toast('🕯️','Você renasceu',w.n+' · perdeu 10% do ouro')}
 function gainXP(n,src){if(P.lv>=40)return;P.xp+=n;while(P.xp>=XPN(P.lv)){P.xp-=XPN(P.lv);P.lv++;calcStats();P.hp=ST.mx;banner('NÍVEL '+P.lv);P.sp++;toast('✨','+1 ponto de habilidade','Abra ✨ Habilidades');flash(P.x,P.y+1.5,P.z,0xffe27a,7,.7);ring(P.x,P.z,5,0xffe27a,.8);fx(P.x,P.y+1,P.z,0xffe27a,30,8,.2,2);levelFx();
   shopRoll()}hud()}
 function meteor(x,z){tele(x,z,4,1.1,T=>{SHK=.7;flash(T.x,groundAt(T.x,T.z)+1,T.z,0xff8a30,8,.4);fx(T.x,groundAt(T.x,T.z)+.5,T.z,0xff6a1a,40,12,.3,1.6);for(const e of E)if(!e.dead&&hy(e.x-T.x,e.z-T.z)<4.2)hurtMob(e,rollDmg(4)[0],1,'leg')},0xff8a30);toast('☄️','Couraça Estelar','Um meteoro cai!')}
@@ -102,7 +102,7 @@ function playerUpd(dt,t){for(const k in P.cd)P.cd[k]-=dt;for(const k in P.buff){
   P.inv-=dt;P.hurt=Math.max(0,P.hurt-dt*4);P.stun-=dt;P.slow-=dt;P.cbt-=dt;P.ft-=dt;if(P.ft<=0&&!MANA())P.fury=Math.max(0,P.fury-dt*3);skillsUpd(dt);
   if(SLT>0){SLT-=dt;SLM.material.uniforms.o.value=Math.max(0,SLT/.2);SLM.scale.multiplyScalar(1+dt*2.4);if(SLT<=0)SLM.visible=false}
   MASS.t-=dt;if(MASS.t<=0&&MASS.n){if(MASS.n>=8){const b=Math.round(MASS.xp*.25*(MASS.n/8));gainXP(b);massacre(MASS.n,b)}MASS.n=0;MASS.xp=0}
-  if(P.dead){animate(P.m,dt,t,{dead:1});P.m.g.rotation.z=angTo(P.m.g.rotation.z,PI/2,dt*4);return}
+  if(P.dead){if(!P.rgE){P.rgE={m:P.m,x:P.x,z:P.z,y:P.y,t:{},hero:1};ragInit(P.rgE);P.rgE.rg.life=1e9;RAG.n--}ragUpd(P.rgE,Math.max(dt,1/60));return}
   P.m.g.rotation.z=angTo(P.m.g.rotation.z,0,dt*8);
   if(!P.dead&&ST.mx){if(P.hp<ST.mx)P.hp=Math.min(ST.mx,P.hp+dt*(ST.regen+(P.buff.grito>0?ST.mx*.02:0)+(inCombat()?0:ST.mx*.01)))}
   P.ptk-=dt;if(P.ptk<=0){P.ptk=.6;if(P.psn>0){P.psn-=.6;hitDot(Math.max(1,ST.mx*.02),'#7dff6a')}if(P.brn>0){P.brn-=.6;hitDot(Math.max(1,ST.mx*.03),'#ff8a3a')}
