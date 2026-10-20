@@ -249,3 +249,13 @@ body.nomm #tbar{right:var(--m)}body.nomm #drw{right:calc(var(--m) + var(--ub) + 
 #potb.none{filter:grayscale(.8) brightness(.7)}#potb.none .pc{background:#3a2a2a}
 @media(max-height:340px){#ivx{--ipw:clamp(136px,20vw,200px)}.ivh{padding:3px 10px 2px;font-size:11px}#ivSt .gg small{display:none}.ar small{display:none}}
 .shi>i img{width:42px;height:42px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.7))}
+/* 15.6: círculos da árvore, escolhas exclusivas, suprema e sinergias */
+.gtier{grid-column:1/-1;display:flex;align-items:center;gap:7px;font:700 10px var(--px);letter-spacing:.5px;color:#5a3412;border-bottom:1px solid rgba(90,50,20,.35);padding:3px 0 2px;margin-top:2px}
+.gtier b{min-width:20px;height:18px;display:flex;align-items:center;justify-content:center;background:#3a1e0c;color:#ffe08a;border:1px solid #120804;font:700 10px Georgia,serif;padding:0 3px}
+.gtier.lk{color:#8a6a4a}.gtier.lk b{background:#5a4a3a;color:#c8b898}
+.gs.lk img,.gs.lk .emo{filter:grayscale(1) brightness(.38) contrast(1.1)}
+.gs.lk:after{content:'🔒';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:15px;z-index:1;text-shadow:0 1px 2px #000}
+.gs s{position:absolute;left:-3px;bottom:7px;z-index:1;text-decoration:none;font:700 10px sans-serif;color:#fff;background:#6a2a8a;border:1px solid #000;padding:0 2px;line-height:12px}
+.gs.ult{box-shadow:0 0 0 2px #ffb040,0 0 12px 2px rgba(255,176,64,.55)}.gs.ult.sel{box-shadow:0 0 0 5px #ffe08a,0 0 16px 4px var(--e3)}
+#gdet .gsyn{font-size:11.5px;color:#4a2a5a;background:rgba(120,80,160,.1);border-left:3px solid #8a5ab8;padding:3px 6px}#gdet .gsyn b{color:#3a1a5a}
+#gdet .gblk{color:#8a2a1a}

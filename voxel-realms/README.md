@@ -74,6 +74,14 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 15.6 — árvore de habilidades mais complexa
+- **5 círculos por árvore** (I a V, pelo nível da habilidade). Para aprender no círculo II é preciso já ter 3 pontos gastos naquela árvore; III pede 7, IV pede 12 e V pede 18. O grimório mostra os círculos, os cadeados e quantos pontos faltam.
+- **41 habilidades novas.** Guerreiro: Investida, Golpe Telúrico (fissura em linha), Lâmina Bumerangue, Execução (dobro em quem tem menos de 30% e zera a recarga se matar). Mago: Piscar, Orbe Glacial, Tormenta Elétrica. Caçador: Flecha Explosiva, Rede de Caça. Necromante: Maldição da Fraqueza, Prisão Óssea, Nuvem Pestilenta. Vampiro: Enxame de Morcegos, Abraço Sombrio. Mais passivas como Mestre de Armas, Colosso, Ira Inesgotável, Combustão, Hipotermia, Canalização, Sobrecarga, Fluxo Arcano, Franco-Atirador, Escaramuça, Predador, Hemorragia, Instinto Selvagem, Legião, Ceifador, Medula Profana, Sudário, Hemofilia, Pacto Carmesim, Predador Noturno, Sangue Nobre e Imortalidade.
+- **Uma suprema por classe** no círculo V: Avatar da Guerra, Singularidade (buraco negro), Chuva Estelar, Exército dos Mortos e Senhor da Noite.
+- **Escolhas exclusivas:** pares de passivas rivais (ex.: Baluarte ou Fúria Sanguinária); aprender uma tranca a outra. Dá para trocar no grimório pagando moedas (os pontos voltam).
+- **Sinergias:** habilidades ganham dano por nível de outras (ex.: Bola de Fogo +8% por nível de Explosão de Chamas); o grimório mostra o bônus atual.
+- **Missões principais** concluídas dão +1 ponto de habilidade.
+
 ## Versão 15.5 — arsenal, armaduras e acessórios refeitos
 - **63 armas** com modelo próprio e **12 estilos de luta**. Guerreiro: espadas de uma mão, espadões e montantes de duas mãos, martelos de guerra, machadinhas, machados grandes e bardiche, katanas e nodachi, maças e estrela da manhã, adagas. Mago: cajados de cristal, lua, orbe e fogo, varinhas estelar, de brasa e de gelo. Caçador: arcos solar e da tempestade, besta de repetição, tridente, glaive e alabarda. Necromante: foices (sombria, ceifadora de almas, de ossos) e cajados de caveira. Vampiro: garras e rapieiras.
 - **Cada família luta diferente** (combo de 4 golpes): espada (corte, revés, estocada, salto), adaga (estocadas rápidas e rajada de 3), machadinha (machadadas de cima e redemoinho), espadão (varridas largas, esmagar e giro), martelo (esmaga e atordoa, varrida, salto que abala o chão), katana (saque iaido, corte cruzado, corte subindo, corte em disparada), maça, lança (alcance e investida), foice (ceifa larga e giro duplo), garras (arranhões alternados e frenesi de 4) e rapieira (investida e rajada de estocadas). Dano e ritmo também mudam por família.
