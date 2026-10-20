@@ -4,25 +4,25 @@
    regiões (biomas), relevo em voxels, rio, estradas, pontes, estruturas,
    vegetação e carregamento de pedaços (chunks) conforme o jogador anda
    ============================================================================= */
-const CS=32,WMAX=372,WMH=WMAX+8; // tamanho do pedaço, limite andável do mundo (±) e meia largura do mapa (15.2: área 3× maior)
+const CS=32,WMAX=645,WMH=WMAX+8; // tamanho do pedaço, limite andável do mundo (±) e meia largura do mapa (15.2: área 3× maior; 15.7: cada bioma 3× maior)
 const REG=[
   {id:'vila',n:'Vila Pedraverde',lv:1,c:[0,0],k:1.5,top:[0x62b44a,0x5aaa44,0x6cbc52],side:0x7a5a3a,map:'#86b85e',amb:'Pedraverde, a última vila livre de Aldoria.'},
-  {id:'plan',n:'Planície Dourada',lv:2,c:[10,150],k:1,top:[0xa6bc4c,0xb2c656,0x9ab246,0xbcc660],side:0x8a6a3a,map:'#c0c460',amb:'Trigais e moinhos — e bandidos nas estradas.'},
-  {id:'flor',n:'Campos de Lírio',lv:5,c:[165,10],k:1,top:[0x5cbc74,0x54b06c,0x68c47e],side:0x7a5a3a,map:'#7ccc8e',amb:'Flores sem fim. Algo corrompeu as colmeias.'},
-  {id:'mata',n:'Floresta Ancestral',lv:8,c:[-10,-158],k:1,top:[0x4a8a68,0x427e60,0x529470],side:0x5a4428,map:'#c8782e',amb:'Árvores mais velhas que o reino guardam segredos.'},
-  {id:'mang',n:'Mangue Sombrio',lv:11,c:[-168,25],k:1,top:[0x3e6650,0x375c48,0x467058],side:0x3e3a2e,map:'#3e6a66',amb:'Lodo, névoa e a cabana da bruxa.'},
-  {id:'cald',n:'Caldeira de Brasas',lv:14,c:[155,-162],k:1.15,top:[0x4a3a34,0x3e302c,0x55443c],side:0x2e2420,map:'#6a3a2e',amb:'Onde Ignarok dorme sob a rocha fundida.'},
+  {id:'plan',n:'Planície Dourada',lv:2,c:[17.3,259.8],k:1,top:[0xa6bc4c,0xb2c656,0x9ab246,0xbcc660],side:0x8a6a3a,map:'#c0c460',amb:'Trigais e moinhos — e bandidos nas estradas.'},
+  {id:'flor',n:'Campos de Lírio',lv:5,c:[285.8,17.3],k:1,top:[0x5cbc74,0x54b06c,0x68c47e],side:0x7a5a3a,map:'#7ccc8e',amb:'Flores sem fim. Algo corrompeu as colmeias.'},
+  {id:'mata',n:'Floresta Ancestral',lv:8,c:[-17.3,-273.7],k:1,top:[0x4a8a68,0x427e60,0x529470],side:0x5a4428,map:'#c8782e',amb:'Árvores mais velhas que o reino guardam segredos.'},
+  {id:'mang',n:'Mangue Sombrio',lv:11,c:[-291,43.3],k:1,top:[0x3e6650,0x375c48,0x467058],side:0x3e3a2e,map:'#3e6a66',amb:'Lodo, névoa e a cabana da bruxa.'},
+  {id:'cald',n:'Caldeira de Brasas',lv:14,c:[268.5,-280.6],k:1.15,top:[0x4a3a34,0x3e302c,0x55443c],side:0x2e2420,map:'#6a3a2e',amb:'Onde Ignarok dorme sob a rocha fundida.'},
   // 15.2 · anel externo: seis terras novas
-  {id:'outono',n:'Bosque Carmesim',lv:9,c:[-205,-195],k:1,top:[0xb8642a,0xc87a30,0xa85424,0xd08a3a],side:0x5a3a22,map:'#c8642e',amb:'Folhas vermelhas caem o ano inteiro. Ruínas antigas dormem sob elas.'},
-  {id:'neve',n:'Picos Gelados',lv:18,c:[25,-308],k:1,top:[0xf0f4fa,0xe4ecf6,0xf8fbff,0xdce6f2],side:0x8a96a8,map:'#e8eef6',amb:'Vento cortante, gelo eterno e um mosteiro esquecido.'},
-  {id:'savana',n:'Savana Rubra',lv:8,c:[305,95],k:1,top:[0xc8a24a,0xd4ae54,0xbc943e,0xdcb860],side:0x8a5a2e,map:'#d2a850',amb:'Capim alto, acácias e manadas sob um sol vermelho.'},
-  {id:'deserto',n:'Dunas de Âmbar',lv:15,c:[225,250],k:1,top:[0xe8c888,0xf0d498,0xdcbc7a,0xf4dca8],side:0xc8a060,map:'#ecd09a',amb:'Areia sem fim e um templo do sol meio enterrado.'},
-  {id:'costa',n:'Costa das Conchas',lv:11,c:[-55,312],k:1,top:[0x7ac85a,0x86d064,0x6cbc50],side:0x8a6a3a,map:'#9ad478',amb:'Praias, coqueiros e um farol que ninguém acende há anos.'},
-  {id:'cristal',n:'Vale de Cristal',lv:20,c:[-280,220],k:1,top:[0x6a5a9a,0x5e4e8e,0x7a68aa,0x56488a],side:0x3a3058,map:'#7a6ab0',amb:'Cristais vivos cantam no escuro. Nada aqui é o que parece.'}];
+  {id:'outono',n:'Bosque Carmesim',lv:9,c:[-355.1,-337.7],k:1,top:[0xb8642a,0xc87a30,0xa85424,0xd08a3a],side:0x5a3a22,map:'#c8642e',amb:'Folhas vermelhas caem o ano inteiro. Ruínas antigas dormem sob elas.'},
+  {id:'neve',n:'Picos Gelados',lv:18,c:[43.3,-533.5],k:1,top:[0xf0f4fa,0xe4ecf6,0xf8fbff,0xdce6f2],side:0x8a96a8,map:'#e8eef6',amb:'Vento cortante, gelo eterno e um mosteiro esquecido.'},
+  {id:'savana',n:'Savana Rubra',lv:8,c:[528.3,164.5],k:1,top:[0xc8a24a,0xd4ae54,0xbc943e,0xdcb860],side:0x8a5a2e,map:'#d2a850',amb:'Capim alto, acácias e manadas sob um sol vermelho.'},
+  {id:'deserto',n:'Dunas de Âmbar',lv:15,c:[389.7,433],k:1,top:[0xe8c888,0xf0d498,0xdcbc7a,0xf4dca8],side:0xc8a060,map:'#ecd09a',amb:'Areia sem fim e um templo do sol meio enterrado.'},
+  {id:'costa',n:'Costa das Conchas',lv:11,c:[-95.3,540.4],k:1,top:[0x7ac85a,0x86d064,0x6cbc50],side:0x8a6a3a,map:'#9ad478',amb:'Praias, coqueiros e um farol que ninguém acende há anos.'},
+  {id:'cristal',n:'Vale de Cristal',lv:20,c:[-485,381.1],k:1,top:[0x6a5a9a,0x5e4e8e,0x7a68aa,0x56488a],side:0x3a3058,map:'#7a6ab0',amb:'Cristais vivos cantam no escuro. Nada aqui é o que parece.'}];
 const RI={};REG.forEach((r,i)=>RI[r.id]=i);
 // pontos de interesse com nome próprio dentro das regiões
-const POI=[{n:'Cemitério Esquecido',x:-112,z:-96,r:24},{n:'Acampamento dos Bandidos',x:-38,z:178,r:18},{n:'Moinho de Hollow',x:46,z:122,r:14},{n:'Colmeia Real',x:192,z:46,r:18},
-  {n:'Templo de Lírio',x:138,z:-30,r:14},{n:'Torre Arruinada',x:-48,z:-132,r:14},{n:'Bosque do Ancião',x:12,z:-190,r:20},{n:'Cabana da Bruxa',x:-188,z:52,r:16},{n:'Toca do Eremita',x:-138,z:-12,r:10},{n:'Covil de Ignarok',x:152,z:-178,r:24}];
+const POI=[{n:'Cemitério Esquecido',x:-119.3,z:-211.7,r:24},{n:'Acampamento dos Bandidos',x:-30.7,z:287.8,r:18},{n:'Moinho de Hollow',x:53.3,z:231.8,r:14},{n:'Colmeia Real',x:312.8,z:53.3,r:18},
+  {n:'Templo de Lírio',x:258.8,z:-22.7,r:14},{n:'Torre Arruinada',x:-55.3,z:-247.7,r:14},{n:'Bosque do Ancião',x:4.7,z:-305.7,r:20},{n:'Cabana da Bruxa',x:-311,z:70.3,r:16},{n:'Toca do Eremita',x:-261,z:6.3,r:10},{n:'Covil de Ignarok',x:265.5,z:-296.6,r:24}];
 
 // ---------- relevo
 const RW=new Float32Array(REG.length),_rd=new Float32Array(REG.length);
@@ -43,10 +43,10 @@ function hReg(i,x,z){switch(i){
   case 9:return 1.6+S(x*.07+fbm(x*.01,z*.01,2)*6)*1.3+(fbm(x*.02,z*.02,3)-.5)*5;
   case 10:return .5+(fbm(x*.03,z*.03,3)-.5)*4.2;
   default:return 2.2+(fbm(x*.03,z*.03,4)-.5)*11+(fbm(x*.09,z*.09,2)>.66?2.5:0)}}
-const riverZ=x=>48+30*S(x*.017)+12*S(x*.041+1),riverD=(x,z)=>Math.abs(z-riverZ(x));
+const RVF=Math.sqrt(3),riverZ=x=>RVF*(48+30*S(x/RVF*.017)+12*S(x/RVF*.041+1)),riverD=(x,z)=>Math.abs(z-riverZ(x)); // 15.7: o rio cresce junto com o mundo
 // estradas: da vila até cada região, e da região das flores até a caldeira
-const ROADS=[[[0,0],[10,150]],[[0,0],[165,10]],[[0,0],[-10,-158]],[[0,0],[-168,25]],[[165,10],[155,-162]],[[-10,-158],[-112,-96]],[[10,150],[-38,178]],
-  [[-10,-158],[-205,-195]],[[-10,-158],[25,-300]],[[165,10],[300,92]],[[10,150],[220,245]],[[-38,178],[-55,305]],[[-168,25],[-275,215]]];
+const ROADS=[[[0,0],[17.3,259.8]],[[0,0],[285.8,17.3]],[[0,0],[-17.3,-273.7]],[[0,0],[-291,43.3]],[[285.8,17.3],[268.5,-280.6]],[[-17.3,-273.7],[-119.3,-211.7]],[[17.3,259.8],[-30.7,287.8]],
+  [[-17.3,-273.7],[-355.1,-337.7]],[[-17.3,-273.7],[43.3,-525.5]],[[285.8,17.3],[523.3,161.5]],[[17.3,259.8],[384.7,428]],[[-30.7,287.8],[-95.3,533.4]],[[-291,43.3],[-480,376.1]]];
 function segD(x,z,a,b){const dx=b[0]-a[0],dz=b[1]-a[1],t=cl(((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz),0,1);return hy(x-a[0]-dx*t,z-a[1]-dz*t)}
 function roadD(x,z){let m=1e9;for(const r of ROADS){const d=segD(x,z,r[0],r[1]);if(d<m)m=d}return m+(vnoise(x*.3,z*.3)-.5)*1.2}
 const FZ=[]; // zonas aplainadas para estruturas {x,z,r,h}

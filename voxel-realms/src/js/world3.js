@@ -41,22 +41,22 @@ Object.assign(WXR,{outono:{sol:4,nublado:3,chuva:2,neblina:1},neve:{nevasca:5,nu
 Object.assign(POIICONS,{'Ruínas':'🏚️','Mosteiro':'⛩️','Aldeia':'⛺','Farol':'🗼','Obelisco':'💎'});
 
 // ---------- construções marcantes
-POI.push({n:'Ruínas Carmesim',x:-222,z:-214,r:16},{n:'Mosteiro Gelado',x:52,z:-322,r:18},{n:'Aldeia das Tendas',x:314,z:70,r:16},{n:'Templo do Sol',x:248,z:270,r:20},{n:'Farol da Costa',x:-82,z:334,r:14},{n:'Obelisco de Cristal',x:-298,z:238,r:16});
-flat(-222,-214,15);addStr(-222,-214,0,(k,e,f)=>{const t=new TB(k,e,f,-222,-214,.3,null,1.3);t.b(9,.3,9,0,.15,0,0x8a8478,{g:1});
+POI.push({n:'Ruínas Carmesim',x:-372.1,z:-356.7,r:16},{n:'Mosteiro Gelado',x:70.3,z:-547.5,r:18},{n:'Aldeia das Tendas',x:537.3,z:139.5,r:16},{n:'Templo do Sol',x:412.7,z:453,r:20},{n:'Farol da Costa',x:-122.3,z:562.4,r:14},{n:'Obelisco de Cristal',x:-503,z:399.1,r:16});
+flat(-372.1,-356.7,15);addStr(-372.1,-356.7,0,(k,e,f)=>{const t=new TB(k,e,f,-372.1,-356.7,.3,null,1.3);t.b(9,.3,9,0,.15,0,0x8a8478,{g:1});
   for(let i=0;i<8;i++){const a=i/8*TAU,x=C(a)*5.4,z=S(a)*5.4,h=i%3==0?1.2:3.6;t.b(.9,h,.9,x,h/2,z,0x8a8478,{g:1});if(h>3)t.b(1.2,.4,1.2,x,h,z,0x9a948a);t.f_(.95,.25,.95,x,h*.6,z,0x5a8a3a);t.col(x,z,.6)}
   t.b(5.4,.6,1,0,4.2,-5.4,0x8a8478).b(1.6,1,1.2,0,.5,0,0x6a6458,{g:1});t.e_(1.2,.12,.8,0,1.06,0,0xff3a2a);for(let i=0;i<5;i++)t.f_(.5,.06,.4,(i-2)*1.4,.33,2+i%2,0xd0402a,{ry:i});t.col(0,0,1)});
-flat(52,-322,16);addStr(52,-322,0,(k,e,f)=>{const t=new TB(k,e,f,52,-322,-.2,null,1.4);t.b(10,.4,8,0,.2,0,0x7a8090,{g:1}).b(8,4,6,0,2.4,0,0xd8d0c4,{g:1});for(const sx of[-1,1])for(const sz of[-1,1])t.b(.5,4.2,.5,sx*4,2.3,sz*3,0x8a2a2a);
+flat(70.3,-547.5,16);addStr(70.3,-547.5,0,(k,e,f)=>{const t=new TB(k,e,f,70.3,-547.5,-.2,null,1.4);t.b(10,.4,8,0,.2,0,0x7a8090,{g:1}).b(8,4,6,0,2.4,0,0xd8d0c4,{g:1});for(const sx of[-1,1])for(const sz of[-1,1])t.b(.5,4.2,.5,sx*4,2.3,sz*3,0x8a2a2a);
   t.b(9.6,.4,7.6,0,4.6,0,0x2a4a5a).b(9.8,.25,7.8,0,4.85,0,0xf4f8fc).b(6.4,2.2,4.6,0,5.9,0,0xd8d0c4).b(7.6,.4,5.8,0,7.1,0,0x2a4a5a).b(7.8,.25,6,0,7.35,0,0xf4f8fc).b(3.4,1.6,2.6,0,8.2,0,0x8a2a2a).b(4.4,.3,3.6,0,9,0,0x2a4a5a);
   t.b(1.4,2.4,.2,0,1.6,3.05,0x4a2a1a);t.e_(.8,.8,.1,-2.4,2.8,3.05,0xffd080).e_(.8,.8,.1,2.4,2.8,3.05,0xffd080);t.b(1.2,1.2,1.2,5.6,.9,3.6,0xc8a040).b(.2,2.6,.2,5.6,2.4,3.6,0x4a2a1a);t.col(0,0,4.6)});
-flat(314,70,15);addStr(314,70,0,(k,e,f)=>{const t=new TB(k,e,f,314,70,0,null,1.3);const tent=(x,z,c)=>{for(let i=0;i<4;i++)t.b(3.4-i*.8,.7,3-i*.7,x,.35+i*.7,z,i%2?c:shade(c,.85),{g:i==0});t.b(.12,3.4,.12,x,1.7,z,0x5a3a1a);t.b(.9,1.2,.1,x,.6,z+1.45,0x2a1a10);t.col(x,z,1.6)};
+flat(537.3,139.5,15);addStr(537.3,139.5,0,(k,e,f)=>{const t=new TB(k,e,f,537.3,139.5,0,null,1.3);const tent=(x,z,c)=>{for(let i=0;i<4;i++)t.b(3.4-i*.8,.7,3-i*.7,x,.35+i*.7,z,i%2?c:shade(c,.85),{g:i==0});t.b(.12,3.4,.12,x,1.7,z,0x5a3a1a);t.b(.9,1.2,.1,x,.6,z+1.45,0x2a1a10);t.col(x,z,1.6)};
   tent(-5,-3,0xd85a2a);tent(4,-4,0xe8b040);tent(-4,5,0x3a8a8a);tent(5,4,0xb03a5a);t.b(1.6,.3,1.6,0,.15,0,0x4a4440);t.e_(.7,.7,.7,0,.6,0,0xff8a2a);for(let i=0;i<4;i++)t.b(.3,2.6,.3,C(i*1.57)*2.6,1.3,S(i*1.57)*2.6,0x7a4a2a).b(.6,.4,.3,C(i*1.57)*2.6,2.5,S(i*1.57)*2.6,[0xd8402a,0x3a8ad8,0xe8c040,0x7ad84a][i])});
-flat(248,270,20);addStr(248,270,0,(k,e,f)=>{const t=new TB(k,e,f,248,270,.4,null,1.4);for(let i=0;i<6;i++)t.b(14-i*2.2,1.1,14-i*2.2,0,.55+i*1.1,0,i%2?0xe0c088:0xd0b070,{g:i==0});
+flat(412.7,453,20);addStr(412.7,453,0,(k,e,f)=>{const t=new TB(k,e,f,412.7,453,.4,null,1.4);for(let i=0;i<6;i++)t.b(14-i*2.2,1.1,14-i*2.2,0,.55+i*1.1,0,i%2?0xe0c088:0xd0b070,{g:i==0});
   t.b(2,1.4,.2,0,7.3,0,0xc8a060).e_(2.4,2.4,.3,0,8.8,0,0xffc030).e_(1.4,1.4,.32,0,8.8,0,0xfff0a0);for(let i=-1;i<=1;i+=2)for(let j=0;j<3;j++)t.b(.8,4,.8,i*8.6,2,-4+j*4,0xe8d0a0,{g:1}).b(1.1,.4,1.1,i*8.6,4.1,-4+j*4,0xc8a060);
   for(let i=0;i<6;i++)t.b(1.4,.5,.9,-3+i*1.2,.25,7.6,0xe0c088);t.col(0,0,6.5)});
-flat(-82,334,13);addStr(-82,334,0,(k,e,f)=>{const t=new TB(k,e,f,-82,334,0,null,1.35);for(let i=0;i<7;i++)t.b(3.2-i*.2,1.8,3.2-i*.2,0,.9+i*1.8,0,i%2?0xc83a2a:0xf4f2ea,{g:i==0});
+flat(-122.3,562.4,13);addStr(-122.3,562.4,0,(k,e,f)=>{const t=new TB(k,e,f,-122.3,562.4,0,null,1.35);for(let i=0;i<7;i++)t.b(3.2-i*.2,1.8,3.2-i*.2,0,.9+i*1.8,0,i%2?0xc83a2a:0xf4f2ea,{g:i==0});
   t.b(3.4,.3,3.4,0,12.75,0,0x3a3a40).e_(1.6,1.4,1.6,0,13.6,0,0xfff0a0).b(2,.3,2,0,14.45,0,0x3a3a40).b(.8,.8,.8,0,15,0,0xc83a2a);house(new TB(k,e,f,-82+6,334-2,-.6,null,1.4),4,3.6,0xe8e0d0,0x3a5a8a,0);
   for(let i=0;i<8;i++)t.b(1.2,.2,3,0+i*0,.1,6+i*1.1,0x8a6a42).b(.25,1.4,.25,.7,-.4,6+i*1.1,0x6a4a2a);t.col(0,0,1.8)});
-flat(-298,238,14);addStr(-298,238,0,(k,e,f)=>{const t=new TB(k,e,f,-298,238,.5,null,1.4);t.b(6,.5,6,0,.25,0,0x2a2438,{g:1}).b(1.8,11,1.8,0,6,0,0x1a1622,{g:1}).b(1.2,1.6,1.2,0,12.3,0,0x1a1622);
+flat(-503,399.1,14);addStr(-503,399.1,0,(k,e,f)=>{const t=new TB(k,e,f,-503,399.1,.5,null,1.4);t.b(6,.5,6,0,.25,0,0x2a2438,{g:1}).b(1.8,11,1.8,0,6,0,0x1a1622,{g:1}).b(1.2,1.6,1.2,0,12.3,0,0x1a1622);
   for(let i=0;i<3;i++)t.e_(2.2,.25,2.2,0,3+i*3,0,i%2?0xc08aff:0x6ad8ff);t.e_(.9,.9,.9,0,13.6,0,0xb8a8ff,{rx:.785,rz:.785});
   for(let i=0;i<6;i++){const a=i/6*TAU;t.b(.8,.5,.8,C(a)*4.2,.25,S(a)*4.2,0x2a2438);t.e_(.4,1.8+i%3,.4,C(a)*4.2,1.3+(i%3)*.5,S(a)*4.2,i%2?0x9ae8ff:0xd8a8ff,{rz:.2})}t.col(0,0,1.4)});
 // ---------- NPCs das terras novas
@@ -66,19 +66,19 @@ Object.assign(MDL,{druida:()=>hum({skin:0xe8b090,hair:0xc83a1a,hairS:'long',shir
   nefra:()=>hum({skin:0xb88a5a,hair:0x1a1a1a,hairS:'long',shirt:0xf0e8d0,robe:0xf4ecd8,pants:0xe0d4b8,trim:0xffc030,hat:'crown'}),
   bento:()=>hum({skin:0xe0a878,hair:0xa0a0a0,beard:0xb8b8b8,shirt:0x2a3a6a,vest:0xe8c040,pants:0x3a3a4a,hat:'ranger',hatC:0x1a2a4a}),
   ixa:()=>hum({skin:0xc8b8e8,hair:0xe8e0ff,hairS:'long',shirt:0x3a2a6a,robe:0x2a1e5a,pants:0x2a1e4a,trim:0x9ae8ff,glasses:1,hat:'wizard',hatC:0x2a1e5a,gem:0x9ae8ff})});
-const NPC3=[['druida','druida','Rúbia, a Druida','🍂',-217,-207],['monge','monge','Monge Tashi','⛩️',47,-312],['yara','yara','Yara, a Batedora','🏹',308,78],['nefra','nefra','Nefra, a Sacerdotisa','☀️',242,256],['bento','bento','Bento, o Faroleiro','🗼',-76,328],['ixa','ixa','Ixa, a Vidente','🔮',-292,229]];
+const NPC3=[['druida','druida','Rúbia, a Druida','🍂',-367.1,-349.7],['monge','monge','Monge Tashi','⛩️',65.3,-537.5],['yara','yara','Yara, a Batedora','🏹',531.3,147.5],['nefra','nefra','Nefra, a Sacerdotisa','☀️',406.7,439],['bento','bento','Bento, o Faroleiro','🗼',-116.3,556.4],['ixa','ixa','Ixa, a Vidente','🔮',-497,390.1]];
 const NPC3L={druida:'As folhas caem vermelhas desde que a Sombra passou por aqui. As ruínas lembram de tudo.',monge:'O frio ensina paciência. O Rei Sem Nome não tem nenhuma.',yara:'Na savana, quem corre primeiro come primeiro. Mantenha os olhos no capim.',
   nefra:'O Sol ainda guarda este templo. Os mortos lá dentro discordam.',bento:'Este farol guiou navios por cem anos. Agora só piratas aparecem.',ixa:'Os cristais cantam o que vai acontecer. Hoje cantam o seu nome.'};
 const _spawnNPCs15=spawnNPCs;spawnNPCs=function(){_spawnNPCs15();for(const[id,mdl,nm,ic,x,z]of NPC3)mkNPC(id,mdl,x,z,{nm,ic,talk:id,still:1})};
 const _talkTo15=talkTo;talkTo=function(n){if(NPC3L[n.talk]){const had=QD.some(x=>x.t=='talk'&&x.npc==n.id&&act(x.id));qEvent('talk',n.id);if(!had)say([[n.nm,NPC3L[n.talk],n.ic]]);return}return _talkTo15(n)};
 // ---------- missões das terras novas (conversa → caça → coleta → alvo com nome)
 Object.assign(QOC,{folha:[0xe0402a,'Folha Carmesim','🍁'],gelo:[0x9ae8ff,'Flor de Gelo','❄️'],pena:[0xff6a3a,'Pena de Abutre','🪶'],ambar:[0xffb030,'Âmbar Antigo','🟠'],concha:[0xffc0d8,'Concha Rara','🐚'],cantante:[0xc08aff,'Cristal Cantante','💜']});
-const Q3=[['outono','druida','Rúbia, a Druida','🍂',[-222,-214],['redwolf','spider','bandit','bassassin'],'folha','Lobo Rubro, o Alfa','redwolf','O Bosque Carmesim','As Folhas que Choram','Rúbia precisa de 7 folhas carmesim caídas perto das ruínas.'],
-  ['neve','monge','Monge Tashi','⛩️',[52,-322],['swolf','yeti','iceskel'],'gelo','Grunhido, o Yeti Ancião','yeti','O Mosteiro Gelado','Flores de Gelo','O monge Tashi pede 6 flores de gelo que só nascem perto do mosteiro.'],
-  ['savana','yara','Yara, a Batedora','🏹',[314,70],['hyena','boar','bandit','bandarc'],'pena','Risada, a Matriarca','hyena','A Aldeia das Tendas','Penas para as Flechas','Yara precisa de 8 penas de abutre espalhadas pela savana.'],
-  ['deserto','nefra','Nefra, a Sacerdotisa','☀️',[248,270],['scorp','mummy','skelwar'],'ambar','Ankhet, a Múmia-Rainha','mummy','O Templo do Sol','Lágrimas de Âmbar','Nefra quer 6 pedaços de âmbar antigo enterrados ao redor do templo.'],
-  ['costa','bento','Bento, o Faroleiro','🗼',[-82,334],['crab','pirate','slime'],'concha','Barba-de-Sal, o Pirata','pirate','O Farol Apagado','Conchas para o Farol','Bento quer 7 conchas raras da praia para consertar a lente do farol.'],
-  ['cristal','ixa','Ixa, a Vidente','🔮',[-298,238],['cgolem','skelmage','cultist','imp'],'cantante','O Colosso Prismático','cgolem','O Obelisco de Cristal','Cristais que Cantam','Ixa precisa de 6 cristais cantantes ao redor do obelisco.']];
+const Q3=[['outono','druida','Rúbia, a Druida','🍂',[-372.1,-356.7],['redwolf','spider','bandit','bassassin'],'folha','Lobo Rubro, o Alfa','redwolf','O Bosque Carmesim','As Folhas que Choram','Rúbia precisa de 7 folhas carmesim caídas perto das ruínas.'],
+  ['neve','monge','Monge Tashi','⛩️',[70.3,-547.5],['swolf','yeti','iceskel'],'gelo','Grunhido, o Yeti Ancião','yeti','O Mosteiro Gelado','Flores de Gelo','O monge Tashi pede 6 flores de gelo que só nascem perto do mosteiro.'],
+  ['savana','yara','Yara, a Batedora','🏹',[537.3,139.5],['hyena','boar','bandit','bandarc'],'pena','Risada, a Matriarca','hyena','A Aldeia das Tendas','Penas para as Flechas','Yara precisa de 8 penas de abutre espalhadas pela savana.'],
+  ['deserto','nefra','Nefra, a Sacerdotisa','☀️',[412.7,453],['scorp','mummy','skelwar'],'ambar','Ankhet, a Múmia-Rainha','mummy','O Templo do Sol','Lágrimas de Âmbar','Nefra quer 6 pedaços de âmbar antigo enterrados ao redor do templo.'],
+  ['costa','bento','Bento, o Faroleiro','🗼',[-122.3,562.4],['crab','pirate','slime'],'concha','Barba-de-Sal, o Pirata','pirate','O Farol Apagado','Conchas para o Farol','Bento quer 7 conchas raras da praia para consertar a lente do farol.'],
+  ['cristal','ixa','Ixa, a Vidente','🔮',[-503,399.1],['cgolem','skelmage','cultist','imp'],'cantante','O Colosso Prismático','cgolem','O Obelisco de Cristal','Cristais que Cantam','Ixa precisa de 6 cristais cantantes ao redor do obelisco.']];
 for(const[rid,npc,nm,ic,at,mob,obj,hn,hm,t1,t2,d2]of Q3){const R_=REG[RI[rid]],lv=R_.lv,xp=Math.round(260+lv*70),gd=Math.round(60+lv*16),id='x_'+rid;
   QD.push({id:id+'1',cat:'side',reg:rid,n:t1,d:'Fale com '+nm+' em '+R_.n+'.',t:'talk',npc,disc:rid,rw:{xp:Math.round(xp*.4),gold:gd},done:[[nm,NPC3L[npc],ic],[nm,'Se quer ajudar, limpe a região. Os monstros estão mais ousados a cada noite.',ic]]},
     {id:id+'2',cat:'side',reg:rid,n:'Ameaças de '+R_.n,d:'Derrote 12 monstros em '+R_.n+'.',t:'kill',mob,n_:12,req:[id+'1'],rw:{xp,gold:gd,item:1}},

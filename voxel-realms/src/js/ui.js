@@ -69,7 +69,7 @@ function regionUpd(){const r=regionAt(P.x,P.z),p=POI.find(p=>hy(P.x-p.x,P.z-p.z)
   const gx=Math.floor((P.x+WMH)/10),gz=Math.floor((P.z+WMH)/10);for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)FOG.add((gx+a)+','+(gz+b))}
 const clockStr=()=>{const h=(DAY.t*24)%24;return(h|0).toString().padStart(2,'0')+':'+(((h%1)*60)|0).toString().padStart(2,'0')+(NIGHT>.5?' 🌙':ELEV<.3?' 🌅':' ☀️')};
 // ---------- mapa do mundo pré-desenhado (usado no minimapa e no mapa-múndi)
-const MAPS=304,MAPQ=MAPS/(2*WMH),MAPC=document.createElement('canvas');MAPC.width=MAPC.height=MAPS;const MAPX=MAPC.getContext('2d'),FOG=new Set();
+const MAPS=384,MAPQ=MAPS/(2*WMH),MAPC=document.createElement('canvas');MAPC.width=MAPC.height=MAPS;const MAPX=MAPC.getContext('2d'),FOG=new Set();
 function* mapGen(){const img=MAPX.createImageData(MAPS,MAPS),d=img.data,k=2*WMH/MAPS;for(let j=0;j<MAPS;j++){for(let i=0;i<MAPS;i++){const x=-WMH+i*k+k/2,z=-WMH+j*k+k/2,h=rawH(x,z),r=regionAt(x,z);let c;
     if(h<-.3)c=r==4?[62,74,52]:[52,128,196];else if(Math.max(Math.abs(x),Math.abs(z))>WMAX-9)c=[120,118,112];else if(roadD(x,z)<2)c=[168,140,92];else{const hx=REG[r].map;c=[parseInt(hx.slice(1,3),16),parseInt(hx.slice(3,5),16),parseInt(hx.slice(5,7),16)];const sh=.85+cl(h,0,12)*.025;c=c.map(v=>v*sh)}
     if(hy(x,z)<54.5&&hy(x,z)>52.5)c=[110,80,50];const o=(i+j*MAPS)*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255}if(j%6==5)yield j/MAPS}MAPX.putImageData(img,0,0);
@@ -90,7 +90,7 @@ function qTarget(){const q=QD.find(q=>q.cat=='main'&&act(q.id))||QD.find(q=>act(
 function qPos(q){const s=QS[q.id];if(q.t=='talk'){const n=NPC.find(n=>n.id==q.npc);return n&&[n.x,n.z]}if(q.t=='wp'){const w=WP.find(w=>w.id==q.wp);return[w.x,w.z]}if(q.t=='boss'){const b=BOSS[q.boss];return[b.x,b.z]}
   if(q.t=='collect'||q.t=='interact'){let b=null,bd=1e9;for(const o of QOBJ)if(o.q===q){const d=hy(o.x-P.x,o.z-P.z);if(d<bd){bd=d;b=[o.x,o.z]}}return b}if(q.t=='zone')return q.at;if(q.t=='hire')return[-20,-13];
   if(q.t=='dungeon'){let b=DNG[0].ent,bd=1e9;for(const D of DNG){const d=hy(D.ent[0]-P.x,D.ent[1]-P.z);if(d<bd){bd=d;b=D.ent}}return b}
-  if(q.t=='kill'){const p={dwolf:[-10,-140],zombie:[-112,-96],ghoul:[-112,-96],skel:[-112,-96],spider:[-30,-160],boar:[10,150],croc:[-168,25],lslime:[155,-150]}[q.mob[0]];return p}return null}
+  if(q.t=='kill'){const p={dwolf:[-17.3,-255.7],zombie:[-119.3,-211.7],ghoul:[-119.3,-211.7],skel:[-119.3,-211.7],spider:[-37.3,-275.7],boar:[17.3,259.8],croc:[-291,43.3],lslime:[268.5,-268.6]}[q.mob[0]];return p}return null}
 const QBEAM=beam(0,0,0xffd34a);QBEAM.material.opacity=.18;
 function trackUpd(){const L=[];for(const q of QD)if(act(q.id)&&q.cat=='main')L.push(q);const reg=REG[Math.max(0,REGC)]?.id;for(const q of QD)if(act(q.id)&&q.cat=='side'&&q.reg==reg)L.push(q);for(const q of QD)if(act(q.id)&&q.cat=='side'&&!L.includes(q))L.push(q);
   if(BOUNTY.q)L.push({id:'_b',cat:'bounty',n:'Recompensa',d:BOUNTY.q.ok?'Volte ao quadro da vila.':BOUNTY.q.txt,n_:BOUNTY.q.n,_p:BOUNTY.q.p});
@@ -125,7 +125,7 @@ let MAPTP=false;
 function openMap(fromWp){if(!run||DLG)return;MAPTP=fromWp;openWin('map');mapRender()}
 function mapRender(){const c=$('wm'),x=c.getContext('2d'),S_=c.width;x.imageSmoothingEnabled=false;x.drawImage(MAPC,0,0,S_,S_);const k=S_/(2*WMH),FN=Math.ceil(2*WMH/10);x.fillStyle='rgba(10,6,18,.78)';
   for(let i=0;i<FN;i++)for(let j=0;j<FN;j++)if(!FOG.has(i+','+j))x.fillRect(i*10*k,j*10*k,10*k+1,10*k+1);
-  x.font='bold '+Math.round(11*k*2)+'px Cinzel,Georgia';x.textAlign='center';x.fillStyle='#fff';x.strokeStyle='#000';x.lineWidth=3;for(const r of REG){if(!P.disc.has(r.id))continue;x.strokeText(r.n,(r.c[0]+WMH)*k,(r.c[1]+WMH)*k-14*k);x.fillText(r.n,(r.c[0]+WMH)*k,(r.c[1]+WMH)*k-14*k)}
+  x.font='bold '+Math.max(11,Math.round(11*k*3.2))+'px Cinzel,Georgia';x.textAlign='center';x.fillStyle='#fff';x.strokeStyle='#000';x.lineWidth=3;for(const r of REG){if(!P.disc.has(r.id))continue;x.strokeText(r.n,(r.c[0]+WMH)*k,(r.c[1]+WMH)*k-14*k);x.fillText(r.n,(r.c[0]+WMH)*k,(r.c[1]+WMH)*k-14*k)}
   drawWorldMarks(x,k);mapLegend();
   x.save();x.translate((P.x+WMH)*k,(P.z+WMH)*k);x.rotate(PI-P.f);x.fillStyle='#ffd34a';x.strokeStyle='#000';x.lineWidth=2;x.beginPath();x.moveTo(0,-10);x.lineTo(7,7);x.lineTo(0,3);x.lineTo(-7,7);x.closePath();x.fill();x.stroke();x.restore();
   $('wpl').innerHTML=WP.map(w=>`<button class="wpb ${w.on?'':'off'}" data-w="${w.id}" ${w.on?'':'disabled'} style="left:${(w.x+WMH)/(2*WMH)*100}%;top:${(w.z+WMH)/(2*WMH)*100}%">◆<span>${w.n}</span></button>`).join('');$('mph').textContent=inCombat()?'Não dá para viajar em combate.':'Toque numa pedra de teleporte ativada (◆ azul) para viajar.'}

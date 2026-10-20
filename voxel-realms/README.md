@@ -74,6 +74,16 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 15.7 — biomas 3× maiores, os Seis Fragmentos e chefes únicos
+- **Cada bioma ficou 3× maior.** O mundo agora vai de −645 a +645 (antes ±372). Tudo o que existia — vilas, chefes, baús, santuários, livros, missões, masmorras — foi junto com a sua região, e o espaço novo ganhou flora, fauna e monstros da região. O rio também acompanhou.
+- **12 Pedras de Teleporte novas** nos confins de cada região (Colina dos Pastores, Trigais do Leste, Prado das Fadas, Clareira das Corujas, Charco Profundo, Fendas de Magma, Vale das Folhas, Passo do Vento, Poço das Manadas, Oásis Perdido, Enseada dos Naufrágios e Geodo Cantante).
+- **6 marcos novos** com diário próprio: Fazenda Abandonada, Forte da Estrada, Círculo das Fadas, Pedras dos Druidas, Vila Afogada (palafitas) e Forja dos Anões.
+- **6 chefes únicos**, um por terra de fora, cada um no seu covil: **Sylvara, a Dríade Carmesim** (Trono de folhas), **Vorn, o Lich do Gelo** (cripta de pilares de gelo), **Juba-de-Fogo, o Rei da Savana** (Pedra do Rei), **Sarkhan, o Escorpião-Imperador** (obeliscos na areia), **Carapaça, o Caranguejo Colossal** (naufrágio) e **Nihil, o Arauto do Vazio** (espinhos de cristal). Todos com 3 fases.
+- **Lutas de chefe mais complexas:** *Escudo de pilares* (o chefe fica imune e se cura até você destruir os 3 pilares; depois fica atordoado e vulnerável), *Onda de choque* (anel que se expande — pule ou desvie; na fase III vêm duas), *Maré* (três faixas avançando) e *Estouro* (três investidas seguidas). Os chefes antigos também ganharam: o Capitão (estouro), a Rainha (maré), o Ancião e Morgra (escudo de pilares) e Ignarok (onda de choque).
+- **14 missões principais novas:** depois de Morgra, o Ancião Bram revela que o selo de Aldor tinha seis fragmentos. Para cada terra de fora: chegar à pedra dos confins e derrotar o guardião corrompido. Com os seis, "O Selo Restaurado" libera a luta contra Ignarok (que continua sendo a última).
+- **30 missões secundárias novas:** relíquias para ativar, áreas para limpar e alvos com nome em cada marco e em cada confim.
+- Saves antigos continuam: a posição do herói e o mapa revelado são levados para o lugar novo da sua região.
+
 ## Versão 15.6 — árvore de habilidades mais complexa
 - **5 círculos por árvore** (I a V, pelo nível da habilidade). Para aprender no círculo II é preciso já ter 3 pontos gastos naquela árvore; III pede 7, IV pede 12 e V pede 18. O grimório mostra os círculos, os cadeados e quantos pontos faltam.
 - **41 habilidades novas.** Guerreiro: Investida, Golpe Telúrico (fissura em linha), Lâmina Bumerangue, Execução (dobro em quem tem menos de 30% e zera a recarga se matar). Mago: Piscar, Orbe Glacial, Tormenta Elétrica. Caçador: Flecha Explosiva, Rede de Caça. Necromante: Maldição da Fraqueza, Prisão Óssea, Nuvem Pestilenta. Vampiro: Enxame de Morcegos, Abraço Sombrio. Mais passivas como Mestre de Armas, Colosso, Ira Inesgotável, Combustão, Hipotermia, Canalização, Sobrecarga, Fluxo Arcano, Franco-Atirador, Escaramuça, Predador, Hemorragia, Instinto Selvagem, Legião, Ceifador, Medula Profana, Sudário, Hemofilia, Pacto Carmesim, Predador Noturno, Sangue Nobre e Imortalidade.

@@ -13,14 +13,14 @@ QD.push({id:'s20',cat:'side',reg:'vila',n:'O Cerco de Pedraverde',d:'O Guarda To
   done:[['Guarda Tomas','Pedraverde resistiu, Guardião. O Corvo caiu e os bandidos fugiram para as colinas.','🛡️'],['Kael','Enquanto a Sombra existir, eles voltam. Mantenha o portão de pé.','🛡️']]});
 QS.s20={st:0,p:0,got:[]};QIDX.s20=QD[QD.length-1];
 const STG={
-  m3:[{t:'hunt',mob:'boar',at:[46,140],nm:'Javali Alfa',d:'Um javali enorme lidera a manada. Encontre e abata o Javali Alfa perto do moinho.'}],
-  m7:[{t:'hunt',mob:'dwolf',at:[-20,-150],nm:'Fenrir, o Lobo Negro',d:'O líder da alcateia ronda a floresta. Abata Fenrir.'}],
-  m8:[{t:'defend',at:[-112,-78],r:11,mob:['zombie','ghoul','skel','skelwar','zbrute'],n_:3,d:'Os mortos atacam o portão do cemitério! Fique perto do portão e aguente 3 ondas.'}],
-  s7:[{t:'hunt',mob:'spider',at:[-30,-160],nm:'Tecelã-Mãe',d:'Encontre a Tecelã-Mãe no coração do ninho e destrua-a.'}],
-  s10:[{t:'hunt',mob:'croc',at:[-160,40],nm:'Mandíbula Velha',d:'O maior crocodilo do mangue espreita perto da cabana. Abata Mandíbula Velha.'}],
-  s11:[{t:'defend',at:[150,-150],r:11,mob:['lslime','imp','skelmage'],n_:3,d:'Slimes de lava e diabretes atacam o altar de obsidiana. Aguente 3 ondas.'}],
+  m3:[{t:'hunt',mob:'boar',at:[53.3,249.8],nm:'Javali Alfa',d:'Um javali enorme lidera a manada. Encontre e abata o Javali Alfa perto do moinho.'}],
+  m7:[{t:'hunt',mob:'dwolf',at:[-27.3,-265.7],nm:'Fenrir, o Lobo Negro',d:'O líder da alcateia ronda a floresta. Abata Fenrir.'}],
+  m8:[{t:'defend',at:[-119.3,-193.7],r:11,mob:['zombie','ghoul','skel','skelwar','zbrute'],n_:3,d:'Os mortos atacam o portão do cemitério! Fique perto do portão e aguente 3 ondas.'}],
+  s7:[{t:'hunt',mob:'spider',at:[-37.3,-275.7],nm:'Tecelã-Mãe',d:'Encontre a Tecelã-Mãe no coração do ninho e destrua-a.'}],
+  s10:[{t:'hunt',mob:'croc',at:[-283,58.3],nm:'Mandíbula Velha',d:'O maior crocodilo do mangue espreita perto da cabana. Abata Mandíbula Velha.'}],
+  s11:[{t:'defend',at:[263.5,-268.6],r:11,mob:['lslime','imp','skelmage'],n_:3,d:'Slimes de lava e diabretes atacam o altar de obsidiana. Aguente 3 ondas.'}],
   s20:[{t:'defend',at:[6,40],r:11,mob:['bandit','bandarc','bshield','bbrute','bshaman'],n_:3,d:'Bandidos atacam o portão sul de Pedraverde! Defenda o portão por 3 ondas.'},
-    {t:'hunt',mob:'bbrute',at:[-38,172],nm:'Corvo, o Saqueador',d:'O líder do ataque fugiu para o acampamento dos bandidos. Acabe com o Corvo.'}]};
+    {t:'hunt',mob:'bbrute',at:[-30.7,281.8],nm:'Corvo, o Saqueador',d:'O líder do ataque fugiu para o acampamento dos bandidos. Acabe com o Corvo.'}]};
 const SKEYS=['t','mob','n_','d','at','r','nm'];
 for(const id in STG){const q=QIDX[id];if(!q)continue;const b={};for(const k of SKEYS)b[k]=q[k];q.stg=[b,...STG[id]];q.n0=q.n}
 function applyStage(q,i){const st=q.stg[i];for(const k of SKEYS)q[k]=st[k];if(q.n_==null)q.n_=1;q.n=q.n0+' ('+(i+1)+'/'+q.stg.length+')'}

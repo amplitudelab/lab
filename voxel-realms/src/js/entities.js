@@ -43,11 +43,11 @@ const MT={
   tfrog:{n:'Sapo do Brejo',m:'frog',hp:6,dmg:0,sp:4,rg:1,cd:9,xp:1,ai:'animal',passive:1,r:.35,mats:[['perna',.6]]},
   imp:{n:'Diabrete de Brasa',m:'imp',w:'club',hp:34,dmg:10,sp:5,rg:9,cd:2.2,xp:16,ai:'ranged',proj:'fire',pc:0xff7a1a,atk:'cast'}};
 const BOSS={
-  capitao:{n:'Capitão Rasgado',m:'capitao',w:'axe',hp:620,dmg:16,sp:4,rg:2.6,cd:1.6,xp:420,x:-38,z:174,lv:3,ab:['charge','spin','summon'],ab2:['quake','sweep','nova'],sum:'bandit',r:1.1,atk:'slashA'},
-  rainha:{n:'Rainha da Colmeia',m:'queen',hp:1000,dmg:18,sp:4.2,rg:3,cd:1.5,xp:700,x:192,z:56,lv:6,ab:['volley','summon','dive'],ab2:['nova','spiral','pools'],sum:'bee',proj:'sting',pc:0xffd84a,fly:1,r:1.6,atk:'sting'},
-  anciao:{n:'Ancião Corrompido',m:'treant',hp:1900,dmg:26,sp:2.3,rg:4,cd:2,xp:1100,x:12,z:-190,lv:9,ab:['roots','slam','summon'],ab2:['quake','pools','sweep'],sum:'spider',r:2.2,atk:'slam'},
-  bruxa:{n:'Morgra, a Bruxa do Mangue',m:'witch',w:'staff',hp:2300,dmg:28,sp:3.6,rg:12,cd:1.8,xp:1500,x:-186,z:60,lv:12,ab:['blink','poison','summon','volley'],ab2:['spiral','meteors','pools'],sum:'frog',proj:'orb',pc:0x9aff7a,r:1,atk:'cast'},
-  ignarok:{n:'Ignarok, o Dragão de Brasa',m:'ignarok',hp:4600,dmg:34,sp:3.6,rg:6.5,cd:2.2,xp:3200,x:152,z:-178,lv:15,ab:['breath','fireballs','charge','geysers','fly'],ab2:['meteors','sweep','quake','nova'],r:3.6,atk:'bite'}};
+  capitao:{n:'Capitão Rasgado',m:'capitao',w:'axe',hp:620,dmg:16,sp:4,rg:2.6,cd:1.6,xp:420,x:-30.7,z:283.8,lv:3,ab:['charge','spin','summon'],ab2:['quake','sweep','nova'],sum:'bandit',r:1.1,atk:'slashA'},
+  rainha:{n:'Rainha da Colmeia',m:'queen',hp:1000,dmg:18,sp:4.2,rg:3,cd:1.5,xp:700,x:312.8,z:63.3,lv:6,ab:['volley','summon','dive'],ab2:['nova','spiral','pools'],sum:'bee',proj:'sting',pc:0xffd84a,fly:1,r:1.6,atk:'sting'},
+  anciao:{n:'Ancião Corrompido',m:'treant',hp:1900,dmg:26,sp:2.3,rg:4,cd:2,xp:1100,x:4.7,z:-305.7,lv:9,ab:['roots','slam','summon'],ab2:['quake','pools','sweep'],sum:'spider',r:2.2,atk:'slam'},
+  bruxa:{n:'Morgra, a Bruxa do Mangue',m:'witch',w:'staff',hp:2300,dmg:28,sp:3.6,rg:12,cd:1.8,xp:1500,x:-309,z:78.3,lv:12,ab:['blink','poison','summon','volley'],ab2:['spiral','meteors','pools'],sum:'frog',proj:'orb',pc:0x9aff7a,r:1,atk:'cast'},
+  ignarok:{n:'Ignarok, o Dragão de Brasa',m:'ignarok',hp:4600,dmg:34,sp:3.6,rg:6.5,cd:2.2,xp:3200,x:265.5,z:-296.6,lv:15,ab:['breath','fireballs','charge','geysers','fly'],ab2:['meteors','sweep','quake','nova'],r:3.6,atk:'bite'}};
 const SPAWN={plan:['boar','wolf','bandit','bandarc'],flor:['bee','golem','fairy','wolf'],mata:['dwolf','spider','skel'],mang:['croc','frog','slime','zombie'],cald:['lslime','imp','skel']};
 // à noite, feras agressivas se somam aos monstros da região
 const NIGHTB={plan:['wolf','wolf','boar'],flor:['wolf','dwolf'],mata:['dwolf','dwolf','spider'],mang:['croc','croc'],cald:['imp']};
@@ -100,7 +100,7 @@ const MERC={lyra:{n:'Lyra',cls:'Arqueira',mdl:'lyra',w:'bow',wh:'L',price:60,rng
   mirela:{n:'Mirela',cls:'Maga',mdl:'mirela',w:'staff',price:90,rng:9,d:'Lança orbes arcanos que explodem em área.',ic:'🔮'},
   borin:{n:'Borin',cls:'Guerreiro anão',mdl:'borin',w:'axe',price:70,rng:1.6,d:'Luta na linha de frente e atrai os golpes.',ic:'🪓'}};
 function spawnNPCs(){mkNPC('bram','bram',-10,-33,{nm:'Ancião Bram',ic:'🧙',talk:'bram',still:1});mkNPC('helga','helga',21,-18,{nm:'Helga, a Ferreira',ic:'⚒️',talk:'helga',still:1});
-  mkNPC('guarda','guard',6,48,{nm:'Guarda Tomas',ic:'🛡️',talk:'guarda',still:1,w:'sword'});mkNPC('eremita','eremita',-136,-8,{nm:'Eremita Ulric',ic:'🧓',talk:'eremita',still:1});
+  mkNPC('guarda','guard',6,48,{nm:'Guarda Tomas',ic:'🛡️',talk:'guarda',still:1,w:'sword'});mkNPC('eremita','eremita',-259,10.3,{nm:'Eremita Ulric',ic:'🧓',talk:'eremita',still:1});
   [['lyra',-17,-14],['mirela',-20,-12.5],['borin',-23,-13]].forEach(([id,x,z])=>{const M=MERC[id];mkNPC(id,M.mdl,x,z,{nm:M.n+' · '+M.cls,ic:M.ic,merc:id,w:M.w,wh:M.wh,still:1})});
   for(let i=0;i<6;i++){const a=i/6*TAU+.4,r=15+R()*20;mkNPC('aldeao'+i,'villager',C(a)*r,S(a)*r,{nm:pick(['Aldeã','Aldeão','Lavrador','Mercadora','Pescador','Criança']),wander:1,talk:'aldeao'})}
   for(const n of NPC)if(n.talk||n.merc)inter({x:0,z:0,r:2.6,npc:n,ic:n.ic||'💬',label:()=>n.merc?(P.merc&&P.merc.id==n.merc?'Dispensar '+MERC[n.merc].n:'Contratar '+n.nm+' ('+MERC[n.merc].price+' ouro)'):'Falar com '+n.nm,act:()=>n.merc?hireMerc(n):talkTo(n),kind:'npc'})}

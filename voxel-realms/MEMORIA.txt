@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 15.6
+Atualizado em 20/10/2026 · versão atual do jogo: 15.7
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='15.7'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='15.8'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -105,6 +105,15 @@ talents.js   15.6: círculos (skTier pelo lv da habilidade, TPTS pontos mínimos
              curse, drain, buff, army) tratadas no newSkill -> engCast; zonas/atrasos em ZN atualizados no playerUpd;
              passivas no skPassive/hurtMob/hitPlayer/die; treeRender substituído (agrupado por círculo); qCheck dá +1
              ponto em missão principal
+world4.js    15.7: biomas 3× maiores. WMAX 645 (era 372), centros de REG ×√3 e TODAS as coordenadas fixas (POI,
+             ROADS, LORE, WP, flat/addStr/TB, SHRINES, CHESTS, BOSS, NPCs, QD at/pts, trials, FOGZ, NPC3, Q3, DNG.ent)
+             foram reescritas NO CÓDIGO: cada ponto transladado por (√3−1)×centro antigo da sua região (a vila no
+             centro não mudou). Rio escalado junto (riverZ com RVF). Masmorras em ±800. Saves: world3Load embrulhado
+             (P.st.map157) usa regionOld/remapOld com os centros antigos (OLDC) para mover posição e FOG; jogo novo
+             marca map157 no startClass. Conteúdo novo em W4 (marcos e covis + pedras de teleporte "confins"), W4B
+             (construções), chefes sylvara/vorn/juba/sarkhan/carapaca/nihil (BOSS.sc escala o modelo), habilidades
+             frostring/shield/tidal/stampede (BDUR/BCD/BNAME + bossStart2/bossAct2; shield = pilares totem com e.shT),
+             missões mf0 → mf_<região>1 (wp) → mf_<região>2 (chefe) → mselo → m13 (req trocado) e s4_<região>a/b/c
 ragdoll.js   morte: ragInit/ragUpd (tomba pelos pés com quaternion, molas nos membros, ragLow mantém acima do chão),
              corpos ficam ~10 s (RAG.max 14) e encolhem em poeira; mobsUpd chama ragUpd; herói usa P.rgE
 drops.js     dropItem/dropGold/dropGlobe com modelo do item (itemGroup do bag.js) + círculo de raridade

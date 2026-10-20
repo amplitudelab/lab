@@ -11,7 +11,7 @@ const WXT={sol:{n:'Céu limpo',ic:'☀️',k:{cloud:.05}},nublado:{n:'Nublado',i
 // chance de cada clima por região
 const WXR={vila:{sol:5,nublado:3,chuva:2,tempestade:1},plan:{sol:6,nublado:2,chuva:2,tempestade:1.5},flor:{sol:5,petalas:3,nublado:1,chuva:1.5},
   mata:{sol:3,nublado:2,chuva:3,neblina:2.5,tempestade:1.5},mang:{chuva:3,neblina:4,tempestade:2,nublado:1},cald:{cinzas:6,sol:1,tempestade:2}};
-const FOGZ=[{x:-112,z:-96,r:46,k:.85},{x:-170,z:30,r:70,k:.4},{x:12,z:-190,r:30,k:.3}];
+const FOGZ=[{x:-119.3,z:-211.7,r:46,k:.85},{x:-293,z:48.3,r:70,k:.4},{x:4.7,z:-305.7,r:30,k:.3}];
 const WX={type:'sol',t:60,k:{cloud:0,rain:0,storm:0,fog:0,ash:0,wind:0},lt:6,fl:0,reg:'vila'};
 function wxPick(reg){const T=WXR[reg]||WXR.vila;let s=0;for(const k in T)s+=T[k];let r=R()*s;for(const k in T){r-=T[k];if(r<=0)return k}return'sol'}
 function wxSet(type,quiet){if(WX.type==type)return;WX.type=type;WX.t=90+R()*120;if(!quiet&&run)toast(WXT[type].ic,WXT[type].n,'')}

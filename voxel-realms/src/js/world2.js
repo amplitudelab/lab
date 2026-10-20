@@ -11,9 +11,9 @@ function sneakSet(v){if(P.dead||UI.block()||P.mounted){v=0}P.sneak=v==null?(P.sn
 function backstab(e,d){if(P.bsT>0&&e.st!='chase'&&!e.t.passive&&!e.boss){P.bsT=0;P.st.back++;pop('PELAS COSTAS!',e.x,e.y+2.8,e.z,'#c8a8ff',1);flash(e.x,e.y+1.2,e.z,0xb08aff,3,.25);fx(e.x,e.y+1.2,e.z,0xb08aff,12,6,.1,.6,6);HITSTOP=.08;return d*3}return d}
 
 // ---------- masmorras: arenas fechadas com ondas, chefe e baú
-const DNG=[{id:'cripta',n:'Cripta Esquecida',ic:'⚰️',ent:[-106,-90],at:[-470,-470],mob:['zombie','ghoul','skel','skelwar','skelmage'],boss:'cultist',bn:'Lich da Cripta',c:0x7dff9a,wall:0x4a4a52,floor:0x3a3a40},
-  {id:'caverna',n:'Caverna das Tecelãs',ic:'🕸️',ent:[-44,-126],at:[-470,470],mob:['spider','spider','dwolf','bassassin'],boss:'spider',bn:'Rainha Tecelã',c:0xb07aff,wall:0x3a3028,floor:0x2e2620},
-  {id:'ruina',n:'Ruína do Templo',ic:'🏛️',ent:[132,-24],at:[470,470],mob:['golem','fairy','imp','bshield','bshaman'],boss:'golem',bn:'Colosso da Ruína',c:0xffd060,wall:0xd8ccb0,floor:0xb8ac90}];
+const DNG=[{id:'cripta',n:'Cripta Esquecida',ic:'⚰️',ent:[-113.3,-205.7],at:[-800,-800],mob:['zombie','ghoul','skel','skelwar','skelmage'],boss:'cultist',bn:'Lich da Cripta',c:0x7dff9a,wall:0x4a4a52,floor:0x3a3a40},
+  {id:'caverna',n:'Caverna das Tecelãs',ic:'🕸️',ent:[-51.3,-241.7],at:[-800,800],mob:['spider','spider','dwolf','bassassin'],boss:'spider',bn:'Rainha Tecelã',c:0xb07aff,wall:0x3a3028,floor:0x2e2620},
+  {id:'ruina',n:'Ruína do Templo',ic:'🏛️',ent:[252.8,-16.7],at:[800,800],mob:['golem','fairy','imp','bshield','bshaman'],boss:'golem',bn:'Colosso da Ruína',c:0xffd060,wall:0xd8ccb0,floor:0xb8ac90}];
 const DST={on:null,w:0,live:[],t:0,boss:null,done:0};
 // 14.4: cada masmorra é um complexo de 3 salões (28×42) ligado por portões: ondas no primeiro, totens que
 // chamam reforços e armadilhas de espinhos no segundo, chefe com jatos de fogo giratórios no terceiro.
