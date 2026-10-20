@@ -12,10 +12,10 @@ const _bs=new V3();
 function blockHit(d,o){if(!P.block)return d;const s=o.src;if(!s)return d;const sx=s.x!=null?s.x:s.o&&s.o.position.x,sz=s.z!=null?s.z:s.o&&s.o.position.z;if(sx==null)return d;
   if(Math.abs(angDiff(P.f,Math.atan2(sx-P.x,sz-P.z)))>1.35)return d; // pelas costas não bloqueia
   const hx=P.x+S(P.f)*.9,hz=P.z+C(P.f)*.9,hy_=P.y+1.5;
-  if(P.blkT<.25){P.st.parry++;HITSTOP=.16;SHK=Math.max(SHK,.35);P.buff.pf=2;pop('APARO PERFEITO!',P.x,P.y+3.6,P.z,'#ffe08a',1);flash(hx,hy_,hz,0xffe8a0,4,.3);fx(hx,hy_,hz,0xffe08a,16,8,.08,.6,6);ring(P.x,P.z,2.4,0xffe08a,.35);
+  if(P.blkT<(ST.sh?.36:.25)){P.st.parry++;HITSTOP=.16;SHK=Math.max(SHK,.35);P.buff.pf=2;pop('APARO PERFEITO!',P.x,P.y+3.6,P.z,'#ffe08a',1);flash(hx,hy_,hz,0xffe8a0,4,.3);fx(hx,hy_,hz,0xffe08a,16,8,.08,.6,6);ring(P.x,P.z,2.4,0xffe08a,.35);
     snd(1800,.08,'square');snd(900,.2,'triangle');if(s.t&&!s.boss){s.stun=Math.max(s.stun||0,1.2);s.vx=(s.vx||0)+S(P.f)*6;s.vz=(s.vz||0)+C(P.f)*6}else if(s.boss)s.stun=Math.max(s.stun||0,.35);return 0}
   fx(hx,hy_,hz,0xfff0c0,8,6,.07,.5,6);flash(hx,hy_,hz,0xffffff,1.6,.15);snd(1200,.06,'square');pop('Bloqueado',P.x,P.y+3,P.z,'#d8e0f0');SHK=Math.max(SHK,.12);
-  return Math.max(1,Math.round(d*(bow()||MANA()?.6:.3)))}
+  return Math.max(1,Math.round(d*(ST.sh?Math.max(.06,.3-ST.sh/100):bow()||MANA()?.6:.3)))}
 
 // ---------- árvore só da classe: devolve pontos de habilidades de outras classes
 const CLS_TREE={guerreiro:'guerra',mago:'arcano',cacador:'arco'};

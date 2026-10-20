@@ -36,6 +36,7 @@ Object.assign(WPN,{
   wand:(k,c,g,e)=>{k.box(.08,.95,.08,0,.38,0,0x2a1a3a);for(const y of[.1,.5,.8])k.box(.12,.05,.12,0,y,0,GLD);k.box(.18,.06,.18,0,.9,0,GLD);(e||k).box(.15,.18,.15,0,1.02,0,c||0xc8a0ff)}});
 Object.assign(WPN,{
   lantern:(k,c,g,e)=>{k.box(.06,.5,.06,0,.25,0,0x3a2a1a).box(.34,.06,.34,0,.02,0,0x3a3a3a).box(.34,.06,.34,0,-.42,0,0x3a3a3a).box(.06,.06,.4,0,.08,0,0x3a3a3a);for(const[a,b]of[[1,1],[1,-1],[-1,1],[-1,-1]])k.box(.04,.42,.04,a*.15,-.2,b*.15,0x3a3a3a);(e||k).box(.24,.32,.24,0,-.2,0,0xffd060)},
+  gsword:(k,c,g,e)=>{k.box(.24,1.85,.07,0,1.3,0,c||STL).box(.05,1.8,.08,-.1,1.3,0,STL2).box(.05,1.8,.08,.1,1.3,0,STL2).box(.06,1.6,.09,0,1.2,0,0x8a94a2).box(.18,.18,.07,0,2.28,0,c||STL).box(.08,.12,.07,0,2.42,0,STL2).box(.62,.1,.16,0,.36,0,g||GLD).box(.12,.12,.2,-.3,.4,0,g||GLD).box(.12,.12,.2,.3,.4,0,g||GLD);grip(k,.52);k.box(.16,.16,.16,0,-.22,0,g||GLD);if(e)e.box(.04,1.5,.1,0,1.3,0,0xbfe8ff)},
   book:(k,c,g,e)=>{k.box(.42,.08,.56,0,.3,0,c||0x7a2a2a).box(.38,.06,.52,0,.36,0,0xf0e6c8).box(.42,.04,.56,0,.4,0,c||0x7a2a2a).box(.08,.18,.56,-.21,.35,0,shade(c||0x7a2a2a,.7));(e||k).box(.1,.02,.1,0,.43,0,0xffd060)}});
 const BOWS=new Set(['bow','bow2','bow3','bow4']);
 // brilho das armas raras/lendárias: sem exagero — partes que brilham + faísca de vez em quando na ponta

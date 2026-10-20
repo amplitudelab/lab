@@ -132,3 +132,7 @@ body.run #vrVer{display:none}
 #jmpb{width:var(--b);height:var(--b);font-size:calc(var(--b)*.5);font-weight:700;color:#ffe08a;right:calc(var(--ax) + var(--atk)/2 + 1.66*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 - .08*var(--D) - var(--b)/2)}
 #jmpb i{font-style:normal;text-shadow:0 2px 2px #000}
 @media (max-height:340px){#jmpb{right:calc(var(--ax) + var(--atk)/2 + .55*var(--D) - var(--b)/2);bottom:calc(var(--ay) + var(--atk)/2 + 1.72*var(--D) - var(--b)/2)}}
+/* 14.2: livros do grimório (árvore da classe e 2ª árvore) */
+#bkBooks{margin-left:auto;display:flex;gap:4px}
+.gbk{width:34px;height:34px;padding:0;font-size:18px;border:2px solid #3a1e0c;border-radius:6px;background:linear-gradient(#e8d6a8,#c8ae78);box-shadow:0 2px 0 rgba(60,30,10,.4);cursor:pointer;filter:grayscale(.6);opacity:.75}
+.gbk.on{filter:none;opacity:1;border-color:#2a1206;box-shadow:0 0 0 2px #ffd34a,0 2px 0 rgba(60,30,10,.4)}.gbk.add{font:700 18px var(--px);color:#7a4a20;filter:none;opacity:.9}

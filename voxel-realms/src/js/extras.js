@@ -18,9 +18,9 @@ function torchToggle(v){if(P.dead||UI.block())return;TCH.on=v==null?!TCH.on:v;tr
   const b=$('torb');if(b)b.classList.toggle('on',TCH.on);sweep(TCH.on?260:420,TCH.on?900:140,.25,'sawtooth',.03);
   if(TCH.on&&TCH.g){TCH.g.updateWorldMatrix(true,false);_tv.set(0,1.05,0);TCH.g.localToWorld(_tv);fx(_tv.x,_tv.y,_tv.z,0xffb040,14,3,.1,2,-1);flash(_tv.x,_tv.y,_tv.z,0xff9a40,2.6,.3)}
   else if(TCH.g){TCH.g.updateWorldMatrix(true,false);_tv.set(0,1.05,0);TCH.g.localToWorld(_tv);puff(_tv.x,_tv.y,_tv.z,0x777777,.9);puff(_tv.x,_tv.y+.3,_tv.z,0x666666,.7)}}
-function torchUpd(dt,t){if(!TCH.g)torchBuild();const L=!bow(),hand=L?P.m.hL:P.m.hR,show=TCH.on&&!P.dead&&run;
+function torchUpd(dt,t){if(!TCH.g)torchBuild();const L=!bow(),busy=typeof handsBusy=='function'&&handsBusy(),hand=busy?P.m.hips:L?P.m.hL:P.m.hR,show=TCH.on&&!P.dead&&run;
   if(TCH.g.parent!==hand)hand.add(TCH.g);TCH.g.visible=show;TCH.sp.visible=show;
-  {const sh=L?P.m.sL:P.m.sR,el=L?P.m.eL:P.m.eR;TCH.g.rotation.x=-(sh.rotation.x+el.rotation.x+P.m.torso.rotation.x)+.2;TCH.g.rotation.z=-(sh.rotation.z||0)}TCH.fk+=dt;
+  if(busy){TCH.g.position.set(-.52,-.15,-.12);TCH.g.rotation.set(0,0,.12);TCH.g.scale.setScalar(.8)}else{TCH.g.position.set(0,-.1,.05);TCH.g.scale.setScalar(1);const sh=L?P.m.sL:P.m.sR,el=L?P.m.eL:P.m.eR;TCH.g.rotation.x=-(sh.rotation.x+el.rotation.x+P.m.torso.rotation.x)+.2;TCH.g.rotation.z=-(sh.rotation.z||0)}TCH.fk+=dt;
   const fl=.5+.3*S(TCH.fk*13)+.2*S(TCH.fk*23+1);TCH.lv+=(fl-TCH.lv)*Math.min(1,dt*14);
   const night=NIGHT,base=show?(.2+night*2.1+WX.k.rain*.3):night*.2;
   TCH.sm+=dt;

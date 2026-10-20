@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script>const VR_VERSION='14.1';const VR_NOTE='Pulo com golpe aereo, mergulho com cambalhota, agua ate a cintura, colisao melhor, campo de visao, Vampiro mais forte e Necromante equilibrado';</script>
+<script>const VR_VERSION='14.2';const VR_NOTE='Equipamento aparece no heroi, armas de duas maos, escudos e duas armas, qualidade dos itens por nivel, desmanchar e ascender, segunda arvore com o Eremita';</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -66,7 +66,8 @@
 <div id="jrn" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">📜 Diário</span><button class="wx">✕</button></div><div id="jtabs"></div><div id="jbody"></div></div></div>
 <div id="shop" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚒️ Forja da Helga</span><span id="shg"></span><button class="wx">✕</button></div><p class="ihint">Para vender, abra o inventário e escolha "Vender".</p><div id="shl"></div></div></div>
 <div id="bty" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">📋 Quadro de Recompensas</span><button class="wx">✕</button></div><div id="btyb"></div></div></div>
-<div id="tree" class="win"><div class="book"><div class="pg bk-l"><div class="bk-h"><span id="bkSig"></span><div><b id="bkT"></b><small id="tpts"></small></div></div><div id="bkG"></div><div id="bkHb"></div></div><div class="pg bk-r"><div id="gdet"></div></div><div id="bkTabs"></div><button class="wx">✕</button></div></div>
+<div id="subw" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🧓 Eremita Ulric · Segunda Árvore</span><button class="wx">✕</button></div><div id="subl"></div></div></div>
+<div id="tree" class="win"><div class="book"><div class="pg bk-l"><div class="bk-h"><span id="bkSig"></span><div><b id="bkT"></b><small id="tpts"></small></div><div id="bkBooks"></div></div><div id="bkG"></div><div id="bkHb"></div></div><div class="pg bk-r"><div id="gdet"></div></div><div id="bkTabs"></div><button class="wx">✕</button></div></div>
 <div id="cook" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🍲 Cozinha da Marta</span><button class="wx">✕</button></div><p class="ihint">Pratos dão bônus por 4 minutos. Os ingredientes vêm dos animais.</p><div id="cookl"></div></div></div>
 <div id="frg" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">⚙️ Bancada do Durin</span><span id="frgg"></span><button class="wx">✕</button></div><p class="ihint">Aprimore a arma equipada até +5. Cada nível dá +9% de dano.</p><div id="frgl"></div></div></div>
 <div id="pets" class="win"><div class="wd wbox"><div class="wh"><span class="ttl">🐾 Tobias, o Mercador</span><span id="ptg"></span><button class="wx">✕</button></div><p class="ihint">Um pet segue você e dá um bônus. Só um fica com você por vez.</p><div id="ptl"></div></div></div>
@@ -107,6 +108,7 @@
 <script src="js/ui.js"></script>
 <script src="js/world2.js"></script>
 <script src="js/feel.js"></script>
+<script src="js/gear.js"></script>
 <script src="js/music.js"></script>
 <script src="js/grimoire.js"></script>
 <script src="js/main.js"></script>

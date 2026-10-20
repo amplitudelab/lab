@@ -13,7 +13,7 @@ const CLS={
   cacador:{n:'Caçador',ic:'🏹',d:'Ataca de longe com o arco. +10% de velocidade e +5% de chance crítica. Começa com Chuva de Flechas.',sk:'flechas',
     wpn:{base:'Arco Curvo',n:'Arco do Batedor',ic:'🏹',wk:'bow',wd:[5,8]},mdl:{shirt:0x3d6a2a,vest:0x2f4a20,cape:0x2f5a24,capeE:0x8a6a3a,hat:'ranger',hatC:0x6a4428,plume:0xc0302a,shoulders:0,gloves:0x5a3a20,belt:0x4a2e18}}};
 function heroModel(cls){const c=CLS[cls]||CLS.guerreiro;return hum(Object.assign({skin:0xe0a878,hair:0x4a2a18,shirt:0x6d7684,pants:0x4a3a2e,boots:0x3a2a1e,cape:0xb3202a,capeE:0xd9a948,belt:0x5a3a20,shoulders:0x8a93a2},c.mdl))}
-function setClass(cls){P.cls=CLS[cls]?cls:'guerreiro';const old=P.m;P.m=heroModel(P.cls);P.m.g.position.copy(old.g.position);P.m.g.rotation.y=old.g.rotation.y;dropModel(old);calcStats()}
+function setClass(cls){P.cls=CLS[cls]?cls:'guerreiro';const old=P.m;if(typeof TCH!='undefined'&&TCH.g&&TCH.g.parent)TCH.g.parent.remove(TCH.g);P.m=heroModel(P.cls);P.m.g.position.copy(old.g.position);P.m.g.rotation.y=old.g.rotation.y;dropModel(old);calcStats()}
 function clsPassive(s){if(P.cls=='guerreiro'){s.hpP=(s.hpP||0)+20;s.arm+=10}else if(P.cls=='mago'){s.mag+=20;s.mreg=(s.mreg||8)+3}else if(P.cls=='cacador'){s.ms+=10;s.crit+=5}}
 function startClass(cls){setClass(cls);const c=CLS[cls],w=c.wpn;EQ.arma={id:iid++,slot:'arma',rar:0,ilvl:1,base:w.base,n:w.n,ic:w.ic,wk:w.wk,aff:Object.assign({},w.aff||{}),wd:w.wd.slice(),spd:1,price:5};
   P.sk[c.sk]=1;P.bar[0]=c.sk;calcStats();P.hp=ST.mx;P.fury=cls=='mago'?100:0;hud()}

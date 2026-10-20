@@ -55,13 +55,15 @@ const skIcon=(k,tile)=>SK[k]?pixIcon(SK[k].ic,skEl(k),tile):null;
 const icoH=(k,tile)=>{const u=skIcon(k,tile);return u?`<img class="px" src="${u}" alt="">`:`<i class="emo">${SK[k].ic}</i>`};
 
 // ---------- livro
-let GTAB='all';
-function treeKeys(){const T=treeOrder()[0];return Object.keys(SK).filter(k=>SK[k].t==T.id).sort((a,b)=>SK[a].lv-SK[b].lv||(SK[a].pas?1:0)-(SK[b].pas?1:0))}
-function treeRender(){if(UI.open!='tree')return;const T=treeOrder()[0],keys=treeKeys(),els=[...new Set(keys.map(skEl))];if(GTAB!='all'&&!els.includes(GTAB))GTAB='all';
+let GTAB='all',GBOOK=0;
+const curTree=()=>{const TO=treeOrder();if(GBOOK>=TO.length)GBOOK=0;return TO[GBOOK]};
+function treeKeys(){const T=curTree();return Object.keys(SK).filter(k=>SK[k].t==T.id).sort((a,b)=>SK[a].lv-SK[b].lv||(SK[a].pas?1:0)-(SK[b].pas?1:0))}
+function treeRender(){if(UI.open!='tree')return;const TO=treeOrder(),T=curTree(),keys=treeKeys(),els=[...new Set(keys.map(skEl))];if(GTAB!='all'&&!els.includes(GTAB))GTAB='all';
   const ek=GTAB=='all'?TREL[T.id]||els[0]:GTAB,E_=ELM[ek],show=keys.filter(k=>GTAB=='all'||skEl(k)==GTAB);if(!TSEL||!SK[TSEL]||!keys.includes(TSEL))TSEL=show[0]||null;
   const w=$('tree');E_.r.forEach((c,i)=>w.style.setProperty('--e'+i,c));
   const sg=pixIcon(GTAB=='all'?T.ic:E_.ic,ek,1);$('bkSig').innerHTML=sg?`<img class="px" src="${sg}" alt="">`:T.ic;
   $('bkT').textContent=GTAB=='all'?'GRIMÓRIO · '+T.n.toUpperCase():E_.t;$('tpts').textContent=P.sp+' ponto'+(P.sp==1?'':'s')+' para gastar';
+  $('bkBooks').innerHTML=TO.map((t,i)=>`<button class="gbk${i==GBOOK?' on':''}" data-book="${i}" title="${t.n}${i?' (2ª árvore)':''}">${t.ic}</button>`).join('')+(TO.length<2?'<button class="gbk add" data-book="add" title="Segunda árvore">＋</button>':'');
   let g=show.map(k=>{const S_=SK[k],r=rk(k),can=r<3&&P.sp>0&&P.lv>=reqLv(k,r);
     return`<button class="gs${r?' on':''}${can?' can':''}${TSEL==k?' sel':''}${S_.pas?' pas':''}" data-k="${k}" title="${S_.n}">${icoH(k,1)}<em>${[0,1,2].map(i=>`<b${i<r?' class="f"':''}></b>`).join('')}</em>${P.lv<S_.lv?`<u>Nv ${S_.lv}</u>`:''}</button>`}).join('');
   for(let i=show.length;i<Math.max(10,Math.ceil(show.length/5)*5);i++)g+='<span class="gs emp"></span>';$('bkG').innerHTML=g;
@@ -75,6 +77,7 @@ function treeRender(){if(UI.open!='tree')return;const T=treeOrder()[0],keys=tree
     <div class="tb">${r<3?`<button class="ib ${P.sp>0&&P.lv>=need?'':'off'}" data-l="1">${r?'Melhorar':'Aprender'} (1 ponto${P.lv<need?` · nível ${need}`:''})</button>`:''}</div>
     ${r&&!S_.pas?'<p class="gtip">Toque num atalho (1–4) para colocar esta habilidade nele.</p>':''}`}
 function bindTree(){$('tree').onclick=e=>{if(e.target===$('tree')){closeAll();return}
+  const bk=e.target.closest('[data-book]');if(bk){if(bk.dataset.book=='add'){toast('🧓','Segunda árvore','O Eremita Ulric, na Toca do Eremita (Mangue Sombrio), ensina a árvore de outra classe.');return}GBOOK=+bk.dataset.book;GTAB='all';TSEL=null;treeRender();sweep(400,900,.15,'triangle',.02);return}
   const tb=e.target.closest('[data-tab]');if(tb){GTAB=tb.dataset.tab;TSEL=null;treeRender();sweep(900,500,.08,'triangle',.02);return}
   const n=e.target.closest('[data-k]');if(n){TSEL=n.dataset.k;treeRender();snd(700,.04,'sine');return}
   const l=e.target.closest('[data-l]');if(l){if(!learn(TSEL))toast('✨','Não dá ainda',P.sp<1?'Sem pontos: suba de nível.':'Nível insuficiente.');else{const b=document.querySelector('.gs.sel');if(b){b.classList.remove('lrn');void b.offsetWidth;b.classList.add('lrn')}}treeRender();return}
