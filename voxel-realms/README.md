@@ -74,6 +74,12 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 15.3 — trilhas de batalha, efeitos sonoros, montarias e economia
+- **Trilhas de batalha diferentes:** cada luta escolhe um tema pelo inimigo mais perto e pela região — Choque de Aço (padrão), Fúria Selvagem (feras), Dança Macabra (mortos-vivos), Tempestade Gélida (neve e cristal), Maré Pirata (costa e bandidos) e Coração de Brasa (Ignarok). Cada tema tem andamento, harmonia, tambores e riff próprios.
+- **Efeitos sonoros:** o golpe corta o ar conforme a arma (leve, pesada, mágica); o acerto soa como metal, osso, carne ou flecha; o arco estala a corda; o escudo ressoa; equipar faz o som da peça (metal, cota de malha, couro, tecido, joia, mochila); poções borbulham; moedas tilintam; passos mudam com o chão (grama, pedra, areia, neve, água) e viram cascos na montaria.
+- **Montarias mais lentas:** de 114% (Cavalo Baio) a 137% (Raptor de Brasa) da corrida; antes chegavam a 191%.
+- **Economia mais difícil:** itens raros e lendários caem bem menos, monstros comuns quase não soltam itens, baús dão 1 ou 2 itens e vender rende menos. Em troca a Helga vende peças sempre mágicas ou raras, dois níveis acima, e as masmorras dão raro garantido, fragmentos arcanos, poções e mais ouro.
+
 ## Versão 15.2 — mundo três vezes maior
 - **Seis terras novas** num anel em volta do mapa antigo (área 3×): **Bosque Carmesim** (nível 9, outono vermelho e ruínas), **Picos Gelados** (18, neve, pinheiros gelados e mosteiro), **Savana Rubra** (8, acácias, capim alto e aldeia de tendas), **Dunas de Âmbar** (15, dunas, cactos e o Templo do Sol), **Costa das Conchas** (11, praia, coqueiros e farol) e **Vale de Cristal** (20, chão roxo, cristais que brilham e um obelisco).
 - **Pedras de teleporte** em cada terra nova, estradas ligando ao mapa antigo e horizonte próprio em cada uma.

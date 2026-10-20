@@ -36,7 +36,7 @@ function killMob(e){e.dead=1;e.dt=0;e.dfz=R()<.5?1:-1;flashModel(e.m,false);if(e
   // saque
   const gm=(1+ST.gold/100)*(P.buff.fort>0?1.6:1);if(R()<.55||e.el||e.boss)dropGold(e.x,e.z,Math.round((3+lv*2.5)*(.6+R())*(e.el?3:1)*(e.boss?12:1)*gm));
   if(R()<(e.el||e.boss?1:.14))dropGlobe(e.x,e.z);
-  const ni=e.boss?2+(R()*2|0):e.el==2?(R()<.5?2:1):e.el==1?(R()<.5?1:0):R()<.035?1:0;for(let i=0;i<ni;i++)dropItem(e.x,e.z,genItem(lv,e.boss?2.2:e.el?1:0,null,e.boss&&i==0&&R()<.4));
+  const ni=e.boss?2:e.el==2?1:e.el==1?(R()<.35?1:0):R()<.02?1:0;for(let i=0;i<ni;i++)dropItem(e.x,e.z,genItem(lv,e.boss?2.2:e.el?1:0,null,e.boss&&i==0&&R()<.4));
   if(T.split&&!e.minion)for(let i=0;i<2;i++){const s=mkMob(e.type,e.x+(R()-.5)*2,e.z+(R()-.5)*2,{lv,minion:1,ch:e.ch});s.m.g.scale.multiplyScalar(.6);s.st='chase'}
   if(e.boss){BDEF[e.type]=Date.now();bossOff(e);snd(120,.8,'sawtooth');banner(e.t.n+' derrotado!');SHK=1}
   qEvent('kill',e.type,regionAt(e.x,e.z),e);if(e.afx.includes('fundido'))tele(e.x,e.z,2.6,1.2,T2=>{if(hy(P.x-T2.x,P.z-T2.z)<2.7)hitPlayer(e.dmg,{brn:1});fx(T2.x,groundAt(T2.x,T2.z)+.5,T2.z,0xff6a1a,20,6,.25,1.4)},0xff6a1a);
@@ -72,7 +72,7 @@ function lootUpd(dt,t){for(let i=LOOT.length-1;i>=0;i--){const L=LOOT[i];L.t+=dt
 // ---------- santuários e baús
 function useShrine(s){if(s.used){toast('⛩️','Este santuário já foi usado','');return}s.used=1;const S_=SHRN[s.ty];P.buff[s.ty]=90;toast(S_.ic,S_.n,S_.d+' por 90 segundos');flash(s.x,groundAt(s.x,s.z)+3,s.z,S_.c,6,.6);ring(s.x,s.z,4,S_.c,.7);fx(s.x,groundAt(s.x,s.z)+3,s.z,S_.c,30,6,.2,1.5);snd(660,.3,'sine');qEvent('shrine',s.ty)}
 function openChest(c){if(c.o){toast('🧰','Baú vazio','');return}c.o=1;snd(220,.3,'triangle');setTimeout(()=>snd(1320,.25,'sine'),250);flash(c.x,groundAt(c.x,c.z)+1,c.z,0xffd060,5,.6);ring(c.x,c.z,3,0xffe27a,.6);
-  const lv=mobLv(regionAt(c.x,c.z));dropGold(c.x,c.z,Math.round((10+lv*8)*(.8+R()*.5)));for(let i=0;i<2+(R()*2|0);i++)dropItem(c.x,c.z,genItem(lv,i==0?1.6:.6));if(R()<.5)dropGlobe(c.x,c.z);qEvent('chest',c.i);save()}
+  const lv=mobLv(regionAt(c.x,c.z));dropGold(c.x,c.z,Math.round((10+lv*8)*(.8+R()*.5)));for(let i=0;i<1+(R()<.4?1:0);i++)dropItem(c.x,c.z,genItem(lv,i==0?1.6:.6));if(R()<.5)dropGlobe(c.x,c.z);qEvent('chest',c.i);save()}
 
 // ---------- ações do jogador
 let TGT=null,TGTt=0;

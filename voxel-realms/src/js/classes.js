@@ -25,11 +25,11 @@ function extraSkill(id,a,r){if(id!='flechas')return;const t=a.tg,x=t?t.x:P.x+S(P
 
 // ---------- montarias
 const MOUNTS={
-  cavalo:{n:'Cavalo Baio',ic:'🐴',price:220,sp:2.1,d:'Manso e confiável. A primeira montaria de todo aventureiro.',m:{c:0x8a5a32,mane:0x3a2418,hc:0x8a5a32,snout:0x5a3a22,ears:1,len:2.2,h:1.25,wid:.8,bh:.7,hl:.85,tl:1.1,tw:.16,tc:0x3a2418,run:12,scale:1.15,tailUp:-.6}},
-  leao:{n:'Leão Dourado',ic:'🦁',price:480,sp:2.4,d:'Juba dourada e passos de trovão.',m:{c:0xd8a040,c2:0xe8c070,mane:0x8a4a1a,hc:0xd8a040,snout:0x6a4a2a,ears:1,teeth:1,len:2.3,h:1.15,wid:.95,bh:.7,hl:.7,tl:1.3,tw:.18,tc:0xd8a040,lc:0xc89030,run:12,scale:1.2,tailUp:.2}},
-  javali:{n:'Javali de Guerra',ic:'🐗',price:720,sp:2.45,arm:15,d:'Blindado com placas de ferro. +15% de armadura enquanto montado.',m:{c:0x5a3a2a,mane:0x2a1a12,hc:0x4a2e20,tusk:1,ears:1,len:2.1,h:1,wid:1.05,bh:.85,hl:.75,tl:.4,run:10,scale:1.2,back:0x9aa2ae,spots:0x7a808a}},
-  lobo:{n:'Lobo das Neves',ic:'🐺',price:1050,sp:2.75,d:'Veloz como o vento do norte. Deixa um rastro de geada.',fx:0xd8f4ff,m:{c:0xe8eef4,mane:0xffffff,hc:0xdfe6ee,ears:1,teeth:1,eye:0x4ab0ff,len:2.2,h:1.1,wid:.85,tl:1.1,tw:.22,tc:0xffffff,run:12,scale:1.28}},
-  raptor:{n:'Raptor de Brasa',ic:'🦖',price:1800,sp:3.05,d:'Lendário. A montaria mais rápida de Aldoria, com um rastro de brasas.',fx:0xff7a1a,m:{c:0xc0401a,c2:0xffb060,hc:0xc0401a,teeth:1,eye:0xffe060,len:2.4,h:1.2,wid:.7,hl:.95,tl:1.9,tw:.3,tc:0xc0401a,back:0x6a2a8a,run:13,scale:1.25,tailUp:.1}}};
+  cavalo:{n:'Cavalo Baio',ic:'🐴',price:220,sp:1.82,d:'Manso e confiável. A primeira montaria de todo aventureiro.',m:{c:0x8a5a32,mane:0x3a2418,hc:0x8a5a32,snout:0x5a3a22,ears:1,len:2.2,h:1.25,wid:.8,bh:.7,hl:.85,tl:1.1,tw:.16,tc:0x3a2418,run:12,scale:1.15,tailUp:-.6}},
+  leao:{n:'Leão Dourado',ic:'🦁',price:480,sp:1.95,d:'Juba dourada e passos de trovão.',m:{c:0xd8a040,c2:0xe8c070,mane:0x8a4a1a,hc:0xd8a040,snout:0x6a4a2a,ears:1,teeth:1,len:2.3,h:1.15,wid:.95,bh:.7,hl:.7,tl:1.3,tw:.18,tc:0xd8a040,lc:0xc89030,run:12,scale:1.2,tailUp:.2}},
+  javali:{n:'Javali de Guerra',ic:'🐗',price:720,sp:1.88,arm:15,d:'Blindado com placas de ferro. +15% de armadura enquanto montado.',m:{c:0x5a3a2a,mane:0x2a1a12,hc:0x4a2e20,tusk:1,ears:1,len:2.1,h:1,wid:1.05,bh:.85,hl:.75,tl:.4,run:10,scale:1.2,back:0x9aa2ae,spots:0x7a808a}},
+  lobo:{n:'Lobo das Neves',ic:'🐺',price:1050,sp:2.05,d:'Veloz como o vento do norte. Deixa um rastro de geada.',fx:0xd8f4ff,m:{c:0xe8eef4,mane:0xffffff,hc:0xdfe6ee,ears:1,teeth:1,eye:0x4ab0ff,len:2.2,h:1.1,wid:.85,tl:1.1,tw:.22,tc:0xffffff,run:12,scale:1.28}},
+  raptor:{n:'Raptor de Brasa',ic:'🦖',price:1800,sp:2.2,d:'Lendário. A montaria mais rápida de Aldoria, com um rastro de brasas.',fx:0xff7a1a,m:{c:0xc0401a,c2:0xffb060,hc:0xc0401a,teeth:1,eye:0xffe060,len:2.4,h:1.2,wid:.7,hl:.95,tl:1.9,tw:.3,tc:0xc0401a,back:0x6a2a8a,run:13,scale:1.25,tailUp:.1}}};
 for(const k in MOUNTS){const M=MOUNTS[k];M.y=((M.m.h||.7)+.15+(M.m.bh||.62)/2)*(M.m.scale||1)-.53;MDL['mnt_'+k]=()=>quad(M.m)}
 MDL.lion=MDL.mnt_leao;
 P.mounts=[];P.mounted=null;P.mountSel=null;const MNTS={};let MNT=null;

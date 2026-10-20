@@ -19,7 +19,7 @@ const LEG=[{id:'crepusculo',n:'Lâmina do Crepúsculo',slot:'arma',b:9,d:'Golpes
   {id:'meteoro',n:'Couraça Estelar',slot:'peito',d:'A cada 12 abates, um meteoro cai sobre os inimigos.'},{id:'vampiro',n:'Anel de Sangue',slot:'anel',d:'+4% de Roubo de Vida e cura ao matar.'}];
 const RARE_N=['Rasga-Sombras','Juramento de Ferro','Presa Cinzenta','Vigia de Pedraverde','Brasa Antiga','Lamento do Lodo','Eco de Aldor','Fúria do Norte','Raiz Partida','Canção de Lírio','Guarda do Moinho','Olho do Corvo'];
 let iid=1;
-function genItem(ilvl,bonus,slot,forceLeg){bonus=bonus||0;const r=R();let rar=forceLeg||r<.004+bonus*.025?3:r<.04+bonus*.1?2:r<.24+bonus*.14?1:0;
+function genItem(ilvl,bonus,slot,forceLeg){bonus=bonus||0;const r=R();let rar=forceLeg||r<.002+bonus*.018?3:r<.028+bonus*.08?2:r<.2+bonus*.12?1:0;
   let leg=null;if(rar==3){leg=pickLeg(slot);slot=leg.slot}
   slot=slot||pick(SLOTS)[0];const bl=BASES[slot],bi=leg&&leg.b!=null?leg.b:pickBase(slot,bl),b=bl[bi];
   const it={id:iid++,slot,rar,ilvl,base:b[0],ic:b[1],wk:slot=='arma'?b[2]:null,vk:slot=='arma'?b[3]||b[2]:null,vk:slot=='elmo'?b[2]:null,aff:{},leg:leg&&leg.id};
