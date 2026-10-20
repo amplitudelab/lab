@@ -100,7 +100,7 @@ function sfxUpd(dt){if(!run)return;if(lastGold!=null&&P.gold>lastGold&&UI.open!=
   const v=P.v||0;if(v>1.2&&!P.air&&!P.dead&&!(P.dash>0)&&!(P.roll>0)){stepT-=dt*Math.min(2.2,v/3.6)*(P.mounted?1.6:1);if(stepT<=0){stepT=.5;sfxStep(stepKind(),P.sneak?.35:P.run?1.2:.8)}}else stepT=Math.min(stepT,.15)}
 // ---------- ganchos
 const _attack15=attack;attack=function(){const before=P.act;const r=_attack15();const a=P.act;if(a&&a!==before){const w=EQ.arma,v=w?(w.vk||w.wk):'';
-    if(a.k=='shoot'||a.k=='shootUp')setTimeout(sfxTwang,Math.max(0,a.dur*.6*1000-30));else if(/staff|wand/.test(v)||a.sk=='orbe')sfxWhoosh('magic');else sfxWhoosh(/axe|mace|hammer|raxe|gsword|club/.test(v)||a.k=='slam'||a.k=='finisher'?'heavy':'light')}return r};
+    if(a.k=='shoot'||a.k=='shootUp')setTimeout(sfxTwang,Math.max(0,a.dur*.6*1000-30));else if(/staff|wand/.test(v)||a.sk=='orbe')sfxWhoosh('magic');else sfxWhoosh(/axe|mace|hammer|raxe|gsword|club/.test(v)||/gsword|hammer|gaxe|scythe/.test(ST.ws||'')||a.pf&&a.pf.big||a.k=='slam'||a.k=='finisher'?'heavy':'light')}return r};
 const _hurtMob15=hurtMob;hurtMob=function(e,d,crit,src){const was=e.hp;const r=_hurtMob15.apply(this,arguments);if(!e.dead&&e.hp>=was&&!(e.hp<=0))return r;
   if((src=='golpe'||src=='proj'||src=='flecha')&&sfxGap('hit',55)){const ty=e.type||'',mat=src!='golpe'?'arrow':UNDEAD.test(ty)?'bone':/golem|cgolem|totem|bshield|skelwar|knight|yeti/.test(ty)||e.t.r>1?'metal':'flesh';sfxHit(mat,crit)}return r};
 const _dash15=dash;dash=function(){const was=P.dash;_dash15();if(P.dash>0&&!(was>0))sfxWhoosh('light')};

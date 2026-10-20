@@ -102,11 +102,11 @@ function hum(o){const B=o.bulk||1,m={kind:'hum',g:new THREE.Group(),o},TR=o.trim
     hatBake(k,o);
     if(o.branches){k.box(.2,1.2,.2,-.3,1.2,0,0x5a3a2a,{rz:.4}).box(.2,1,.2,.35,1.1,.1,0x5a3a2a,{rz:-.5});for(let i=0;i<5;i++)k.box(.7,.5,.7,(i-2)*.35,1.7+(i%2)*.3,(i%3-1)*.2,o.leaf||0x3d8b3d)}});
   if(o.glowEyes){const k=new Bake();k.box(.15,.15,.05,-.17,.44,.41,o.glowEyes).box(.15,.15,.05,.17,.44,.41,o.glowEyes);m.head.add(k.mesh(ME))}
-  const arm=(sx)=>{const sh=part(m.torso,sx*(.45*B+.15),.86,0,k=>{k.box(.3*B,.52,.3*B,0,-.24,0,o.sleeve||o.shirt);if(o.shoulders)k.box(.42*B,.3,.44*B,0,0,0,o.shoulders)});
-    const el=part(sh,0,-.5,0,k=>{k.box(.27*B,.46,.28*B,0,-.21,0,o.arm||o.skin).box(.31*B,.09,.32*B,0,-.02,0,shade(o.sleeve||o.shirt,.75));if(o.gloves)k.box(.3*B,.2,.3*B,0,-.36,0,o.gloves)});
+  const arm=(sx)=>{const sh=part(m.torso,sx*(.45*B+.15),.86,0,k=>{k.box(.3*B,.52,.3*B,0,-.24,0,o.sleeve||o.shirt);if(o.shoulders)k.box(.42*B,.3,.44*B,0,0,0,o.shoulders);if(o.xS)o.xS(k,sx,B)});
+    const el=part(sh,0,-.5,0,k=>{k.box(.27*B,.46,.28*B,0,-.21,0,o.arm||o.skin).box(.31*B,.09,.32*B,0,-.02,0,shade(o.sleeve||o.shirt,.75));if(o.gloves)k.box(.3*B,.2,.3*B,0,-.36,0,o.gloves);if(o.xE)o.xE(k,sx,B)});
     const hd=part(el,0,-.46,0,k=>k.box(.24*B,.22,.24*B,0,-.06,0,o.gloves||o.skin).box(.09,.12,.09,-sx*.12*B,-.02,.07,shade(o.gloves||o.skin,.92)));return[sh,el,hd]};
   [m.sL,m.eL,m.hL]=arm(-1);[m.sR,m.eR,m.hR]=arm(1);m.hR=part(m.hR,0,-.12,.02);m.hL=part(m.hL,0,-.12,.02);
-  const leg=(sx)=>{const t=part(m.hips,sx*.23*B,-.05,0,k=>k.box(.34*B,.5,.38*B,0,-.25,0,o.pants));const kn=part(t,0,-.5,0,k=>{k.box(.32*B,.42,.36*B,0,-.2,0,o.pants);k.box(.36*B,.22,.5*B,0,-.45,.06,o.boots||0x3a2a1e).box(.38*B,.06,.52*B,0,-.55,.06,shade(o.boots||0x3a2a1e,1.6)).box(.37*B,.1,.4*B,0,-.31,.02,shade(o.boots||0x3a2a1e,1.3))});return[t,kn]};
+  const leg=(sx)=>{const t=part(m.hips,sx*.23*B,-.05,0,k=>k.box(.34*B,.5,.38*B,0,-.25,0,o.pants));const kn=part(t,0,-.5,0,k=>{k.box(.32*B,.42,.36*B,0,-.2,0,o.pants);k.box(.36*B,.22,.5*B,0,-.45,.06,o.boots||0x3a2a1e).box(.38*B,.06,.52*B,0,-.55,.06,shade(o.boots||0x3a2a1e,1.6)).box(.37*B,.1,.4*B,0,-.31,.02,shade(o.boots||0x3a2a1e,1.3));if(o.xK)o.xK(k,sx,B)});return[t,kn]};
   [m.tL,m.kL]=leg(-1);[m.tR,m.kR]=leg(1);
   if(o.cape){m.cape=part(m.torso,0,.96,-.28,k=>{k.box(1*B,1.45,.1,0,-.72,0,o.cape).box(.12,1.3,.04,-.28*B,-.75,-.06,shade(o.cape,.8)).box(.12,1.3,.04,.28*B,-.75,-.06,shade(o.cape,.8));if(o.capeE)k.box(.3,.5,.12,0,-.72,-.06,o.capeE);k.box(1.02*B,.1,.12,0,-1.4,0,TR)})}
   if(o.pack)m.pack=part(m.torso,0,.55,-.3,k=>packBake(k,o.pack,o.packC||0x6a4a2a,B));
@@ -179,6 +179,48 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
     case 'thrust':{const st=seq(p,0,.2,1,.3,.46);T.sRx=seq(p,T.sRx,-.5,-1.7,.3,.46);T.eR=seq(p,T.eR,-1.8,0,.3,.46);T.sLx=seq(p,T.sLx,-1,-1.5,.3,.46);T.eL=seq(p,-.5,-1.2,-.4,.3,.46);
       T.try=seq(p,0,.55,-.4,.3,.46);T.trx=seq(p,0,-.1,.35,.3,.46);T.hry=seq(p,0,.3,-.25,.3,.46);T.tL=-.75*st;T.kL=.45*st;T.tR=.5*st;T.kR=.15;T.hy=1.02-.12*st;break}
     case 'claw':{const x=seq(p,T.sRx,-2.2,-.9,.35,.5);T.sRx=x;T.sLx=seq(p,T.sLx,-2.2,-.9,.42,.58);T.eL=T.eR=-.3;T.trx=seq(p,T.trx,-.2,.45,.35,.5);break}
+    // 15.5: golpes por família de arma
+    case 'stab':{const st=seq(p,0,.2,1,.38,.5);T.sRx=seq(p,T.sRx,-.4,-1.65,.38,.5);T.eR=seq(p,T.eR,-2,-.05,.38,.5);T.sRz=seq(p,.1,.3,.05,.38,.5);T.sRy=seq(p,0,.3,-.1,.38,.5);T.try=seq(p,0,.45,-.35,.38,.5);T.trx=.12+.15*st;
+      T.sLx=seq(p,T.sLx,-1.1,-.3,.38,.5);T.eL=-1.3;T.sLz=-.2;T.tL=-.6*st;T.kL=.4*st;T.tR=.35*st;T.kR=.25*st;T.hy=1.02-.1*st;break}
+    case 'stab2':{const st=seq(p,0,.3,1,.36,.5);T.sRx=seq(p,T.sRx,-1.05,-1.3,.36,.5);T.sRz=seq(p,T.sRz,-.7,1.3,.36,.5);T.sRy=seq(p,0,-.6,.6,.36,.5);T.eR=seq(p,T.eR,-1.7,-.15,.36,.5);T.try=seq(p,T.try,-.7,.6,.36,.5);
+      T.trx=.1+.12*st;T.sLx=-.8;T.sLz=-.3;T.eL=-1.2;T.tR=-.55*st;T.kR=.4*st;T.tL=.3*st;T.kL=.2*st;T.hy=1.02-.1*st;T.hdy=-T.try*.35;break}
+    case 'flurry':{const env=sstep(.04,.2,p)*(1-sstep(.8,1,p)),q=(p-.3)/.16*TAU,r=env*(.5+.5*C(q)),l=env*(.5-.5*C(q));T.sRx=lerp(T.sRx,-1.55,env);T.eR=-.05-1.6*(env-r)-.2*(1-env);T.sRz=.08;T.sRy=-.1*r;
+      T.try=.3*(l-r);T.trx=.12+.18*env;T.tL=-.55*env;T.kL=.45*env;T.tR=.3*env;T.kR=.3*env;T.hy=1.02-.1*env;
+      if(s.dual){T.sLx=lerp(T.sLx,-1.55,env);T.eL=-.05-1.6*(env-l)-.2*(1-env);T.sLz=-.08}else{T.sLx=-.9*env;T.eL=-1.4*env-.2;T.sLz=-.25}break}
+    case 'chop':{const st=seq(p,0,.1,1,.4,.55);T.sRx=seq(p,T.sRx,-3,-.45,.4,.55);T.sRz=seq(p,T.sRz,.35,.1,.4,.55);T.sRy=seq(p,0,.2,-.15,.4,.55);T.eR=seq(p,T.eR,-1.2,-.08,.4,.55);T.trx=seq(p,T.trx,-.32,.55,.4,.55);T.try=seq(p,0,.3,-.15,.4,.55);
+      T.hy=seq(p,1.02,1.06,.86,.4,.55);T.tL=-.7*st;T.kL=.6*st;T.tR=.35*st;T.kR=.3*st;T.sLx=seq(p,T.sLx,-.6,.3,.4,.55);T.sLz=-.35;T.eL=-.7;T.hdx=seq(p,0,-.25,.25,.4,.55);break}
+    case 'sweepL':{const st=seq(p,0,.4,1,.38,.56);T.sRx=seq(p,T.sRx,-1,-1.45,.38,.56);T.sRz=seq(p,T.sRz,.95,-1.15,.38,.56);T.sRy=seq(p,0,.6,-.6,.38,.56);T.eR=seq(p,T.eR,-1.2,-.05,.38,.56);T.try=seq(p,T.try,1.1,-1.15,.38,.56);
+      T.hry=seq(p,T.hry,.5,-.55,.38,.56);T.trx=.12+.15*st;T.trz=seq(p,0,.1,-.1,.38,.56);T.tL=-.7*st;T.kL=.55*st;T.tR=.45*st;T.kR=.35*st;T.hy=1.02-.14*st;T.hdy=-T.try*.45;T.sLx=-.4;T.sLz=-.4;T.eL=-.8;break}
+    case 'sweepR':{const st=seq(p,0,.4,1,.38,.56);T.sRx=seq(p,T.sRx,-1.25,-1.4,.38,.56);T.sRz=seq(p,T.sRz,-.7,1.45,.38,.56);T.sRy=seq(p,0,-.7,.7,.38,.56);T.eR=seq(p,T.eR,-1,-.1,.38,.56);T.try=seq(p,T.try,-1.05,1.15,.38,.56);
+      T.hry=seq(p,T.hry,-.5,.55,.38,.56);T.trx=.12+.15*st;T.trz=seq(p,0,-.1,.1,.38,.56);T.tR=-.7*st;T.kR=.55*st;T.tL=.45*st;T.kL=.35*st;T.hy=1.02-.14*st;T.hdy=-T.try*.45;T.sLx=-.4;T.sLz=-.6;T.eL=-.8;break}
+    case 'smash':{const dn=sstep(.5,.6,p)*(1-sstep(.8,1,p));T.sRx=T.sLx=seq(p,T.sRx,-3.2,-.35,.48,.6);T.sRz=.18;T.sLz=-.18;T.eL=T.eR=seq(p,T.eR,-.7,-.02,.48,.6);T.trx=seq(p,T.trx,-.5,.75,.48,.6);T.try=seq(p,0,.35,-.1,.48,.6);
+      T.hy=seq(p,1.02,1.12,.76,.48,.6);T.tL=seq(p,0,.15,-1,.48,.6);T.kL=seq(p,.03,.1,1,.48,.6);T.tR=seq(p,0,-.15,.6,.48,.6);T.kR=seq(p,.03,.3,.8,.48,.6);T.hdx=seq(p,0,-.35,.35,.48,.6)+.1*dn;break}
+    case 'quake':{const up=sstep(.1,.42,p)*(1-sstep(.48,.6,p)),dn=sstep(.55,.62,p)*(1-sstep(.82,1,p));T.sRx=T.sLx=seq(p,T.sRx,-3.25,-.3,.5,.62);T.sRz=.2;T.sLz=-.2;T.eL=T.eR=seq(p,T.eR,-.6,-.02,.5,.62);
+      T.trx=seq(p,T.trx,-.55,.85,.5,.62);T.hy=1.02+.5*up-.3*dn;T.tL=T.tR=-.9*up-1*dn;T.kL=T.kR=1.3*up+1.1*dn;T.hdx=seq(p,0,-.4,.4,.5,.62);break}
+    case 'iaido':{const st=seq(p,0,.5,1,.32,.42);T.sRx=seq(p,T.sRx,-.35,-1.55,.32,.42);T.sRz=seq(p,T.sRz,-.75,1.45,.32,.42);T.sRy=seq(p,0,-.5,.7,.32,.42);T.eR=seq(p,T.eR,-1.7,-.05,.32,.42);T.try=seq(p,T.try,-.7,.8,.32,.42);
+      T.hry=seq(p,0,-.3,.4,.32,.42);T.trx=.05+.18*st;T.tL=-.95*st;T.kL=.7*st;T.tR=.55*st;T.kR=.4*st;T.hy=1.02-.18*st;T.hdy=-T.try*.3;T.sLx=seq(p,T.sLx,-.5,.4,.32,.42);T.sLz=-.3;break}
+    case 'xslash':{const st=seq(p,0,.3,1,.35,.47);T.sRx=seq(p,T.sRx,-2.9,-.55,.35,.47);T.sRz=seq(p,T.sRz,.75,-1.05,.35,.47);T.sRy=seq(p,0,.4,-.5,.35,.47);T.eR=seq(p,T.eR,-1,-.05,.35,.47);T.try=seq(p,T.try,.65,-.75,.35,.47);
+      T.trx=seq(p,0,-.15,.4,.35,.47);T.tR=-.7*st;T.kR=.5*st;T.tL=.4*st;T.kL=.3*st;T.hy=1.02-.12*st;T.hdy=-T.try*.35;break}
+    case 'rise':{T.sRx=seq(p,T.sRx,.55,-2.95,.38,.5);T.sRz=seq(p,.2,.45,-.15,.38,.5);T.eR=seq(p,T.eR,-.9,-.05,.38,.5);T.trx=seq(p,0,.4,-.3,.38,.5);T.hy=seq(p,1.02,.8,1.12,.38,.5);T.tL=seq(p,0,-.9,-.15,.38,.5);
+      T.kL=seq(p,.03,1.2,.1,.38,.5);T.tR=seq(p,0,.2,.25,.38,.5);T.kR=seq(p,.03,.8,.1,.38,.5);T.hdx=seq(p,0,.25,-.35,.38,.5);break}
+    case 'dashcut':{const st=sstep(0,.15,p)*(1-sstep(.8,1,p));T.sRx=seq(p,T.sRx,.45,-1.4,.38,.48);T.sRz=seq(p,T.sRz,-.6,1.55,.38,.48);T.sRy=seq(p,0,-.4,.8,.38,.48);T.eR=seq(p,T.eR,-.5,-.02,.38,.48);T.try=seq(p,0,-.5,.9,.38,.48);
+      T.trx=.55*st;T.tL=-1.1*st;T.kL=.8*st;T.tR=.7*st;T.kR=.5*st;T.hy=1.02-.24*st;T.hdx=-.35*st;T.hdy=-T.try*.3;break}
+    case 'reap':{const st=seq(p,0,.5,1,.4,.58);T.sRx=seq(p,T.sRx,-2.2,-1,.4,.58);T.sRz=seq(p,T.sRz,1.1,-.9,.4,.58);T.sRy=seq(p,0,.7,-.5,.4,.58);T.eR=seq(p,T.eR,-.4,-1.3,.4,.58);T.try=seq(p,T.try,1.2,-1,.4,.58);
+      T.hry=seq(p,0,.45,-.45,.4,.58);T.trx=seq(p,0,-.15,.45,.4,.58);T.tL=-.8*st;T.kL=.65*st;T.tR=.45*st;T.kR=.4*st;T.hy=1.02-.18*st;T.hdy=-T.try*.4;break}
+    case 'reap2':{const st=seq(p,0,.5,1,.4,.58);T.sRx=seq(p,T.sRx,-.5,-2.6,.4,.58);T.sRz=seq(p,T.sRz,-.9,1,.4,.58);T.sRy=seq(p,0,-.6,.6,.4,.58);T.eR=seq(p,T.eR,-1.3,-.2,.4,.58);T.try=seq(p,T.try,-1,1.1,.4,.58);
+      T.hry=seq(p,0,-.45,.45,.4,.58);T.trx=seq(p,0,.35,-.2,.4,.58);T.tR=-.8*st;T.kR=.65*st;T.tL=.45*st;T.kL=.4*st;T.hy=seq(p,1.02,.84,1.06,.4,.58);T.hdy=-T.try*.4;break}
+    case 'whirl':case 'whirl2':{const env=sstep(0,.15,p)*(1-sstep(.85,1,p));T.sRx=lerp(T.sRx,-1.45,env);T.sRz=lerp(T.sRz,.65,env);T.sRy=.3*env;T.eR=lerp(T.eR,-.05,env);T.sLx=lerp(T.sLx,-1.2,env);T.sLz=lerp(T.sLz,-1.1,env);T.eL=-.2;
+      T.trx=.18*env;T.try=-.65*env;T.trz=.1*env;T.tL=-.4*env;T.tR=.3*env;T.kL=T.kR=.45*env;T.hy=1.02-.14*env;T.hdx=.1*env;T.hdy=.4*env;break}
+    case 'swipeR':{const st=seq(p,0,.3,1,.36,.5);T.sRx=seq(p,T.sRx,-2.4,-.7,.36,.5);T.sRz=seq(p,T.sRz,.8,-.6,.36,.5);T.eR=seq(p,T.eR,-1.2,-.3,.36,.5);T.try=seq(p,T.try,.5,-.6,.36,.5);T.trx=seq(p,0,-.1,.4,.36,.5);
+      T.sLx=-1.2;T.sLz=-.35;T.eL=-1.4;T.tL=-.55*st;T.kL=.45*st;T.tR=.3*st;T.kR=.3*st;T.hy=1.02-.14*st;T.hdy=-T.try*.3;break}
+    case 'swipeL':{const st=seq(p,0,.3,1,.36,.5);T.sLx=seq(p,T.sLx,-2.4,-.7,.36,.5);T.sLz=seq(p,T.sLz,-.8,.6,.36,.5);T.eL=seq(p,T.eL,-1.2,-.3,.36,.5);T.try=seq(p,T.try,-.5,.6,.36,.5);T.trx=seq(p,0,-.1,.4,.36,.5);
+      T.sRx=-1.2;T.sRz=.35;T.eR=-1.4;T.tR=-.55*st;T.kR=.45*st;T.tL=.3*st;T.kL=.3*st;T.hy=1.02-.14*st;T.hdy=-T.try*.3;break}
+    case 'swipeX':{const st=seq(p,0,.2,1,.4,.52);T.sRx=T.sLx=seq(p,T.sRx,-2.7,-1,.4,.52);T.sRz=seq(p,T.sRz,.95,-.55,.4,.52);T.sLz=seq(p,T.sLz,-.95,.55,.4,.52);T.eL=T.eR=seq(p,-.4,-.9,-.2,.4,.52);
+      T.trx=seq(p,0,-.3,.5,.4,.52);T.hy=seq(p,1.02,1.06,.84,.4,.52);T.tL=-.6*st;T.kL=.6*st;T.tR=.35*st;T.kR=.4*st;T.hdx=seq(p,0,-.25,.25,.4,.52);break}
+    case 'frenzy':{const env=sstep(.03,.15,p)*(1-sstep(.85,1,p)),q=(p-.25)/.32*TAU,r=.5+.5*C(q),l=.5-.5*C(q);T.sRx=lerp(T.sRx,-2.3+1.5*r,env);T.sRz=lerp(T.sRz,.7-1.2*r,env);T.eR=-.3-.8*(1-r)*env;
+      T.sLx=lerp(T.sLx,-2.3+1.5*l,env);T.sLz=lerp(T.sLz,-.7+1.2*l,env);T.eL=-.3-.8*(1-l)*env;T.try=.45*(l-r)*env;T.trx=.25*env;T.tL=-.5*env;T.kL=.5*env;T.tR=.3*env;T.kR=.35*env;T.hy=1.02-.14*env;T.hdy=-T.try*.3;break}
+    case 'lunge':{const st=seq(p,0,.15,1,.32,.46);T.sRx=seq(p,T.sRx,-.6,-1.62,.32,.46);T.eR=seq(p,T.eR,-1.7,0,.32,.46);T.sRz=.06;T.sRy=seq(p,0,.2,0,.32,.46);T.sLx=seq(p,T.sLx,-.4,.75,.32,.46);T.sLz=seq(p,-.1,-.3,-.75,.32,.46);T.eL=-.5;
+      T.try=seq(p,0,.45,-.55,.32,.46);T.trx=seq(p,0,-.1,.35,.32,.46);T.tL=-1.15*st;T.kL=.85*st;T.tR=.75*st;T.kR=.1*st;T.hy=1.02-.24*st;T.hdx=-.15*st;break}
     case 'shoot':{const pl=cl(p/.6,0,1),rel=p>.6,rc=rel?sstep(.6,.68,p)*(1-sstep(.8,1,p)):0;T.sLx=-1.55;T.sLz=0;T.sLy=.15;T.eL=-.05;T.sRx=-1.55;T.sRz=.1;T.eR=rel?-.2-rc*.5:-.4-1.5*pl;T.sRy=-.25*pl;
       T.try=-.85;T.hdy=.85;T.hry=-.35;T.trx=-.05-rc*.12;T.tL=-.35;T.kL=.25;T.tR=.35;T.kR=.15;T.hy=.98;break}}}
   // variações dos golpes (corte de cima na diagonal, corte subindo, giro com o corpo, varrida baixa, estocada em avanço)
@@ -196,8 +238,8 @@ function animHum(m,dt,t,s){const A=m.A,o=m.o,T=_T,v=s.v||0,zb=o.zombie;
   if(s.dead){k=6;T.sLx=-.4;T.sRx=-.3;T.eL=T.eR=-.4;T.tL=.3;T.tR=-.2;T.kL=T.kR=.4;T.hdx=.3}
   if(s.sit){T.tL=T.tR=-1.5;T.kL=T.kR=1.5;T.hy=.55}
   // 14.2: arma de duas mãos (mão esquerda junto da direita) e duas armas (2º golpe com a esquerda)
-  if(s.two&&!s.dash&&!s.dive&&!s.roll&&!s.dead&&!s.sit&&!s.block&&!s.leap&&(!a||/slash|slam|finisher|thrust|spin/.test(a.k))){if(!a){T.sRx=-.75+T.sRx*.12;T.eR=-1.1;T.sRz=.12;T.sRy=-.25}T.sLx=T.sRx-.05;T.eL=T.eR;T.sLz=.55;T.sLy=.4}
-  if(s.dual&&a&&a.k=='slashB'){let q=T.sLx;T.sLx=T.sRx;T.sRx=q;q=T.sLz;T.sLz=-T.sRz;T.sRz=-q;q=T.sLy;T.sLy=-T.sRy;T.sRy=-q;q=T.eL;T.eL=T.eR;T.eR=q;T.try=-T.try;T.hry=-T.hry}
+  if(s.two&&!s.dash&&!s.dive&&!s.roll&&!s.dead&&!s.sit&&!s.block&&!s.leap&&(!a||/slash|slam|finisher|thrust|spin|stab|chop|sweep|smash|quake|iaido|rise|dashcut|reap|whirl|lunge/.test(a.k))){if(!a){T.sRx=-.75+T.sRx*.12;T.eR=-1.1;T.sRz=.12;T.sRy=-.25}T.sLx=T.sRx-.05;T.eL=T.eR;T.sLz=.55;T.sLy=.4}
+  if(s.dual&&a&&(a.k=='slashB'||a.mir)){let q=T.sLx;T.sLx=T.sRx;T.sRx=q;q=T.sLz;T.sLz=-T.sRz;T.sRz=-q;q=T.sLy;T.sLy=-T.sRy;T.sRy=-q;q=T.eL;T.eL=T.eR;T.eR=q;T.try=-T.try;T.hry=-T.hry}
   const h=m.hips,tr=m.torso;sm(h.position,'y',T.hy,dt,k);sm(h.rotation,'y',T.hry,dt,k);sm(tr.rotation,'x',T.trx,dt,k);sm(tr.rotation,'y',T.try,dt,k);sm(tr.rotation,'z',T.trz,dt,k);tr.scale.y=T.brs;
   sm(m.head.rotation,'x',T.hdx,dt,k);sm(m.head.rotation,'y',T.hdy,dt,8);sm(m.head.rotation,'z',T.hdz,dt,k);
   sm(m.tL.rotation,'x',T.tL,dt,k);sm(m.tR.rotation,'x',T.tR,dt,k);sm(m.kL.rotation,'x',T.kL,dt,k);sm(m.kR.rotation,'x',T.kR,dt,k);

@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 15.4
+Atualizado em 20/10/2026 · versão atual do jogo: 15.5
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='15.5'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='15.6'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -92,6 +92,13 @@ rules.js     15.4: olho = FOV (fpvToggle vira fovNext; FPV.on sempre falso), toc
              animação de acender, 2ª classe (isSub: cdOf ×1,3, rollDmg ×0,7 com SUBCTX, pickBase 40% da 2ª),
              mobLv = max(região, herói), fases (phaseUp/phaseCheck para elites e chefes de masmorra, bossPhase3),
              Ignarok (dragonReady; senão hurtMob ignora e dHit mata), barras flutuantes HPB (hpbUpd no mobsUpd)
+arms.js      15.5: armas novas (WPN.*), catálogo BASES.arma (nome, ícone, família, modelo), pesos CLS_WPN, TWO_VK,
+             estilo de luta wsOf/WSOF (12 famílias), WSDMG (dano/ritmo), combos PROF por família (k = animação em
+             animHum, d duração, h momento do golpe, r alcance, a ângulo, m dano, l avanço, st atordoa, multi acertos
+             extras contados no playerUpd), attack/primaryHit/heroPoseUpd (giros) e garras nas duas mãos
+armor.js     15.5: elmos/peitorais/luvas/botas/anéis/amuletos novos (anexados no fim de BASES para não mudar os
+             lendários), hatBake e torsoBake refeitos (armorBake), ombreiras/punhos/botas assados por ganchos
+             o.xS/o.xE/o.xK dentro do hum() (models.js), ARMK (armadura por base), IMPL (bônus fixo), ícones
 ragdoll.js   morte: ragInit/ragUpd (tomba pelos pés com quaternion, molas nos membros, ragLow mantém acima do chão),
              corpos ficam ~10 s (RAG.max 14) e encolhem em poeira; mobsUpd chama ragUpd; herói usa P.rgE
 drops.js     dropItem/dropGold/dropGlobe com modelo do item (itemGroup do bag.js) + círculo de raridade

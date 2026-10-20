@@ -74,6 +74,12 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 15.5 — arsenal, armaduras e acessórios refeitos
+- **63 armas** com modelo próprio e **12 estilos de luta**. Guerreiro: espadas de uma mão, espadões e montantes de duas mãos, martelos de guerra, machadinhas, machados grandes e bardiche, katanas e nodachi, maças e estrela da manhã, adagas. Mago: cajados de cristal, lua, orbe e fogo, varinhas estelar, de brasa e de gelo. Caçador: arcos solar e da tempestade, besta de repetição, tridente, glaive e alabarda. Necromante: foices (sombria, ceifadora de almas, de ossos) e cajados de caveira. Vampiro: garras e rapieiras.
+- **Cada família luta diferente** (combo de 4 golpes): espada (corte, revés, estocada, salto), adaga (estocadas rápidas e rajada de 3), machadinha (machadadas de cima e redemoinho), espadão (varridas largas, esmagar e giro), martelo (esmaga e atordoa, varrida, salto que abala o chão), katana (saque iaido, corte cruzado, corte subindo, corte em disparada), maça, lança (alcance e investida), foice (ceifa larga e giro duplo), garras (arranhões alternados e frenesi de 4) e rapieira (investida e rajada de estocadas). Dano e ritmo também mudam por família.
+- **18 elmos** (viseira, crista, nasal, chifres curvos, dracônico, coroa de guerra, diadema, chapéu de mago com fivela e ponta curvada, chapéu emplumado, capuz sombrio, elmo de caveira, tricorne, bandana…) e **12 peitorais** (couraça com gola e placas, escamas, cota com tabardo, brigantina, sobretudo, túnica de batalha, manto de gola alta…), com ombreiras, punhos, joelheiras e canos de bota próprios. O amuleto aparece no peito; anéis e amuletos têm formatos novos.
+- Cada base tem armadura própria e um bônus fixo pequeno: peças pesadas protegem mais; leves dão Poder Mágico, crítico ou velocidade.
+
 ## Versão 15.4 — regras de combate, progressão e luta final
 - **Sem primeira pessoa:** o 👁️ troca o campo de visão (56° a 86°) e fica no lugar do botão de correr; correr é pelo joystick (ou Shift).
 - **Colisão:** colunas, postes e pilares de construções (pedras de teleporte, santuários, templos) e o plano dos portais das masmorras não deixam mais o herói atravessar.
