@@ -36,8 +36,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* hero */
 .hero{position:relative;min-height:min(92vh,820px);display:grid;align-items:end;overflow:hidden;isolation:isolate}
-#ink{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 70% 38% at 50% 30%,rgba(10,9,9,.62),transparent 70%),linear-gradient(180deg,rgba(10,9,9,.35) 0%,rgba(10,9,9,.25) 30%,rgba(10,9,9,.9) 64%,var(--ink) 100%)}
+.hero{background:radial-gradient(ellipse 90% 60% at 50% 32%,#1d1917 0%,var(--ink) 70%)}
+.flash{position:absolute;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.fl{position:absolute;top:100%;color:var(--bone);opacity:var(--op);filter:blur(var(--blur));animation:drift var(--dur) linear var(--delay) infinite;will-change:transform}
+.fl svg{display:block;width:100%;height:auto;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;animation:sway calc(var(--dur)/5) ease-in-out var(--delay) infinite alternate}
+@keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,calc(-1*var(--travel,1100px)),0)}}
+@keyframes sway{from{transform:rotate(calc(-1*var(--sway))) translateX(-8px)}to{transform:rotate(var(--sway)) translateX(8px)}}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 46% 30% at 50% 30%,rgba(10,9,9,.7),transparent 75%),linear-gradient(180deg,transparent 0%,transparent 55%,rgba(10,9,9,.7) 80%,var(--ink) 100%)}
 .hero-in{padding-block:0 30px}
 .est{font:700 11px var(--mono);letter-spacing:.16em;white-space:nowrap;text-transform:uppercase;color:var(--skin);display:flex;gap:10px;align-items:center}
 .est::before{content:"";width:18px;height:1px;background:var(--skin)}
@@ -217,13 +222,24 @@ footer a{color:var(--ember);font:700 12px var(--mono);letter-spacing:.12em;text-
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="f-rose" viewBox="0 0 100 100"><path d="M28 46c0 15 10 25 22 25s22-10 22-25c-6 4-12 5-22 5s-16-1-22-5Z"/><path d="M35 46c-2-12 6-21 15-21s17 9 15 21"/><path d="M50 33c-6 0-8 6-4 9 4 3 9 0 8-4M42 46c2-5 6-7 8-7"/><path d="M50 71v24"/><path d="M50 84c-8-3-14 1-17 7 8 2 14-1 17-7Z"/></symbol>
+  <symbol id="f-dagger" viewBox="0 0 100 100"><path d="M50 6l7 52H43Z"/><path d="M50 12v42"/><path d="M28 58h44l-4 5H32Z"/><path d="M45 63v20h10V63"/><circle cx="50" cy="89" r="5"/></symbol>
+  <symbol id="f-swallow" viewBox="0 0 100 100"><path d="M14 38c16-3 27 4 33 15 6-11 20-16 37-11-12 3-21 10-25 19l15 24-21-14-6 11-6-11-21 13 13-22c-7-7-12-15-19-24Z"/><circle cx="57" cy="47" r="1.6"/></symbol>
+  <symbol id="f-heart" viewBox="0 0 100 100"><path d="M50 84C22 64 13 48 18 34c4-13 22-17 32-3 10-14 28-10 32 3 5 14-4 30-32 50Z"/><path d="M10 50h80l-6 8 6 8H10l6-8Z"/></symbol>
+  <symbol id="f-skull" viewBox="0 0 100 100"><path d="M26 48c0-18 11-30 24-30s24 12 24 30c0 8-4 12-8 14v14H34V62c-4-2-8-6-8-14Z"/><circle cx="40" cy="48" r="6"/><circle cx="60" cy="48" r="6"/><path d="M50 56l-4 7h8Z"/><path d="M42 68v8M50 68v8M58 68v8"/></symbol>
+  <symbol id="f-snake" viewBox="0 0 100 100"><path d="M14 86c18 2 26-8 26-18s14-14 24-10 18-6 12-14-24-4-26-14 10-16 20-14"/><path d="M70 16c5-2 10 0 10 4s-5 6-10 4"/><path d="M80 20h8M86 20l3-3M86 20l3 3"/></symbol>
+  <symbol id="f-moon" viewBox="0 0 100 100"><path d="M60 14a36 36 0 1 0 22 58 30 30 0 1 1-22-58Z"/><path d="M76 24c.5 6 1.5 7 7 8-5.5 1-6.5 2-7 8-.5-6-1.5-7-7-8 5.5-1 6.5-2 7-8Z"/></symbol>
+  <symbol id="f-eye" viewBox="0 0 100 100"><path d="M10 50c12-16 26-23 40-23s28 7 40 23c-12 16-26 23-40 23S22 66 10 50Z"/><circle cx="50" cy="50" r="12"/><circle cx="50" cy="50" r="4"/><path d="M50 14v8M30 19l4 7M70 19l-4 7"/></symbol>
+  <symbol id="f-anchor" viewBox="0 0 100 100"><circle cx="50" cy="14" r="6"/><path d="M50 20v66M36 30h28"/><path d="M18 62c4 16 16 26 32 26s28-10 32-26"/><path d="M18 62l-5 8M18 62l9 1M82 62l5 8M82 62l-9 1"/></symbol>
+  <symbol id="f-fly" viewBox="0 0 100 100"><path d="M50 42c-8-17-31-26-35-13-4 13 11 20 35 17Z"/><path d="M50 42c8-17 31-26 35-13 4 13-11 20-35 17Z"/><path d="M50 50c-11 6-26 18-20 28 6 8 18-6 20-25Z"/><path d="M50 50c11 6 26 18 20 28-6 8-18-6-20-25Z"/><path d="M50 32v42M50 32l-6-10M50 32l6-10"/></symbol>
+  <symbol id="f-sp2" viewBox="0 0 100 100"><path d="M50 6c3 30 7 39 34 44-27 5-31 14-34 44-3-30-7-39-34-44 27-5 31-14 34-44Z"/></symbol>
   <symbol id="sp" viewBox="0 0 14 20"><path fill="currentColor" d="M7 0 C7.6 6.5 8.4 8.6 14 10 C8.4 11.4 7.6 13.5 7 20 C6.4 13.5 5.6 11.4 0 10 C5.6 8.6 6.4 6.5 7 0Z"/></symbol>
 </defs></svg>
 
 <div class="demo">Demonstração · Amplitude Lab · @amplitude_lab</div>
 
 <header class="hero">
-  <canvas id="ink" aria-hidden="true"></canvas>
+  <div class="flash" id="flash" aria-hidden="true"></div>
   <div class="wrap hero-in">
     <p class="est">Vila Prudente · SP · desde 2012</p>
     <h1 class="logo">
@@ -441,36 +457,27 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let tt;function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>e.classList.remove("on"),2200)}
 
-/* ---------- tinta líquida no hero ---------- */
+/* ---------- flash de tatuagem flutuando no hero ---------- */
 (function(){
-  const c=$("ink"),x=c.getContext("2d");
-  const W=150,H=236;c.width=W;c.height=H;
-  const img=x.createImageData(W,H),d=img.data;
-  const still=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let t=8,visible=true,last=0;
-  new IntersectionObserver(e=>{visible=e[0].isIntersecting}).observe(c);
-  function frame(ts){
-    if(!still) requestAnimationFrame(frame);
-    if(!visible||document.hidden||ts-last<40) return;
-    last=ts;t+=.012;
-    let i=0;
-    for(let py=0;py<H;py++){
-      const v=py/H;
-      for(let px=0;px<W;px++){
-        const u=px/W*.66;
-        const w1=Math.sin(v*5.4+t*.6)*.9+Math.sin(u*4.8-t*.45)*.7;
-        const w2=Math.sin((u+w1*.3)*8.5+t*.3+v*3.2);
-        const val=Math.sin((u*1.6+v*2.1+w1*.5+w2*.32)*14+t*.25);
-        const k=Math.min(1,Math.max(0,(val-.05)/.22));      // 1 = tinta
-        const edge=Math.max(0,1-Math.abs(val-.05)/.09);      // brilho na borda
-        const r=132*(1-k)+10*k+edge*60, g=112*(1-k)+9*k+edge*40, b=98*(1-k)+9*k+edge*20;
-        d[i++]=r;d[i++]=g;d[i++]=b;d[i++]=255;
-      }
-    }
-    x.putImageData(img,0,0);
-  }
-  requestAnimationFrame(frame);
-  if(still) frame(1000);
+  const box=$("flash"),hero=document.querySelector(".hero");
+  const kinds=["rose","dagger","swallow","heart","skull","snake","moon","eye","anchor","fly","sp2","rose","dagger","skull","swallow","moon"];
+  let seed=2012;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+  const cols=[8,30,52,74,92];
+  box.innerHTML=kinds.map((k,i)=>{
+    const depth=rnd();                                   // 0 = longe, 1 = perto
+    const size=Math.round(46+depth*84);
+    const left=(cols[i%cols.length]+rnd()*14-7).toFixed(1);
+    const dur=Math.round(70-depth*26+rnd()*10);
+    const delay=-(rnd()*dur).toFixed(1);
+    const op=(.07+depth*.13).toFixed(2);
+    const blur=depth<.35?1.2:0;
+    const ember=i%5===2;
+    return `<span class="fl" style="left:${left}%;width:${size}px;--dur:${dur}s;--delay:${delay}s;--op:${op};--blur:${blur}px;--sway:${(6+rnd()*10).toFixed(0)}deg${ember?";color:var(--ember)":""}"><svg viewBox="0 0 100 100"><use href="#f-${k}"/></svg></span>`;
+  }).join("");
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)
+    box.querySelectorAll(".fl").forEach((el,i)=>{el.style.top=(4+((i*37)%88))+"%"});
+  const setTravel=()=>hero.style.setProperty("--travel",(hero.offsetHeight+260)+"px");
+  setTravel();addEventListener("resize",setTravel);
 })();
 
 /* ---------- horário ---------- */
