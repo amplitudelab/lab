@@ -37,6 +37,8 @@ h1{font:800 clamp(34px,9vw,56px)/1 var(--f-display);letter-spacing:-.04em;margin
 .sw{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;background:#08090B;border:1px solid #2A2E35;overflow:hidden;position:relative}
 .sw::after{content:"";position:absolute;left:0;right:0;bottom:0;height:7px;background:repeating-linear-gradient(-45deg,#D7262E 0 5px,#F4F3EF 5px 10px,#2546B8 10px 15px,#F4F3EF 15px 20px)}
 .sw svg{width:30px;height:30px;margin-bottom:6px}
+.sw-ink{background:radial-gradient(circle at 30% 30%,#3a302b,#0A0909 70%);border-color:#3D3532}
+.sw-ink::after{display:none}
 .name{display:block;font:700 19px/1.15 var(--f-display);letter-spacing:-.03em}
 .meta{display:block;font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:6px}
 .arrow{font:500 20px var(--f-mono);color:var(--volt-hi)}
@@ -55,6 +57,13 @@ h1{font:800 clamp(34px,9vw,56px)/1 var(--f-display);letter-spacing:-.04em;margin
   <p class="lede">Cada página aqui é uma prévia montada para um negócio específico: cartão digital, agendamento e vitrine num link só, com a identidade de quem vai usar.</p>
 
   <ul class="list">
+    <li>
+      <a class="item" href="tattoo-vp/">
+        <span class="sw sw-ink" aria-hidden="true"><svg viewBox="0 0 14 20" style="width:16px;height:24px;margin:0"><path fill="#E0863A" d="M7 0 C7.6 6.5 8.4 8.6 14 10 C8.4 11.4 7.6 13.5 7 20 C6.4 13.5 5.6 11.4 0 10 C5.6 8.6 6.4 6.5 7 0Z"/></svg></span>
+        <span><span class="name">Tattoo VP</span><span class="meta">Estúdio de tatuagem · Vila Prudente · out 2026</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </li>
     <li>
       <a class="item" href="conceito-barber/">
         <span class="sw" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><polygon points="4,20 12,6 28,6 36,20 28,34 12,34" stroke="#F4F3EF" stroke-width="2.5"/></svg></span>

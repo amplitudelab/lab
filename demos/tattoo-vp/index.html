@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tattoo VP</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0A0909">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700;900&family=Schibsted+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: página de estúdio em coluna única; hero com tinta líquida (blackwork) em movimento; tudo leva ao orçamento */
+:root{
+  --ink:#0A0909; --ink-2:#131111; --ink-3:#1C1918; --line:#2B2624; --line-2:#3D3532;
+  --bone:#EDE6DC; --skin:#B9A99A; --dim:#8E827A;
+  --ember:#E0863A; --ember-deep:#8A4A1C; --ok:#7FCB8F;
+  --gothic:"Grenze Gotisch","Old English Text MT",Georgia,serif;
+  --sans:"Schibsted Grotesk","Segoe UI",system-ui,sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--ink);scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--bone);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased;
+  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 92px)}
+.wrap{max-width:520px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+.spark{display:inline-block;width:.7em;height:1em;vertical-align:-.1em}
+.spark path{fill:currentColor}
+
+.demo{position:relative;z-index:3;background:var(--bone);color:var(--ink);font:700 11px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:7px 12px calc(7px);padding-top:calc(7px + env(safe-area-inset-top,0px))}
+
+/* hero */
+.hero{position:relative;min-height:min(88vh,720px);display:grid;align-items:end;overflow:hidden;isolation:isolate}
+#ink{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,9,9,.35) 0%,rgba(10,9,9,.2) 30%,rgba(10,9,9,.9) 62%,var(--ink) 100%)}
+.hero-in{padding-block:0 30px}
+.est{font:700 12px var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--skin);display:flex;gap:10px;align-items:center}
+.est::before{content:"";width:26px;height:1px;background:var(--skin)}
+h1{font:900 clamp(66px,19vw,118px)/.8 var(--gothic);margin:10px 0 0;letter-spacing:-.01em;text-shadow:0 2px 30px rgba(0,0,0,.6)}
+h1 em{font-style:normal;color:var(--ember)}
+.beyond{font:500 clamp(26px,7.4vw,36px)/1 var(--gothic);color:var(--bone);margin:14px 0 0;display:flex;align-items:center;gap:10px}
+.beyond .spark{color:var(--ember)}
+.lede{margin:14px 0 0;color:var(--skin);max-width:34ch;font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:22px}
+.stat{background:rgba(19,17,17,.86);padding:12px 10px;text-align:center}
+.stat b{display:block;font:700 22px var(--sans);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat span{font:700 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.cta-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-top:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border-radius:12px;border:1px solid var(--line-2);background:var(--ink-2);text-decoration:none;font:700 15px var(--sans);padding:0 16px}
+.btn.primary{background:var(--bone);color:var(--ink);border-color:var(--bone);font-size:16px}
+.btn svg{width:20px;height:20px}
+.btn.icon{width:52px;padding:0}
+.open{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font:700 12px var(--mono);letter-spacing:.06em;color:var(--skin)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.dot.on{background:var(--ok);box-shadow:0 0 0 4px rgba(127,203,143,.16)}
+
+/* seções */
+section{padding-top:56px}
+.kicker{font:700 11px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--ember);margin:0 0 8px;display:flex;gap:8px;align-items:center}
+h2{font:700 clamp(40px,11vw,54px)/.92 var(--gothic);margin:0 0 14px;letter-spacing:-.005em}
+.sub{color:var(--skin);margin:0 0 18px;max-width:40ch}
+.note{font-size:13px;color:var(--dim);margin:12px 0 0}
+
+/* portfólio */
+.filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1*max(18px,env(safe-area-inset-right,0px))) 14px 0;padding-right:18px}
+.filters::-webkit-scrollbar{display:none}
+.f{flex:0 0 auto;min-height:40px;border:1px solid var(--line-2);background:transparent;border-radius:999px;padding:0 14px;font:600 14px var(--sans);color:var(--skin)}
+.f[aria-pressed="true"]{background:var(--bone);color:var(--ink);border-color:var(--bone)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{position:relative;margin:0;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--ink-2);aspect-ratio:4/5;max-width:100%;padding:0;text-align:left}
+.tile:first-child{grid-column:1/-1;aspect-ratio:5/4}
+.tile img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.tile:hover img{transform:scale(1.03)}
+.tile span{position:absolute;left:0;right:0;bottom:0;padding:28px 10px 9px;background:linear-gradient(transparent,rgba(0,0,0,.85));font:700 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--bone)}
+.tile[hidden]{display:none}
+
+.lb{position:fixed;inset:0;z-index:40;background:rgba(5,4,4,.96);display:grid;grid-template-rows:auto 1fr auto;padding:calc(10px + env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px))}
+.lb[hidden]{display:none}
+.lb-top{display:flex;justify-content:space-between;align-items:center;min-height:48px}
+.lb-top b{font:700 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--skin)}
+.lb-x{width:48px;height:48px;border-radius:50%;border:1px solid var(--line-2);background:var(--ink-2);font-size:22px;line-height:1}
+.lb-img{min-height:0;display:grid;place-items:center}
+.lb-img img{max-height:100%;max-width:100%;border-radius:10px;object-fit:contain}
+.lb-bot{display:grid;grid-template-columns:48px 1fr 48px;gap:10px;align-items:center;margin-top:10px}
+.lb-bot p{margin:0;text-align:center;font:600 15px var(--sans)}
+.lb-bot p small{display:block;color:var(--dim);font:400 13px var(--sans)}
+.lb-nav{width:48px;height:48px;border-radius:50%;border:1px solid var(--line-2);background:var(--ink-2);font-size:20px}
+
+/* artistas */
+.artists{display:grid;gap:8px}
+.artist{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--ink-2)}
+.mono{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--ink-3);border:1px solid var(--line-2);font:700 26px var(--gothic);color:var(--bone)}
+.artist strong{display:block;font:700 17px var(--sans);letter-spacing:-.01em}
+.artist small{display:block;color:var(--dim);font-size:13.5px;margin-top:2px}
+.artist .pick{min-height:40px;border-radius:10px;border:1px solid var(--line-2);background:transparent;padding:0 12px;font:600 13px var(--sans)}
+.artist .pick[aria-pressed="true"]{background:var(--ember);border-color:var(--ember);color:var(--ink)}
+
+/* orçamento */
+.quote{border:1px solid var(--line);border-radius:18px;background:var(--ink-2);overflow:hidden}
+.progress{height:4px;background:var(--line)}
+.progress i{display:block;height:100%;width:0;background:var(--ember);transition:width .35s}
+.q-body{padding:20px 16px}
+.q-step{display:none}
+.q-step.on{display:block;animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.q-n{font:700 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.q-step h3{font:700 21px/1.2 var(--sans);letter-spacing:-.015em;margin:6px 0 14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{min-height:56px;border:1px solid var(--line-2);background:var(--ink-3);border-radius:12px;padding:10px 12px;text-align:left;font:600 15px/1.2 var(--sans)}
+.opt small{display:block;font:400 12.5px var(--sans);color:var(--dim);margin-top:3px}
+.opt[aria-pressed="true"]{border-color:var(--ember);background:rgba(224,134,58,.12);box-shadow:inset 0 0 0 1px var(--ember)}
+.body-map{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:start}
+.body-map svg{width:96px;height:auto}
+.body-map svg .zone{fill:var(--ink-3);stroke:var(--line-2);stroke-width:1.2;cursor:pointer;transition:fill .2s}
+.body-map svg .zone.on{fill:var(--ember);stroke:var(--ember)}
+.body-map .opts{grid-template-columns:1fr 1fr}
+.body-map .opt{min-height:44px;padding:8px 10px;font-size:14px}
+.size{display:grid;gap:10px}
+.size-out{display:flex;align-items:baseline;gap:8px}
+.size-out b{font:700 46px/1 var(--sans);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.size-out span{color:var(--dim)}
+input[type=range]{width:100%;accent-color:var(--ember);height:32px}
+.ruler{display:flex;justify-content:space-between;font:400 11px var(--mono);color:var(--dim)}
+.drop{display:grid;place-items:center;gap:6px;min-height:120px;border:1.5px dashed var(--line-2);border-radius:14px;text-align:center;padding:14px;color:var(--skin);cursor:pointer}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+.drop svg{width:28px;height:28px}
+.thumbs{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.thumbs img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--line-2)}
+textarea,.q-body input[type=text]{width:100%;min-height:48px;border:1px solid var(--line-2);background:var(--ink-3);color:var(--bone);border-radius:12px;padding:12px 14px;font:400 16px var(--sans);resize:vertical}
+textarea{min-height:96px}
+.lbl{display:block;font:700 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px}
+.q-nav{display:grid;grid-template-columns:auto 1fr;gap:8px;padding:0 16px 16px}
+.q-nav .back{min-height:50px;border-radius:12px;border:1px solid var(--line-2);background:transparent;padding:0 16px;font:600 15px var(--sans)}
+.q-nav .next{min-height:50px;border-radius:12px;border:0;background:var(--bone);color:var(--ink);font:700 16px var(--sans)}
+.q-nav .next[disabled]{opacity:.35}
+.est-card{margin-top:16px;border:1px solid var(--line-2);border-radius:14px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--ink-3)}
+.est-card div span{display:block;font:700 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.est-card div b{font:700 19px var(--sans)}
+.days{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.days::-webkit-scrollbar{display:none}
+.day{flex:0 0 58px;min-height:70px;border:1px solid var(--line-2);background:var(--ink-3);border-radius:12px;display:grid;place-items:center;align-content:center;gap:2px;padding:6px 0}
+.day small{font:700 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.day b{font:700 22px var(--sans);font-variant-numeric:tabular-nums}
+.day i{width:6px;height:6px;border-radius:50%;background:var(--ok)}
+.day.full{opacity:.32;pointer-events:none}
+.day.full i{background:var(--dim)}
+.day[aria-pressed="true"]{border-color:var(--ember);background:rgba(224,134,58,.14)}
+.legend{display:flex;gap:16px;margin-top:10px;font-size:12.5px;color:var(--dim)}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend i{width:6px;height:6px;border-radius:50%;display:inline-block}
+.sent{text-align:center;padding:8px 0 4px}
+.sent h3{font:700 36px/1 var(--gothic);margin:6px 0 8px}
+.sent p{color:var(--skin);margin:0 auto;max-width:34ch;font-size:15px}
+.bubble{margin:16px 0 0;text-align:left;background:#123A2C;color:#E9F6EE;border-radius:14px 14px 3px 14px;padding:12px 14px;font-size:14.5px;line-height:1.5;white-space:pre-line}
+
+/* cuidados */
+.care-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.care-tabs button{min-height:54px;border-radius:12px;border:1px solid var(--line-2);background:transparent;font:600 14px/1.15 var(--sans);color:var(--skin)}
+.care-tabs button small{display:block;font:700 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-top:3px}
+.care-tabs button[aria-selected="true"]{background:var(--bone);color:var(--ink);border-color:var(--bone)}
+.care-tabs button[aria-selected="true"] small{color:#5d544e}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.checks label{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--ink-2);cursor:pointer}
+.checks input{width:22px;height:22px;margin:1px 0 0;accent-color:var(--ember)}
+.checks input:checked + span{color:var(--dim);text-decoration:line-through}
+
+/* faq / reviews / info */
+details.faq{border-top:1px solid var(--line)}
+details.faq:last-of-type{border-bottom:1px solid var(--line)}
+details.faq summary{list-style:none;cursor:pointer;min-height:56px;display:flex;justify-content:space-between;align-items:center;gap:12px;font:600 16px var(--sans);padding:12px 0}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq summary::after{content:"+";font:400 24px var(--mono);color:var(--ember);transition:transform .2s}
+details.faq[open] summary::after{transform:rotate(45deg)}
+details.faq p{margin:0 0 16px;color:var(--skin)}
+.reviews{display:grid;gap:10px}
+.review{margin:0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--ink-2)}
+.review p{margin:0 0 10px;font:500 17px/1.45 var(--sans)}
+.review cite{font:700 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-style:normal}
+.stars{color:var(--ember);letter-spacing:2px;font-size:14px;margin-bottom:6px}
+.hours{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.hours td{padding:11px 0;border-top:1px solid var(--line);color:var(--dim)}
+.hours td:last-child{text-align:right;font:700 13px var(--mono)}
+.hours tr.today td{color:var(--bone)}
+.place{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--ink-2)}
+.place strong{display:block;font:700 18px var(--sans)}
+.place span{color:var(--dim);font-size:14.5px}
+.place a{display:inline-flex;margin-top:10px;font:700 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ember);text-decoration:none}
+
+footer{margin-top:60px;padding:24px 0 10px;border-top:1px solid var(--line);text-align:center;font-size:13px;color:var(--dim)}
+footer strong{display:block;color:var(--bone);font:700 12px var(--mono);letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px}
+footer a{color:var(--ember);font:700 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
+
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px max(14px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));background:linear-gradient(transparent,rgba(10,9,9,.92) 30%);transition:transform .3s}
+.dock.hide{transform:translateY(120%)}
+.dock a{max-width:520px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;border-radius:14px;background:var(--bone);color:var(--ink);text-decoration:none;font:700 17px var(--sans);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.dock a .spark{color:var(--ember-deep)}
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translate(-50%,-150%);z-index:50;background:var(--bone);color:var(--ink);padding:10px 16px;border-radius:999px;font:600 14px var(--sans);transition:transform .25s;max-width:90vw;text-align:center}
+.toast.on{transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="sp" viewBox="0 0 14 20"><path d="M7 0 C7.6 6.5 8.4 8.6 14 10 C8.4 11.4 7.6 13.5 7 20 C6.4 13.5 5.6 11.4 0 10 C5.6 8.6 6.4 6.5 7 0Z"/></symbol>
+</defs></svg>
+
+<div class="demo">Demonstração · Amplitude Lab · @amplitude_lab</div>
+
+<header class="hero">
+  <canvas id="ink" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <p class="est">Vila Prudente · SP · desde 2012</p>
+    <h1>Tattoo<em>VP</em></h1>
+    <p class="beyond"><svg class="spark"><use href="#sp"/></svg>Art beyond skin</p>
+    <p class="lede">Artistas especializados em projetos exclusivos. Realismo, blackwork e arte autoral, feitos para você.</p>
+    <div class="stats">
+      <div class="stat"><b>15,9 mil</b><span>seguidores</span></div>
+      <div class="stat"><b>817</b><span>trabalhos</span></div>
+      <div class="stat"><b>4,9★</b><span>no Google</span></div>
+    </div>
+    <div class="cta-row">
+      <a class="btn primary" href="#orcamento">Pedir orçamento</a>
+      <a class="btn icon" href="https://wa.me/5511963412552" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.4-.7a11.8 11.8 0 0 1-4.6-4.1c-.3-.5-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg></a>
+      <a class="btn icon" href="https://www.instagram.com/tattoovp/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+    </div>
+    <p class="open"><span class="dot" id="opendot"></span><span id="opentxt">Horário</span></p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="portfolio">
+    <p class="kicker"><svg class="spark"><use href="#sp"/></svg>Portfólio</p>
+    <h2>Feito na pele</h2>
+    <div class="filters" id="filters">
+      <button class="f" data-f="all" aria-pressed="true">Tudo</button>
+      <button class="f" data-f="realismo" aria-pressed="false">Realismo</button>
+      <button class="f" data-f="blackwork" aria-pressed="false">Blackwork</button>
+      <button class="f" data-f="colorido" aria-pressed="false">Colorido</button>
+      <button class="f" data-f="fechamento" aria-pressed="false">Fechamentos</button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="note">Fotos do Instagram @tattoovp. Toque numa foto para ampliar.</p>
+  </section>
+
+  <section id="artistas">
+    <p class="kicker"><svg class="spark"><use href="#sp"/></svg>O time</p>
+    <h2>Artistas</h2>
+    <p class="sub">Escolha com quem quer tatuar. A escolha já vai junto no pedido de orçamento.</p>
+    <div class="artists" id="artists"></div>
+  </section>
+
+  <section id="orcamento">
+    <p class="kicker"><svg class="spark"><use href="#sp"/></svg>Orçamento guiado</p>
+    <h2>Sua ideia em 6 passos</h2>
+    <p class="sub">Responda rapidinho e mande tudo de uma vez. Sem ficar trocando mensagem pra explicar a ideia.</p>
+    <div class="quote">
+      <div class="progress"><i id="prog"></i></div>
+      <div class="q-body" id="qbody">
+        <div class="q-step on" data-step="1">
+          <span class="q-n">Passo 1 de 6</span>
+          <h3>Qual o estilo?</h3>
+          <div class="opts" data-group="estilo">
+            <button class="opt" data-v="Realismo P&amp;B">Realismo P&amp;B<small>Retratos, sombras</small></button>
+            <button class="opt" data-v="Realismo colorido">Colorido<small>Cor e brilho</small></button>
+            <button class="opt" data-v="Blackwork">Blackwork<small>Preto sólido, abstrato</small></button>
+            <button class="opt" data-v="Fine line">Fine line<small>Traço fino, delicado</small></button>
+            <button class="opt" data-v="Lettering">Lettering<small>Nomes e frases</small></button>
+            <button class="opt" data-v="Não sei ainda">Não sei ainda<small>Quero ajuda</small></button>
+          </div>
+        </div>
+        <div class="q-step" data-step="2">
+          <span class="q-n">Passo 2 de 6</span>
+          <h3>Onde no corpo?</h3>
+          <div class="body-map">
+            <svg viewBox="0 0 100 220" aria-hidden="true">
+              <circle class="zone" data-z="Pescoço" cx="50" cy="16" r="12"/>
+              <rect class="zone" data-z="Peito" x="30" y="32" width="40" height="30" rx="6"/>
+              <rect class="zone" data-z="Costas" x="33" y="64" width="34" height="34" rx="6"/>
+              <rect class="zone" data-z="Braço" x="10" y="34" width="16" height="44" rx="8"/>
+              <rect class="zone" data-z="Antebraço" x="74" y="34" width="16" height="44" rx="8"/>
+              <rect class="zone" data-z="Mão" x="74" y="82" width="16" height="16" rx="6"/>
+              <rect class="zone" data-z="Coxa" x="31" y="104" width="17" height="52" rx="8"/>
+              <rect class="zone" data-z="Panturrilha" x="52" y="104" width="17" height="70" rx="8"/>
+              <rect class="zone" data-z="Pé" x="52" y="178" width="17" height="14" rx="5"/>
+            </svg>
+            <div class="opts" data-group="local">
+              <button class="opt" data-v="Braço">Braço</button>
+              <button class="opt" data-v="Antebraço">Antebraço</button>
+              <button class="opt" data-v="Mão">Mão</button>
+              <button class="opt" data-v="Peito">Peito</button>
+              <button class="opt" data-v="Costas">Costas</button>
+              <button class="opt" data-v="Pescoço">Pescoço</button>
+              <button class="opt" data-v="Coxa">Coxa</button>
+              <button class="opt" data-v="Panturrilha">Panturrilha</button>
+              <button class="opt" data-v="Pé">Pé</button>
+              <button class="opt" data-v="Fechamento">Fechamento<small>Braço/perna inteiro</small></button>
+            </div>
+          </div>
+        </div>
+        <div class="q-step" data-step="3">
+          <span class="q-n">Passo 3 de 6</span>
+          <h3>Tamanho aproximado</h3>
+          <div class="size">
+            <div class="size-out"><b id="cm">12</b><span>cm de altura</span></div>
+            <input type="range" id="size" min="3" max="60" value="12" aria-label="Tamanho em centímetros">
+            <div class="ruler"><span>3</span><span>15</span><span>30</span><span>45</span><span>60+</span></div>
+            <div class="est-card">
+              <div><span>Sessões</span><b id="sess">1 sessão</b></div>
+              <div><span>Duração</span><b id="dur">~3 h</b></div>
+            </div>
+            <p class="note">Estimativa de exemplo. O artista confirma depois de ver a referência.</p>
+          </div>
+        </div>
+        <div class="q-step" data-step="4">
+          <span class="q-n">Passo 4 de 6</span>
+          <h3>Tem referência?</h3>
+          <label class="drop" for="ref">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
+            <span><b>Toque para escolher fotos</b><br><small>Imagens que inspiram a sua ideia</small></span>
+            <input type="file" id="ref" accept="image/*" multiple>
+          </label>
+          <div class="thumbs" id="thumbs"></div>
+          <span class="lbl">Conte a ideia</span>
+          <textarea id="ideia" placeholder="Ex.: rosto da minha avó com flores em volta, no antebraço"></textarea>
+        </div>
+        <div class="q-step" data-step="5">
+          <span class="q-n">Passo 5 de 6</span>
+          <h3>Quando você pode?</h3>
+          <div class="days" id="days"></div>
+          <div class="legend"><span><i style="background:var(--ok)"></i>Tem horário</span><span><i style="background:var(--dim)"></i>Agenda cheia</span></div>
+          <p class="note" id="agnote">Agenda do estúdio. Escolha um artista acima para ver a agenda dele.</p>
+        </div>
+        <div class="q-step" data-step="6">
+          <span class="q-n">Passo 6 de 6</span>
+          <h3>Pra quem mandamos?</h3>
+          <span class="lbl">Seu nome</span>
+          <input type="text" id="nome" autocomplete="given-name" placeholder="Seu nome">
+          <span class="lbl">É sua primeira tattoo?</span>
+          <div class="opts" data-group="primeira">
+            <button class="opt" data-v="Sim">Sim, a primeira</button>
+            <button class="opt" data-v="Não">Já tenho outras</button>
+          </div>
+        </div>
+        <div class="q-step" data-step="7">
+          <div class="sent">
+            <svg class="spark" style="width:22px;height:32px;color:var(--ember)"><use href="#sp"/></svg>
+            <h3>Pedido pronto</h3>
+            <p>Na versão final, isso abre o WhatsApp do estúdio com tudo preenchido e as fotos de referência anexadas:</p>
+          </div>
+          <div class="bubble" id="bubble"></div>
+        </div>
+      </div>
+      <div class="q-nav" id="qnav">
+        <button class="back" id="qback">Voltar</button>
+        <button class="next" id="qnext" disabled>Continuar</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="cuidados">
+    <p class="kicker"><svg class="spark"><use href="#sp"/></svg>Depois da sessão</p>
+    <h2>Cuidados</h2>
+    <p class="sub">O cliente marca o que já fez. Tattoo bem cuidada cicatriza bonita e volta para o portfólio.</p>
+    <div class="care-tabs" role="tablist" id="caretabs">
+      <button role="tab" aria-selected="true" data-c="0">Primeiros dias<small>Dia 1–3</small></button>
+      <button role="tab" aria-selected="false" data-c="1">Cicatrizando<small>Dia 4–14</small></button>
+      <button role="tab" aria-selected="false" data-c="2">Finalizando<small>Dia 15–30</small></button>
+    </div>
+    <ul class="checks" id="checks"></ul>
+    <p class="note">Orientação geral. Siga sempre o que o seu tatuador indicar.</p>
+  </section>
+
+  <section id="avaliacoes">
+    <p class="kicker"><svg class="spark"><use href="#sp"/></svg>Google · 4,9 de 5</p>
+    <h2>Quem tatuou</h2>
+    <div class="reviews">
+      <blockquote class="review"><div class="stars">★★★★★</div><p>“Estúdio impecável e ótimos tatuadores! Voltarei e super recomendo.”</p><cite>Avaliação no Google</cite></blockquote>
+      <blockquote class="review"><div class="stars">★★★★★</div><p>“Me disse que era um lugar de confiança e de bons profissionais. Gostei muito de todos os profissionais que me tatuaram.”</p><cite>Avaliação no Google</cite></blockquote>
+    </div>
+  </section>
+
+  <section id="duvidas">
+    <p class="kicker"><svg class="spark"><use href="#sp"/></svg>Antes de marcar</p>
+    <h2>Dúvidas</h2>
+    <details class="faq"><summary>Como funciona o orçamento?</summary><p>Você manda estilo, local, tamanho e referência pelo formulário acima. O artista responde com valor e datas disponíveis.</p></details>
+    <details class="faq"><summary>Posso criar um desenho exclusivo?</summary><p>Sim. O estúdio trabalha com projetos exclusivos: o artista desenha a partir da sua ideia e ajusta com você antes da sessão.</p></details>
+    <details class="faq"><summary>Quanto tempo dura uma sessão?</summary><p>Depende do tamanho e do estilo. Peças pequenas saem em uma sessão; fechamentos levam várias. A estimativa aparece no passo 3 do orçamento.</p></details>
+    <details class="faq"><summary>Posso levar acompanhante?</summary><p>Na versão final, o estúdio coloca aqui a regra da casa. Nesta demonstração a resposta é um exemplo.</p></details>
+  </section>
+
+  <section id="visite">
+    <p class="kicker"><svg class="spark"><use href="#sp"/></svg>Visite</p>
+    <h2>Estúdio</h2>
+    <table class="hours" id="hours"></table>
+    <div class="place">
+      <strong>Rua Orfanato, 678</strong>
+      <span>Vila Prudente · São Paulo – SP</span><br>
+      <a href="https://www.google.com/maps/search/?api=1&query=Tattoo%20Vila%20Prudente%20Rua%20Orfanato%20678" target="_blank" rel="noopener">Abrir no mapa →</a>
+    </div>
+  </section>
+
+  <footer>
+    <strong>Página criada pela Amplitude Lab</strong>
+    <p>Portfólio, orçamento guiado e agenda num link só.<br>@amplitude_lab · (11) 95218-2016</p>
+    <a href="../../">Conheça a Amplitude Lab →</a>
+  </footer>
+</main>
+
+<div class="dock" id="dock"><a href="#orcamento"><svg class="spark"><use href="#sp"/></svg>Pedir orçamento</a></div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Foto ampliada">
+  <div class="lb-top"><b id="lbcount"></b><button class="lb-x" id="lbx" aria-label="Fechar">×</button></div>
+  <div class="lb-img"><img id="lbimg" alt=""></div>
+  <div class="lb-bot"><button class="lb-nav" id="lbprev" aria-label="Anterior">←</button><p id="lbcap"></p><button class="lb-nav" id="lbnext" aria-label="Próxima">→</button></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let tt;function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>e.classList.remove("on"),2200)}
+
+/* ---------- tinta líquida no hero ---------- */
+(function(){
+  const c=$("ink"),x=c.getContext("2d");
+  const W=150,H=236;c.width=W;c.height=H;
+  const img=x.createImageData(W,H),d=img.data;
+  const still=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let t=8,visible=true,last=0;
+  new IntersectionObserver(e=>{visible=e[0].isIntersecting}).observe(c);
+  function frame(ts){
+    if(!still) requestAnimationFrame(frame);
+    if(!visible||document.hidden||ts-last<40) return;
+    last=ts;t+=.012;
+    let i=0;
+    for(let py=0;py<H;py++){
+      const v=py/H;
+      for(let px=0;px<W;px++){
+        const u=px/W*.66;
+        const w1=Math.sin(v*5.4+t*.6)*.9+Math.sin(u*4.8-t*.45)*.7;
+        const w2=Math.sin((u+w1*.3)*8.5+t*.3+v*3.2);
+        const val=Math.sin((u*1.6+v*2.1+w1*.5+w2*.32)*14+t*.25);
+        const k=Math.min(1,Math.max(0,(val-.05)/.22));      // 1 = tinta
+        const edge=Math.max(0,1-Math.abs(val-.05)/.09);      // brilho na borda
+        const r=132*(1-k)+10*k+edge*60, g=112*(1-k)+9*k+edge*40, b=98*(1-k)+9*k+edge*20;
+        d[i++]=r;d[i++]=g;d[i++]=b;d[i++]=255;
+      }
+    }
+    x.putImageData(img,0,0);
+  }
+  requestAnimationFrame(frame);
+  if(still) frame(1000);
+})();
+
+/* ---------- horário ---------- */
+const HOURS={0:null,1:[11,19],2:[11,19],3:[11,19],4:[11,19],5:[11,19],6:[11,20]};
+const WDL=["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"],WD=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+function sp(){const p=Object.fromEntries(new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date()).map(a=>[a.type,a.value]));
+  const y=+p.year,m=+p.month,d=+p.day;return{y,m,d,h:+p.hour%24,mi:+p.minute,wd:new Date(Date.UTC(y,m-1,d,12)).getUTCDay()}}
+const NOW=sp();
+(function(){
+  const h=HOURS[NOW.wd],t=NOW.h+NOW.mi/60;
+  if(h&&t>=h[0]&&t<h[1]){$("opendot").classList.add("on");$("opentxt").textContent=`Aberto agora · até ${h[1]}h`}
+  else{let n=NOW.wd,add=0;if(!h||t>=h[1]){do{n=(n+1)%7;add++}while(!HOURS[n])}
+    $("opentxt").textContent=`Fechado · abre ${add===0?"hoje":add===1?"amanhã":WDL[n].toLowerCase()} às ${HOURS[n][0]}h`}
+  $("hours").innerHTML=[1,2,3,4,5,6,0].map(i=>`<tr class="${i===NOW.wd?"today":""}"><td>${WDL[i]}</td><td>${HOURS[i]?HOURS[i][0]+"h – "+HOURS[i][1]+"h":"Fechado"}</td></tr>`).join("");
+})();
+
+/* ---------- portfólio ---------- */
+const WORKS=[
+  {src:"img/t2.jpg",t:"Ghostface derretido",s:"Realismo colorido · panturrilha",f:["colorido","realismo"],alt:"Tatuagem colorida da máscara do filme Pânico com efeito cromado derretido na panturrilha"},
+  {src:"img/t1.jpg",t:"Santa Muerte",s:"Realismo P&B · fechamento de braço",f:["realismo","fechamento"],alt:"Fechamento de braço em realismo preto e cinza com Santa Muerte e mãos em oração"},
+  {src:"img/t4.jpg",t:"Fluxo líquido",s:"Blackwork abstrato · Dener Willer",f:["blackwork","fechamento"],alt:"Braço com blackwork abstrato em formas líquidas"},
+  {src:"img/t5.jpg",t:"Olho em espiral",s:"Blackwork · peito · Dener Willer",f:["blackwork"],alt:"Tatuagem blackwork no peito com olho no centro de uma espiral"},
+  {src:"img/t3.jpg",t:"Palhaça chicana",s:"Realismo P&B · coxa",f:["realismo"],alt:"Tatuagem em realismo preto e cinza de rosto de mulher com maquiagem de palhaço na coxa"}
+];
+let filter="all",shown=[];
+function grid(){
+  shown=WORKS.filter(w=>filter==="all"||w.f.includes(filter));
+  $("grid").innerHTML=shown.map((w,i)=>`<button class="tile" data-i="${i}"><img src="${w.src}" alt="${esc(w.alt)}" loading="lazy"><span>${esc(w.t)}</span></button>`).join("");
+}
+$("filters").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(!b)return;filter=b.dataset.f;
+  document.querySelectorAll("[data-f]").forEach(x=>x.setAttribute("aria-pressed",x===b));grid()});
+let lbi=0,lastFocus=null;
+function lbShow(){const w=shown[lbi];$("lbimg").src=w.src;$("lbimg").alt=w.alt;$("lbcap").innerHTML=`${esc(w.t)}<small>${esc(w.s)}</small>`;$("lbcount").textContent=`${lbi+1} / ${shown.length}`}
+$("grid").addEventListener("click",e=>{const b=e.target.closest(".tile");if(!b)return;lastFocus=b;lbi=+b.dataset.i;lbShow();$("lb").hidden=false;$("lbx").focus();$("dock").classList.add("hide")});
+function lbClose(){$("lb").hidden=true;$("dock").classList.remove("hide");lastFocus&&lastFocus.focus()}
+$("lbx").onclick=lbClose;
+$("lbprev").onclick=()=>{lbi=(lbi-1+shown.length)%shown.length;lbShow()};
+$("lbnext").onclick=()=>{lbi=(lbi+1)%shown.length;lbShow()};
+document.addEventListener("keydown",e=>{if($("lb").hidden)return;if(e.key==="Escape")lbClose();if(e.key==="ArrowRight")$("lbnext").click();if(e.key==="ArrowLeft")$("lbprev").click()});
+let sx=0;$("lb").addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});
+$("lb").addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)(dx<0?$("lbnext"):$("lbprev")).click()});
+grid();
+
+/* ---------- artistas ---------- */
+const ARTISTS=[
+  {n:"Dener Willer",d:"Blackwork abstrato e formas líquidas",ig:"dener.willer"},
+  {n:"Pedro Demucio",d:"Projetos exclusivos"},
+  {n:"Jefferson",d:"Projetos exclusivos"},
+  {n:"Rafaello",d:"Projetos exclusivos"}
+];
+const Q={estilo:null,local:null,size:12,ideia:"",refs:0,dia:null,nome:"",primeira:null,artista:"Indicação do estúdio"};
+function artists(){
+  $("artists").innerHTML=ARTISTS.map(a=>`<div class="artist"><span class="mono" aria-hidden="true">${a.n[0]}</span>
+    <span><strong>${esc(a.n)}</strong><small>${esc(a.d)}${a.ig?" · @"+a.ig:""}</small></span>
+    <button class="pick" data-a="${esc(a.n)}" aria-pressed="${Q.artista===a.n}">${Q.artista===a.n?"Escolhido":"Escolher"}</button></div>`).join("");
+}
+$("artists").addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;
+  Q.artista=Q.artista===b.dataset.a?"Indicação do estúdio":b.dataset.a;Q.dia=null;artists();days();
+  toast(Q.artista==="Indicação do estúdio"?"O estúdio indica o artista":`${Q.artista} escolhido para o orçamento`)});
+artists();
+
+/* ---------- orçamento ---------- */
+let step=1;const LAST=6;
+function hash(s){let h=11;for(const c of s)h=(h*33+c.charCodeAt(0))>>>0;return h}
+function days(){
+  const out=[];
+  for(let i=1;i<=21&&out.length<14;i++){
+    const dt=new Date(Date.UTC(NOW.y,NOW.m-1,NOW.d+i,12)),wd=dt.getUTCDay();
+    if(!HOURS[wd]) continue;
+    const key=dt.toISOString().slice(0,10),full=hash(key+Q.artista)%3===0;
+    out.push(`<button class="day${full?" full":""}" data-d="${key}" aria-pressed="${Q.dia===key}" ${full?'aria-disabled="true"':""}><small>${WD[wd]}</small><b>${dt.getUTCDate()}</b><i></i></button>`);
+  }
+  $("days").innerHTML=out.join("");
+  $("agnote").textContent=Q.artista==="Indicação do estúdio"?"Agenda do estúdio. Escolha um artista acima para ver a agenda dele.":`Agenda de ${Q.artista} (exemplo).`;
+}
+days();
+function estimate(){
+  const cm=Q.size,big=Q.local==="Fechamento";
+  const hrs=big?Math.max(18,cm*.8):Math.max(1.5,cm*.32*(Q.estilo&&Q.estilo.startsWith("Realismo")?1.3:1));
+  const s=Math.max(1,Math.ceil(hrs/5));
+  $("cm").textContent=cm+(cm>=60?"+":"");
+  $("sess").textContent=s+(s===1?" sessão":" sessões");
+  $("dur").textContent=s===1?`~${Math.round(hrs)} h`:`~${Math.round(hrs/s)} h cada`;
+}
+$("size").addEventListener("input",e=>{Q.size=+e.target.value;estimate()});
+function valid(){
+  return {1:!!Q.estilo,2:!!Q.local,3:true,4:true,5:!!Q.dia,6:!!Q.nome.trim()}[step];
+}
+function show(){
+  document.querySelectorAll(".q-step").forEach(s=>s.classList.toggle("on",+s.dataset.step===step));
+  $("prog").style.width=Math.min(100,(step-1)/LAST*100+(step>LAST?0:100/LAST/2))+"%";
+  if(step>LAST)$("prog").style.width="100%";
+  $("qback").style.visibility=step===1?"hidden":"visible";
+  $("qnext").disabled=!valid();
+  $("qnext").textContent=step===LAST?"Montar pedido":step>LAST?"Fazer outro orçamento":"Continuar";
+  if(step>LAST)$("qnext").disabled=false;
+  $("qback").hidden=step>LAST;
+  $("qnav").style.gridTemplateColumns=step>LAST?"1fr":"auto 1fr";
+}
+$("qbody").addEventListener("click",e=>{
+  const o=e.target.closest(".opt");
+  if(o){const g=o.parentElement.dataset.group;Q[g]=o.dataset.v;
+    o.parentElement.querySelectorAll(".opt").forEach(b=>b.setAttribute("aria-pressed",b===o));
+    if(g==="local")zones();estimate();show();return}
+  const z=e.target.closest(".zone");
+  if(z){Q.local=z.dataset.z;document.querySelectorAll('[data-group="local"] .opt').forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===Q.local));zones();estimate();show();return}
+  const d=e.target.closest(".day");
+  if(d&&!d.classList.contains("full")){Q.dia=d.dataset.d;document.querySelectorAll(".day").forEach(b=>b.setAttribute("aria-pressed",b===d));show()}
+});
+function zones(){document.querySelectorAll(".zone").forEach(z=>z.classList.toggle("on",z.dataset.z===Q.local||(Q.local==="Fechamento"&&["Braço","Antebraço"].includes(z.dataset.z))))}
+$("ref").addEventListener("change",e=>{
+  const files=[...e.target.files].slice(0,6);Q.refs=files.length;$("thumbs").innerHTML="";
+  files.forEach(f=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.src=r.result;im.alt="Referência";$("thumbs").append(im)};r.readAsDataURL(f)});
+});
+$("ideia").addEventListener("input",e=>{Q.ideia=e.target.value});
+$("nome").addEventListener("input",e=>{Q.nome=e.target.value;show()});
+$("qback").addEventListener("click",()=>{if(step>1){step--;show()}});
+$("qnext").addEventListener("click",()=>{
+  if(step>LAST){Object.assign(Q,{estilo:null,local:null,size:12,ideia:"",refs:0,dia:null,nome:"",primeira:null});
+    document.querySelectorAll(".opt").forEach(b=>b.setAttribute("aria-pressed","false"));$("size").value=12;$("ideia").value="";$("nome").value="";$("thumbs").innerHTML="";$("ref").value="";
+    zones();estimate();days();step=1;show();return}
+  if(!valid())return;
+  step++;
+  if(step>LAST){
+    const dt=new Date(Q.dia+"T12:00:00Z");
+    const dia=`${WDL[dt.getUTCDay()]}, ${String(dt.getUTCDate()).padStart(2,"0")}/${Q.dia.slice(5,7)}`;
+    $("bubble").textContent=`Olá, Tattoo VP! Quero um orçamento:\n🎨 Estilo: ${Q.estilo}\n📍 Local: ${Q.local}\n📏 Tamanho: ~${Q.size} cm\n🖋️ Artista: ${Q.artista}\n📅 Data preferida: ${dia}${Q.primeira?"\n✨ Primeira tattoo: "+Q.primeira:""}${Q.ideia.trim()?"\n💬 Ideia: "+Q.ideia.trim():""}${Q.refs?`\n📎 ${Q.refs} foto${Q.refs>1?"s":""} de referência`:""}\nNome: ${Q.nome.trim()}`;
+  }
+  show();
+  $("orcamento").scrollIntoView({behavior:"smooth",block:"start"});
+});
+estimate();show();
+
+/* ---------- cuidados ---------- */
+const CARE=[
+  ["Tire o filme protetor no tempo que o tatuador indicar","Lave com água morna e sabonete neutro, só com as mãos","Seque com papel toalha, dando batidinhas, sem esfregar","Passe uma camada fina da pomada indicada pelo estúdio","Durma com roupa limpa e folgada sobre a tattoo"],
+  ["Vai coçar e descascar: não coce nem arranque as casquinhas","Hidrate 2 a 3 vezes por dia com creme sem perfume","Continue lavando com sabonete neutro","Evite roupa apertada roçando na tattoo"],
+  ["Nada de sol direto, piscina ou mar até cicatrizar de vez","Depois de cicatrizada, use protetor solar sempre","Mande uma foto pro estúdio: tattoo cicatrizada vai pro portfólio"]
+];
+let ct=0;const done=new Set();
+function care(){
+  $("checks").innerHTML=CARE[ct].map((c,i)=>{const id=`c${ct}-${i}`;return `<li><label for="${id}"><input type="checkbox" id="${id}" ${done.has(id)?"checked":""}><span>${c}</span></label></li>`}).join("");
+}
+$("caretabs").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;ct=+b.dataset.c;
+  document.querySelectorAll("[data-c]").forEach(x=>x.setAttribute("aria-selected",x===b));care()});
+$("checks").addEventListener("change",e=>{const i=e.target.id;e.target.checked?done.add(i):done.delete(i);
+  const all=CARE[ct].every((_,k)=>done.has(`c${ct}-${k}`));if(all)toast(ct<2?"Etapa concluída. Continue na próxima aba":"Cicatrização completa!")});
+care();
+
+/* ---------- dock some quando o orçamento está na tela ---------- */
+const vis={};const io=new IntersectionObserver(es=>{es.forEach(e=>vis[e.target.id||"hero"]=e.isIntersecting);
+  $("dock").classList.toggle("hide",!!(vis.hero||vis.orcamento))},{threshold:.15});
+io.observe(document.querySelector(".hero"));io.observe($("orcamento"));
+</script>
+</body>
+</html>
