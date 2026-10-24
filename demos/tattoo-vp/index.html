@@ -35,15 +35,25 @@ button{font:inherit;color:inherit;cursor:pointer}
 .demo{position:relative;z-index:3;background:var(--bone);color:var(--ink);font:700 11px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:7px 12px calc(7px);padding-top:calc(7px + env(safe-area-inset-top,0px))}
 
 /* hero */
-.hero{position:relative;min-height:min(88vh,720px);display:grid;align-items:end;overflow:hidden;isolation:isolate}
+.hero{position:relative;min-height:min(92vh,820px);display:grid;align-items:end;overflow:hidden;isolation:isolate}
 #ink{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,9,9,.35) 0%,rgba(10,9,9,.2) 30%,rgba(10,9,9,.9) 62%,var(--ink) 100%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 70% 38% at 50% 30%,rgba(10,9,9,.62),transparent 70%),linear-gradient(180deg,rgba(10,9,9,.35) 0%,rgba(10,9,9,.25) 30%,rgba(10,9,9,.9) 64%,var(--ink) 100%)}
 .hero-in{padding-block:0 30px}
-.est{font:700 12px var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--skin);display:flex;gap:10px;align-items:center}
-.est::before{content:"";width:26px;height:1px;background:var(--skin)}
-h1{font:900 clamp(66px,19vw,118px)/.8 var(--gothic);margin:10px 0 0;letter-spacing:-.01em;text-shadow:0 2px 30px rgba(0,0,0,.6)}
-h1 em{font-style:normal;color:var(--ember)}
-.beyond{font:500 clamp(26px,7.4vw,36px)/1 var(--gothic);color:var(--bone);margin:14px 0 0;display:flex;align-items:center;gap:10px}
+.est{font:700 11px var(--mono);letter-spacing:.16em;white-space:nowrap;text-transform:uppercase;color:var(--skin);display:flex;gap:10px;align-items:center}
+.est::before{content:"";width:18px;height:1px;background:var(--skin)}
+.hero-in{text-align:center}
+.hero-in .est{justify-content:center}
+.hero-in .est::after{content:"";width:18px;height:1px;background:var(--skin)}
+.logo{margin:18px 0 0;display:grid;justify-items:center;gap:14px}
+.logo img{height:clamp(200px,38vh,330px);width:auto;max-width:100%;filter:drop-shadow(0 0 2px rgba(0,0,0,.6)) drop-shadow(0 6px 28px rgba(0,0,0,.75));animation:rise 1.1s cubic-bezier(.2,.8,.2,1) both}
+.logo-name{font:700 13px var(--mono);letter-spacing:.42em;text-transform:uppercase;color:var(--bone);display:flex;align-items:center;gap:12px;padding-left:.42em}
+.logo-name::before,.logo-name::after{content:"";width:18px;height:1px;background:var(--ember)}
+@keyframes rise{from{opacity:0;transform:translateY(10px) scale(.98);filter:blur(4px)}to{opacity:1;transform:none}}
+.hero-in .beyond{justify-content:center}
+.hero-in .lede{margin-inline:auto}
+.hero-in .stats,.hero-in .cta-row{text-align:left}
+.hero-in .open{justify-content:center}
+.beyond{font:500 clamp(24px,6.6vw,32px)/1 var(--gothic);color:var(--bone);margin:22px 0 0;display:flex;align-items:center;gap:10px}
 .beyond .spark{color:var(--ember)}
 .lede{margin:14px 0 0;color:var(--skin);max-width:34ch;font-size:16px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:22px}
@@ -207,7 +217,7 @@ footer a{color:var(--ember);font:700 12px var(--mono);letter-spacing:.12em;text-
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <symbol id="sp" viewBox="0 0 14 20"><path d="M7 0 C7.6 6.5 8.4 8.6 14 10 C8.4 11.4 7.6 13.5 7 20 C6.4 13.5 5.6 11.4 0 10 C5.6 8.6 6.4 6.5 7 0Z"/></symbol>
+  <symbol id="sp" viewBox="0 0 14 20"><path fill="currentColor" d="M7 0 C7.6 6.5 8.4 8.6 14 10 C8.4 11.4 7.6 13.5 7 20 C6.4 13.5 5.6 11.4 0 10 C5.6 8.6 6.4 6.5 7 0Z"/></symbol>
 </defs></svg>
 
 <div class="demo">Demonstração · Amplitude Lab · @amplitude_lab</div>
@@ -216,7 +226,10 @@ footer a{color:var(--ember);font:700 12px var(--mono);letter-spacing:.12em;text-
   <canvas id="ink" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
     <p class="est">Vila Prudente · SP · desde 2012</p>
-    <h1>Tattoo<em>VP</em></h1>
+    <h1 class="logo">
+      <img src="img/logo.png" alt="Tattoo VP" width="439" height="720">
+      <span class="logo-name">Tattoo VP</span>
+    </h1>
     <p class="beyond"><svg class="spark"><use href="#sp"/></svg>Art beyond skin</p>
     <p class="lede">Artistas especializados em projetos exclusivos. Realismo, blackwork e arte autoral, feitos para você.</p>
     <div class="stats">
