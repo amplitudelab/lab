@@ -14,6 +14,10 @@ Publicado com GitHub Pages a partir da branch `main`.
 - `vendor/`: GSAP (core, ScrollTrigger, SplitText) e Three.js, sem depender de CDN
 - `catalogo.html`: redireciona para `index.html#precos` (o catálogo agora é uma seção)
 - `assets/`: ícones e imagem de prévia para redes sociais
+- `demos/`: demos feitas para clientes, cada uma na sua pasta
+  (`demos/<cliente>/index.html` e fotos em `img/`). A lista fica em
+  `demos/index.html`, aberta em `https://symbiozyy.github.io/amplitude-lab/demos/`.
+  As páginas têm `noindex` para não aparecerem no Google como site do cliente.
 - `voxel-realms/`: jogo Voxel Realms (RPG voxel em Three.js), aberto em
   `https://symbiozyy.github.io/amplitude-lab/voxel-realms/` (detalhes em `voxel-realms/README.md`)
 

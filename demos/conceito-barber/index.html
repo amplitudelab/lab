@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Conceito Barber</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#08090B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Yellowtail&display=swap">
+<style>
+/* Layout: cartão de visita digital em coluna única (link da bio), luz hexagonal do salão como assinatura, faixa de poste de barbeiro como fio condutor */
+:root{
+  --ink:#08090B; --panel:#121418; --panel-2:#1A1D22; --line:#2A2E35;
+  --chalk:#F4F3EF; --dim:#9AA0A8;
+  --pole-red:#D7262E; --pole-blue:#2546B8; --glow:rgba(255,255,255,.55);
+  --ok:#3CCB7F;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --cond:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Barlow","Segoe UI",system-ui,sans-serif;
+  --script:"Yellowtail","Brush Script MT",cursive;
+  --pole:repeating-linear-gradient(-45deg,var(--pole-red) 0 9px,var(--chalk) 9px 18px,var(--pole-blue) 18px 27px,var(--chalk) 27px 36px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--ink)}
+body{margin:0;background:var(--ink);color:var(--chalk);font:400 16px/1.5 var(--body);-webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 96px)}
+.wrap{max-width:480px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+img{max-width:100%;display:block}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--chalk);outline-offset:3px}
+button{font:inherit;color:inherit;cursor:pointer}
+
+/* faixa de demo */
+.demo{background:var(--chalk);color:var(--ink);font:600 12px/1.3 var(--cond);letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:7px 12px}
+.demo b{font-weight:700}
+
+/* hero */
+.hero{position:relative;padding-block:18px 26px;text-align:center;overflow:hidden}
+.hexlight{position:absolute;left:50%;top:50%;width:min(300px,80vw);transform:translate(-50%,-50%);opacity:.95;pointer-events:none}
+.hexlight polygon{fill:none;stroke:var(--chalk);stroke-width:5;filter:drop-shadow(0 0 6px var(--glow)) drop-shadow(0 0 22px rgba(255,255,255,.25))}
+.hexlight .faint{stroke-width:2;opacity:.18;filter:none}
+.mark{position:relative;height:clamp(220px,64vw,264px);display:grid;align-content:center}
+.name{font:900 clamp(58px,17vw,84px)/.82 var(--display);letter-spacing:.01em;text-transform:uppercase;margin:0}
+.barber{font:400 clamp(30px,9vw,40px)/1 var(--script);margin:-4px 0 0 34%;display:block;transform:rotate(-6deg);color:var(--chalk)}
+.tag{font:500 15px/1.4 var(--body);color:var(--dim);margin:14px auto 0;max-width:30ch;text-wrap:balance}
+.badges{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:18px}
+.badge{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font:600 14px var(--cond);letter-spacing:.04em}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.dot.on{background:var(--ok);box-shadow:0 0 0 4px rgba(60,203,127,.18)}
+.star{color:#F5C445}
+
+.pole{height:10px;background:var(--pole);background-size:51px 51px;border-radius:2px;animation:roll 2.4s linear infinite}
+@keyframes roll{to{background-position:51px 0}}
+
+/* ações */
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.act{display:flex;align-items:center;justify-content:center;gap:9px;min-height:54px;border-radius:12px;border:1px solid var(--line);background:var(--panel);text-decoration:none;font:700 17px var(--cond);letter-spacing:.06em;text-transform:uppercase}
+.act svg{width:20px;height:20px;flex:0 0 auto}
+.act.main{grid-column:1/-1;background:var(--chalk);color:var(--ink);border-color:var(--chalk);min-height:60px;font-size:20px}
+
+/* seções */
+section{margin-top:44px}
+.eyebrow{font:600 13px var(--cond);letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin:0 0 6px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:22px;height:6px;background:var(--pole);border-radius:1px}
+h2{font:800 38px/1 var(--display);text-transform:uppercase;margin:0 0 16px;letter-spacing:.01em}
+.note{font-size:13px;color:var(--dim);margin:10px 0 0}
+
+/* abas */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:5px;margin-bottom:14px}
+.tabs button{border:0;background:transparent;border-radius:8px;min-height:44px;font:700 16px var(--cond);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.tabs button[aria-selected="true"]{background:var(--chalk);color:var(--ink)}
+
+.svc{display:grid;gap:8px}
+.svc-row{display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 14px 14px 16px;text-align:left;width:100%}
+.svc-row[aria-pressed="true"]{border-color:var(--chalk);box-shadow:inset 3px 0 0 var(--chalk)}
+.svc-n{font:700 20px/1.1 var(--cond);letter-spacing:.02em;text-transform:uppercase}
+.svc-d{grid-column:1;font-size:14px;color:var(--dim)}
+.svc-p{grid-row:1/3;grid-column:2;text-align:right;font:800 26px/1 var(--display);font-variant-numeric:tabular-nums}
+.svc-p small{display:block;font:500 12px var(--body);color:var(--dim);margin-top:4px}
+
+.kids{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;border:1px dashed var(--line);border-radius:12px;padding:14px}
+.kids svg{width:46px;height:46px}
+.kids p{margin:0;font-size:14px;color:var(--dim)}
+.kids strong{display:block;color:var(--chalk);font:700 17px var(--cond);text-transform:uppercase;letter-spacing:.04em}
+
+/* agendamento */
+.book{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.book .pole{border-radius:0;height:8px}
+.step{padding:18px 16px;border-top:1px solid var(--line)}
+.step:first-of-type{border-top:0}
+.step h3{margin:0 0 12px;font:700 15px var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);display:flex;gap:10px;align-items:baseline}
+.step h3 span{font:800 22px var(--display);color:var(--chalk)}
+.step.locked{opacity:.4;pointer-events:none}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;margin-right:-16px;padding-right:16px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:9px 14px;min-height:44px;font:600 15px var(--cond);letter-spacing:.03em;text-align:center}
+.chip[aria-pressed="true"]{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}
+.chip.day{min-width:62px;padding:8px 10px;line-height:1.1}
+.chip.day b{display:block;font:800 24px var(--display)}
+.chip.day small{font:600 12px var(--cond);text-transform:uppercase;letter-spacing:.08em}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.slot{border:1px solid var(--line);background:var(--panel-2);border-radius:9px;min-height:44px;font:600 16px var(--cond);font-variant-numeric:tabular-nums}
+.slot[disabled]{opacity:.28;text-decoration:line-through;cursor:not-allowed}
+.slot[aria-pressed="true"]{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}
+.field{display:grid;gap:6px}
+.field label{font:600 14px var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.field input{min-height:48px;border-radius:10px;border:1px solid var(--line);background:var(--panel-2);color:var(--chalk);padding:0 14px;font:500 16px var(--body);width:100%}
+.check{display:flex;gap:10px;align-items:center;margin-top:12px;font-size:15px}
+.check input{width:20px;height:20px;accent-color:var(--chalk)}
+
+/* barra fixa */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(8,9,11,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));transform:translateY(110%);transition:transform .3s}
+.bar.on{transform:none}
+.bar-in{max-width:480px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.sum{min-width:0;font:600 15px/1.25 var(--cond);letter-spacing:.02em}
+.sum small{display:block;color:var(--dim);font:500 13px var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.go{border:0;border-radius:11px;background:var(--chalk);color:var(--ink);min-height:50px;padding:0 18px;font:800 17px var(--cond);letter-spacing:.08em;text-transform:uppercase}
+.go[disabled]{opacity:.35}
+
+/* confirmação */
+.done{display:none;padding:22px 16px;text-align:center}
+.done.on{display:block}
+.done .ok{width:58px;height:58px;margin:0 auto 10px}
+.done h3{font:800 34px/1 var(--display);text-transform:uppercase;margin:0 0 8px}
+.done p{color:var(--dim);margin:0 auto;max-width:34ch;font-size:15px}
+.bubble{margin:16px auto 0;max-width:330px;text-align:left;background:#144D37;color:#EAF7EF;border-radius:12px 12px 2px 12px;padding:12px 14px;font-size:14.5px;line-height:1.45;white-space:pre-line}
+.again{margin-top:16px;border:1px solid var(--line);background:transparent;border-radius:10px;min-height:44px;padding:0 16px;font:600 15px var(--cond);letter-spacing:.06em;text-transform:uppercase}
+
+/* vitrine */
+.reel{display:grid;grid-auto-flow:column;grid-auto-columns:72%;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-right:calc(-1*max(16px,env(safe-area-inset-right,0px)));padding-right:16px}
+.reel::-webkit-scrollbar{display:none}
+.shot{scroll-snap-align:start;margin:0;position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);aspect-ratio:4/5;max-width:100%;background:var(--panel)}
+.shot img{width:100%;height:100%;object-fit:cover}
+.shot figcaption{position:absolute;left:0;right:0;bottom:0;padding:34px 12px 12px;background:linear-gradient(transparent,rgba(0,0,0,.82));font:700 18px var(--cond);text-transform:uppercase;letter-spacing:.04em}
+.shot figcaption small{display:block;font:500 13px var(--body);text-transform:none;letter-spacing:0;color:#cfd3d8}
+
+/* avaliações */
+.quotes{display:grid;gap:10px}
+.quote{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.quote p{margin:0 0 8px;font:500 17px/1.4 var(--body)}
+.quote cite{font:600 13px var(--cond);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-style:normal}
+
+/* info */
+.perks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.perk{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;font:600 15px/1.2 var(--cond);letter-spacing:.02em}
+.perk svg{width:22px;height:22px;flex:0 0 auto}
+.hours{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.hours td{padding:10px 0;border-top:1px solid var(--line);font:500 16px var(--body)}
+.hours td:last-child{text-align:right;font:600 17px var(--cond);letter-spacing:.03em}
+.hours tr.today td{color:var(--chalk);font-weight:700}
+.hours tr.today td:first-child::after{content:" · hoje";color:var(--ok);font:600 13px var(--cond);letter-spacing:.08em;text-transform:uppercase}
+.hours tr:not(.today) td{color:var(--dim)}
+.addr{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:4px}
+.addr strong{font:700 19px var(--cond);text-transform:uppercase;letter-spacing:.03em}
+.addr span{color:var(--dim);font-size:15px}
+.addr a{margin-top:8px;font:700 15px var(--cond);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+
+footer{margin-top:48px;padding-top:22px;border-top:1px solid var(--line);text-align:center;color:var(--dim);font-size:13px}
+footer .pole{width:60px;margin:0 auto 14px;height:6px}
+footer strong{color:var(--chalk);font:700 15px var(--cond);letter-spacing:.08em;text-transform:uppercase}
+
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);background:var(--chalk);color:var(--ink);border-radius:999px;padding:10px 16px;font:600 14px var(--body);z-index:30;transition:transform .25s;max-width:90vw;text-align:center}
+.toast.on{transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){.pole{animation:none}*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+<div class="demo">Demonstração · <b>Amplitude Lab</b> · @amplitude_lab</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="mark">
+    <svg class="hexlight" viewBox="0 0 340 300" aria-hidden="true">
+      <polygon class="faint" points="20,150 95,20 245,20 320,150 245,280 95,280"/>
+      <polygon points="58,150 114,53 226,53 282,150 226,247 114,247"/>
+    </svg>
+      <h1 class="name">Conceito</h1>
+      <span class="barber">Barber</span>
+    </div>
+    <p class="tag">A melhor experiência na barbearia da região. Corte pra homem e pra molecada, em São Mateus.</p>
+    <div class="badges">
+      <span class="badge"><span class="dot" id="opendot"></span><span id="opentxt">Horário</span></span>
+      <span class="badge"><span class="star">★</span> 4,9 · 92 no Google</span>
+    </div>
+    <div class="actions">
+      <a class="act main" href="#agendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        Agendar horário</a>
+      <a class="act" href="https://wa.me/5511951570589" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.4-.7a11.8 11.8 0 0 1-4.6-4.1c-.3-.5-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+        WhatsApp</a>
+      <a class="act" href="https://www.instagram.com/conceito.barberr/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+        Instagram</a>
+    </div>
+  </header>
+
+  <div class="pole" role="presentation"></div>
+
+  <section id="servicos">
+    <p class="eyebrow">Tabela</p>
+    <h2>Serviços</h2>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-adulto" aria-selected="true" data-tab="adulto">Homens</button>
+      <button role="tab" id="tab-kids" aria-selected="false" data-tab="kids">Kids</button>
+    </div>
+    <div class="svc" id="svclist"></div>
+    <div class="kids" id="kidsnote">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="24" cy="18" r="9"/><path d="M10 42c1.5-8 7-12 14-12s12.5 4 14 12"/><path d="M19 17h.01M29 17h.01M20.5 21.5c2 1.5 5 1.5 7 0"/></svg>
+      <p><strong>Corte de criança sem estresse</strong>Paciência na cadeira, desenho no cabelo e o pai ou a mãe acompanhando do lado.</p>
+    </div>
+    <p class="note">Valores de exemplo para a demonstração. A barbearia define os preços reais.</p>
+  </section>
+
+  <section id="agendar">
+    <p class="eyebrow">Sem fila, sem mensagem</p>
+    <h2>Agende em 30 segundos</h2>
+    <div class="book" id="book">
+      <div class="pole" role="presentation"></div>
+      <div id="flow">
+        <div class="step" id="s1">
+          <h3><span>1</span> Serviço</h3>
+          <div class="chips" id="c-svc"></div>
+        </div>
+        <div class="step locked" id="s2">
+          <h3><span>2</span> Barbeiro</h3>
+          <div class="chips" id="c-barber"></div>
+        </div>
+        <div class="step locked" id="s3">
+          <h3><span>3</span> Dia</h3>
+          <div class="chips" id="c-day"></div>
+        </div>
+        <div class="step locked" id="s4">
+          <h3><span>4</span> Horário</h3>
+          <div class="slots" id="c-time"></div>
+        </div>
+        <div class="step locked" id="s5">
+          <h3><span>5</span> Seus dados</h3>
+          <div class="field">
+            <label for="nome">Seu nome</label>
+            <input id="nome" autocomplete="given-name" placeholder="Ex.: Lucas">
+          </div>
+          <label class="check"><input type="checkbox" id="crianca"> O corte é pra uma criança</label>
+        </div>
+      </div>
+      <div class="done" id="done">
+        <svg class="ok" viewBox="0 0 60 60" fill="none"><polygon points="8,30 19,11 41,11 52,30 41,49 19,49" stroke="#3CCB7F" stroke-width="3"/><path d="M21 31l6 6 12-13" stroke="#3CCB7F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Horário reservado</h3>
+        <p>Na versão final, o pedido chega direto no WhatsApp da Conceito, já com tudo preenchido:</p>
+        <div class="bubble" id="bubble"></div>
+        <button class="again" id="again">Fazer outro agendamento</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="vitrine">
+    <p class="eyebrow">Trabalho da casa</p>
+    <h2>Vitrine</h2>
+    <div class="reel">
+      <figure class="shot"><img src="img/c1.jpg" alt="Corte degradê com risco lateral e topo penteado para o lado" loading="lazy"><figcaption>Degradê com risco<small>Navalhado, topo pro lado</small></figcaption></figure>
+      <figure class="shot"><img src="img/c2.jpg" alt="Degradê alto com desenho na lateral" loading="lazy"><figcaption>Fade com desenho<small>Lateral zerada e traço livre</small></figcaption></figure>
+      <figure class="shot"><img src="img/c3.jpg" alt="Corte social com degradê baixo e topo penteado para trás" loading="lazy"><figcaption>Social clássico<small>Low fade e risca marcada</small></figcaption></figure>
+    </div>
+    <p class="note">Fotos do Instagram @conceito.barberr. Arraste para o lado.</p>
+  </section>
+
+  <section id="avaliacoes">
+    <p class="eyebrow">Google · 4,9 de 5</p>
+    <h2>Quem corta, volta</h2>
+    <div class="quotes">
+      <blockquote class="quote"><p>“Venho de Itaquera por conta do atendimento. Excelentes profissionais.”</p><cite>Avaliação no Google</cite></blockquote>
+      <blockquote class="quote"><p>“Tem ar condicionado, tem água, tem banheiro. Gostei demais! Preço muito bom!”</p><cite>Avaliação no Google</cite></blockquote>
+    </div>
+  </section>
+
+  <section id="info">
+    <p class="eyebrow">Visite</p>
+    <h2>Onde e quando</h2>
+    <div class="perks">
+      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M4.9 6l14.2 12M4.9 18L19.1 6"/></svg>Ar-condicionado</div>
+      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/></svg>Água pra quem espera</div>
+      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="10" r="2"/><path d="M3 20c.5-4 3-6 6-6s5.5 2 6 6M14 20c.3-2.5 1.5-4 3-4s2.7 1.5 3 4"/></svg>Homens e crianças</div>
+      <div class="perk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Domingo até 13h</div>
+    </div>
+    <table class="hours" id="hours"></table>
+    <div class="addr">
+      <strong>Av. Mateo Bei, 2224</strong>
+      <span>São Mateus · São Paulo – SP · 03949-200</span>
+      <a href="https://www.google.com/maps/search/?api=1&query=Conceito%20Barber%20Av.%20Mateo%20Bei%202224%20S%C3%A3o%20Mateus" target="_blank" rel="noopener">Abrir no mapa →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="pole" role="presentation"></div>
+    <strong>Página criada pela Amplitude Lab</strong>
+    <p>Cartão digital, agendamento e vitrine num link só.<br>Instagram @amplitude_lab · WhatsApp (11) 95218-2016</p>
+    <p><a href="../../" style="font:700 14px var(--cond);letter-spacing:.1em;text-transform:uppercase">Conheça a Amplitude Lab →</a></p>
+  </footer>
+</div>
+
+<div class="bar" id="bar">
+  <div class="bar-in">
+    <div class="sum" id="sum">Escolha um serviço<small>Leva menos de 30 segundos</small></div>
+    <button class="go" id="go" disabled>Continuar</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const SERV={
+  adulto:[
+    {id:"corte",n:"Corte",d:"Degradê, social ou tesoura · 40 min",p:40},
+    {id:"barba",n:"Barba",d:"Toalha quente e navalha · 30 min",p:35},
+    {id:"combo",n:"Corte + barba",d:"O combo completo · 70 min",p:70},
+    {id:"risco",n:"Risco / desenho",d:"Adicional no corte · 10 min",p:10,plus:true},
+    {id:"sobr",n:"Sobrancelha",d:"Na navalha · 10 min",p:15},
+    {id:"pezinho",n:"Pezinho",d:"Acabamento entre cortes · 15 min",p:20}
+  ],
+  kids:[
+    {id:"kcorte",n:"Corte infantil",d:"Até 12 anos · 30 min",p:35},
+    {id:"kdesenho",n:"Infantil + desenho",d:"Com risco ou desenho · 40 min",p:45},
+    {id:"primeiro",n:"Primeiro corte",d:"Com calma e foto de lembrança · 30 min",p:40}
+  ]
+};
+const ALL=[...SERV.adulto,...SERV.kids];
+const BARBERS=["Sem preferência","Arthur","Rodrigo"];
+const HOURS={0:[9,13],1:[9,20],2:[9,20],3:[9,20],4:[9,20],5:[9,20],6:[8,19]};
+const WD=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+const WDL=["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+const st={tab:"adulto",svc:null,barber:null,day:null,time:null};
+const $=id=>document.getElementById(id);
+const money=v=>"R$ "+v;
+
+function spNow(){
+  const p=Object.fromEntries(new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false})
+    .formatToParts(new Date()).map(x=>[x.type,x.value]));
+  const y=+p.year,m=+p.month,d=+p.day,h=+p.hour%24,mi=+p.minute;
+  return {y,m,d,h,mi,wd:new Date(Date.UTC(y,m-1,d,12)).getUTCDay()};
+}
+const NOW=spNow();
+
+function openStatus(){
+  const [o,c]=HOURS[NOW.wd],t=NOW.h+NOW.mi/60;
+  const dot=$("opendot"),txt=$("opentxt");
+  if(t>=o&&t<c){dot.classList.add("on");txt.textContent=`Aberto agora · até ${c}h`}
+  else{
+    let nd=t<o?NOW.wd:(NOW.wd+1)%7;
+    txt.textContent=`Fechado · abre ${nd===NOW.wd?"hoje":(nd===(NOW.wd+1)%7?"amanhã":WDL[nd].toLowerCase())} às ${HOURS[nd][0]}h`;
+  }
+}
+function hoursTable(){
+  const order=[1,2,3,4,5,6,0];
+  $("hours").innerHTML=order.map(i=>`<tr class="${i===NOW.wd?"today":""}"><td>${WDL[i]}</td><td>${String(HOURS[i][0]).padStart(2,"0")}h – ${HOURS[i][1]}h</td></tr>`).join("");
+}
+
+function svcList(){
+  $("svclist").innerHTML=SERV[st.tab].map(s=>`<button class="svc-row" data-svc="${s.id}" aria-pressed="${st.svc===s.id}">
+    <span class="svc-n">${s.n}</span><span class="svc-d">${s.d}</span><span class="svc-p">${s.plus?"+":""}${money(s.p)}<small>Agendar</small></span></button>`).join("");
+  $("kidsnote").hidden=st.tab!=="kids";
+}
+function days(){
+  const out=[];
+  for(let i=0;i<7;i++){
+    const dt=new Date(Date.UTC(NOW.y,NOW.m-1,NOW.d+i,12));
+    out.push({key:dt.toISOString().slice(0,10),wd:dt.getUTCDay(),dd:dt.getUTCDate(),i});
+  }
+  return out;
+}
+function hash(s){let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h}
+function slots(day){
+  const [o,c]=HOURS[day.wd],res=[];
+  for(let m=o*60;m<=c*60-40;m+=40){
+    const hh=String(Math.floor(m/60)).padStart(2,"0"),mm=String(m%60).padStart(2,"0"),t=`${hh}:${mm}`;
+    let busy=hash(day.key+t+(st.barber||""))%4===0;
+    if(day.i===0&&m<=NOW.h*60+NOW.mi+20) busy=true;
+    res.push({t,busy});
+  }
+  return res;
+}
+function chips(){
+  $("c-svc").innerHTML=ALL.map(s=>`<button class="chip" data-pick="svc" data-v="${s.id}" aria-pressed="${st.svc===s.id}">${s.n}</button>`).join("");
+  $("c-barber").innerHTML=BARBERS.map(b=>`<button class="chip" data-pick="barber" data-v="${b}" aria-pressed="${st.barber===b}">${b}</button>`).join("");
+  $("c-day").innerHTML=days().map(d=>`<button class="chip day" data-pick="day" data-v="${d.key}" aria-pressed="${st.day===d.key}"><small>${d.i===0?"Hoje":d.i===1?"Amanhã":WD[d.wd]}</small><b>${d.dd}</b></button>`).join("");
+  const day=days().find(d=>d.key===st.day);
+  $("c-time").innerHTML=day?slots(day).map(s=>`<button class="slot" data-pick="time" data-v="${s.t}" ${s.busy?"disabled":""} aria-pressed="${st.time===s.t}">${s.t}</button>`).join(""):"";
+  $("s2").classList.toggle("locked",!st.svc);
+  $("s3").classList.toggle("locked",!st.barber);
+  $("s4").classList.toggle("locked",!st.day);
+  $("s5").classList.toggle("locked",!st.time);
+  summary();
+}
+function summary(){
+  const s=ALL.find(x=>x.id===st.svc),bar=$("bar"),go=$("go"),sum=$("sum");
+  bar.classList.toggle("on",!!s);
+  if(!s) return;
+  const day=days().find(d=>d.key===st.day);
+  const parts=[st.barber&&st.barber!=="Sem preferência"?"com "+st.barber:null,day?(day.i===0?"hoje":day.i===1?"amanhã":WD[day.wd]+" "+day.dd):null,st.time].filter(Boolean);
+  sum.innerHTML="";
+  sum.append(document.createTextNode(`${s.n} · ${s.plus?"+":""}${money(s.p)}`));
+  const sm=document.createElement("small");sm.textContent=parts.length?parts.join(" · "):"Escolha barbeiro, dia e horário";sum.append(sm);
+  const ready=st.svc&&st.barber&&st.day&&st.time;
+  go.disabled=!ready;
+  go.textContent=ready?"Confirmar":"Continuar";
+}
+
+let tt;function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>e.classList.remove("on"),2200)}
+
+document.addEventListener("click",e=>{
+  const tab=e.target.closest("[data-tab]");
+  if(tab){st.tab=tab.dataset.tab;document.querySelectorAll("[data-tab]").forEach(b=>b.setAttribute("aria-selected",b===tab));svcList();return}
+  const row=e.target.closest("[data-svc]");
+  if(row){st.svc=row.dataset.svc;svcList();chips();$("agendar").scrollIntoView({behavior:"smooth"});return}
+  const pick=e.target.closest("[data-pick]");
+  if(pick&&!pick.disabled){
+    const k=pick.dataset.pick;st[k]=pick.dataset.v;
+    if(k==="barber"||k==="day")st.time=null;
+    if(k==="svc"){svcList();if(SERV.kids.some(x=>x.id===st.svc))$("crianca").checked=true}
+    chips();
+    const next={svc:"s2",barber:"s3",day:"s4",time:"s5"}[k];
+    if(next&&window.innerHeight<900) setTimeout(()=>$(next).scrollIntoView({behavior:"smooth",block:"center"}),80);
+  }
+});
+$("go").addEventListener("click",()=>{
+  if($("go").disabled) return;
+  const nome=$("nome").value.trim();
+  if(!nome){toast("Coloque seu nome pra reservar");$("s5").scrollIntoView({behavior:"smooth",block:"center"});$("nome").focus();return}
+  const s=ALL.find(x=>x.id===st.svc),day=days().find(d=>d.key===st.day);
+  const dia=`${WDL[day.wd]}, ${String(day.dd).padStart(2,"0")}/${st.day.slice(5,7)}`;
+  $("bubble").textContent=`Olá, Conceito! Quero agendar:\n✂️ ${s.n}${$("crianca").checked?" (criança)":""}\n💈 Barbeiro: ${st.barber}\n📅 ${dia} às ${st.time}\nNome: ${nome}`;
+  $("flow").hidden=true;$("done").classList.add("on");$("bar").classList.remove("on");
+  $("book").scrollIntoView({behavior:"smooth",block:"start"});
+});
+$("again").addEventListener("click",()=>{
+  Object.assign(st,{svc:null,barber:null,day:null,time:null});
+  $("flow").hidden=false;$("done").classList.remove("on");svcList();chips();
+});
+
+openStatus();hoursTable();svcList();chips();
+</script>
+</body>
+</html>

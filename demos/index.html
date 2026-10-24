@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Demos · Amplitude Lab</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070D">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Mesmas cores e fontes do site principal (index.html) */
+:root{
+  --bg:#05070d; --panel:#0d1322; --line:#1a2340; --line-2:#28345a;
+  --fg:#eaf0ff; --muted:#9ba8c6; --dim:#67739a;
+  --volt:#5b8cff; --volt-hi:#a9c4ff; --volt-deep:#2450d6;
+  --f-display:"Unbounded","Arial Black",sans-serif;
+  --f-sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.55 var(--f-sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:calc(40px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(56px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--volt-hi);outline-offset:3px}
+.back{font:500 12px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+.eyebrow{font:500 12px var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--volt-hi);margin:36px 0 10px}
+h1{font:800 clamp(34px,9vw,56px)/1 var(--f-display);letter-spacing:-.04em;margin:0;text-wrap:balance}
+.lede{color:var(--muted);max-width:52ch;margin:16px 0 0}
+.list{list-style:none;margin:36px 0 0;padding:0;display:grid;gap:10px}
+.item{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel);text-decoration:none;transition:border-color .2s,background-color .2s}
+.item:hover{border-color:var(--line-2);background:#111a2e}
+.sw{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;background:#08090B;border:1px solid #2A2E35;overflow:hidden;position:relative}
+.sw::after{content:"";position:absolute;left:0;right:0;bottom:0;height:7px;background:repeating-linear-gradient(-45deg,#D7262E 0 5px,#F4F3EF 5px 10px,#2546B8 10px 15px,#F4F3EF 15px 20px)}
+.sw svg{width:30px;height:30px;margin-bottom:6px}
+.name{display:block;font:700 19px/1.15 var(--f-display);letter-spacing:-.03em}
+.meta{display:block;font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.arrow{font:500 20px var(--f-mono);color:var(--volt-hi)}
+.soon{border-style:dashed;background:transparent;color:var(--dim)}
+.soon .sw{background:transparent;border-style:dashed;border-color:var(--line-2)}
+.soon .sw::after{display:none}
+.note{margin-top:28px;font-size:14px;color:var(--dim)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="../">← Amplitude Lab</a>
+  <p class="eyebrow">Laboratório · demos para clientes</p>
+  <h1>Demos feitas sob medida</h1>
+  <p class="lede">Cada página aqui é uma prévia montada para um negócio específico: cartão digital, agendamento e vitrine num link só, com a identidade de quem vai usar.</p>
+
+  <ul class="list">
+    <li>
+      <a class="item" href="conceito-barber/">
+        <span class="sw" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><polygon points="4,20 12,6 28,6 36,20 28,34 12,34" stroke="#F4F3EF" stroke-width="2.5"/></svg></span>
+        <span><span class="name">Conceito Barber</span><span class="meta">Barbearia · São Mateus · out 2026</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li>
+      <div class="item soon">
+        <span class="sw" aria-hidden="true"></span>
+        <span><span class="name">Próximo cliente</span><span class="meta">Em produção</span></span>
+        <span></span>
+      </div>
+    </li>
+  </ul>
+  <p class="note">Páginas de demonstração. Preços e horários de agendamento são exemplos até o cliente aprovar.</p>
+</main>
+</body>
+</html>
