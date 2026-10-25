@@ -74,6 +74,10 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 16.2 — painel de diagnóstico
+- **Menu → 📊 Diagnóstico** (ou F3 no PC) abre um painel com FPS, tempo de cada quadro, pior 1%, picos e travadas acima de 50 ms; tempo de CPU do jogo e de cada sistema (terreno, monstros, partículas, clima, HUD, minimapa...), tempo de render, tempo de GPU (quando o aparelho permite medir), chamadas de desenho, triângulos, texturas, shaders, resolução, gráficos, pedaços carregados, monstros, partículas e memória.
+- **Teste 20 s:** jogue normalmente por 20 segundos e o painel gera um relatório com veredito (gargalo na GPU, na CPU ou travadas e de onde vêm). **Copiar** coloca o texto na área de transferência para mandar no chat.
+
 ## Versão 16.1 — Livro de Missões, bestiário e a Fada-Lume
 - **Monstros imortais corrigidos:** quando um campeão, um raro ou um chefe de masmorra mudava de fase, ganhava meio segundo de imunidade que nunca acabava — por isso o javali raivoso (e outros bichos) ficava imune a qualquer ataque. Agora a imunidade passa como deveria.
 - **Mecânicas dos chefes explicadas:** investida, redemoinho, reforços, rajada, mergulho, raízes, teleporte, veneno, sopro, gêiseres, voo, anel de projéteis, espiral, abalo, chuva de fogo, varredura, poças, onda de choque, escudo de pilares, maré, estouro, escudo quebrado, fases II e III, e os golpes do dragão. Na primeira e na segunda vez que você vê uma mecânica, um cartão à esquerda explica o que ela faz e como reagir. Tudo o que você já viu fica registrado no Bestiário.

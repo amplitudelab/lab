@@ -1,6 +1,6 @@
 VOXEL REALMS — MEMÓRIA DO PROJETO
 =================================
-Atualizado em 20/10/2026 · versão atual do jogo: 16.1
+Atualizado em 20/10/2026 · versão atual do jogo: 16.2
 Para ler no começo de uma nova conversa e retomar o trabalho sem perder o contexto.
 
 
@@ -29,7 +29,7 @@ voxel-realms-android/     -> projeto do app Android (WebView); o APK é gerado p
 --------------------------------
 1) Editar os arquivos em voxel-realms/src/ (copiar para uma pasta de trabalho, se quiser).
 2) Subir a versão no topo do src/index.html:
-     const VR_VERSION='16.2'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
+     const VR_VERSION='16.3'; const VR_NOTE='o que mudou (sem acento é mais seguro)';
    Ao abrir o jogo, quem estiver na versão antiga vê "VERSÃO NOVA DISPONÍVEL" e o botão
    ATUALIZAR AGORA (mesmo esquema do Quebrada Z).
 3) Rodar "node build.js" (precisa de: npm i terser clean-css) -> gera a pasta dist/.
@@ -171,6 +171,10 @@ fada.js      16.1: PETS.fada (Fada-Lume, hum escala .3 com asas e brilho), fairy
              aberto paira ao lado da página; continua em tempo real com o jogo pausado), +4% de crítico em petPassive,
              e a luz no shader (SHU.uTP/uTC/uTR=26, mais forte que a tocha, somando as duas).
 core.js/feel.js 16.1: FOVS=[60,68,76,86,96,108], padrão 76 (migração única 'vr16_fov').
+diag.js      16.2 (último script): DIAG/DIAGS. Embrulha por nome (eval) os sistemas do laço, render() (CPU de envio +
+             GPU por EXT_disjoint_timer_query_webgl2 quando existe) e frame() (CPU do quadro e intervalo). Desligado custa
+             só um if. dgSnap/dgText/dgReport, teste de 20 s (dgBench), copiar (dgCopy). Liga no Menu (#dgm), F3 ou
+             localStorage vr16_dg=1. Obs.: o nome DG já existe em ai.js (chance de desvio).
 ragdoll.js   morte: ragInit/ragUpd (tomba pelos pés com quaternion, molas nos membros, ragLow mantém acima do chão),
              corpos ficam ~10 s (RAG.max 14) e encolhem em poeira; mobsUpd chama ragUpd; herói usa P.rgE
 drops.js     dropItem/dropGold/dropGlobe com modelo do item (itemGroup do bag.js) + círculo de raridade
