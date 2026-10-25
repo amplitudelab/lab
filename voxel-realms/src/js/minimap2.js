@@ -82,9 +82,11 @@ MM2.hiGen=(function*(){const S2=768,cv=document.createElement('canvas');cv.width
   for(let j=0;j<S2;j++){for(let i=0;i<S2;i++){const wx=-WMH+i*k+k/2,wz=-WMH+j*k+k/2,h=rawH(wx,wz),r=regionAt(wx,wz);row[i]=h;let c;
       if(h<-.3){const dp=cl(-h/2.5,0,1);c=r==4?[62,80,58]:[70-dp*30,148-dp*45,205-dp*35]}else if(Math.max(Math.abs(wx),Math.abs(wz))>WMAX-9)c=[132,128,120];else if(roadD(wx,wz)<2.2)c=[176,146,96];
       else{c=REGRGB[r].slice();const hn=j?prev[Math.max(0,i-1)]:h,sh=cl(1+(hn-h)*.12,.72,1.3)*(.86+cl(h,0,14)*.02);c=c.map(v=>v*sh)}
-      const o=(i+j*S2)*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255;if((i&63)==63)yield 0}const t=prev;prev=row;row=t}
-  x.putImageData(img,0,0);x.fillStyle='#d9a948';const q=S2/(2*WMH);for(const b of BRIDGES)x.fillRect((b.x+WMH)*q-2.5,(b.z+WMH)*q-2.5,5,5);MM2.hi=cv;return 1})();
-function mmHiUpd(){if(MM2.hi||!MM2.hiGen||LOADING)return;const t0=performance.now();while(performance.now()-t0<4){const r=MM2.hiGen.next();if(r.done){MM2.hiGen=null;break}}}
+      const o=(i+j*S2)*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255;if((i&63)==63)yield 0}const t=prev;prev=row;row=t;if(j%48==47){x.putImageData(img,0,0,0,j-47,S2,48);yield 0}}
+  x.fillStyle='#d9a948';const q=S2/(2*WMH);for(const b of BRIDGES)x.fillRect((b.x+WMH)*q-2.5,(b.z+WMH)*q-2.5,5,5);MM2.hi=cv;return 1})();
+// 16.3: gera nos momentos ociosos do navegador e, no máximo, 1,5 ms por quadro (antes eram 4 ms)
+if(window.requestIdleCallback){const idl=d=>{if(MM2.hi||!MM2.hiGen)return;if(!LOADING){try{while(d.timeRemaining()>2){const r=MM2.hiGen.next();if(r.done){MM2.hiGen=null;return}}}catch(e){MM2.hiGen=null;return}}requestIdleCallback(idl)};requestIdleCallback(idl)}
+function mmHiUpd(){if(MM2.hi||!MM2.hiGen||LOADING)return;const t0=performance.now();while(performance.now()-t0<1.5){const r=MM2.hiGen.next();if(r.done){MM2.hiGen=null;break}}}
 const _feel160=feelUpd;feelUpd=function(dt){_feel160(dt);try{mmHiUpd()}catch(e){MM2.hiGen=null}};
 // ---------- mapa-múndi: maior, com zoom (botões, pinça, roda e arrastar) e o detalhe do terreno de perto
 const MZ={z:1,cx:0,cz:0,wm:0,pts:new Map(),moved:0,d0:null,raf:0,wph:''};

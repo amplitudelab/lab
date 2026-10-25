@@ -73,7 +73,7 @@ const CHK=new Map(),BQ=[];
 const ckey=(cx,cz)=>cx+','+cz;
 function chunkHeights(cx,cz){const h=new Float32Array(34*34),x0=cx*CS-1,z0=cz*CS-1;for(let j=0;j<34;j++)for(let i=0;i<34;i++)h[i+j*34]=cellH(x0+i,z0+j);return h}
 function groundAt(x,z){const b=onBridge(x,z);const ix=Math.floor(x),iz=Math.floor(z),cx=Math.floor(ix/CS),cz=Math.floor(iz/CS),c=CHK.get(ckey(cx,cz));
-  const h=c?c.h[(ix-cx*CS+1)+(iz-cz*CS+1)*34]:cellH(ix,iz);return b?Math.max(h,b.y):h}
+  const h=c&&c.h?c.h[(ix-cx*CS+1)+(iz-cz*CS+1)*34]:cellH(ix,iz);return b?Math.max(h,b.y):h}
 // 15.0 · chão sob a pegada inteira (centro + 4 pontas): na beira de um degrau o corpo fica em cima dele
 // em vez de metade enterrada; paredes altas demais (degrau > 1,3) não contam
 function footY(x,z,cur,r){let h=groundAt(x,z);for(let i=0;i<4;i++){const g=groundAt(x+(i<2?(i?r:-r):0),z+(i>1?(i>2?r:-r):0));if(g>h&&(cur==null||g-cur<1.3))h=g}return h}
@@ -151,7 +151,8 @@ function grass(f,x,y,z,c){f.box(.1,.55,.1,x,y+.27,z,c).box(.1,.42,.1,x+.18,y+.21
 // escala local para detalhes (grama, flores...) ao redor do ponto onde nascem
 class SB{constructor(k,ox,oy,oz,m){this.k=k;this.o=[ox,oy,oz];this.m=m}box(w,h,d,x,y,z,c,o){const m=this.m,O=this.o;this.k.box(w*m,h*m,d*m,O[0]+(x-O[0])*m,O[1]+(y-O[1])*m,O[2]+(z-O[2])*m,c,o);return this}}
 const TREE_S=1.6,ROCK_S=1.5,PROP_S=1.4; // árvores e objetos proporcionais ao herói (~2,9 de altura)
-function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*73856093^ch.cz*19349663^0x5bd1e995),col=ch.col;
+function decorate(ch,k,f,e,lod){for(const _ of decorateG(ch,k,f,e,lod));}
+function* decorateG(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*73856093^ch.cz*19349663^0x5bd1e995),col=ch.col;
   const nearStr=(x,z)=>{for(const s of NOTREE)if(Math.abs(x-s.x)<s.r&&Math.abs(z-s.z)<s.r&&hy(x-s.x,z-s.z)<s.r)return true;const FL=fzAt(x,z);if(FL)for(const s of FL)if(Math.abs(x-s.x)<s.r*.8&&Math.abs(z-s.z)<s.r*.8&&hy(x-s.x,z-s.z)<s.r*.8)return true;return false};
   const spot=(minH)=>{const x=x0+r()*CS,z=z0+r()*CS,ix=Math.floor(x)-x0,iz=Math.floor(z)-z0,h=ch.h[(ix+1)+(iz+1)*34];if(h<(minH==null?.25:minH)||roadD(x,z)<2.4||nearStr(x,z)||onBridge(x,z))return null;regW(x,z,RW);let b=0;for(let i=1;i<REG.length;i++)if(RW[i]>RW[b])b=i;return{x,z,h,b}};
   const N=[[3,0,1,40,20],[4,0,4,70,16],[5,0,2,40,150],[18,0,4,40,14],[10,0,3,10,6],[5,0,9,0,0],[14,0,3,40,16],[7,0,6,10,0],[2,0,2,80,10],[1.6,0,3,4,0],[3,0,2,30,10],[4,0,5,8,4]]; // árvores, -, pedras, grama, flores por região
@@ -169,12 +170,13 @@ function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*738560
     else if(p.b==9){if(p.h<.3)continue;cactus(k,p.x,p.h,p.z,s*.8);col.push([p.x,p.z,.5*s])}
     else if(p.b==10){if(p.h<.3)continue;p.h<1.6?palm(k,f,p.x,p.h,p.z,s*.9):oak(k,f,p.x,p.h,p.z,s,LEAF.vila,0,lod);col.push([p.x,p.z,.6*s])}
     else{if(p.h<.3)continue;r()<.6?crystalSpire(k,e,p.x,p.h,p.z,s*.8):deadTree(k,p.x,p.h,p.z,s);col.push([p.x,p.z,.7*s])}}
+  yield 0;
   // pedras
   for(let i=0;i<N[db][2]+1;i++){const p=spot();if(!p)continue;const s=(.7+r()*1.1)*ROCK_S;rock(k,p.x,p.h,p.z,s,[0x8a8a84,0x8a8a84,0x8a8a84,0x8a8a84,0x5a5a4a,0x2a2224,0x7a6a5a,0xa8b4c4,0x9a6a4a,0xc8a070,0x8a8a84,0x3a3050][p.b],p.b==3||p.b==4||p.b==6);col.push([p.x,p.z,.6*s]);if(p.b==7)k.box(1.2*s,.22*s,1*s,p.x,p.h+1.1*s,p.z,0xf4f8fc);if(p.b==11&&r()<.7)e.box(.3*s,1.4*s,.3*s,p.x+.5*s,p.h+.9*s,p.z,0x9ae8ff,{rz:.3});
     if(p.b==5&&r()<.6){k.box(.5,2.5+r()*2,.5,p.x+1.4,p.h+1.2,p.z,0x1a1418,{rz:.3,ry:r()*3});}}
-  if(lod>1)return;
+  yield 0;if(lod>1)return;
   // detalhes pequenos (só perto): grama, flores, cogumelos, juncos, trigo, vitórias-régias
-  const K0=k,F0=f;for(let i=0;i<220;i++){const p=spot(-.5);if(!p)continue;const n=N[p.b],t=r(),sm_=p.h<-.05?1:PROP_S,k=new SB(K0,p.x,p.h,p.z,sm_),f=new SB(F0,p.x,p.h,p.z,sm_),g=new SB(e,p.x,p.h,p.z,sm_);
+  const K0=k,F0=f;for(let i=0;i<220;i++){if(i%55==54)yield 0;const p=spot(-.5);if(!p)continue;const n=N[p.b],t=r(),sm_=p.h<-.05?1:PROP_S,k=new SB(K0,p.x,p.h,p.z,sm_),f=new SB(F0,p.x,p.h,p.z,sm_),g=new SB(e,p.x,p.h,p.z,sm_);
     if(p.b==4){if(p.h<-.05){if(t<.35){k.box(.9,.04,.9,p.x,.03,p.z,0x3a8a6a,{ry:r()*3});if(r()<.3)g.box(.22,.16,.22,p.x,.1,p.z,r()<.5?0xff9ad0:0x8affe8)}}
       else if(t<.5){f.box(.08,1.6,.08,p.x,p.h+.8,p.z,0x6a8a3a).box(.14,.4,.14,p.x,p.h+1.5,p.z,0x5a3a20).box(.08,1.3,.08,p.x+.2,p.h+.65,p.z+.1,0x7a9a4a)}else if(t<.62){const gc=r()<.6?0x40ffd8:0x6ac8ff;for(let a=0;a<3;a++){const ox=(a-1)*.32,oz=(a%2)*.25,hh=.25+a%2*.18;k.box(.12,hh,.12,p.x+ox,p.h+hh/2,p.z+oz,0xd8e8e0);g.box(.34-a*.04,.12,.34-a*.04,p.x+ox,p.h+hh+.05,p.z+oz,gc)}}continue}
     if(p.h<.3)continue;
@@ -195,7 +197,7 @@ function decorate(ch,k,f,e,lod){const x0=ch.cx*CS,z0=ch.cz*CS,r=rng(ch.cx*738560
     if(t>.915&&t<=.93&&(p.b==0||p.b==3)){k.box(2.6,.5,.5,p.x,p.h+.25,p.z,0x5a3a22,{ry:r()*3}).box(1.4,.12,.52,p.x,p.h+.52,p.z,0x4a8a3a);continue}
     if(i>n[3]+n[4])continue;
     if(t<n[4]/(n[3]+n[4]+1))flower(f,p.x,p.h,p.z,FLC[(r()*FLC.length)|0],1);else grass(f,p.x,p.h,p.z,[0x5aa94a,0x6cb44f,0x4f9b45][(r()*3)|0])}}
-function* genChunk(ch){const lod=ch.lod,x0=ch.cx*CS,z0=ch.cz*CS,H=ch.h,k=new Bake(),f=new Bake(),e=new Bake(),n=CS/lod;
+function* genChunk(ch){if(!ch.h){ch.h=chunkHeights(ch.cx,ch.cz);yield 0}const lod=ch.lod,x0=ch.cx*CS,z0=ch.cz*CS,H=ch.h,k=new Bake(),f=new Bake(),e=new Bake(),n=CS/lod;
   const hAt=(i,j)=>{if(lod==1)return H[(i+1)+(j+1)*34];const ii=i*2,jj=j*2;let m=-99;for(let a=0;a<2;a++)for(let b=0;b<2;b++){const v=H[cl(ii+a+1,0,33)+cl(jj+b+1,0,33)*34];if(v>m)m=v}return m};
   for(let j=0;j<n;j++){for(let i=0;i<n;i++){const ix=x0+i*lod,iz=z0+j*lod,h=hAt(i,j),cx=ix+lod*.5,cz=iz+lod*.5;regW(cx,cz,RW);
       let b=0,acc=0;const rr=hash2(ix*3+1,iz*5+2);for(let q=0;q<REG.length;q++){acc+=RW[q];if(rr<=acc){b=q;break}}
@@ -219,10 +221,10 @@ function* genChunk(ch){const lod=ch.lod,x0=ch.cx*CS,z0=ch.cz*CS,H=ch.h,k=new Bak
         else k.quad([x1,lo,iz],[ix,lo,iz],[ix,h,iz],[x1,h,iz],[0,0,-1],sc2,[bot*.88,bot*.88,top*.88,top*.88],lod,H2);
         if(gt&&H2>.2&&lod==1)grassFringe(k,dx,dz,ix,iz,x1,z1,h,Math.min(.24,H2),c,hash2(ix*5+dx,iz*7+dz))}}
     if(j%8==7)yield 0}
-  decorate(ch,k,f,e,lod);yield 0;
-  for(const s of STR)if(s.cx==ch.cx&&s.cz==ch.cz){CUR_S=s;s.fn(k,e,f);s.cd=1;CUR_S=null}
+  yield* decorateG(ch,k,f,e,lod);yield 0;
+  for(const s of STR)if(s.cx==ch.cx&&s.cz==ch.cz){CUR_S=s;s.fn(k,e,f);s.cd=1;CUR_S=null;yield 0}
   for(const b of BRIDGES)if(Math.floor(b.x/CS)==ch.cx&&Math.floor(b.z/CS)==ch.cz)bridgeMesh(k,b);
-  const ms=[k.mesh(MV),f.mesh(MW),e.mesh(ME)];for(let i=0;i<3;i++){const m=ms[i];if(!m)continue;m.matrixAutoUpdate=false;m.receiveShadow=i<2;m.castShadow=i<2&&lod==1;ch.ms.push(m)}}
+  const ms=[k.mesh(MV)];yield 0;ms.push(f.mesh(MW));yield 0;ms.push(e.mesh(ME));for(let i=0;i<3;i++){const m=ms[i];if(!m)continue;m.matrixAutoUpdate=false;m.receiveShadow=i<2;m.castShadow=i<2&&lod==1;ch.ms.push(m)}}
 const AOK=[1,.84,.72,.62];
 // franja de grama: faixa no alto da lateral de terra com "pingos" irregulares (lado de bloco de grama dos jogos de voxel)
 function grassFringe(k,dx,dz,ix,iz,x1,z1,h,fh,c,r){const o=.012,cs=shade(c,.92),cd=shade(c,.8),d=fh+.12+r*.1,u=.15+r*.55;
@@ -233,7 +235,7 @@ function grassFringe(k,dx,dz,ix,iz,x1,z1,h,fh,c,r){const o=.012,cs=shade(c,.92),
 function bridgeMesh(k,b){const a=Math.atan2(b.ux,b.uz),n=Math.ceil(b.len/.7);for(let i=0;i<n;i++){const t=-b.len/2+i*.7+.35,x=b.x+b.ux*t,z=b.z+b.uz*t;k.box(b.w*2,.22,.62,x,b.y-.11,z,i%2?0x8a5a30:0x7a4e2a,{ry:a})}
   for(const sd of[-1,1]){const ox=-b.uz*b.w*sd,oz=b.ux*b.w*sd;k.box(.2,.2,b.len,b.x+ox,b.y+.9,b.z+oz,0x5a3a20,{ry:a});for(let t=-b.len/2;t<=b.len/2;t+=2.2){k.box(.24,1,.24,b.x+b.ux*t+ox,b.y+.4,b.z+b.uz*t+oz,0x5a3a20);k.box(.4,3,.4,b.x+b.ux*t+ox*.9,b.y-1.6,b.z+b.uz*t+oz*.9,0x4a3020)}}}
 
-function chunkNew(cx,cz,lod){const c={cx,cz,lod,h:chunkHeights(cx,cz),ms:[],col:[],lava:[],gen:null,ready:false,old:null};c.gen=genChunk(c);return c}
+function chunkNew(cx,cz,lod){const c={cx,cz,lod,h:null,ms:[],col:[],lava:[],gen:null,ready:false,old:null};c.gen=genChunk(c);return c}
 function chunkDrop(c){for(const m of c.ms){sc.remove(m);m.geometry.dispose()}c.ms.length=0}
 let lastCX=1e9,lastCZ=1e9;
 const chD=(px,pz,X,Z)=>hy(Math.max(X*CS-px,0,px-(X+1)*CS),Math.max(Z*CS-pz,0,pz-(Z+1)*CS));let lastPX=1e9,lastPZ=1e9;
@@ -241,12 +243,13 @@ function worldUpd(px,pz,budget){const cx=Math.floor(px/CS),cz=Math.floor(pz/CS),
   if(cx!=lastCX||cz!=lastCZ||hy(px-lastPX,pz-lastPZ)>4){lastCX=cx;lastCZ=cz;lastPX=px;lastPZ=pz;
     for(let dz=-V;dz<=V;dz++)for(let dx=-V;dx<=V;dx++){const X=cx+dx,Z=cz+dz,d=chD(px,pz,X,Z);if(d>RL)continue;const k=ckey(X,Z),c=CHK.get(k);
       let lod=d<L1?1:2;if(c&&c.lod==1&&d<L2)lod=1;
-      if(!c){const n=chunkNew(X,Z,lod);CHK.set(k,n);BQ.push(n)}else if(c.lod!=lod&&!c.gen){const n=chunkNew(X,Z,lod);n.old=c;n.spawned=c.spawned;CHK.set(k,n);BQ.push(n)}}
+      if(!c){const n=chunkNew(X,Z,lod);CHK.set(k,n);BQ.push(n)}else if(c.lod!=lod&&!c.gen){const n=chunkNew(X,Z,lod);n.h=c.h;n.old=c;n.spawned=c.spawned;CHK.set(k,n);BQ.push(n)}}
     for(const[k,c]of CHK){const d=chD(px,pz,c.cx,c.cz);if(d>RL+CS){chunkDrop(c);if(c.old)chunkDrop(c.old);CHK.delete(k);onChunkDrop(c)}else{const v=d<=RL+4;for(const m of c.ms)m.visible=v;c.hid=!v}}
     BQ.sort((a,b)=>chD(px,pz,a.cx,a.cz)-chD(px,pz,b.cx,b.cz))}
   const t0=performance.now();
   while(BQ.length&&performance.now()-t0<budget){const c=BQ[0];if(CHK.get(ckey(c.cx,c.cz))!==c){BQ.shift();continue}
-    const r=c.gen.next();if(r.done){BQ.shift();c.gen=null;c.ready=true;if(c.old){chunkDrop(c.old);c.old=null}for(const m of c.ms)sc.add(m);if(!c.spawned){c.spawned=true;onChunkReady(c)}}}}
+    const r=c.gen.next();if(r.done){BQ.shift();c.gen=null;c.ready=true;if(c.old){chunkDrop(c.old);c.old=null}for(const m of c.ms)sc.add(m);if(!c.spawned){c.spawned=true;onChunkReady(c)}}}
+  if(performance.now()-t0<budget||!BQ.length)spawnPump()}
 // carrega tudo ao redor de uma vez (início do jogo e teleporte)
 function worldLoadAll(px,pz){lastCX=1e9;lastPX=1e9;worldUpd(px,pz,0);while(BQ.length)worldUpd(px,pz,1e9)}
 

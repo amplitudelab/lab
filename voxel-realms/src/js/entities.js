@@ -68,7 +68,10 @@ function mkMob(type,x,z,o){o=o||{};const t=BOSS[type]||MT[type],lv=o.lv||1,boss=
 function dropMob(e){dropModel(e.m);if(e.ring)sc.remove(e.ring);const i=E.indexOf(e);if(i>=0)E.splice(i,1)}
 
 // ---------- geração por pedaço: bandos de monstros, animais e baús são ligados ao pedaço
-function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2;if(hy(cx,cz)<75)return;if(typeof DNG!='undefined'&&DNG.some(D=>hy(cx-D.at[0],cz-D.at[1])<46))return;const cl_=CLEARED.get(k);if(cl_&&performance.now()-cl_<90000)return;if(aliveN()>=MAXE)return;
+// 16.3: os monstros de um pedaço novo nascem um por quadro (fila SPQ), sem travar o jogo
+const SPQ=[];function onChunkReady(c){SPQ.push({c,g:spawnChunkG(c)})}
+function spawnPump(){while(SPQ.length){const q=SPQ[0];if(CHK.get(ckey(q.c.cx,q.c.cz))==null){SPQ.shift();continue}if(q.g.next().done)SPQ.shift();return}}
+function* spawnChunkG(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2;if(hy(cx,cz)<75)return;if(typeof DNG!='undefined'&&DNG.some(D=>hy(cx-D.at[0],cz-D.at[1])<46))return;const cl_=CLEARED.get(k);if(cl_&&performance.now()-cl_<90000)return;if(aliveN()>=MAXE)return;
   const r=rng(c.cx*92821^c.cz*68917^((performance.now()/90000)|0)),reg=regionAt(cx,cz),rid=REG[reg].id;
   let tbl=SPAWN[rid]||[];for(const p of POI)if(hy(cx-p.x,cz-p.z)<p.r+16){if(p.n.startsWith('Cemit'))tbl=['zombie','zombie','ghoul','skel'];if(p.n.startsWith('Acamp'))tbl=['bandit','bandarc'];if(p.n.startsWith('Colmeia'))tbl=['bee','bee','fairy']}
   const nt=NIGHT>.5;if(nt&&!tbl.some(t=>t=='zombie'||t=='bandit'&&tbl.length==2))tbl=tbl.concat(NIGHTB[rid]||[]);
@@ -76,8 +79,8 @@ function onChunkReady(c){const k=ckey(c.cx,c.cz),cx=c.cx*CS+CS/2,cz=c.cz*CS+CS/2
   for(let p=0;p<packs;p++){let x=0,z=0,ok=false;for(let a=0;a<8&&!ok;a++){x=c.cx*CS+4+r()*(CS-8);z=c.cz*CS+4+r()*(CS-8);ok=walkable(x,z)&&groundAt(x,z)>(rid=='mang'?-.5:.2)}if(!ok)continue;
     const lv=mobLv(reg),roll=r(),el=roll<.05+P.lv*.0025?2:roll<.13+P.lv*.004?1:0,afx=[];if(el){const ks=Object.keys(AFF);while(afx.length<el){const a=pick(ks,r);if(!afx.includes(a))afx.push(a)}}
     const t1=pick(tbl,r),n=el==1?3:el==2?1:2+(r()*3|0);
-    for(let i=0;i<n;i++){const ty=el==2||i<n-1||r()<.5?t1:pick(tbl,r),e=mkMob(ty,x+(r()-.5)*5,z+(r()-.5)*5,{lv,el,afx,ch:k,name:el==2?rareName(r):null});e.pack=p}
-    if(el==2)for(let i=0;i<3;i++)mkMob(t1,x+(r()-.5)*5,z+(r()-.5)*5,{lv,ch:k,minion:1})}
+    for(let i=0;i<n;i++){const ty=el==2||i<n-1||r()<.5?t1:pick(tbl,r),e=mkMob(ty,x+(r()-.5)*5,z+(r()-.5)*5,{lv,el,afx,ch:k,name:el==2?rareName(r):null});e.pack=p;yield 0}
+    if(el==2)for(let i=0;i<3;i++){mkMob(t1,x+(r()-.5)*5,z+(r()-.5)*5,{lv,ch:k,minion:1});yield 0}}
   // animais
   const fa=FAUNA[rid]||[];for(let i=0;i<(fa.length?(nt?(r()<.4?1:0):2+(r()*2|0)):0);i++){const x=c.cx*CS+r()*CS,z=c.cz*CS+r()*CS;if(!walkable(x,z)||groundAt(x,z)<(rid=='mang'?-.4:.3))continue;const ty=pick(fa,r),nn=ty=='sheep'||ty=='cow'?2+(r()*2|0):1;for(let j=0;j<nn;j++){const a=mkMob(ty,x+(r()-.5)*4,z+(r()-.5)*4,{lv:REG[reg].lv,ch:k});if(ty=='tfrog')a.m.g.scale.setScalar(.55)}}
   // chefes nos covis

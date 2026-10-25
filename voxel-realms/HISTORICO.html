@@ -37,7 +37,7 @@ code{font-size:13px;background:rgba(127,127,127,.15);padding:1px 5px;border-radi
 <body>
 <header>
   <h1>VOXEL REALMS</h1>
-  <p class="sub">Histórico de todas as alterações, da V10 até a versão 16.2 · atualizado em 20/10/2026</p>
+  <p class="sub">Histórico de todas as alterações, da V10 até a versão 16.3 · atualizado em 20/10/2026</p>
   <div class="links">
     <a href="./">▶ Jogar</a>
     <a href="MEMORIA.txt">📄 Memória do projeto (txt)</a>
@@ -48,6 +48,12 @@ code{font-size:13px;background:rgba(127,127,127,.15);padding:1px 5px;border-radi
 <main>
   <div class="legend"><span style="--c:var(--new)">Novidade</span><span style="--c:var(--fix)">Correção</span><span style="--c:var(--perf)">Desempenho</span></div>
   <div class="tl">
+
+  <section class="v"><div class="card"><div class="vh"><span class="tag">16.3</span><h2>Otimização sem mudar o visual</h2></div><ul>
+    <li class="p">Menos travadas ao andar: o terreno e a decoração são montados em etapas pequenas e os monstros de cada pedaço nascem um por quadro</li>
+    <li class="p">A cena gasta menos processador: grupos invisíveis não recalculam posição a cada quadro</li>
+    <li class="n">Mapa-múndi em alta gerado nos momentos ociosos do navegador; painel de diagnóstico conta chamadas e triângulos corretamente</li>
+  </ul></div></section>
 
   <section class="v"><div class="card"><div class="vh"><span class="tag">16.2</span><h2>Painel de diagnóstico</h2></div><ul>
     <li class="n">Menu → 📊 Diagnóstico (ou F3): FPS, travadas, CPU por sistema, render, GPU, chamadas de desenho, triângulos, memória e mundo carregado</li>

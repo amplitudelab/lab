@@ -74,6 +74,13 @@ Para criar uma missão nova, basta acrescentar um objeto em `QD` (`js/quests.js`
 - Novas regiões entram em `REG` (`world.js`), novos monstros em `MT`/`BOSS` (`entities.js`) e
   modelos em `MDL` (`models.js`).
 
+## Versão 16.3 — otimização sem mudar o visual
+- **Menos travadas ao andar pelo mapa:** a altura do terreno de cada pedaço novo era calculada toda de uma vez quando você cruzava a borda de um pedaço; agora entra no orçamento de tempo de cada quadro. A decoração (árvores, pedras, grama, flores), cada construção e cada malha viraram etapas separadas — a etapa mais longa caiu de ~30–48 ms para ~9 ms nas medições. O terreno gerado é idêntico ao anterior (conferido vértice por vértice).
+- **Monstros sem engasgo:** os monstros de um pedaço novo nasciam todos no mesmo quadro (até 11 de uma vez, picos de 36–50 ms); agora nascem um por quadro, longe da vista, quando sobra tempo.
+- **Processador mais livre:** a cena não recalcula a posição de grupos invisíveis (monstros, moradores e efeitos fora da vista) — essa parte ficou cerca de 2,5× mais rápida.
+- **Mapa-múndi em alta:** é gerado nos momentos ociosos do navegador e, no máximo, 1,5 ms por quadro (antes 4 ms), sem o pico no final.
+- **Painel de diagnóstico:** agora mostra o total real de chamadas de desenho e triângulos com o pós-processamento ligado.
+
 ## Versão 16.2 — painel de diagnóstico
 - **Menu → 📊 Diagnóstico** (ou F3 no PC) abre um painel com FPS, tempo de cada quadro, pior 1%, picos e travadas acima de 50 ms; tempo de CPU do jogo e de cada sistema (terreno, monstros, partículas, clima, HUD, minimapa...), tempo de render, tempo de GPU (quando o aparelho permite medir), chamadas de desenho, triângulos, texturas, shaders, resolução, gráficos, pedaços carregados, monstros, partículas e memória.
 - **Teste 20 s:** jogue normalmente por 20 segundos e o painel gera um relatório com veredito (gargalo na GPU, na CPU ou travadas e de onde vêm). **Copiar** coloca o texto na área de transferência para mandar no chat.

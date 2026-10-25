@@ -26,7 +26,7 @@ for(const k in DIAGS){let f;try{f=eval(k)}catch(e){continue}if(typeof f!='functi
     _render();if(q){gl.endQuery(DIAG.gx.TIME_ELAPSED_EXT);DIAG.gpend.push(q);DIAG.gq=null}DIAG.cur.r=performance.now()-t;
     for(let i=DIAG.gpend.length-1;i>=0;i--){const p=DIAG.gpend[i];if(gl.getQueryParameter(p,gl.QUERY_RESULT_AVAILABLE)){if(!gl.getParameter(DIAG.gx.GPU_DISJOINT_EXT))DIAG.gpu.push(gl.getQueryParameter(p,gl.QUERY_RESULT)/1e6);gl.deleteQuery(p);DIAG.gpend.splice(i,1)}}}}
 // quadro inteiro (CPU do laço) e intervalo entre quadros
-DIAG.cur={r:0};const _frameDG=frame;frame=function(now){if(!DIAG.on)return _frameDG(now);const fn=frameN,t=performance.now();_frameDG(now);if(frameN===fn)return;const cpu=performance.now()-t;
+DIAG.cur={r:0};DIAG.ri={calls:0,triangles:0};const _frameDG=frame;frame=function(now){if(!DIAG.on){if(!rd.info.autoReset)rd.info.autoReset=true;return _frameDG(now)}rd.info.autoReset=false;rd.info.reset();const fn=frameN,t=performance.now();_frameDG(now);if(frameN===fn)return;const cpu=performance.now()-t;DIAG.ri.calls=rd.info.render.calls;DIAG.ri.triangles=rd.info.render.triangles;
   if(DIAG.last){const iv=now-DIAG.last;DIAG.frames.push(iv);DIAG.cpu.push(cpu);DIAG.rend.push(DIAG.cur.r)}DIAG.last=now;
   const cap=DIAG.bench?6000:240;for(const a of[DIAG.frames,DIAG.cpu,DIAG.rend,DIAG.gpu])if(a.length>cap)a.splice(0,a.length-cap)};
 // estatísticas
@@ -46,7 +46,7 @@ function dgSnap(){const F=DIAG.frames,ft=dgAvg(F),fps=ft?1000/ft:0,low=dgPct(F,.
 function dgText(s,full){const L=[];const gp=s.gpu!=null?s.gpu.toFixed(1)+' ms':'não mede neste aparelho';
   L.push(`FPS ${s.fps.toFixed(0)} · quadro ${s.ft.toFixed(1)} ms · 1% pior ${s.low.toFixed(0)} ms · pico ${s.hi.toFixed(0)} ms · travadas>50ms ${s.hitch}`);
   L.push(`CPU do jogo ${s.cpu.toFixed(1)} ms (render ${s.rnd.toFixed(1)}) · GPU ${gp}`);
-  L.push(`Chamadas ${s.I.render.calls} · triângulos ${(s.I.render.triangles/1000).toFixed(0)}k · geometrias ${s.I.memory.geometries} · texturas ${s.I.memory.textures} · shaders ${s.I.programs?s.I.programs.length:'?'}`);
+  L.push(`Chamadas ${DIAG.ri.calls} · triângulos ${(DIAG.ri.triangles/1000).toFixed(0)}k · geometrias ${s.I.memory.geometries} · texturas ${s.I.memory.textures} · shaders ${s.I.programs?s.I.programs.length:'?'}`);
   L.push(`Tela ${s.cv.width}×${s.cv.height} (pixel ${s.dpr.toFixed(2)}, DRS ${(typeof DRS!='undefined'?DRS.s:1).toFixed(2)}) · gráficos ${GFX.n} · pós ${PO.on?'sim':'não'} · sombra ${GFX.shadow} · FOV ${FOVB}°`);
   L.push(`Pedaços ${s.chk} (fila ${s.qbuild}) · monstros ${s.vis}/${s.alive} visíveis · partículas ${s.parts} · NPCs ${NPC.length}${s.mem!=null?' · memória JS '+s.mem+' MB':''}`);
   const top=s.sys.slice(0,full?14:6).map(o=>`${o.n} ${o.ms.toFixed(2)}${full?' (pico '+o.mx.toFixed(0)+')':''}`).join(' · ');L.push('Mais caros (ms/quadro): '+top);
