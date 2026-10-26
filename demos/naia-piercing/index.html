@@ -110,17 +110,13 @@ h2 em{font-style:italic;background:var(--iri);background-size:200% 100%;-webkit-
 
 /* manifesto */
 .manifesto{text-align:center}
-.big{margin:0 auto;font:300 clamp(32px,4.6vw,58px)/1.15 var(--serif);max-width:20ch;text-wrap:balance}
-.big .w{opacity:.16;transition:opacity .6s}
-.big .w.lit{opacity:1}
-.big i{color:var(--gold-hi)}
-.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:80px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .tri div{padding:38px 28px;text-align:center}
 .tri div+div{border-left:1px solid var(--line)}
 .tri b{display:block;font:500 11px var(--mono);letter-spacing:.3em;color:var(--gold);margin-bottom:14px}
 .tri h3{margin:0 0 10px;font:400 30px/1.05 var(--serif)}
 .tri p{margin:0 auto;color:var(--mist);font-size:15px;max-width:30ch}
-@media (max-width:760px){.tri{grid-template-columns:1fr;margin-top:56px}.tri div+div{border-left:0;border-top:1px solid var(--line)}}
+@media (max-width:760px){.tri{grid-template-columns:1fr}.tri div+div{border-left:0;border-top:1px solid var(--line)}}
 
 /* obras */
 .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:64px}
@@ -321,7 +317,7 @@ footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);t
 .dock .pill:not(.gold){background:rgba(17,15,18,.9);flex:0 0 auto}
 @media (max-width:760px){.dock{display:flex}footer{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}}
 
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}.big .w{opacity:1}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -368,8 +364,6 @@ footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);t
 <main>
   <section class="manifesto" id="manifesto">
     <div class="wrap">
-      <p class="kicker rv">Manifesto</p>
-      <p class="big" id="big">Simetria não é regra, é <i>escuta</i>. Antes da agulha, eu leio a sua orelha como uma tela: onde a luz bate, onde a joia faz sentido, onde ela vai continuar bonita daqui a dez anos.</p>
       <div class="tri">
         <div class="rv"><b>I</b><h3>Anatomia</h3><p>Cada orelha tem curvas próprias. O ponto certo nasce dela, não de um molde.</p></div>
         <div class="rv"><b>II</b><h3>Proporção</h3><p>As joias conversam entre si, como uma constelação. Nada fica solto.</p></div>
@@ -641,18 +635,6 @@ document.querySelectorAll("[data-wa]").forEach(a=>a.href=wa(a.dataset.wa));
 (function(){
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{rootMargin:"0px 0px -8% 0px"});
   document.querySelectorAll(".rv").forEach(el=>io.observe(el));
-  // manifesto acende palavra por palavra conforme a leitura
-  const big=$("big");
-  big.innerHTML=big.innerHTML.split(/(<i>.*?<\/i>|\s+)/).map(w=>!w.trim()?w:`<span class="w">${w}</span>`).join("");
-  const words=[...big.querySelectorAll(".w")];
-  const lit=()=>{
-    const r=big.getBoundingClientRect(),vh=innerHeight;
-    const p=Math.min(1,Math.max(0,(vh*.85-r.top)/(r.height+vh*.35)));
-    const n=Math.round(p*words.length);
-    words.forEach((w,i)=>w.classList.toggle("lit",i<n));
-  };
-  if(matchMedia("(prefers-reduced-motion: reduce)").matches)words.forEach(w=>w.classList.add("lit"));
-  else{addEventListener("scroll",lit,{passive:true});lit()}
 })();
 
 /* ---------- horário do estúdio (hora de São Paulo) ---------- */
