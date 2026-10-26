@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Naiá · Body Piercer</title>
+<meta name="description" content="Naiá, body piercer no Mooca Ink. Projetos de orelha, microdermais e aplicações pensadas em simetria, com procedimento asséptico.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0A090B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="importmap">{"imports":{"three":"../../vendor/three.module.min.js"}}</script>
+<style>
+/* Layout: imersão em coluna central e simétrica; joias 3D no hero e na vitrine; tudo leva ao WhatsApp */
+:root{
+  --noir:#0A090B; --noir-2:#110F12; --noir-3:#19161B; --line:#2A252D; --line-2:#3C3540;
+  --pearl:#F3EDE4; --mist:#BDB3A8; --dim:#857C76;
+  --gold:#D9B77F; --gold-hi:#F2DFB6; --gold-deep:#9C7647; --ok:#9BD3A6;
+  --iri:linear-gradient(100deg,#e9cf9f 0%,#d6c3ec 45%,#a9dcd9 75%,#e9cf9f 100%);
+  --serif:"Cormorant Garamond","Cormorant",Georgia,serif;
+  --sans:"Manrope","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--noir);scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--noir);color:var(--pearl);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:1.5px solid var(--gold-hi);outline-offset:4px;border-radius:4px}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.spark{display:inline-block;width:.8em;height:.8em;vertical-align:-.05em;color:var(--gold)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.demo{overflow:hidden;max-height:60px;transition:max-height .4s var(--ease),padding .4s var(--ease);background:var(--pearl);color:var(--noir);font:500 11px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:7px 12px;padding-top:calc(7px + env(safe-area-inset-top,0px))}
+
+/* navegação */
+.nav{position:fixed;left:0;right:0;top:0;z-index:20;transition:background-color .4s,border-color .4s,transform .4s var(--ease);border-bottom:1px solid transparent}
+.nav.solid .demo{max-height:0;padding-top:0;padding-bottom:0}
+.nav.solid{background:rgba(10,9,11,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
+.nav.hide{transform:translateY(-100%)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:18px;height:64px}
+.brand{font:400 26px/1 var(--serif);letter-spacing:.02em;text-decoration:none;display:flex;align-items:baseline;gap:10px}
+.brand small{font:500 10px var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--mist)}
+.links{display:flex;gap:26px;list-style:none;margin:0;padding:0}
+.links a{font:500 13px var(--sans);letter-spacing:.04em;color:var(--mist);text-decoration:none;transition:color .2s}
+.links a:hover{color:var(--pearl)}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--line-2);font:600 14px var(--sans);letter-spacing:.01em;text-decoration:none;transition:background-color .25s,border-color .25s,color .25s,transform .25s var(--ease)}
+.pill:hover{border-color:var(--gold)}
+.pill.gold{background:var(--pearl);color:var(--noir);border-color:var(--pearl)}
+.pill.gold:hover{background:var(--gold-hi);border-color:var(--gold-hi)}
+.pill svg{width:18px;height:18px;flex:none}
+.pill.lg{min-height:56px;padding:0 28px;font-size:15px}
+@media (max-width:900px){.links{display:none}}
+
+/* hero */
+.hero{position:relative;height:100svh;min-height:620px;max-height:1100px;overflow:hidden;isolation:isolate;
+  background:radial-gradient(ellipse 55% 45% at 50% 46%,#221c18 0%,#120f10 45%,var(--noir) 80%)}
+.hero::before{content:"";position:absolute;left:50%;top:0;height:var(--ring-top,22%);width:1px;background:linear-gradient(180deg,transparent,rgba(217,183,127,.45));z-index:-1}
+#gl{position:absolute;inset:0;width:100%;height:100%;z-index:-1;opacity:0;transition:opacity 1.6s var(--ease)}
+#gl.on{opacity:1}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(10,9,11,.55) 0%,transparent 22%,transparent 62%,rgba(10,9,11,.85) 88%,var(--noir) 100%)}
+.hero-in{height:100%;display:grid;grid-template-rows:auto 1fr auto;justify-items:center;align-items:center;text-align:center;padding-top:104px;padding-bottom:40px;gap:20px}
+.eyebrow{align-self:start;margin:0;font:500 11px var(--mono);letter-spacing:.32em;text-transform:uppercase;color:var(--mist);display:flex;align-items:center;gap:14px}
+.eyebrow::before,.eyebrow::after{content:"";width:28px;height:1px;background:var(--gold-deep)}
+.name{margin:0;display:grid;justify-items:center;gap:6px;pointer-events:none}
+.name b{font:300 clamp(84px,13.5vw,176px)/.8 var(--serif);letter-spacing:-.02em;font-weight:300;
+  background:linear-gradient(180deg,#fff9ef 0%,#f1dfbd 55%,#b99363 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 40px rgba(0,0,0,.65));animation:rise 1.6s var(--ease) .2s both}
+.name span{font:500 12px var(--mono);letter-spacing:.62em;padding-left:.62em;text-transform:uppercase;color:var(--gold-hi);animation:rise 1.6s var(--ease) .45s both}
+.hero-low{align-self:end;display:grid;justify-items:center;gap:18px;animation:rise 1.6s var(--ease) .7s both}
+.tag{margin:0;font:300 italic clamp(26px,3.6vw,38px)/1.1 var(--serif);max-width:22ch;text-wrap:balance}
+.lede{margin:0;color:var(--mist);max-width:60ch;font-size:15px}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.slot{font:500 11px var(--mono);letter-spacing:.08em;color:var(--dim);display:flex;align-items:center;justify-content:center;gap:8px;text-align:left}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--dim);flex:none}
+.dot.on{background:var(--ok);box-shadow:0 0 0 4px rgba(155,211,166,.14)}
+.cue{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);width:1px;height:38px;background:linear-gradient(var(--gold),transparent);animation:cue 2.4s ease-in-out infinite}
+@keyframes cue{0%{transform:translateX(-50%) scaleY(0);transform-origin:top}50%{transform:translateX(-50%) scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:translateX(-50%) scaleY(0);transform-origin:bottom}}
+@keyframes rise{from{opacity:0;transform:translateY(16px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.no-webgl .hero{background:radial-gradient(circle at 50% 46%,transparent 0 28vmin,rgba(217,183,127,.5) 28.2vmin 29vmin,transparent 29.2vmin),radial-gradient(ellipse 55% 45% at 50% 46%,#221c18 0%,var(--noir) 80%)}
+@media (max-width:760px){
+  .hero-in{padding-top:100px;padding-bottom:28px}
+  .tag{font-size:27px}
+  .lede{font-size:14.5px}
+  .ctas .pill{flex:1 1 100%}
+  .hero .cue{display:none}
+}
+
+/* seções */
+section{position:relative;padding:120px 0}
+@media (max-width:760px){section{padding:84px 0}}
+.kicker{margin:0 0 18px;font:500 11px var(--mono);letter-spacing:.32em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;justify-content:center;gap:12px}
+.kicker::before,.kicker::after{content:"";width:22px;height:1px;background:var(--gold-deep)}
+h2{margin:0 auto;font:300 clamp(44px,6.4vw,82px)/.98 var(--serif);letter-spacing:-.015em;text-align:center;max-width:16ch;text-wrap:balance}
+h2 em{font-style:italic;background:var(--iri);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:iri 9s linear infinite}
+@keyframes iri{to{background-position:200% 0}}
+.sub{margin:22px auto 0;max-width:52ch;text-align:center;color:var(--mist)}
+.orn{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--gold-deep);margin:0 auto}
+.orn::before,.orn::after{content:"";height:1px;width:min(28vw,220px);background:linear-gradient(90deg,transparent,var(--line-2))}
+.orn::after{transform:scaleX(-1)}
+.orn svg{width:14px;height:14px}
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+/* manifesto */
+.manifesto{text-align:center}
+.big{margin:0 auto;font:300 clamp(32px,4.6vw,58px)/1.15 var(--serif);max-width:20ch;text-wrap:balance}
+.big .w{opacity:.16;transition:opacity .6s}
+.big .w.lit{opacity:1}
+.big i{color:var(--gold-hi)}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:80px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tri div{padding:38px 28px;text-align:center}
+.tri div+div{border-left:1px solid var(--line)}
+.tri b{display:block;font:500 11px var(--mono);letter-spacing:.3em;color:var(--gold);margin-bottom:14px}
+.tri h3{margin:0 0 10px;font:400 30px/1.05 var(--serif)}
+.tri p{margin:0 auto;color:var(--mist);font-size:15px;max-width:30ch}
+@media (max-width:760px){.tri{grid-template-columns:1fr;margin-top:56px}.tri div+div{border-left:0;border-top:1px solid var(--line)}}
+
+/* obras */
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:64px}
+.work{margin:0;position:relative;border-radius:200px 200px 14px 14px;overflow:hidden;background:var(--noir-3);aspect-ratio:3/4;isolation:isolate}
+.work:nth-child(2),.work:nth-child(3){transform:translateY(40px)}
+.work img{width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease),filter 1.4s var(--ease);filter:saturate(.9) contrast(1.02)}
+.work:hover img{transform:scale(1.05);filter:saturate(1.05)}
+.work::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(10,9,11,.85));z-index:1}
+.work::before{content:"";position:absolute;inset:6px;border:1px solid rgba(242,223,182,.28);border-radius:194px 194px 10px 10px;z-index:2;pointer-events:none}
+.work figcaption{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 14px 18px;text-align:center}
+.work figcaption b{display:block;font:400 21px/1.1 var(--serif)}
+.work figcaption span{font:500 10px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--gold-hi)}
+.more{display:flex;justify-content:center;margin-top:84px}
+@media (max-width:860px){.gallery{grid-template-columns:repeat(2,1fr);gap:10px}.work:nth-child(2),.work:nth-child(3){transform:none}.work:nth-child(even){transform:translateY(28px)}.more{margin-top:60px}}
+
+/* vitrine 3D */
+.vitrine{background:radial-gradient(ellipse 60% 50% at 50% 55%,#1c1715,var(--noir) 75%)}
+.stage{display:grid;grid-template-columns:1fr minmax(300px,520px) 1fr;gap:24px;align-items:center;margin-top:48px}
+.stage-c{position:relative;aspect-ratio:1;width:100%}
+.stage-c::before{content:"";position:absolute;inset:8%;border-radius:50%;border:1px solid var(--line);box-shadow:inset 0 0 80px rgba(217,183,127,.06)}
+.stage-c::after{content:"";position:absolute;inset:2%;border-radius:50%;border:1px dashed rgba(60,53,64,.6);animation:spin 80s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#vitrine-gl{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:pan-y;opacity:0;transition:opacity 1s;z-index:1}
+#vitrine-gl.on{opacity:1}
+#vitrine-gl:active{cursor:grabbing}
+.hint{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);white-space:nowrap;z-index:2}
+.pieces,.info{display:grid;gap:8px}
+.pieces{justify-items:end}
+.pc{display:grid;grid-template-columns:auto auto;gap:14px;align-items:center;text-align:right;padding:12px 4px;border-bottom:1px solid var(--line);width:100%;max-width:250px;justify-content:end;color:var(--dim);transition:color .3s}
+.pc b{font:400 23px/1.1 var(--serif);color:inherit}
+.pc span{font:500 10px var(--mono);letter-spacing:.18em;color:inherit}
+.pc[aria-pressed="true"]{color:var(--pearl)}
+.pc[aria-pressed="true"] span{color:var(--gold)}
+.pc:hover{color:var(--mist)}
+.info h3{margin:0;font:400 34px/1.05 var(--serif)}
+.info p{margin:0;color:var(--mist);font-size:15px;max-width:32ch}
+.info .where{font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-hi);margin-top:6px}
+.tones{display:flex;gap:10px;margin-top:18px;align-items:center}
+.tones small{font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-right:4px}
+.tone{width:30px;height:30px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;transition:border-color .2s}
+.tone i{width:20px;height:20px;border-radius:50%;display:block}
+.tone[aria-pressed="true"]{border-color:var(--pearl)}
+.t-ouro{background:linear-gradient(135deg,#fff0c8,#d4a65e 55%,#8a6331)}
+.t-prata{background:linear-gradient(135deg,#ffffff,#b9bcc3 55%,#6d7079)}
+.t-rose{background:linear-gradient(135deg,#ffe2d6,#e2a18e 55%,#9a5d4f)}
+@media (max-width:900px){
+  .stage{grid-template-columns:1fr;gap:6px}
+  .stage-c{max-width:440px;margin:0 auto;order:1}
+  .pieces{order:2;grid-template-columns:repeat(4,1fr);justify-items:stretch;gap:6px}
+  .pc{grid-template-columns:1fr;text-align:center;justify-content:center;max-width:none;padding:12px 2px;gap:2px;border:1px solid var(--line);border-radius:12px}
+  .pc b{font-size:17px}
+  .pc[aria-pressed="true"]{border-color:var(--gold-deep);background:var(--noir-2)}
+  .info{order:3;text-align:center;justify-items:center;margin-top:22px}
+  .no-webgl .vitrine{display:none}
+}
+
+/* aplicações */
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin-top:64px}
+.app{background:var(--noir);padding:34px 28px 30px;display:grid;gap:10px;align-content:start;transition:background-color .4s}
+.app:hover{background:var(--noir-2)}
+.app .n{font:500 11px var(--mono);letter-spacing:.24em;color:var(--gold)}
+.app h3{margin:0;font:400 30px/1.05 var(--serif)}
+.app p{margin:0;color:var(--mist);font-size:15px}
+.app ul{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.app li{font:500 11px var(--mono);letter-spacing:.04em;color:var(--mist);border:1px solid var(--line-2);border-radius:999px;padding:4px 10px}
+@media (max-width:900px){.apps{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.apps{grid-template-columns:1fr}}
+
+/* monte seu projeto */
+.proj{background:linear-gradient(180deg,var(--noir),var(--noir-2) 30%,var(--noir-2) 70%,var(--noir))}
+.builder{display:grid;grid-template-columns:minmax(280px,460px) 1fr;gap:64px;align-items:center;margin-top:64px}
+.ear-box{position:relative;width:100%;max-width:420px;margin:0 auto;aspect-ratio:320/440}
+.ear-box svg.ear{position:absolute;inset:0;width:100%;height:100%;overflow:visible;transition:transform .8s var(--ease)}
+.ear-box.left svg.ear,.ear-box.left .spots{transform:scaleX(-1)}
+.ear path{fill:none;stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ear .soft{stroke:rgba(217,183,127,.5);stroke-width:1.2}
+.ear .skin{fill:url(#skin);stroke:none}
+.ear .canal{fill:#050405;stroke:none;opacity:.9}
+.ear .bar{opacity:0;transition:opacity .4s}
+.ear .bar path{stroke:var(--gold-hi);stroke-width:3.2}
+.ear .bar circle{fill:var(--gold-hi)}
+.ear .bar.on{opacity:1}
+.spots{position:absolute;inset:0;transition:transform .8s var(--ease)}
+.spot{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;display:grid;place-items:center}
+.spot i{width:9px;height:9px;border-radius:50%;border:1px solid var(--gold-hi);background:rgba(10,9,11,.6);transition:transform .35s var(--ease),background .35s,box-shadow .35s}
+.spot::after{content:"";position:absolute;inset:7px;border-radius:50%;border:1px solid rgba(242,223,182,.35);animation:ping 2.8s ease-out infinite;animation-delay:var(--d,0s)}
+@keyframes ping{0%{transform:scale(.5);opacity:1}70%,100%{transform:scale(1.4);opacity:0}}
+.spot:hover i{transform:scale(1.35)}
+.spot[aria-pressed="true"] i{transform:scale(1.5);background:radial-gradient(circle at 35% 30%,#fff,#f2dfb6 35%,#b8874a 75%);border-color:#fff;box-shadow:0 0 14px 3px rgba(242,223,182,.55)}
+.spot[aria-pressed="true"]::after{animation:none;opacity:0}
+.spot b{position:absolute;left:50%;top:100%;transform:translateX(-50%);font:500 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gold-hi);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .3s}
+.spot[aria-pressed="true"] b,.spot:hover b,.spot:focus-visible b{opacity:1}
+.spot.lb-l b,.spot.lb-r b{top:50%;transform:translateY(-50%)}
+.spot.lb-l b{left:auto;right:100%}
+.spot.lb-r b{left:100%}
+.ear-box.left .spot b{transform:translateX(-50%) scaleX(-1)}
+.ear-box.left .spot.lb-l b,.ear-box.left .spot.lb-r b{transform:translateY(-50%) scaleX(-1)}
+.panel{display:grid;gap:26px}
+.seg{display:inline-grid;grid-auto-flow:column;gap:4px;padding:4px;border:1px solid var(--line-2);border-radius:999px}
+.seg button{padding:9px 16px;border-radius:999px;font:600 13px var(--sans);color:var(--mist);transition:background-color .25s,color .25s}
+.seg button[aria-pressed="true"]{background:var(--pearl);color:var(--noir)}
+.lbl{display:block;font:500 10px var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 14px;border-radius:999px;border:1px solid var(--line-2);font:500 13px var(--sans);color:var(--mist);transition:border-color .25s,color .25s,background-color .25s}
+.chip:hover{border-color:var(--gold-deep);color:var(--pearl)}
+.chip[aria-pressed="true"]{border-color:var(--gold);color:var(--noir);background:var(--gold-hi)}
+.summary{border:1px solid var(--line);border-radius:18px;padding:22px;background:rgba(10,9,11,.6)}
+.summary h3{margin:0;font:400 28px/1.1 var(--serif)}
+.summary p{margin:8px 0 18px;color:var(--mist);font-size:14.5px;min-height:2.6em}
+.summary .pill{width:100%}
+.count{font:500 11px var(--mono);letter-spacing:.2em;color:var(--gold)}
+@media (max-width:900px){.builder{grid-template-columns:1fr;gap:36px}.ear-box{max-width:330px}.panel{text-align:left}}
+
+/* sobre */
+.about{display:grid;grid-template-columns:auto 1fr;gap:56px;align-items:center;max-width:880px;margin:0 auto}
+.portrait{position:relative;width:240px;height:240px}
+.portrait img{width:100%;height:100%;border-radius:50%;object-fit:cover;transform:scale(1.05);filter:grayscale(.15) contrast(1.04)}
+.portrait .mask{position:absolute;inset:0;border-radius:50%;overflow:hidden}
+.portrait::before{content:"";position:absolute;inset:-14px;border-radius:50%;border:1px solid var(--gold-deep)}
+.portrait::after{content:"";position:absolute;inset:-28px;border-radius:50%;border:1px solid var(--line)}
+.portrait .gemdot{position:absolute;left:50%;top:-18px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#f2dfb6 35%,#b8874a 75%);box-shadow:0 0 14px rgba(242,223,182,.6);z-index:2}
+.about h2{text-align:left;margin:0;max-width:none}
+.about .kicker{justify-content:flex-start}
+.about .kicker::after{display:none}
+.about p{color:var(--mist);margin:18px 0 0;max-width:54ch}
+.about p.sig{font:300 italic 30px/1 var(--serif);color:var(--gold-hi);margin-top:22px}
+@media (max-width:760px){.about{grid-template-columns:1fr;justify-items:center;text-align:center;gap:52px}.about h2{text-align:center}.about .kicker{justify-content:center}.about .kicker::after{display:block}.portrait{width:190px;height:190px}}
+
+/* processo */
+.steps{list-style:none;margin:64px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.steps::before{content:"";position:absolute;left:12.5%;right:12.5%;top:22px;height:1px;background:linear-gradient(90deg,var(--gold-deep),var(--line-2),var(--gold-deep))}
+.steps li{text-align:center;padding:0 16px;position:relative}
+.steps .k{width:44px;height:44px;margin:0 auto 22px;border-radius:50%;border:1px solid var(--gold-deep);background:var(--noir);display:grid;place-items:center;font:500 12px var(--mono);color:var(--gold-hi);position:relative;z-index:1}
+.steps h3{margin:0 0 8px;font:400 26px/1.1 var(--serif)}
+.steps p{margin:0 auto;color:var(--mist);font-size:14.5px;max-width:26ch}
+@media (max-width:860px){.steps{grid-template-columns:1fr;gap:34px}.steps::before{left:22px;right:auto;top:22px;bottom:22px;width:1px;height:auto;background:linear-gradient(180deg,var(--gold-deep),var(--line-2))}.steps li{display:grid;grid-template-columns:44px 1fr;gap:4px 18px;text-align:left;padding:0}.steps .k{margin:0;grid-row:span 2}.steps p{margin:0;max-width:none}}
+
+/* cuidados */
+.care{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:64px;align-items:start}
+.rules{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--line)}
+.rules li{display:grid;grid-template-columns:36px 1fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}
+.rules svg{width:22px;height:22px;color:var(--gold);margin-top:2px}
+.rules b{display:block;font:600 15px var(--sans);margin-bottom:2px}
+.rules span{color:var(--mist);font-size:14.5px}
+.faq{border-bottom:1px solid var(--line)}
+.faq:first-of-type{border-top:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:20px 34px 20px 0;position:relative;font:400 23px/1.2 var(--serif)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";position:absolute;right:6px;top:50%;width:10px;height:10px;border-right:1px solid var(--gold);border-bottom:1px solid var(--gold);transform:translateY(-70%) rotate(45deg);transition:transform .3s}
+.faq[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
+.faq p{margin:0 0 20px;color:var(--mist);font-size:15px}
+.care-note{margin:18px 0 0;font-size:13px;color:var(--dim)}
+@media (max-width:860px){.care{grid-template-columns:1fr;gap:40px}}
+
+/* feedback */
+.proof{text-align:center;padding:96px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:radial-gradient(ellipse 50% 80% at 50% 50%,#17131a,var(--noir) 70%)}
+.proof q{display:block;margin:0 auto;font:300 italic clamp(30px,4vw,50px)/1.15 var(--serif);max-width:22ch;text-wrap:balance;quotes:"“" "”"}
+.proof p{color:var(--mist);margin:18px auto 30px;max-width:46ch}
+
+/* estúdio */
+.studio{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:24px;overflow:hidden;margin-top:64px}
+.studio>div{background:var(--noir);padding:40px}
+.studio-id{display:grid;justify-items:center;align-content:center;text-align:center;gap:16px}
+.studio-id img{width:132px;height:132px;border-radius:50%;filter:invert(1) contrast(1.3);mix-blend-mode:screen}
+.studio-id strong{font:500 12px var(--mono);letter-spacing:.3em;text-transform:uppercase}
+.studio-id address{font-style:normal;color:var(--mist)}
+.studio-id address b{display:block;color:var(--pearl);font:400 28px/1.1 var(--serif);margin-bottom:4px}
+.row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.hours{width:100%;border-collapse:collapse;font-size:15px}
+.hours td{padding:14px 0;border-bottom:1px solid var(--line)}
+.hours td:last-child{text-align:right;font:500 13px var(--mono);color:var(--mist);font-variant-numeric:tabular-nums}
+.hours tr.today td{color:var(--pearl)}
+.hours tr.today td:first-child::after{content:" · hoje";font:500 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.now{display:flex;align-items:center;gap:10px;margin:0 0 18px;font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist)}
+.studio small{display:block;margin-top:16px;color:var(--dim);font-size:13px}
+@media (max-width:760px){.studio{grid-template-columns:1fr}.studio>div{padding:30px 22px}}
+
+/* final */
+.final{text-align:center;padding:150px 0 140px;overflow:hidden}
+.final::before{content:"";position:absolute;left:50%;top:50%;width:min(620px,120vw);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(217,183,127,.25);box-shadow:0 0 120px rgba(217,183,127,.06),inset 0 0 120px rgba(217,183,127,.05)}
+.final::after{content:"";position:absolute;left:50%;top:50%;width:min(760px,150vw);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:1px solid var(--line)}
+.final>.wrap{position:relative;z-index:1}
+.final .ctas{margin-top:36px}
+.final .slot{justify-content:center;margin-top:20px}
+
+footer{border-top:1px solid var(--line);padding:44px 0 calc(40px + env(safe-area-inset-bottom,0px));text-align:center;color:var(--dim);font-size:13px}
+footer .f-name{font:400 30px/1 var(--serif);color:var(--pearl)}
+footer .row{margin:18px 0 26px}
+footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);text-decoration:none}
+.credit{border-top:1px solid var(--line);padding-top:26px}
+.credit strong{color:var(--mist);font-weight:600}
+.credit p{margin:6px 0 10px}
+.credit a{color:var(--gold-hi);text-decoration:none}
+
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:25;padding:10px max(14px,env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px));display:none;gap:8px;background:linear-gradient(180deg,transparent,rgba(10,9,11,.92) 35%);transform:translateY(110%);transition:transform .5s var(--ease)}
+.dock.on{transform:none}
+.dock .pill{flex:1;min-height:52px}
+.dock .pill:not(.gold){background:rgba(17,15,18,.9);flex:0 0 auto}
+@media (max-width:760px){.dock{display:flex}footer{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}.big .w{opacity:1}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="sp" viewBox="0 0 20 20"><path fill="currentColor" d="M10 0c.7 6.2 2.6 8.6 10 10-7.4 1.4-9.3 3.8-10 10-.7-6.2-2.6-8.6-10-10 7.4-1.4 9.3-3.8 10-10Z"/></symbol>
+  <symbol id="gm" viewBox="0 0 20 20"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M5 3h10l4 5-9 10L1 8Zm-4 5h18M7.5 8 10 18l2.5-10M5 3l2.5 5L10 3l2.5 5L15 3"/></symbol>
+  <symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.4-.7a11.8 11.8 0 0 1-4.6-4.1c-.3-.5-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></symbol>
+  <symbol id="ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></g></symbol>
+</defs></svg>
+
+<nav class="nav" id="nav" aria-label="Principal">
+  <div class="demo">Demonstração · Amplitude Lab · @amplitude_lab</div>
+  <div class="wrap nav-in">
+    <a class="brand" href="#topo">Naiá <small>Body Piercer</small></a>
+    <ul class="links">
+      <li><a href="#obras">Obras</a></li>
+      <li><a href="#vitrine">Vitrine</a></li>
+      <li><a href="#projeto">Monte seu projeto</a></li>
+      <li><a href="#cuidados">Cuidados</a></li>
+      <li><a href="#estudio">Estúdio</a></li>
+    </ul>
+    <a class="pill gold" data-wa="Olá, Naiá! Vi seu site e quero agendar uma avaliação." href="https://wa.me/5511934707496" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Agendar</a>
+  </div>
+</nav>
+
+<header class="hero" id="topo">
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <p class="eyebrow">Body Piercer · Mooca · SP</p>
+    <h1 class="name"><b>Naiá</b><span>Body Piercing</span></h1>
+    <div class="hero-low">
+      <p class="tag">Joias que parecem ter nascido em você.</p>
+      <p class="lede">Cada ponto é estudado na sua anatomia e pensado em simetria. Não é só um furo: é uma composição feita para durar.</p>
+      <div class="ctas">
+        <a class="pill gold lg" data-wa="Olá, Naiá! Vi seu site e quero agendar uma avaliação." href="https://wa.me/5511934707496" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Agendar avaliação</a>
+        <a class="pill lg" href="#projeto"><svg class="spark"><use href="#sp"/></svg>Monte seu projeto</a>
+      </div>
+      <p class="slot"><span class="dot" data-open></span><span data-open-text>Atendimento com hora marcada no Mooca Ink</span></p>
+    </div>
+  </div>
+  <span class="cue" aria-hidden="true"></span>
+</header>
+
+<main>
+  <section class="manifesto" id="manifesto">
+    <div class="wrap">
+      <p class="kicker rv">Manifesto</p>
+      <p class="big" id="big">Simetria não é regra, é <i>escuta</i>. Antes da agulha, eu leio a sua orelha como uma tela: onde a luz bate, onde a joia faz sentido, onde ela vai continuar bonita daqui a dez anos.</p>
+      <div class="tri">
+        <div class="rv"><b>I</b><h3>Anatomia</h3><p>Cada orelha tem curvas próprias. O ponto certo nasce dela, não de um molde.</p></div>
+        <div class="rv"><b>II</b><h3>Proporção</h3><p>As joias conversam entre si, como uma constelação. Nada fica solto.</p></div>
+        <div class="rv"><b>III</b><h3>Assepsia</h3><p>Procedimento asséptico do começo ao fim. Cuidado que não aparece na foto, mas aparece na cicatrização.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="obras">
+    <div class="wrap">
+      <p class="kicker rv">Obras</p>
+      <h2 class="rv">Composições que <em>se vestem</em></h2>
+      <p class="sub rv">Projetos de orelha, microdermais e pontos únicos. Cada um desenhado para quem usa.</p>
+      <div class="gallery">
+        <figure class="work rv"><img src="img/p1.jpg" alt="Projeto de orelha com argolas, flor de pedras e pontos dourados do lóbulo ao helix" width="251" height="335" loading="lazy"><figcaption><b>Constelação dourada</b><span>Projeto de orelha</span></figcaption></figure>
+        <figure class="work rv"><img src="img/p3.jpg" alt="Daith com argola cravejada, conch com pedra e helix com argola fina" width="233" height="321" loading="lazy"><figcaption><b>Daith cravejado</b><span>Daith · conch · helix</span></figcaption></figure>
+        <figure class="work rv"><img src="img/p4.jpg" alt="Dois microdermais alinhados na frente da orelha e dois pontos no lóbulo" width="589" height="705" loading="lazy"><figcaption><b>Linha vertical</b><span>Microdermais · lóbulo</span></figcaption></figure>
+        <figure class="work rv"><img src="img/p2.jpg" alt="Orelha com três pontos de pedra subindo pelo helix, trio no lóbulo e argola" width="252" height="335" loading="lazy"><figcaption><b>Subida de luz</b><span>Lóbulo · helix</span></figcaption></figure>
+      </div>
+      <div class="more rv"><a class="pill" href="https://www.instagram.com/naia_piercing/" target="_blank" rel="noopener"><svg><use href="#ig"/></svg>Ver portfólio completo · @naia_piercing</a></div>
+    </div>
+  </section>
+
+  <section class="vitrine" id="vitrine">
+    <div class="wrap">
+      <p class="kicker rv">Vitrine</p>
+      <h2 class="rv">A joia antes de <em>ser sua</em></h2>
+      <p class="sub rv">Gire as peças, troque o tom e imagine onde cada uma mora em você.</p>
+      <div class="stage">
+        <div class="pieces" role="group" aria-label="Escolha a peça">
+          <button class="pc" data-piece="clicker" aria-pressed="true"><b>Clicker cravejado</b><span>01</span></button>
+          <button class="pc" data-piece="flor" aria-pressed="false"><b>Flor de marquises</b><span>02</span></button>
+          <button class="pc" data-piece="dermal" aria-pressed="false"><b>Microdermal</b><span>03</span></button>
+          <button class="pc" data-piece="trio" aria-pressed="false"><b>Trio</b><span>04</span></button>
+        </div>
+        <div class="stage-c">
+          <canvas id="vitrine-gl" aria-label="Joia em 3D, arraste para girar" role="img"></canvas>
+          <span class="hint">Arraste para girar</span>
+        </div>
+        <div class="info" aria-live="polite">
+          <h3 id="pc-name">Clicker cravejado</h3>
+          <p id="pc-desc">Argola com pedras em linha que abraça a curva da cartilagem. Brilho contínuo, encaixe firme.</p>
+          <span class="where" id="pc-where">Daith · helix · lóbulo</span>
+          <div class="tones" role="group" aria-label="Tom da joia">
+            <small>Tom</small>
+            <button class="tone" data-tone="ouro" aria-pressed="true" aria-label="Dourado"><i class="t-ouro"></i></button>
+            <button class="tone" data-tone="prata" aria-pressed="false" aria-label="Prateado"><i class="t-prata"></i></button>
+            <button class="tone" data-tone="rose" aria-pressed="false" aria-label="Rosé"><i class="t-rose"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="aplicacoes">
+    <div class="wrap">
+      <p class="kicker rv">Aplicações</p>
+      <h2 class="rv">Do primeiro furo ao <em>projeto inteiro</em></h2>
+      <div class="apps">
+        <article class="app rv"><span class="n">01</span><h3>Projetos de orelha</h3><p>Composição completa, pensada como um desenho: pontos, alturas e joias que se completam.</p><ul><li>helix</li><li>flat</li><li>conch</li><li>daith</li><li>rook</li><li>tragus</li></ul></article>
+        <article class="app rv"><span class="n">02</span><h3>Microdermais</h3><p>Joia rente à pele, sem saída aparente. Pede precisão de marcação e alinhamento milimétrico.</p><ul><li>rosto</li><li>colo</li><li>nuca</li><li>dedos</li></ul></article>
+        <article class="app rv"><span class="n">03</span><h3>Lóbulos</h3><p>Primeiro, segundo, terceiro furo. A base de qualquer composição, feita com o mesmo cuidado.</p><ul><li>lóbulo</li><li>lóbulo alto</li><li>transversal</li></ul></article>
+        <article class="app rv"><span class="n">04</span><h3>Nariz e septo</h3><p>Pontos delicados no centro do rosto, onde a simetria aparece primeiro.</p><ul><li>nostril</li><li>septo</li><li>high nostril</li></ul></article>
+        <article class="app rv"><span class="n">05</span><h3>Corpo</h3><p>Aplicações de corpo com a mesma leitura anatômica e o mesmo protocolo.</p><ul><li>umbigo</li><li>mamilo</li><li>surface</li></ul></article>
+        <article class="app rv"><span class="n">06</span><h3>Troca de joia</h3><p>Upgrade de peças em furos já cicatrizados, com encaixe e tamanho certos.</p><ul><li>troca</li><li>curadoria</li><li>ajuste</li></ul></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="proj" id="projeto">
+    <div class="wrap">
+      <p class="kicker rv">Monte seu projeto</p>
+      <h2 class="rv">Desenhe a orelha <em>dos seus sonhos</em></h2>
+      <p class="sub rv">Toque nos pontos e veja a composição ganhar forma. Depois é só mandar para a Naiá: ela avalia sua anatomia e ajusta o desenho com você.</p>
+      <div class="builder">
+        <div class="ear-box rv" id="earbox">
+          <svg class="ear" viewBox="0 0 320 440" aria-hidden="true">
+            <defs>
+              <radialGradient id="skin" cx="42%" cy="45%" r="60%"><stop offset="0" stop-color="#2c2321"/><stop offset=".7" stop-color="#1a1515"/><stop offset="1" stop-color="#1a1515" stop-opacity="0"/></radialGradient>
+            </defs>
+            <!-- contorno da orelha (helix até o lóbulo) -->
+            <path class="skin" d="M238 120C236 70 200 30 150 28 92 26 52 70 50 135c-2 55 16 93 34 127 16 30 20 56 24 82 6 48 38 74 70 68 28-6 38-28 34-50-2-14 2-24 10-32L240 280 242 214Z"/>
+            <path d="M238 120C236 70 200 30 150 28 92 26 52 70 50 135c-2 55 16 93 34 127 16 30 20 56 24 82 6 48 38 74 70 68 28-6 38-28 34-50-2-14 2-24 10-32"/>
+            <!-- borda interna do helix -->
+            <path class="soft" d="M222 128C218 88 190 52 150 50 104 50 74 86 72 138c-2 48 14 82 30 112"/>
+            <!-- anti-helix, crura e raiz do helix -->
+            <path d="M146 318c-18-22-28-56-24-92 4-36 18-66 38-90 8-14 14-32 20-50"/>
+            <path d="M150 152c20-6 42-6 64 0"/>
+            <path d="M238 130c-12 30-28 48-52 56"/>
+            <!-- concha, canal, tragus e antitragus -->
+            <path class="soft" d="M214 162c-34 2-64 20-72 52-6 34 4 72 28 86"/>
+            <ellipse class="canal" cx="208" cy="246" rx="11" ry="19"/>
+            <path d="M240 214c-18 0-26 18-24 38 2 18 14 28 26 26"/>
+            <path d="M160 318c16-18 40-20 54-6"/>
+            <!-- barra do industrial -->
+            <g class="bar" id="bar"><path d="M216 70 84 80"/><circle cx="216" cy="70" r="4.5"/><circle cx="84" cy="80" r="4.5"/></g>
+          </svg>
+          <div class="spots" id="spots"></div>
+        </div>
+        <div class="panel">
+          <div>
+            <span class="lbl">Orelha</span>
+            <div class="seg" role="group" aria-label="Qual orelha">
+              <button data-side="direita" aria-pressed="true">Direita</button>
+              <button data-side="esquerda" aria-pressed="false">Esquerda</button>
+              <button data-side="ambas" aria-pressed="false">Ambas, simétricas</button>
+            </div>
+          </div>
+          <div>
+            <span class="lbl">Pontos da orelha</span>
+            <div class="chips" id="earchips"></div>
+          </div>
+          <div>
+            <span class="lbl">Outras aplicações</span>
+            <div class="chips" id="bodychips"></div>
+          </div>
+          <div class="summary">
+            <span class="count" id="count">Nenhum ponto escolhido</span>
+            <h3 id="sumtitle">Seu projeto começa aqui</h3>
+            <p id="sumtext">Escolha um ou mais pontos. Se estiver em dúvida, mande mesmo assim: a Naiá sugere a composição ideal para você.</p>
+            <a class="pill gold lg" id="send" href="https://wa.me/5511934707496" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Enviar meu projeto para a Naiá</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sobre">
+    <div class="wrap">
+      <div class="about">
+        <div class="portrait rv"><span class="gemdot"></span><div class="mask"><img src="img/naia.jpg" alt="Naiá, body piercer" width="243" height="243" loading="lazy"></div></div>
+        <div class="rv">
+          <p class="kicker">Quem faz</p>
+          <h2>Naiá</h2>
+          <p>Body piercer no Mooca Ink Tattoo Concept. Meu trabalho é encontrar o ponto exato onde a joia parece ter estado sempre ali: simétrica, proporcional e confortável no seu dia a dia.</p>
+          <p>Cada atendimento começa com conversa e marcação feita junto com você, no espelho. Só furo quando a gente olha junto e tem certeza.</p>
+          <p class="sig">Naiá</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="processo" style="padding-top:40px">
+    <div class="wrap">
+      <div class="orn rv"><svg><use href="#gm"/></svg></div>
+      <p class="kicker rv" style="margin-top:80px">Como funciona</p>
+      <h2 class="rv">Um ritual em <em>quatro tempos</em></h2>
+      <ol class="steps">
+        <li class="rv"><span class="k">01</span><h3>Conversa</h3><p>Você manda pelo WhatsApp a ideia, fotos da orelha e o que já tem.</p></li>
+        <li class="rv"><span class="k">02</span><h3>Desenho</h3><p>No estúdio, a marcação é feita com você e ajustada até ficar perfeita.</p></li>
+        <li class="rv"><span class="k">03</span><h3>Aplicação</h3><p>Procedimento asséptico, material estéril e joia escolhida para a sua anatomia.</p></li>
+        <li class="rv"><span class="k">04</span><h3>Acompanhamento</h3><p>Orientação de cuidados e retorno para ajustar ou trocar a joia quando cicatrizar.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="cuidados">
+    <div class="wrap">
+      <p class="kicker rv">Cuidados</p>
+      <h2 class="rv">A joia é metade. <em>O cuidado</em> é a outra.</h2>
+      <div class="care">
+        <div class="rv">
+          <ul class="rules">
+            <li><svg><use href="#sp"/></svg><div><b>Soro fisiológico</b><span>Limpe com soro fisiológico e gaze, de duas a três vezes por dia.</span></div></li>
+            <li><svg><use href="#sp"/></svg><div><b>Não gire a joia</b><span>Mexer atrasa a cicatrização. Deixe a joia quieta, só limpe ao redor.</span></div></li>
+            <li><svg><use href="#sp"/></svg><div><b>Mãos sempre limpas</b><span>Lave as mãos antes de qualquer contato com o piercing.</span></div></li>
+            <li><svg><use href="#sp"/></svg><div><b>Durma do outro lado</b><span>Evite pressão sobre o furo, principalmente em cartilagem.</span></div></li>
+            <li><svg><use href="#sp"/></svg><div><b>Sem piscina e mar</b><span>Nas primeiras semanas, evite piscina, mar e banheira.</span></div></li>
+          </ul>
+          <p class="care-note">Orientações gerais. No atendimento você recebe o cuidado certo para o seu furo.</p>
+        </div>
+        <div class="rv">
+          <details class="faq"><summary>Dói?</summary><p>É rápido: a perfuração dura segundos. A sensação muda de pessoa para pessoa e de ponto para ponto. O cuidado na marcação e no procedimento faz toda a diferença.</p></details>
+          <details class="faq"><summary>Quanto tempo leva para cicatrizar?</summary><p>Lóbulos costumam levar alguns meses; cartilagens, como helix, conch e daith, podem levar de seis meses a um ano. A Naiá acompanha e diz quando é seguro trocar a joia.</p></details>
+          <details class="faq"><summary>Posso fazer vários pontos no mesmo dia?</summary><p>Depende da sua orelha e do projeto. Na avaliação, a Naiá indica se vale fazer tudo de uma vez ou em etapas.</p></details>
+          <details class="faq"><summary>A joia está inclusa?</summary><p>O orçamento é feito pelo WhatsApp, de acordo com o ponto e a joia escolhida. Na versão final, a Naiá coloca aqui como funciona.</p></details>
+          <details class="faq"><summary>Atende menores de idade?</summary><p>Na versão final, a Naiá coloca aqui a regra do estúdio. Nesta demonstração a resposta é um exemplo.</p></details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof" id="feedback">
+    <div class="wrap">
+      <p class="kicker rv">Feedback</p>
+      <q class="rv">Quem usa, volta para completar a constelação.</q>
+      <p class="rv">Os relatos de quem já passou pela cadeira da Naiá estão nos destaques do Instagram, do jeito que chegaram.</p>
+      <a class="pill rv" href="https://www.instagram.com/naia_piercing/" target="_blank" rel="noopener"><svg><use href="#ig"/></svg>Ver feedbacks no Instagram</a>
+    </div>
+  </section>
+
+  <section id="estudio">
+    <div class="wrap">
+      <p class="kicker rv">Estúdio</p>
+      <h2 class="rv">Mooca Ink <em>Tattoo Concept</em></h2>
+      <div class="studio rv">
+        <div class="studio-id">
+          <img src="img/mooca.jpg" alt="Logo do Mooca Ink" width="240" height="240" loading="lazy">
+          <address><b>Rua da Mooca, 3749</b>Mooca · São Paulo · SP</address>
+          <div class="row">
+            <a class="pill" href="https://www.google.com/maps/search/?api=1&query=Mooca%20Ink%20Rua%20da%20Mooca%203749%20S%C3%A3o%20Paulo" target="_blank" rel="noopener">Abrir no mapa →</a>
+            <a class="pill" href="https://www.instagram.com/mooca.ink/" target="_blank" rel="noopener"><svg><use href="#ig"/></svg>@mooca.ink</a>
+          </div>
+        </div>
+        <div>
+          <p class="now"><span class="dot" data-open></span><span data-open-text>Horário do estúdio</span></p>
+          <table class="hours" id="hours"></table>
+          <small>Atendimento de piercing com hora marcada. Feriados: 10:00 às 16:00. Perfil 2 do estúdio: <a href="https://www.instagram.com/moocaink_/" target="_blank" rel="noopener">@moocaink_</a></small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final" id="agendar">
+    <div class="wrap">
+      <p class="kicker rv">Agenda</p>
+      <h2 class="rv">Sua próxima joia começa com <em>uma conversa</em></h2>
+      <p class="sub rv">Me conta o que você imagina. Eu te ajudo a transformar em projeto.</p>
+      <div class="ctas rv">
+        <a class="pill gold lg" data-wa="Olá, Naiá! Vi seu site e quero agendar uma avaliação." href="https://wa.me/5511934707496" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Falar com a Naiá no WhatsApp</a>
+        <a class="pill lg" href="https://www.instagram.com/naia_piercing/" target="_blank" rel="noopener"><svg><use href="#ig"/></svg>@naia_piercing</a>
+      </div>
+      <p class="slot rv"><span class="dot" data-open></span><span data-open-text>Atendimento com hora marcada</span></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="f-name">Naiá</div>
+    <div class="row">
+      <a href="https://www.instagram.com/naia_piercing/" target="_blank" rel="noopener">@naia_piercing</a>
+      <a href="https://wa.me/5511934707496" target="_blank" rel="noopener">(11) 93470-7496</a>
+      <a href="https://www.instagram.com/mooca.ink/" target="_blank" rel="noopener">@mooca.ink</a>
+    </div>
+    <div class="credit">
+      <strong>Página criada pela Amplitude Lab</strong>
+      <p>Portfólio, vitrine 3D e agendamento num link só.<br>@amplitude_lab · (11) 95218-2016</p>
+      <a href="../../">Conheça a Amplitude Lab →</a>
+    </div>
+  </div>
+</footer>
+
+<div class="dock" id="dock">
+  <a class="pill" href="#projeto" aria-label="Monte seu projeto"><svg class="spark"><use href="#sp"/></svg>Projeto</a>
+  <a class="pill gold" data-wa="Olá, Naiá! Vi seu site e quero agendar uma avaliação." href="https://wa.me/5511934707496" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Agendar avaliação</a>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const PHONE="5511934707496";
+const wa=t=>`https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
+document.querySelectorAll("[data-wa]").forEach(a=>a.href=wa(a.dataset.wa));
+
+/* ---------- navegação: some ao descer, volta ao subir ---------- */
+(function(){
+  const nav=$("nav"),dock=$("dock");let last=scrollY;
+  const on=()=>{
+    const y=scrollY,h=innerHeight*.6;
+    nav.classList.toggle("solid",y>40);
+    nav.classList.toggle("hide",y>h&&y>last);
+    dock.classList.toggle("on",y>h);
+    last=y;
+  };
+  addEventListener("scroll",on,{passive:true});on();
+})();
+
+/* ---------- revelar ao rolar ---------- */
+(function(){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{rootMargin:"0px 0px -8% 0px"});
+  document.querySelectorAll(".rv").forEach(el=>io.observe(el));
+  // manifesto acende palavra por palavra conforme a leitura
+  const big=$("big");
+  big.innerHTML=big.innerHTML.split(/(<i>.*?<\/i>|\s+)/).map(w=>!w.trim()?w:`<span class="w">${w}</span>`).join("");
+  const words=[...big.querySelectorAll(".w")];
+  const lit=()=>{
+    const r=big.getBoundingClientRect(),vh=innerHeight;
+    const p=Math.min(1,Math.max(0,(vh*.85-r.top)/(r.height+vh*.35)));
+    const n=Math.round(p*words.length);
+    words.forEach((w,i)=>w.classList.toggle("lit",i<n));
+  };
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)words.forEach(w=>w.classList.add("lit"));
+  else{addEventListener("scroll",lit,{passive:true});lit()}
+})();
+
+/* ---------- horário do estúdio (hora de São Paulo) ---------- */
+(function(){
+  const H=[["Domingo",null],["Segunda",[11,19]],["Terça",[11,19]],["Quarta",[11,19]],["Quinta",[11,19]],["Sexta",[11,19]],["Sábado",[10,16]]];
+  const parts=new Intl.DateTimeFormat("en-US",{timeZone:"America/Sao_Paulo",weekday:"short",hour:"numeric",minute:"numeric",hour12:false}).formatToParts(new Date());
+  const get=t=>parts.find(p=>p.type===t).value;
+  const day=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(get("weekday"));
+  const hour=(+get("hour")%24)+(+get("minute"))/60;
+  const order=[1,2,3,4,5,6,0];
+  $("hours").innerHTML=order.map(d=>`<tr class="${d===day?"today":""}"><td>${H[d][0]}</td><td>${H[d][1]?`${H[d][1][0]}:00 – ${H[d][1][1]}:00`:"Fechado"}</td></tr>`).join("");
+  const today=H[day][1],open=today&&hour>=today[0]&&hour<today[1];
+  let next="";
+  if(!open){
+    for(let i=0;i<8;i++){const d=(day+i)%7,h=H[d][1];if(h&&(i>0||hour<h[0])){next=`${i===0?"hoje":i===1?"amanhã":H[d][0].toLowerCase()} às ${h[0]}h`;break}}
+  }
+  const msg=open?`Estúdio aberto agora · até ${today[1]}h`:`Estúdio fechado agora · abre ${next}`;
+  document.querySelectorAll("[data-open]").forEach(d=>d.classList.toggle("on",!!open));
+  document.querySelectorAll("[data-open-text]").forEach(s=>s.textContent=msg+" · com hora marcada");
+})();
+
+/* ---------- vitrine: textos de cada peça ---------- */
+(function(){
+  const P={
+    clicker:["Clicker cravejado","Argola com pedras em linha que abraça a curva da cartilagem. Brilho contínuo, encaixe firme.","Daith · helix · lóbulo"],
+    flor:["Flor de marquises","Três pedras em leque, como um ramo de luz. A peça que vira assinatura do projeto.","Flat · helix · conch"],
+    dermal:["Microdermal","Uma pedra que parece flutuar na pele. A base fica por baixo, só o brilho aparece.","Rosto · colo · nuca"],
+    trio:["Trio","Três pontos de ouro em triângulo. Pequeno, delicado e perfeito para compor com outras peças.","Lóbulo · tragus · helix"],
+  };
+  document.querySelectorAll("[data-piece]").forEach(b=>b.addEventListener("click",()=>{
+    document.querySelectorAll("[data-piece]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+    const [n,d,w]=P[b.dataset.piece];$("pc-name").textContent=n;$("pc-desc").textContent=d;$("pc-where").textContent=w;
+  }));
+  document.querySelectorAll("[data-tone]").forEach(b=>b.addEventListener("click",()=>{
+    document.querySelectorAll("[data-tone]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  }));
+})();
+
+/* ---------- monte seu projeto ---------- */
+(function(){
+  // pontos no desenho (coordenadas do viewBox 320x440)
+  const EAR=[
+    ["helix-alto","Helix alto",150,39],["helix","Helix",61,140],["forward","Forward helix",230,118],
+    ["industrial","Industrial",150,75],["flat","Flat",104,124],["rook","Rook",152,162],
+    ["daith","Daith",200,182],["conch","Conch",176,228],["snug","Snug",124,248],
+    ["tragus","Tragus",228,248],["antitragus","Antitragus",186,306],
+    ["lobulo-alto","Lóbulo alto",130,354,"l"],["lobulo-2","2º lóbulo",150,378,"l"],["lobulo","Lóbulo",174,392,"r"],
+  ];
+  const BODY=["Microdermal","Nostril","Septo","Umbigo","Troca de joia"];
+  const sel=new Set();let side="direita";
+  const spots=$("spots"),earchips=$("earchips"),bodychips=$("bodychips");
+  spots.innerHTML=EAR.map(([id,n,x,y,lb],i)=>`<button class="spot${lb?" lb-"+lb:""}" data-id="${id}" aria-pressed="false" style="left:${x/320*100}%;top:${y/440*100}%;--d:${(i*.23).toFixed(2)}s" aria-label="${n}"><i></i><b>${n}</b></button>`).join("");
+  earchips.innerHTML=EAR.map(([id,n])=>`<button class="chip" data-id="${id}" aria-pressed="false">${n}</button>`).join("");
+  bodychips.innerHTML=BODY.map(n=>`<button class="chip" data-id="${n}" aria-pressed="false">${n}</button>`).join("");
+  const name=id=>(EAR.find(e=>e[0]===id)||[id,id])[1];
+  function render(){
+    document.querySelectorAll("#projeto [data-id]").forEach(b=>b.setAttribute("aria-pressed",sel.has(b.dataset.id)));
+    $("bar").classList.toggle("on",sel.has("industrial"));
+    const list=[...sel].map(name),n=list.length;
+    $("count").textContent=n?`${n} ${n>1?"pontos":"ponto"} · orelha ${side}`:"Nenhum ponto escolhido";
+    $("sumtitle").textContent=n?(n>=3?"Isso já é uma constelação":"Seu projeto está tomando forma"):"Seu projeto começa aqui";
+    $("sumtext").textContent=n?list.join(" · "):"Escolha um ou mais pontos. Se estiver em dúvida, mande mesmo assim: a Naiá sugere a composição ideal para você.";
+    const ear=side==="ambas"?"nas duas orelhas, simétrico":`na orelha ${side}`;
+    $("send").href=wa(n?`Olá, Naiá! Montei um projeto no seu site e queria uma avaliação.\n\nPontos: ${list.join(", ")}\nOnde: ${ear}\n\nPode me ajudar?`:"Olá, Naiá! Quero montar um projeto de orelha e queria sua sugestão.");
+  }
+  document.querySelector("#projeto").addEventListener("click",e=>{
+    const b=e.target.closest("[data-id]");
+    if(b){const id=b.dataset.id;sel.has(id)?sel.delete(id):sel.add(id);render();return}
+    const s=e.target.closest("[data-side]");
+    if(s){side=s.dataset.side;document.querySelectorAll("[data-side]").forEach(x=>x.setAttribute("aria-pressed",x===s));$("earbox").classList.toggle("left",side==="esquerda");render()}
+  });
+  render();
+})();
+</script>
+<script type="module" src="joias.js"></script>
+</body>
+</html>
