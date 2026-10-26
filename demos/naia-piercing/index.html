@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Naiá · Body Piercer</title>
-<meta name="description" content="Naiá, body piercer no Mooca Ink. Projetos de orelha, microdermais e aplicações pensadas em simetria, com procedimento asséptico.">
+<meta name="description" content="Naiá, body piercer no Mooca Ink. Perfurações de orelha, rosto e corpo, microdermais e projetos pensados em simetria, com procedimento asséptico.">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0A090B">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Pinyon+Script&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
 <style>
 /* Layout: imersão em coluna central e simétrica; joias 3D no hero e no ateliê; vitrine do Instagram; tudo leva ao WhatsApp */
@@ -19,6 +19,7 @@
   --gold:#D9B77F; --gold-hi:#F2DFB6; --gold-deep:#9C7647; --ok:#9BD3A6;
   --iri:linear-gradient(100deg,#e9cf9f 0%,#d6c3ec 45%,#a9dcd9 75%,#e9cf9f 100%);
   --serif:"Cormorant Garamond","Cormorant",Georgia,serif;
+  --script:"Pinyon Script","Cormorant Garamond",cursive;
   --sans:"Manrope","Segoe UI",system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
   --ease:cubic-bezier(.2,.8,.2,1);
@@ -45,7 +46,8 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;paddin
 .nav.solid{background:rgba(10,9,11,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
 .nav.hide{transform:translateY(-100%)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;gap:18px;height:64px}
-.brand{font:400 26px/1 var(--serif);letter-spacing:.02em;text-decoration:none;display:flex;align-items:baseline;gap:10px}
+.brand{font:400 36px/1 var(--script);text-decoration:none;display:flex;align-items:baseline;gap:10px;color:var(--gold-hi);background:linear-gradient(100deg,#c9a46e,#fff4dc 45%,#d9b77f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;padding:4px 6px 4px 2px}
+.brand small{-webkit-text-fill-color:var(--mist)}
 .brand small{font:500 10px var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--mist)}
 .links{display:flex;gap:26px;list-style:none;margin:0;padding:0}
 .links a{font:500 13px var(--sans);letter-spacing:.04em;color:var(--mist);text-decoration:none;transition:color .2s}
@@ -72,10 +74,13 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;paddin
 .eyebrow{align-self:start;margin:0;font:500 11px var(--mono);letter-spacing:.32em;text-transform:uppercase;color:var(--mist);display:flex;align-items:center;gap:14px}
 .eyebrow::before,.eyebrow::after{content:"";width:28px;height:1px;background:var(--gold-deep)}
 .name{margin:0;display:grid;justify-items:center;gap:6px;pointer-events:none}
-.name b{font:300 clamp(84px,13.5vw,176px)/.8 var(--serif);letter-spacing:-.02em;font-weight:300;
+/* logotipo: Naiá em script caligráfico dourado, com uma faísca sobre o acento */
+.name b{position:relative;font:400 clamp(92px,12vw,164px)/1 var(--script);letter-spacing:0;padding:.06em .26em .12em .26em;margin-bottom:-.12em;
   background:linear-gradient(100deg,#b99363 0%,#fff9ef 22%,#f1dfbd 40%,#b99363 55%,#fff4dc 72%,#c9a46e 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 6px 40px rgba(0,0,0,.65));animation:rise 1.6s var(--ease) .2s both,gild 9s linear 1.8s infinite}
 @keyframes gild{to{background-position:-220% 0}}
+.name .logo-spark{position:absolute;right:.2em;top:.08em;width:.16em;height:.16em;color:#fff6e4;filter:drop-shadow(0 0 10px rgba(255,236,200,.9));animation:twinkle-s 3.6s ease-in-out 2s infinite}
+@keyframes twinkle-s{0%,100%{transform:scale(.55) rotate(0);opacity:.7}50%{transform:scale(1.15) rotate(45deg);opacity:1}}
 .name span{font:500 12px var(--mono);letter-spacing:.62em;padding-left:.62em;text-transform:uppercase;color:var(--gold-hi);animation:rise 1.6s var(--ease) .45s both}
 .hero-low{align-self:end;display:grid;justify-items:center;gap:18px;animation:rise 1.6s var(--ease) .7s both}
 .tag{margin:0;font:300 italic clamp(26px,3.6vw,38px)/1.1 var(--serif);max-width:22ch;text-wrap:balance}
@@ -133,69 +138,6 @@ h2 em{font-style:italic;background:var(--iri);background-size:200% 100%;-webkit-
 .tri h3{margin:0 0 10px;font:400 30px/1.05 var(--serif)}
 .tri p{margin:0 auto;color:var(--mist);font-size:15px;max-width:30ch}
 @media (max-width:760px){.tri{grid-template-columns:1fr}.tri div+div{border-left:0;border-top:1px solid var(--line)}}
-
-/* ateliê 3D */
-.atelie{background:radial-gradient(ellipse 70% 55% at 50% 58%,#1d1714,var(--noir) 72%);overflow:hidden}
-.at{display:grid;grid-template-columns:250px minmax(0,1fr) 330px;gap:28px;align-items:center;margin-top:56px}
-.at-side{display:grid;gap:18px;align-self:stretch;align-content:start}
-.at-cats{display:flex;flex-wrap:wrap;gap:6px}
-.at-cats button{padding:7px 12px;border-radius:999px;border:1px solid var(--line-2);font:500 12px var(--sans);color:var(--mist);transition:all .25s}
-.at-cats button[aria-pressed="true"]{background:var(--pearl);color:var(--noir);border-color:var(--pearl)}
-.at-list{list-style:none;margin:0;padding:0 6px 0 0;display:grid;gap:2px;max-height:560px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
-.at-list button{width:100%;display:grid;grid-template-columns:28px 1fr;grid-template-rows:auto auto;column-gap:10px;text-align:left;padding:10px 12px;border-radius:12px;color:var(--dim);transition:background-color .25s,color .25s;position:relative}
-.at-list button span{grid-row:span 2;font:500 10px var(--mono);letter-spacing:.1em;color:inherit;padding-top:6px}
-.at-list button b{font:400 21px/1.1 var(--serif);color:inherit}
-.at-list button i{font:500 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:var(--dim)}
-.at-list button:hover{color:var(--mist);background:rgba(255,255,255,.02)}
-.at-list button[aria-pressed="true"]{color:var(--pearl);background:linear-gradient(90deg,rgba(217,183,127,.12),transparent)}
-.at-list button[aria-pressed="true"]::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:2px;border-radius:2px;background:var(--gold)}
-.at-list button[aria-pressed="true"] span{color:var(--gold)}
-/* sem isolation aqui: o canvas precisa misturar (screen) com o fundo da seção */
-.at-stage{position:relative;aspect-ratio:1;width:100%;max-width:640px;margin:0 auto}
-.at-stage::before{content:"";position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle at 50% 42%,rgba(242,223,182,.09),transparent 62%);border:1px solid var(--line)}
-.at-stage::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(60,53,64,.55);animation:spin 90s linear infinite;pointer-events:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-#at-gl{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:pan-y;opacity:0;transition:opacity 1s;mix-blend-mode:screen;border-radius:50%;z-index:1}
-#at-gl.on{opacity:1}
-#at-gl:active{cursor:grabbing}
-#at-gl:focus-visible{outline-offset:-6px}
-.at-num,.at-stage .hint{z-index:2}
-.at-num{position:absolute;left:50%;top:3%;transform:translateX(-50%);font:500 10px var(--mono);letter-spacing:.24em;color:var(--gold);pointer-events:none}
-.hint{position:absolute;left:50%;bottom:3%;transform:translateX(-50%);font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);white-space:nowrap;pointer-events:none}
-.at-info{display:grid;gap:14px;align-content:center}
-.at-info .where{font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-hi)}
-.at-info h3{margin:0;font:400 44px/1 var(--serif)}
-.at-info p{margin:0;color:var(--mist);font-size:15px}
-.at-info dl{margin:0;display:flex;gap:10px;align-items:baseline;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0}
-.at-info dt{font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
-.at-info dd{margin:0;font-size:14px}
-.sws{display:flex;flex-wrap:wrap;gap:8px}
-.sw{width:34px;height:34px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;transition:border-color .2s,transform .2s var(--ease)}
-.sw i{width:24px;height:24px;border-radius:50%;display:block;box-shadow:inset 0 -2px 4px rgba(0,0,0,.35),inset 0 2px 3px rgba(255,255,255,.35)}
-.sw:hover{transform:translateY(-2px)}
-.sw[aria-pressed="true"]{border-color:var(--pearl);box-shadow:0 0 0 3px rgba(243,237,228,.08)}
-.at-info .pill{margin-top:6px}
-.at-info small{color:var(--dim);font-size:12.5px}
-.no-gl .at-stage{display:none}
-.no-gl .at{grid-template-columns:260px 1fr}
-@media (max-width:1060px){
-  .at{grid-template-columns:1fr;gap:18px;margin-top:36px}
-  .at-stage{order:1;max-width:520px}
-  .at-side{order:2;gap:12px}
-  .at-cats{justify-content:center}
-  .at-list{display:flex;overflow-x:auto;overflow-y:hidden;max-height:none;gap:8px;padding:2px 2px 10px;scroll-snap-type:x mandatory}
-  .at-list li{flex:none;scroll-snap-align:center}
-  .at-list button{grid-template-columns:auto;grid-template-rows:auto;border:1px solid var(--line);padding:10px 14px;text-align:center}
-  .at-list button span,.at-list button i{display:none}
-  .at-list button b{font-size:18px;white-space:nowrap}
-  .at-list button[aria-pressed="true"]{border-color:var(--gold-deep);background:var(--noir-2)}
-  .at-list button[aria-pressed="true"]::before{display:none}
-  .at-info{order:3;text-align:center;justify-items:center;max-width:520px;margin:6px auto 0}
-  .at-info dl{justify-content:center;width:100%}
-  .sws{justify-content:center}
-  .no-gl .at{grid-template-columns:1fr}
-}
-@media (max-width:760px){.at-info h3{font-size:36px}}
 
 /* vitrine do Instagram */
 .ig{padding-bottom:100px;overflow:hidden;background:linear-gradient(180deg,var(--noir),#0d0b0e 40%,var(--noir))}
@@ -283,6 +225,16 @@ h2 em{font-style:italic;background:var(--iri);background-size:200% 100%;-webkit-
 .summary p{margin:8px 0 18px;color:var(--mist);font-size:14.5px;min-height:2.6em}
 .summary .pill{width:100%}
 .count{font:500 11px var(--mono);letter-spacing:.2em;color:var(--gold)}
+.zones{display:flex;justify-content:center;gap:10px;margin:40px auto 0;flex-wrap:wrap}
+.zones button{display:flex;align-items:center;gap:10px;padding:12px 22px 12px 16px;border-radius:999px;border:1px solid var(--line-2);font:600 14px var(--sans);color:var(--mist);transition:all .3s var(--ease)}
+.zones svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.zones button:hover{border-color:var(--gold-deep);color:var(--pearl)}
+.zones button[aria-pressed="true"]{background:linear-gradient(135deg,#fff4dc,#d9b77f);color:var(--noir);border-color:transparent;box-shadow:0 0 34px -6px rgba(217,183,127,.55)}
+.map{position:relative;width:100%;max-width:420px;margin:0 auto}
+.map .zone{animation:zin .7s var(--ease)}
+@keyframes zin{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+.ear .eye{fill:var(--gold);stroke:none;opacity:.7}
+.builder{margin-top:40px!important}
 @media (max-width:900px){.builder{grid-template-columns:1fr;gap:36px}.ear-box{max-width:330px}.panel{text-align:left}.seg{grid-auto-flow:row;border-radius:18px;width:100%}.seg button{border-radius:14px}}
 
 /* sobre */
@@ -358,7 +310,7 @@ h2 em{font-style:italic;background:var(--iri);background-size:200% 100%;-webkit-
 .final .slot{justify-content:center;margin-top:20px}
 
 footer{border-top:1px solid var(--line);padding:44px 0 calc(40px + env(safe-area-inset-bottom,0px));text-align:center;color:var(--dim);font-size:13px}
-footer .f-name{font:400 30px/1 var(--serif);color:var(--pearl)}
+footer .f-name{font:400 54px/1.1 var(--script);color:var(--gold-hi)}
 footer .row{margin:18px 0 26px}
 footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);text-decoration:none}
 .credit{border-top:1px solid var(--line);padding-top:26px}
@@ -388,9 +340,9 @@ footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);t
   <div class="wrap nav-in">
     <a class="brand" href="#topo">Naiá <small>Body Piercer</small></a>
     <ul class="links">
-      <li><a href="#atelie">Ateliê 3D</a></li>
-      <li><a href="#instagram">Instagram</a></li>
+      <li><a href="#instagram">Trabalhos</a></li>
       <li><a href="#projeto">Monte seu projeto</a></li>
+      <li><a href="#aplicacoes">Aplicações</a></li>
       <li><a href="#cuidados">Cuidados</a></li>
       <li><a href="#estudio">Estúdio</a></li>
     </ul>
@@ -402,13 +354,13 @@ footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);t
   <canvas id="gl" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
     <p class="eyebrow">Body Piercer · Mooca · SP</p>
-    <h1 class="name"><b>Naiá</b><span>Body Piercing</span></h1>
+    <h1 class="name"><b>Naiá<svg class="logo-spark" aria-hidden="true"><use href="#sp"/></svg></b><span>Body Piercing</span></h1>
     <div class="hero-low">
       <p class="tag">Joias que parecem ter nascido em você.</p>
       <p class="lede">Cada ponto é estudado na sua anatomia e pensado em simetria. Não é só um furo: é uma composição feita para durar.</p>
       <div class="ctas">
         <a class="pill gold lg" data-wa="Olá, Naiá! Vi seu site e quero agendar uma avaliação." href="https://wa.me/5511934707496" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Agendar avaliação</a>
-        <a class="pill lg" href="#atelie"><svg class="spark"><use href="#sp"/></svg>Ver joias em 3D</a>
+        <a class="pill lg" href="#projeto"><svg class="spark"><use href="#sp"/></svg>Monte seu projeto</a>
       </div>
       <p class="slot"><span class="dot" data-open></span><span data-open-text>Atendimento com hora marcada no Mooca Ink</span></p>
     </div>
@@ -423,35 +375,6 @@ footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);t
         <div class="rv"><b>I</b><h3>Anatomia</h3><p>Cada orelha tem curvas próprias. O ponto certo nasce dela, não de um molde.</p></div>
         <div class="rv"><b>II</b><h3>Proporção</h3><p>As joias conversam entre si, como uma constelação. Nada fica solto.</p></div>
         <div class="rv"><b>III</b><h3>Assepsia</h3><p>Procedimento asséptico do começo ao fim. Cuidado que não aparece na foto, mas aparece na cicatrização.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="atelie" id="atelie">
-    <div class="wrap">
-      <p class="kicker rv">Ateliê 3D</p>
-      <h2 class="rv">Cada joia, <em>de perto</em></h2>
-      <p class="sub rv">Gire a peça, troque o metal e a pedra, e veja a luz passar pelas facetas. Gostou? Mande direto para a Naiá.</p>
-      <div class="at">
-        <aside class="at-side">
-          <div class="at-cats" id="at-cats" role="group" aria-label="Categoria"></div>
-          <ol class="at-list" id="at-list" aria-label="Joias"></ol>
-        </aside>
-        <div class="at-stage">
-          <canvas id="at-gl" tabindex="0" role="img" aria-label="Joia em 3D. Arraste ou use as setas para girar."></canvas>
-          <span class="at-num" id="at-num"></span>
-          <span class="hint">Arraste para girar</span>
-        </div>
-        <div class="at-info" aria-live="polite">
-          <span class="where" id="at-where"></span>
-          <h3 id="at-name"></h3>
-          <p id="at-desc"></p>
-          <dl><dt>Tipo</dt><dd id="at-type"></dd></dl>
-          <div><span class="lbl">Metal · <b id="at-metal-name"></b></span><div class="sws" id="at-metals" role="group" aria-label="Metal"></div></div>
-          <div id="at-stone-row"><span class="lbl">Pedra · <b id="at-stone-name"></b></span><div class="sws" id="at-stones" role="group" aria-label="Pedra"></div></div>
-          <a class="pill gold lg" id="at-cta" href="https://wa.me/5511934707496" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Quero esta joia</a>
-          <small>Modelos ilustrativos. Medidas, materiais e disponibilidade são confirmados na avaliação.</small>
-        </div>
       </div>
     </div>
   </section>
@@ -495,35 +418,77 @@ footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);t
   <section class="proj" id="projeto">
     <div class="wrap">
       <p class="kicker rv">Monte seu projeto</p>
-      <h2 class="rv">Desenhe a orelha <em>dos seus sonhos</em></h2>
-      <p class="sub rv">Toque nos pontos e veja a composição ganhar forma. Depois é só mandar para a Naiá: ela avalia sua anatomia e ajusta o desenho com você.</p>
+      <h2 class="rv">Escolha onde <em>vai brilhar</em></h2>
+      <p class="sub rv">Orelha, rosto ou corpo: toque nos pontos e monte a sua composição. Depois é só mandar para a Naiá, que avalia sua anatomia e ajusta o desenho junto com você.</p>
+      <div class="zones rv" role="group" aria-label="Região">
+        <button data-zone="orelha" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M16.5 8.5C16.5 5.5 14.3 3 11.5 3S6.5 5.4 6.5 8.6c0 2.6 1.2 4 2.2 5.6.9 1.4 1 2.7 1.2 4 .3 2.2 2 3.2 3.6 2.8 1.4-.4 1.8-1.5 1.6-2.6-.1-.7.1-1.2.5-1.6l1-1"/><path d="M13.5 9c-1.6.2-2.6 1.4-2.6 3s1 2.6 2.2 3"/></svg>Orelha</button>
+        <button data-zone="rosto" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 2.5c-4 0-6.2 3.2-6.1 7.5.1 4.2 1.6 7.5 3.6 9.7 1 1.1 1.7 1.8 2.5 1.8s1.5-.7 2.5-1.8c2-2.2 3.5-5.5 3.6-9.7.1-4.3-2.1-7.5-6.1-7.5Z"/><path d="M9.5 10.5h.01M14.5 10.5h.01M12 11v3.2l-1 .8M10 17.2c1.3.8 2.7.8 4 0"/></svg>Rosto</button>
+        <button data-zone="corpo" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M9.5 2.5c0 2-.4 3-2 3.6C5 7 3.6 8 3.2 10.5M14.5 2.5c0 2 .4 3 2 3.6 2.5.9 3.9 1.9 4.3 4.4M6 9.5c.6 4.2 1 8.3 1.8 12M18 9.5c-.6 4.2-1 8.3-1.8 12"/><circle cx="12" cy="16" r=".9"/></svg>Corpo</button>
+      </div>
       <div class="builder">
-        <div class="ear-box rv" id="earbox">
-          <svg class="ear" viewBox="0 0 320 440" aria-hidden="true">
-            <defs>
-              <radialGradient id="skin" cx="42%" cy="45%" r="60%"><stop offset="0" stop-color="#2c2321"/><stop offset=".7" stop-color="#1a1515"/><stop offset="1" stop-color="#1a1515" stop-opacity="0"/></radialGradient>
-            </defs>
-            <!-- contorno da orelha (helix até o lóbulo) -->
-            <path class="skin" d="M238 120C236 70 200 30 150 28 92 26 52 70 50 135c-2 55 16 93 34 127 16 30 20 56 24 82 6 48 38 74 70 68 28-6 38-28 34-50-2-14 2-24 10-32L240 280 242 214Z"/>
-            <path d="M238 120C236 70 200 30 150 28 92 26 52 70 50 135c-2 55 16 93 34 127 16 30 20 56 24 82 6 48 38 74 70 68 28-6 38-28 34-50-2-14 2-24 10-32"/>
-            <!-- borda interna do helix -->
-            <path class="soft" d="M222 128C218 88 190 52 150 50 104 50 74 86 72 138c-2 48 14 82 30 112"/>
-            <!-- anti-helix, crura e raiz do helix -->
-            <path d="M146 318c-18-22-28-56-24-92 4-36 18-66 38-90 8-14 14-32 20-50"/>
-            <path d="M150 152c20-6 42-6 64 0"/>
-            <path d="M238 130c-12 30-28 48-52 56"/>
-            <!-- concha, canal, tragus e antitragus -->
-            <path class="soft" d="M214 162c-34 2-64 20-72 52-6 34 4 72 28 86"/>
-            <ellipse class="canal" cx="208" cy="246" rx="11" ry="19"/>
-            <path d="M240 214c-18 0-26 18-24 38 2 18 14 28 26 26"/>
-            <path d="M160 318c16-18 40-20 54-6"/>
-            <!-- barra do industrial -->
-            <g class="bar" id="bar"><path d="M216 70 84 80"/><circle cx="216" cy="70" r="4.5"/><circle cx="84" cy="80" r="4.5"/></g>
-          </svg>
-          <div class="spots" id="spots"></div>
+        <div class="map rv" id="map">
+          <!-- orelha -->
+          <div class="ear-box zone" data-zone="orelha" id="earbox">
+            <svg class="ear" viewBox="0 0 320 440" aria-hidden="true">
+              <defs>
+                <radialGradient id="skin" cx="42%" cy="45%" r="60%"><stop offset="0" stop-color="#2c2321"/><stop offset=".7" stop-color="#1a1515"/><stop offset="1" stop-color="#1a1515" stop-opacity="0"/></radialGradient>
+              </defs>
+              <path class="skin" d="M238 120C236 70 200 30 150 28 92 26 52 70 50 135c-2 55 16 93 34 127 16 30 20 56 24 82 6 48 38 74 70 68 28-6 38-28 34-50-2-14 2-24 10-32L240 280 242 214Z"/>
+              <path d="M238 120C236 70 200 30 150 28 92 26 52 70 50 135c-2 55 16 93 34 127 16 30 20 56 24 82 6 48 38 74 70 68 28-6 38-28 34-50-2-14 2-24 10-32"/>
+              <path class="soft" d="M222 128C218 88 190 52 150 50 104 50 74 86 72 138c-2 48 14 82 30 112"/>
+              <path d="M146 318c-18-22-28-56-24-92 4-36 18-66 38-90 8-14 14-32 20-50"/>
+              <path d="M150 152c20-6 42-6 64 0"/>
+              <path d="M238 130c-12 30-28 48-52 56"/>
+              <path class="soft" d="M214 162c-34 2-64 20-72 52-6 34 4 72 28 86"/>
+              <ellipse class="canal" cx="208" cy="246" rx="11" ry="19"/>
+              <path d="M240 214c-18 0-26 18-24 38 2 18 14 28 26 26"/>
+              <path d="M160 318c16-18 40-20 54-6"/>
+              <g class="bar" id="bar"><path d="M216 70 84 80"/><circle cx="216" cy="70" r="4.5"/><circle cx="84" cy="80" r="4.5"/></g>
+            </svg>
+            <div class="spots"></div>
+          </div>
+          <!-- rosto -->
+          <div class="ear-box zone" data-zone="rosto" hidden>
+            <svg class="ear" viewBox="0 0 320 440" aria-hidden="true">
+              <defs>
+                <radialGradient id="skin2" cx="50%" cy="45%" r="58%"><stop offset="0" stop-color="#2c2321"/><stop offset=".75" stop-color="#1a1515"/><stop offset="1" stop-color="#1a1515" stop-opacity="0"/></radialGradient>
+              </defs>
+              <path style="fill:url(#skin2);stroke:none" d="M160 40C92 40 62 96 64 168c2 68 22 132 54 174 18 24 30 34 42 34s24-10 42-34c32-42 52-106 54-174 2-72-28-128-96-128Z"/>
+              <path d="M160 40C92 40 62 96 64 168c2 68 22 132 54 174 18 24 30 34 42 34s24-10 42-34c32-42 52-106 54-174 2-72-28-128-96-128Z"/>
+              <path class="soft" d="M66 170c-12-2-16 26-6 44M254 170c12-2 16 26 6 44"/>
+              <path d="M92 150c16-10 36-10 50-4M178 146c14-6 34-6 50 4"/>
+              <path class="soft" d="M98 178c12-10 32-10 44 0-12 8-32 8-44 0ZM178 178c12-10 32-10 44 0-12 8-32 8-44 0Z"/>
+              <circle class="eye" cx="120" cy="177" r="4.5"/><circle class="eye" cx="200" cy="177" r="4.5"/>
+              <path d="M152 162c-2 34-8 60-14 74 8 10 16 8 22 12 6-4 14-2 22-12-6-14-12-40-14-74"/>
+              <path class="soft" d="M140 238c4 6 10 8 14 6M180 238c-4 6-10 8-14 6"/>
+              <path d="M126 290c14-10 26-12 34-6 8-6 20-4 34 6"/>
+              <path d="M126 290c14 16 54 16 68 0"/>
+              <path class="soft" d="M128 290c18 4 46 4 64 0"/>
+              <path class="soft" d="M126 368l-2 52M194 368l2 52"/>
+            </svg>
+            <div class="spots"></div>
+          </div>
+          <!-- corpo -->
+          <div class="ear-box zone" data-zone="corpo" hidden>
+            <svg class="ear" viewBox="0 0 320 440" aria-hidden="true">
+              <defs>
+                <radialGradient id="skin3" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#2a2220"/><stop offset=".75" stop-color="#181414"/><stop offset="1" stop-color="#181414" stop-opacity="0"/></radialGradient>
+              </defs>
+              <path style="fill:url(#skin3);stroke:none" d="M136 26c0 32-6 46-24 56-32 8-60 16-72 46l20 22c10 80 18 150 30 230 20 22 44 32 70 32s50-10 70-32c12-80 20-150 30-230l20-22c-12-30-40-38-72-46-18-10-24-24-24-56Z"/>
+              <path d="M136 26c0 32-6 46-24 56-32 8-60 16-72 46M184 26c0 32 6 46 24 56 32 8 60 16 72 46"/>
+              <path d="M60 150c10 80 18 150 30 230M260 150c-10 80-18 150-30 230"/>
+              <path d="M96 104c24 6 44 8 60 4M224 104c-24 6-44 8-60 4"/>
+              <path class="soft" d="M160 122v124"/>
+              <path class="soft" d="M92 218c18 14 46 14 62 2M228 218c-18 14-46 14-62 2"/>
+              <path class="soft" d="M118 262c12 30 18 60 22 92M202 262c-12 30-18 60-22 92"/>
+              <ellipse class="canal" cx="160" cy="320" rx="5" ry="8"/>
+              <path d="M90 380c20 22 44 32 70 32s50-10 70-32"/>
+            </svg>
+            <div class="spots"></div>
+          </div>
         </div>
         <div class="panel">
-          <div>
+          <div id="sidebox">
             <span class="lbl">Orelha</span>
             <div class="seg" role="group" aria-label="Qual orelha">
               <button data-side="direita" aria-pressed="true">Direita</button>
@@ -532,17 +497,13 @@ footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);t
             </div>
           </div>
           <div>
-            <span class="lbl">Pontos da orelha</span>
-            <div class="chips" id="earchips"></div>
-          </div>
-          <div>
-            <span class="lbl">Outras aplicações</span>
-            <div class="chips" id="bodychips"></div>
+            <span class="lbl" id="ptlabel">Pontos da orelha</span>
+            <div class="chips" id="chips"></div>
           </div>
           <div class="summary">
             <span class="count" id="count">Nenhum ponto escolhido</span>
             <h3 id="sumtitle">Seu projeto começa aqui</h3>
-            <p id="sumtext">Escolha um ou mais pontos. Se estiver em dúvida, mande mesmo assim: a Naiá sugere a composição ideal para você.</p>
+            <p id="sumtext">Escolha um ou mais pontos, em qualquer região. Se estiver em dúvida, mande mesmo assim: a Naiá sugere a composição ideal para você.</p>
             <a class="pill gold lg" id="send" href="https://wa.me/5511934707496" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Enviar meu projeto para a Naiá</a>
           </div>
         </div>
@@ -557,8 +518,8 @@ footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);t
         <div class="rv">
           <p class="kicker">Quem faz</p>
           <h2>Naiá</h2>
-          <p>Body piercer no Mooca Ink Tattoo Concept. Meu trabalho é encontrar o ponto exato onde a joia parece ter estado sempre ali: simétrica, proporcional e confortável no seu dia a dia.</p>
-          <p>Cada atendimento começa com conversa e marcação feita junto com você, no espelho. Só furo quando a gente olha junto e tem certeza.</p>
+          <p>Body piercer no Mooca Ink Tattoo Concept. Da orelha ao rosto e ao corpo, meu trabalho é encontrar o ponto exato onde a joia parece ter estado sempre ali: simétrica, proporcional e confortável no seu dia a dia.</p>
+          <p>Cada atendimento começa com conversa e marcação feita junto com você, no espelho. Só perfuro quando a gente olha junto e tem certeza.</p>
           <p class="sig">Naiá</p>
         </div>
       </div>
@@ -571,7 +532,7 @@ footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);t
       <p class="kicker rv" style="margin-top:80px">Como funciona</p>
       <h2 class="rv">Um ritual em <em>quatro tempos</em></h2>
       <ol class="steps">
-        <li class="rv"><span class="k">01</span><h3>Conversa</h3><p>Você manda pelo WhatsApp a ideia, fotos da orelha e o que já tem.</p></li>
+        <li class="rv"><span class="k">01</span><h3>Conversa</h3><p>Você manda pelo WhatsApp a ideia, fotos da região e as joias que já usa.</p></li>
         <li class="rv"><span class="k">02</span><h3>Desenho</h3><p>No estúdio, a marcação é feita com você e ajustada até ficar perfeita.</p></li>
         <li class="rv"><span class="k">03</span><h3>Aplicação</h3><p>Procedimento asséptico, material estéril e joia escolhida para a sua anatomia.</p></li>
         <li class="rv"><span class="k">04</span><h3>Acompanhamento</h3><p>Orientação de cuidados e retorno para ajustar ou trocar a joia quando cicatrizar.</p></li>
@@ -660,14 +621,14 @@ footer .row a{font:500 12px var(--mono);letter-spacing:.06em;color:var(--mist);t
     </div>
     <div class="credit">
       <strong>Página criada pela Amplitude Lab</strong>
-      <p>Portfólio, ateliê 3D, vitrine do Instagram e agendamento num link só.<br>@amplitude_lab · (11) 95218-2016</p>
+      <p>Portfólio, joias em 3D, vitrine do Instagram e agendamento num link só.<br>@amplitude_lab · (11) 95218-2016</p>
       <a href="../../">Conheça a Amplitude Lab →</a>
     </div>
   </div>
 </footer>
 
 <div class="dock" id="dock">
-  <a class="pill" href="#atelie" aria-label="Ateliê 3D"><svg class="spark"><use href="#sp"/></svg>Joias</a>
+  <a class="pill" href="#projeto" aria-label="Monte seu projeto"><svg class="spark"><use href="#sp"/></svg>Projeto</a>
   <a class="pill gold" data-wa="Olá, Naiá! Vi seu site e quero agendar uma avaliação." href="https://wa.me/5511934707496" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Agendar avaliação</a>
 </div>
 
@@ -723,40 +684,68 @@ document.querySelectorAll("[data-wa]").forEach(a=>a.href=wa(a.dataset.wa));
   document.querySelectorAll("[data-open-text]").forEach(s=>s.textContent=msg+" · com hora marcada");
 })();
 
-/* ---------- monte seu projeto ---------- */
+/* ---------- monte seu projeto: orelha, rosto e corpo ---------- */
 (function(){
-  // pontos no desenho (coordenadas do viewBox 320x440)
-  const EAR=[
-    ["helix-alto","Helix alto",150,39],["helix","Helix",61,140],["forward","Forward helix",230,118],
-    ["industrial","Industrial",150,75],["flat","Flat",104,124],["rook","Rook",152,162],
-    ["daith","Daith",200,182],["conch","Conch",176,228],["snug","Snug",124,248],
-    ["tragus","Tragus",228,248],["antitragus","Antitragus",186,306],
-    ["lobulo-alto","Lóbulo alto",130,354,"l"],["lobulo-2","2º lóbulo",150,378,"l"],["lobulo","Lóbulo",174,392,"r"],
-  ];
-  const BODY=["Microdermal","Nostril","Septo","Umbigo","Troca de joia"];
-  const sel=new Set();let side="direita";
-  const spots=$("spots"),earchips=$("earchips"),bodychips=$("bodychips");
-  spots.innerHTML=EAR.map(([id,n,x,y,lb],i)=>`<button class="spot${lb?" lb-"+lb:""}" data-id="${id}" aria-pressed="false" style="left:${x/320*100}%;top:${y/440*100}%;--d:${(i*.23).toFixed(2)}s" aria-label="${n}"><i></i><b>${n}</b></button>`).join("");
-  earchips.innerHTML=EAR.map(([id,n])=>`<button class="chip" data-id="${id}" aria-pressed="false">${n}</button>`).join("");
-  bodychips.innerHTML=BODY.map(n=>`<button class="chip" data-id="${n}" aria-pressed="false">${n}</button>`).join("");
-  const name=id=>(EAR.find(e=>e[0]===id)||[id,id])[1];
-  function render(){
-    document.querySelectorAll("#projeto [data-id]").forEach(b=>b.setAttribute("aria-pressed",sel.has(b.dataset.id)));
-    $("bar").classList.toggle("on",sel.has("industrial"));
-    const list=[...sel].map(name),n=list.length;
-    $("count").textContent=n?`${n} ${n>1?"pontos":"ponto"} · orelha ${side}`:"Nenhum ponto escolhido";
-    $("sumtitle").textContent=n?(n>=3?"Isso já é uma constelação":"Seu projeto está tomando forma"):"Seu projeto começa aqui";
-    $("sumtext").textContent=n?list.join(" · "):"Escolha um ou mais pontos. Se estiver em dúvida, mande mesmo assim: a Naiá sugere a composição ideal para você.";
-    const ear=side==="ambas"?"nas duas orelhas, simétrico":`na orelha ${side}`;
-    $("send").href=wa(n?`Olá, Naiá! Montei um projeto no seu site e queria uma avaliação.\n\nPontos: ${list.join(", ")}\nOnde: ${ear}\n\nPode me ajudar?`:"Olá, Naiá! Quero montar um projeto de orelha e queria sua sugestão.");
+  // [id, nome, x, y (viewBox 320x440), lado do rótulo]; sem x/y = só aparece na lista
+  const ZONES={
+    orelha:{titulo:"Pontos da orelha",pontos:[
+      ["helix-alto","Helix alto",150,39],["helix","Helix",61,140],["forward","Forward helix",230,118],
+      ["industrial","Industrial",150,75],["flat","Flat",104,124],["rook","Rook",152,162],
+      ["daith","Daith",200,182],["conch","Conch",176,228],["snug","Snug",124,248],
+      ["tragus","Tragus",228,248],["antitragus","Antitragus",186,306],
+      ["lobulo-alto","Lóbulo alto",130,354,"l"],["lobulo-2","2º lóbulo",150,378,"l"],["lobulo","Lóbulo",174,392,"r"],
+    ]},
+    rosto:{titulo:"Pontos do rosto",pontos:[
+      ["terceiro-olho","Microdermal entre as sobrancelhas",160,132],["sobrancelha","Sobrancelha",226,141,"r"],
+      ["bridge","Bridge",160,176],["dermal-maca","Microdermal na maçã do rosto",228,214,"r"],
+      ["high-nostril","High nostril",145,214,"l"],["nostril","Nostril",137,234,"l"],["septo","Septo",160,253,"r"],
+      ["medusa","Medusa",160,272,"r"],["monroe","Monroe",116,272,"l"],
+      ["labret","Labret",160,320],["snake-bites","Snake bites",188,314,"r"],
+      ["smiley","Smiley"],["lingua","Língua"],["labret-vertical","Labret vertical"],
+    ]},
+    corpo:{titulo:"Pontos do corpo",pontos:[
+      ["dermal-colo","Microdermal no colo",122,122,"l"],["dermal-esterno","Microdermal no esterno",160,176,"r"],
+      ["umbigo","Umbigo",160,304,"r"],["dermal-quadril","Microdermal no quadril",100,368,"l"],
+      ["dermal-nuca","Microdermal na nuca"],["dermal-dedo","Microdermal no dedo"],["mamilo","Mamilo"],["troca","Troca de joia"],
+    ]},
+  };
+  const NOME={},ZONA={};
+  for(const [z,{pontos}] of Object.entries(ZONES))for(const [id,n] of pontos){NOME[id]=n;ZONA[id]=z}
+  const root=$("projeto"),sel=new Set();let side="direita",zone="orelha";
+  root.querySelectorAll(".zone").forEach(box=>{
+    box.querySelector(".spots").innerHTML=ZONES[box.dataset.zone].pontos.filter(p=>p[2]!=null).map(([id,n,x,y,lb],i)=>`<button class="spot${lb?" lb-"+lb:""}" data-id="${id}" aria-pressed="false" style="left:${x/320*100}%;top:${y/440*100}%;--d:${(i*.23).toFixed(2)}s" aria-label="${n}"><i></i><b>${n}</b></button>`).join("");
+  });
+  function chips(){
+    $("ptlabel").textContent=ZONES[zone].titulo;
+    $("chips").innerHTML=ZONES[zone].pontos.map(([id,n])=>`<button class="chip" data-id="${id}" aria-pressed="${sel.has(id)}">${n}</button>`).join("");
   }
-  document.querySelector("#projeto").addEventListener("click",e=>{
+  function render(){
+    root.querySelectorAll("[data-id]").forEach(b=>b.setAttribute("aria-pressed",sel.has(b.dataset.id)));
+    $("bar").classList.toggle("on",sel.has("industrial"));
+    const n=sel.size,ear=[...sel].some(id=>ZONA[id]==="orelha");
+    const grupos=Object.keys(ZONES).map(z=>[z,[...sel].filter(id=>ZONA[id]===z).map(id=>NOME[id])]).filter(g=>g[1].length);
+    $("count").textContent=n?`${n} ${n>1?"pontos":"ponto"} · ${grupos.map(g=>g[0]).join(" + ")}`:"Nenhum ponto escolhido";
+    $("sumtitle").textContent=n?(n>=3?"Isso já é uma constelação":"Seu projeto está tomando forma"):"Seu projeto começa aqui";
+    $("sumtext").textContent=n?grupos.map(g=>g[1].join(" · ")).join("  ·  "):"Escolha um ou mais pontos, em qualquer região. Se estiver em dúvida, mande mesmo assim: a Naiá sugere a composição ideal para você.";
+    const lado=side==="ambas"?"nas duas orelhas, simétrico":`na orelha ${side}`;
+    const linhas=grupos.map(([z,l])=>`${z[0].toUpperCase()+z.slice(1)}: ${l.join(", ")}${z==="orelha"?` (${lado})`:""}`).join("\n");
+    $("send").href=wa(n?`Olá, Naiá! Montei um projeto no seu site e queria uma avaliação.\n\n${linhas}\n\nPode me ajudar?`:"Olá, Naiá! Quero montar um projeto de piercing e queria sua sugestão.");
+    $("sidebox").hidden=zone!=="orelha"&&!ear;
+  }
+  root.addEventListener("click",e=>{
     const b=e.target.closest("[data-id]");
     if(b){const id=b.dataset.id;sel.has(id)?sel.delete(id):sel.add(id);render();return}
+    const z=e.target.closest("[data-zone]");
+    if(z&&z.tagName==="BUTTON"){
+      zone=z.dataset.zone;
+      root.querySelectorAll("button[data-zone]").forEach(x=>x.setAttribute("aria-pressed",x===z));
+      root.querySelectorAll(".zone").forEach(box=>box.hidden=box.dataset.zone!==zone);
+      chips();render();return;
+    }
     const s=e.target.closest("[data-side]");
-    if(s){side=s.dataset.side;document.querySelectorAll("[data-side]").forEach(x=>x.setAttribute("aria-pressed",x===s));$("earbox").classList.toggle("left",side==="esquerda");render()}
+    if(s){side=s.dataset.side;root.querySelectorAll("[data-side]").forEach(x=>x.setAttribute("aria-pressed",x===s));$("earbox").classList.toggle("left",side==="esquerda");render()}
   });
-  render();
+  chips();render();
 })();
 </script>
 <script src="posts.js" defer></script>

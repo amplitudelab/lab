@@ -13,7 +13,7 @@ const PHONE = document.body.dataset.phone || '5511934707496';
 const wa = (t) => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
 
 /* ==========================================================================
-   EDITE AQUI: metais, pedras e catálogo do ateliê
+   EDITE AQUI: metais, pedras e catálogo de joias (o hero usa as peças pelo id, veja SLOTS)
    ========================================================================== */
 // cor = refletância do metal (espaço linear); css = bolinha do seletor
 export const METAIS = {
@@ -72,6 +72,28 @@ function studio() {
   return s;
 }
 
+// luz das pedras: sala clara com faixas pretas (como a tenda de luz das fotos de joia).
+// a pedra refrata isso e vira um mosaico de branco, preto e arco-íris
+function gemStudio() {
+  const s = new THREE.Scene();
+  s.add(new THREE.Mesh(new THREE.SphereGeometry(30, 64, 32), new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false,
+    vertexShader: 'varying vec3 p;void main(){p=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader: `varying vec3 p;void main(){
+      float a = atan(p.z, p.x);
+      float bands = smoothstep(0.15, 0.55, abs(sin(a * 5.0 + p.y * 3.0))) * smoothstep(0.1, 0.45, abs(sin(p.y * 7.0 + a)));
+      vec3 base = mix(vec3(0.35, 0.33, 0.31), vec3(1.25, 1.22, 1.18), smoothstep(-0.4, 0.8, p.y));
+      gl_FragColor = vec4(mix(vec3(0.015), base, bands), 1.0);
+    }`,
+  })));
+  const panel = (w, h, k, pos) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(0xffffff).multiplyScalar(k), side: THREE.DoubleSide }));
+    m.position.set(...pos); m.lookAt(0, 0, 0); s.add(m);
+  };
+  panel(10, 3, 6, [0, 12, 4]); panel(2, 10, 5, [-11, 2, 4]); panel(2, 10, 5, [11, 1, 2]); panel(8, 1.5, 7, [0, -2, 13]);
+  return s;
+}
+
 /* ---------- material de diamante ---------- */
 // refração por canal (r, g, b com índices diferentes = fogo do diamante), um reflexo interno
 // por faceta e reflexo de Fresnel na superfície; as facetas planas fazem cada uma acender sozinha
@@ -87,7 +109,8 @@ void main(){
 const DIAMOND_FS = `
 uniform samplerCube envMap; uniform vec3 tint; uniform float fire, aurora, gain, envRot;
 varying vec3 vWN; varying vec3 vWP; varying vec3 vON;
-vec3 rotY(vec3 d){ float c = cos(envRot), s = -sin(envRot); // mesmo sentido do scene.environmentRotation return vec3(c*d.x + s*d.z, d.y, -s*d.x + c*d.z); }
+// -sin: gira no mesmo sentido do scene.environmentRotation
+vec3 rotY(vec3 d){ float c = cos(envRot), s = -sin(envRot); return vec3(c*d.x + s*d.z, d.y, -s*d.x + c*d.z); }
 vec3 env(vec3 d){ return textureCube(envMap, rotY(d)).rgb; }
 vec3 hash3(vec3 p){ p = fract(p * vec3(.1031, .1030, .0973)); p += dot(p, p.yxz + 33.33); return fract((p.xxy + p.yxx) * p.zyx) * 2.0 - 1.0; }
 float chan(vec3 v, vec3 n, vec3 bn, vec3 bn2, float ior, int c){
@@ -109,13 +132,10 @@ void main(){
   float F = 0.17 + 0.83 * pow(1.0 - clamp(dot(-v, n), 0.0, 1.0), 5.0);
   vec3 refl = env(reflect(v, n));
   // luz difusa vinda de dentro da pedra (mip borrado do ambiente): o cinza-prata entre as faíscas
-  vec3 fill = textureCube(envMap, rotY(reflect(v, bn2)), 5.0).rgb * vec3(1.6, 1.75, 2.0) + 0.03;
-  float facet = fract(h.z * 3.7 + envRot * 0.6 + dot(n, vec3(0.31, 0.17, 0.23)) * 2.0); // cada faceta num tom de cinza, muda ao girar
-  vec3 body = (refr * 1.4 + fill * (0.08 + 1.1 * facet * facet)) * tint * mix(vec3(1.0), tint, 0.6);
+  vec3 body = refr * tint * mix(vec3(1.0), tint, 0.6);
   vec3 iri = 0.65 + 0.35 * cos(6.2831 * (dot(n, -v) * 1.6 + h.x * 0.3 + vec3(0.0, 0.33, 0.67)));
   body *= mix(vec3(1.0), iri * 1.25, aurora);
-  vec3 col = mix(body, refl, F) * gain;
-  col = min(pow(col, vec3(1.3)) * 1.05, vec3(3.0)); // mais contraste: preto entre as faíscas, só as facetas acesas estouram
+  vec3 col = min(mix(body, refl, F) * gain * 1.15, vec3(4.0));
   gl_FragColor = vec4(col, 1.0);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
@@ -145,7 +165,7 @@ function kit(renderer) {
   const envTex = pmrem.fromScene(env, 0.02).texture;
   pmrem.dispose();
   const cubeRT = new THREE.WebGLCubeRenderTarget(256, { type: THREE.HalfFloatType, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
-  new THREE.CubeCamera(0.1, 80, cubeRT).update(renderer, env);
+  new THREE.CubeCamera(0.1, 80, cubeRT).update(renderer, gemStudio());
   const envRot = { value: 0 }, cache = new Map();
   const memo = (key, make) => cache.get(key) || (cache.set(key, make()), cache.get(key));
   return {
@@ -854,137 +874,4 @@ function hero() {
   canvas.classList.add('on');
 }
 
-/* ==========================================================================
-   Ateliê: catálogo, tom do metal, cor da pedra e peça grande girando
-   ========================================================================== */
-function atelie() {
-  const root = document.getElementById('atelie');
-  if (!root) return;
-  const $ = (s) => root.querySelector(s);
-  const list = $('#at-list'), cats = $('#at-cats'), metals = $('#at-metals'), stones = $('#at-stones');
-  const state = { id: CATALOGO[0].id, tom: 'ouro', pedra: 'cristal', cat: 'todas' };
-
-  // interface (funciona mesmo sem WebGL)
-  cats.innerHTML = [['todas', 'Todas'], ...Object.entries(CATEGORIAS)].map(([id, n]) => `<button data-cat="${id}" aria-pressed="${id === 'todas'}">${n}</button>`).join('');
-  list.innerHTML = CATALOGO.map((c, i) => `<li><button data-id="${c.id}" data-cat="${c.cat}" aria-pressed="${!i}"><span>${String(i + 1).padStart(2, '0')}</span><b>${c.nome}</b><i>${c.onde.split(' · ')[0]}</i></button></li>`).join('');
-  metals.innerHTML = Object.entries(METAIS).map(([id, m]) => `<button class="sw" data-tom="${id}" aria-pressed="${id === state.tom}" aria-label="${m.nome}" title="${m.nome}"><i style="background:${m.css}"></i></button>`).join('');
-  stones.innerHTML = Object.entries(PEDRAS).map(([id, p]) => `<button class="sw" data-pedra="${id}" aria-pressed="${id === state.pedra}" aria-label="${p.nome}" title="${p.nome}"><i style="background:${p.css}"></i></button>`).join('');
-
-  let rebuild = () => {};
-  function paint() {
-    const c = CATALOGO.find((x) => x.id === state.id);
-    $('#at-num').textContent = `${String(CATALOGO.indexOf(c) + 1).padStart(2, '0')} / ${CATALOGO.length}`;
-    $('#at-name').textContent = c.nome;
-    $('#at-desc').textContent = c.desc;
-    $('#at-where').textContent = c.onde;
-    $('#at-type').textContent = c.tipo;
-    $('#at-metal-name').textContent = METAIS[state.tom].nome;
-    $('#at-stone-name').textContent = c.pedra ? PEDRAS[state.pedra].nome : '';
-    $('#at-stone-row').hidden = !c.pedra;
-    root.querySelectorAll('[data-id]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.id === state.id));
-    root.querySelectorAll('[data-tom]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.tom === state.tom));
-    root.querySelectorAll('[data-pedra]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.pedra === state.pedra));
-    const pedra = c.pedra ? `, pedra ${PEDRAS[state.pedra].nome.toLowerCase()}` : '';
-    $('#at-cta').href = wa(`Olá, Naiá! Vi no ateliê do seu site e gostei desta joia: ${c.nome} (${METAIS[state.tom].nome.toLowerCase()}${pedra}). Onde ela ficaria bem em mim?`);
-  }
-  root.addEventListener('click', (e) => {
-    const b = e.target.closest('button');
-    if (!b) return;
-    if (b.dataset.cat && b.closest('#at-cats')) {
-      state.cat = b.dataset.cat;
-      cats.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
-      list.querySelectorAll('li').forEach((li) => { li.hidden = state.cat !== 'todas' && li.firstChild.dataset.cat !== state.cat; });
-      return;
-    }
-    if (b.dataset.id) state.id = b.dataset.id;
-    else if (b.dataset.tom) state.tom = b.dataset.tom;
-    else if (b.dataset.pedra) state.pedra = b.dataset.pedra;
-    else return;
-    paint(); rebuild();
-  });
-  paint();
-
-  const canvas = $('#at-gl');
-  const st = stage(canvas, { dpr: mobile ? 1.75 : 2, bloom: 0.28, threshold: 1.15, radius: 0.3 });
-  if (!st) { root.classList.add('no-gl'); return; }
-  const { scene, camera, k } = st;
-  const FLOOR = -1.85;
-  camera.position.set(0, 0.55, 7.4);
-  camera.lookAt(0, -0.25, 0);
-
-  // peça + reflexo no "vidro" da vitrine (cópia espelhada que some no escuro)
-  const holder = new THREE.Group(), mirrorOut = new THREE.Group(), mirrorIn = new THREE.Group();
-  mirrorOut.position.y = FLOOR * 2; mirrorOut.scale.y = -1;
-  mirrorOut.add(mirrorIn); scene.add(holder, mirrorOut);
-  const fadeTex = (() => {
-    const c = document.createElement('canvas'); c.width = c.height = 128;
-    const x = c.getContext('2d'), g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
-    g.addColorStop(0, '#5a5a5a'); g.addColorStop(0.55, '#c8c8c8'); g.addColorStop(1, '#ffffff');
-    x.fillStyle = g; x.fillRect(0, 0, 128, 128);
-    return new THREE.CanvasTexture(c);
-  })();
-  const glass = new THREE.Mesh(new THREE.PlaneGeometry(16, 16).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, alphaMap: fadeTex, opacity: 0.97 }));
-  glass.position.y = FLOOR; glass.renderOrder = 1; scene.add(glass);
-  // anel de luz no chão, como a base de uma vitrine
-  const halo = new THREE.Mesh(new THREE.RingGeometry(1.75, 1.79, 128).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: new THREE.Color(0xd9b77f).multiplyScalar(0.9), transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false }));
-  halo.position.y = FLOOR + 0.002; halo.renderOrder = 2; scene.add(halo);
-  const motes = dust(36, { x: 3.4, y: 4, z: 3 }); motes.position.z = -1.5; scene.add(motes);
-
-  let piece = null, mirror = null, gems = [], swing = [];
-  rebuild = () => {
-    if (piece) { holder.remove(piece); mirrorIn.remove(mirror); dispose(piece); }
-    piece = fit(build(k, state.id, { tom: state.tom, pedra: state.pedra }), 1.5);
-    mirror = piece.clone(); // compartilha geometrias e materiais com a peça
-    swing = [piece.getObjectByName('swing'), mirror.getObjectByName('swing')].filter(Boolean);
-    holder.add(piece); mirrorIn.add(mirror);
-    gems = gemsOf(piece);
-    draw();
-  };
-
-  // arrastar para girar, com inércia; volta a girar sozinha
-  let rotY = 0.5, rotX = 0.12, vel = 0.004, dragging = false, lx = 0, ly = 0, idle = 0, last = 0;
-  canvas.addEventListener('pointerdown', (e) => { dragging = true; lx = e.clientX; ly = e.clientY; canvas.setPointerCapture(e.pointerId); });
-  canvas.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - lx, dy = e.clientY - ly; lx = e.clientX; ly = e.clientY;
-    vel = dx * 0.0035; rotY += dx * 0.009; rotX = Math.max(-0.5, Math.min(0.6, rotX + dy * 0.006));
-    idle = 0; draw();
-  });
-  const up = () => { dragging = false; };
-  canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
-  canvas.addEventListener('keydown', (e) => {
-    const d = { ArrowLeft: -0.25, ArrowRight: 0.25 }[e.key];
-    if (d) { rotY += d; idle = 0; vel = 0; draw(); e.preventDefault(); }
-  });
-
-  function draw(now = last) {
-    holder.rotation.set(rotX, rotY, 0);
-    mirrorIn.rotation.copy(holder.rotation);
-    for (const s of swing) s.rotation.z = Math.sin(now * 1.6) * 0.12;
-    k.envRot.value = now * 0.1;
-    scene.environmentRotation.y = k.envRot.value;
-    motes.material.uniforms.t.value = now;
-    scene.updateMatrixWorld(true);
-    st.gl.update(gems, camera, now);
-    st.render();
-  }
-  const frame = (now) => {
-    const dt = Math.min(0.05, now - (last || now)); last = now;
-    if (!dragging) {
-      idle += dt;
-      vel += ((idle > 1.5 ? 0.005 : 0) - vel) * 0.04;
-      rotY += vel;
-      rotX += (0.12 - rotX) * 0.02;
-    }
-    draw(now);
-  };
-  new ResizeObserver(() => { const w = canvas.clientWidth, h = canvas.clientHeight; if (w && h) { st.size(w, h); draw(); } }).observe(canvas);
-  loop(canvas, reduce ? () => {} : frame);
-  rebuild();
-  canvas.classList.add('on');
-}
-
-// cada parte isolada: um erro no hero não derruba o ateliê
-for (const part of [hero, atelie]) {
-  try { part(); } catch (e) { console.error(e); }
-}
+try { hero(); } catch (e) { console.error(e); }
