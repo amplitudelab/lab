@@ -41,7 +41,7 @@ const fieldVert = /* glsl */`
     float side = smoothstep(17.0, 9.0, abs(position.x));
     float back = smoothstep(-13.0, -5.0, position.z);
     float front = smoothstep(5.5, 2.5, position.z);
-    vA = side * back * front * (0.55 + aRand * 0.45);
+    vA = side * back * front * (0.45 + aRand * 0.4);
   }
 `;
 const fieldFrag = /* glsl */`
@@ -122,7 +122,7 @@ export function mount(canvas, { reduced = false, mobile = false } = {}) {
     uniforms, vertexShader: fieldVert, fragmentShader: fieldFrag,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
   }));
-  field.position.y = -1.6;
+  field.position.y = -2.2;
   scene.add(field);
 
   // Poeira
@@ -142,12 +142,12 @@ export function mount(canvas, { reduced = false, mobile = false } = {}) {
     vertexShader: dustVert, fragmentShader: dustFrag,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
   }));
-  dust.position.y = -1.6;
+  dust.position.y = -2.2;
   scene.add(dust);
 
   // Ponteiro → ponto no plano do campo
   const ray = new THREE.Raycaster();
-  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 1.6);
+  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 2.2);
   const ndc = new THREE.Vector2();
   const hit = new THREE.Vector3();
   function toField(clientX, clientY) {

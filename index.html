@@ -247,11 +247,13 @@ section[id],footer[id]{scroll-margin-top:72px}
 .lab-cta{height:52px;margin-left:auto}
 .lab-note a{color:var(--volt-hi)}
 @media (max-width:979px){
-  .demos{grid-auto-flow:column;grid-auto-columns:minmax(200px,64%);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}
-  .demo-btn{grid-template-columns:auto 1fr;gap:12px;padding:12px 14px}
-  .demo-btn .demo-eq{display:none}
-  .demo-name{font-size:16px}
-  .demo-meta{font-size:10px}
+  .demos{grid-auto-flow:column;grid-auto-columns:minmax(230px,80%);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}
+  .demos .demo-btn{grid-template-columns:auto 1fr;gap:12px;padding:12px 14px}
+  .demos .demo-btn .demo-eq{display:none}
+  .demos .demo-name{font-size:14px}
+  .demo-btn>span{min-width:0}
+  .demo-name,.demo-meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .demos .demo-meta{font-size:10px}
   .demos::-webkit-scrollbar{display:none}
   .demos li{scroll-snap-align:start}
   .lab-cta{margin-left:0;flex:1}

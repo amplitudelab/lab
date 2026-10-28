@@ -71,5 +71,23 @@
   const IMG = new URL('img/', document.currentScript.src).href;
   const px = (id, w = 900) => IMG + id + (w <= 600 ? '-p' : '') + '.webp';
 
+  // Seções que estão fora da tela entram suaves quando aparecem
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      io.unobserve(el);
+      el.classList.add('al-in');
+      // sem transform depois da entrada, para não atrapalhar elementos fixos
+      setTimeout(() => el.classList.remove('al-rv', 'al-in'), 900);
+    }), { threshold: 0.06 });
+    document.querySelectorAll('main section, body > section').forEach((el) => {
+      if (el.getBoundingClientRect().top < innerHeight * 0.9) return;
+      el.classList.add('al-rv');
+      io.observe(el);
+    });
+  });
+
   window.AL = { whats, toast, labLink, embed, px };
 })();
