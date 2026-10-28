@@ -186,6 +186,8 @@ footer a{color:var(--paper)}
 .piece:hover .ph{transform:scale(1.04)}
 .studio{display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
 .studio .ph{width:100%;aspect-ratio:3/4;object-fit:cover;border:2px solid var(--ink)}
+.piece .ph{position:absolute;inset:0}
+.view-card .art{position:relative;overflow:hidden}.view-card .art .ph{position:absolute;inset:0}
 </style>
 </head>
 <body>
@@ -377,14 +379,14 @@ footer a{color:var(--paper)}
   // fotos do portfólio (Pexels)
   const WORKS = [
     { ph: 29004935, n: 'Mulher e rosa', st: 'Fine line', cm: 14, flash: false, d: 'Retrato feminino com rosa em traço fino no antebraço.' },
-    { ph: 18035446, n: 'Braço fechado', st: 'Blackwork', cm: 40, flash: false, d: 'Composição em preto sólido cobrindo o braço inteiro.' },
+    { ph: 18035446, n: 'Ombro e braço', st: 'Blackwork', cm: 40, flash: false, d: 'Composição em preto e cinza do ombro ao braço.' },
     { ph: 7147839, n: 'Traços mínimos', st: 'Fine line', cm: 6, flash: true, d: 'Pequenos desenhos de linha única espalhados pelo braço.' },
     { ph: 1588085, n: 'Leão', st: 'Blackwork', cm: 22, flash: false, d: 'Leão em preto e cinza nas costas.' },
     { ph: 4750242, n: 'Samambaia', st: 'Fine line', cm: 15, flash: true, d: 'Folha de samambaia acompanhando o antebraço.' },
     { ph: 6593545, n: 'Folha de flash', st: 'Blackwork', cm: 10, flash: true, d: 'Desenhos prontos para tatuar do jeito que estão.' },
     { ph: 2255663, n: 'Floral no braço', st: 'Fine line', cm: 12, flash: true, d: 'Flores com sombreado leve seguindo o braço.' },
-    { ph: 29616935, n: 'Peito e ombro', st: 'Blackwork', cm: 35, flash: false, d: 'Peça grande em preto e cinza no tronco.' },
-    { ph: 19734301, n: 'Borboleta', st: 'Fine line', cm: 8, flash: true, d: 'Borboleta delicada no peito.' },
+    { ph: 29616935, n: 'Lettering no peito', st: 'Fine line', cm: 30, flash: false, d: 'Frases em lettering fino espalhadas pelo peito.' },
+    { ph: 19734301, n: 'Mariposa', st: 'Blackwork', cm: 18, flash: false, d: 'Mariposa com caveira no peito, em preto e cinza.' },
     { ph: 7005799, n: 'Costas fechadas', st: 'Blackwork', cm: 50, flash: false, d: 'Projeto de costas inteiras, feito em várias sessões.' },
   ];
 

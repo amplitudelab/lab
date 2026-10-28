@@ -196,6 +196,8 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 .p .img:hover .ph{transform:scale(1.04)}
 .ln .im{overflow:hidden}
 .ln .im .ph{width:100%;height:100%;object-fit:cover}
+.p .img .ph{position:absolute;inset:0}
+.ln .im{position:relative}.ln .im .ph{position:absolute;inset:0}
 </style>
 </head>
 <body>
@@ -304,17 +306,17 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 
   const PRODUCTS = [
     { id: 1, n: 'Vestido Midi Linho', cat: 'Vestidos', col: 'Costa', ph: 8190290, p: 349, colors: ['Areia', 'Terracota', 'Azul-maré'], out: ['PP'], tag: 'Novo', nw: 9, d: 'Midi com alças finas e fenda lateral. 100% linho lavado, toque macio desde o primeiro uso.' },
-    { id: 2, n: 'Camisa Oversized Linho', cat: 'Camisas', col: 'Linho Puro', ph: 2698918, p: 259, colors: ['Off-white', 'Céu', 'Oliva'], out: [], nw: 6, d: 'Modelagem ampla, ombro caído e bolso frontal. Usa aberta como terceira peça ou fechada.' },
+    { id: 2, n: 'Camisa Oversized Linho', cat: 'Camisas', col: 'Linho Puro', ph: 28576622, p: 259, colors: ['Off-white', 'Céu', 'Oliva'], out: [], nw: 6, d: 'Modelagem ampla, ombro caído e bolso frontal. Usa aberta como terceira peça ou fechada.' },
     { id: 3, n: 'Camiseta Essencial', cat: 'Camisetas', col: 'Essenciais', ph: 8217536, p: 129, old: 159, colors: ['Off-white', 'Preto', 'Oliva', 'Rosa-argila'], out: ['GG'], tag: '-20%', nw: 2, d: 'Algodão pima 180 g, gola canelada que não deforma. A base de qualquer look.' },
     { id: 4, n: 'Calça Pantalona', cat: 'Calças', col: 'Costa', ph: 18173600, p: 299, colors: ['Areia', 'Preto', 'Terracota'], out: ['G'], tag: 'Novo', nw: 8, d: 'Cintura alta com pregas e caimento fluido. Viscolinho que não amassa na mala.' },
-    { id: 5, n: 'Saia Longa Fluida', cat: 'Saias', col: 'Costa', ph: 19135051, p: 219, colors: ['Rosa-argila', 'Azul-maré', 'Areia'], out: [], nw: 7, d: 'Longa e leve, com cós de elástico embutido. Gira bonito.' },
+    { id: 5, n: 'Saia Longa Fluida', cat: 'Saias', col: 'Costa', ph: 19135051, p: 219, colors: ['Terracota', 'Areia', 'Azul-maré'], out: [], nw: 7, d: 'Longa e leve, com cós de elástico embutido. Gira bonito.' },
     { id: 6, n: 'Jaqueta Sarja', cat: 'Jaquetas', col: 'Essenciais', ph: 10844021, p: 389, colors: ['Oliva', 'Preto', 'Areia'], out: ['PP', 'P'], nw: 3, d: 'Sarja de algodão encorpada com lapela larga. Atravessa as estações.' },
-    { id: 7, n: 'Bolsa Tote Couro', cat: 'Acessórios', col: 'Essenciais', ph: 2433862, p: 329, colors: ['Terracota', 'Preto', 'Areia'], out: [], sizes: ['Único'], nw: 4, d: 'Couro legítimo curtido no vegetal, cabe notebook de 14”. Forro em algodão.' },
+    { id: 7, n: 'Bolsa Tote Couro', cat: 'Acessórios', col: 'Essenciais', ph: 13525167, p: 329, colors: ['Terracota', 'Preto', 'Oliva'], out: [], sizes: ['Único'], nw: 4, d: 'Couro legítimo curtido no vegetal, em três cores. Forro em algodão.' },
     { id: 8, n: 'Chapéu de Palha', cat: 'Acessórios', col: 'Costa', ph: 1927320, p: 149, colors: ['Areia', 'Off-white'], out: [], sizes: ['P/M', 'G/GG'], tag: 'Novo', nw: 10, d: 'Palha natural trançada à mão com faixa de algodão.' },
-    { id: 9, n: 'Camiseta Boxy', cat: 'Camisetas', col: 'Essenciais', ph: 8498700, p: 139, colors: ['Céu', 'Terracota', 'Preto'], out: ['M'], nw: 5, d: 'Corte reto e curto, malha pesada 220 g. Fica ótima com cintura alta.' },
-    { id: 10, n: 'Vestido Bordado Linho', cat: 'Vestidos', col: 'Linho Puro', ph: 4256573, p: 319, old: 379, colors: ['Oliva', 'Off-white'], out: [], tag: '-15%', nw: 1, d: 'Linho branco com bordado artesanal no decote. Leve para os dias de calor.' },
-    { id: 11, n: 'Calça Linho Reta', cat: 'Calças', col: 'Linho Puro', ph: 27098937, p: 279, colors: ['Off-white', 'Oliva', 'Azul-maré'], out: ['GG'], nw: 5, d: 'Reta, cós com cordão e bolsos faca. Linho europeu certificado.' },
-    { id: 12, n: 'Saia Floral Midi', cat: 'Saias', col: 'Linho Puro', ph: 3814272, p: 239, colors: ['Terracota', 'Areia'], out: ['PP'], nw: 4, d: 'Estampa floral exclusiva, evasê, com botões de coco. Fresca e elegante.' },
+    { id: 9, n: 'Camiseta Boxy', cat: 'Camisetas', col: 'Essenciais', ph: 8498700, p: 139, colors: ['Off-white', 'Céu', 'Preto'], out: ['M'], nw: 5, d: 'Corte reto e curto, malha pesada 220 g. Fica ótima com cintura alta.' },
+    { id: 10, n: 'Vestido Longo Linho', cat: 'Vestidos', col: 'Linho Puro', ph: 13816064, p: 319, old: 379, colors: ['Off-white', 'Areia'], out: [], tag: '-15%', nw: 1, d: 'Longo, com mangas amplas e cintura marcada. Linho cru, leve para os dias de calor.' },
+    { id: 11, n: 'Calça Linho Reta', cat: 'Calças', col: 'Linho Puro', ph: 27098937, p: 279, colors: ['Areia', 'Off-white', 'Oliva'], out: ['GG'], nw: 5, d: 'Reta, cós com cordão e bolsos faca. Linho europeu certificado.' },
+    { id: 12, n: 'Saia Midi Terracota', cat: 'Saias', col: 'Linho Puro', ph: 26997897, p: 239, colors: ['Terracota', 'Areia'], out: ['PP'], nw: 4, d: 'Evasê com caimento leve, em viscolinho terracota. Fresca e elegante.' },
   ];
   const SIZES = ['PP', 'P', 'M', 'G', 'GG'];
   const CATS = ['Tudo', ...new Set(PRODUCTS.map((p) => p.cat))];

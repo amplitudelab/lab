@@ -161,6 +161,8 @@ textarea.inp{min-height:70px;resize:vertical}
 .preview .ph{width:100%;height:100%;object-fit:cover}
 .preview .adds{position:absolute;left:10px;right:10px;bottom:10px;display:flex;flex-wrap:wrap;gap:6px}
 .preview .adds span{background:var(--char);color:var(--mustard);border-radius:999px;padding:5px 10px;font:700 12px var(--sans)}
+.item .pic,.line .pic{position:relative}
+.item .pic .ph,.line .pic .ph{position:absolute;inset:0}
 </style>
 </head>
 <body>
@@ -266,12 +268,12 @@ textarea.inp{min-height:70px;resize:vertical}
       { id: 'aneis', n: 'Anéis de cebola', d: 'Empanados na cerveja, com maionese de alho.', p: 18.9, ph: 6941051 },
     ] },
     { cat: 'Bebidas', items: [
-      { id: 'refri', n: 'Refri lata', d: '350 ml com copo de gelo. Cola, guaraná ou laranja.', p: 6.9, ph: 4113656 },
-      { id: 'suco', n: 'Suco de laranja', d: '500 ml, espremido na hora.', p: 11.9, ph: 3642 },
+      { id: 'limonada', n: 'Limonada da casa', d: '500 ml, limão espremido na hora, hortelã e gelo.', p: 9.9, ph: 5472299 },
+      { id: 'suco', n: 'Suco de laranja', d: '500 ml, espremido na hora, com gelo e alecrim.', p: 11.9, ph: 8679396 },
       { id: 'shake', n: 'Milkshake de morango', d: '400 ml com chantilly e morango.', p: 19.9, ph: 10066814 },
     ] },
     { cat: 'Sobremesas', items: [
-      { id: 'taca', n: 'Taça da casa', d: 'Sorvete de creme, calda de chocolate e farofa crocante.', p: 17.9, ph: 4344582 },
+      { id: 'taca', n: 'Taça da casa', d: 'Creme de chocolate na taça e bola de sorvete de frutas vermelhas.', p: 17.9, ph: 4344582 },
     ] },
   ];
   const ALL = MENU.flatMap((c) => c.items);

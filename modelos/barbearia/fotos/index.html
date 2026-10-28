@@ -185,7 +185,8 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-bet
 .hero-photo > .ph{width:100%;height:100%;object-fit:cover}
 .hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(16,24,20,.9));pointer-events:none}
 .emblem.mini{position:absolute;left:16px;bottom:16px;width:128px;margin:0;z-index:1}
-.member .pic .ph,.cut .pic .ph{width:100%;height:100%;object-fit:cover}
+.member .pic,.cut .pic{position:relative;overflow:hidden}
+.member .pic .ph,.cut .pic .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .member .pic .ph{object-position:50% 22%}
 .opt.pro .av{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:0 0 auto}
 .space{display:grid;gap:12px;grid-template-columns:1fr 1fr}
@@ -307,9 +308,9 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-bet
     <div class="wrap">
       <div class="head"><p class="eyebrow">O espaço</p><h2>Cadeira, café e conversa</h2><p>Ambiente clássico, música baixa e café passado na hora enquanto você espera.</p></div>
       <div class="space">
-        <img class="ph" loading="lazy" src="https://images.pexels.com/photos/8218487/pexels-photo-8218487.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Interior da barbearia com cadeiras clássicas e espelhos">
-        <img class="ph" loading="lazy" src="https://images.pexels.com/photos/2076932/pexels-photo-2076932.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Barbeiro cortando o cabelo de um cliente">
-        <img class="ph" loading="lazy" src="https://images.pexels.com/photos/897265/pexels-photo-897265.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Barbeiro fazendo a barba de um cliente">
+        <img class="ph" loading="lazy" src="https://images.pexels.com/photos/7518731/pexels-photo-7518731.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Salão da barbearia com parede de tijolos, cadeiras e espelhos">
+        <img class="ph" loading="lazy" src="https://images.pexels.com/photos/19664860/pexels-photo-19664860.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Barbeiro finalizando o corte de um cliente">
+        <img class="ph" loading="lazy" src="https://images.pexels.com/photos/4914501/pexels-photo-4914501.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Barbeiro aparando a barba de um cliente">
       </div>
     </div>
   </section>
