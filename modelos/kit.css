@@ -14,10 +14,14 @@
 .al-back svg{width:16px;height:16px}
 .al-tag{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#9ba8c6;font-size:12px}
 .al-tag b{color:#eaf0ff;font-weight:600}
+.al-alt{flex:0 0 auto;height:34px;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border-radius:999px;background:#1a2340;color:#a9c4ff!important;font-weight:600;white-space:nowrap;transition:background-color .2s}
+.al-alt:hover{background:#28345a}
+.al-alt svg{width:15px;height:15px}
 .al-cta{flex:0 0 auto;height:34px;display:inline-flex;align-items:center;padding:0 12px;border-radius:999px;border:1px solid #28345a;font-weight:600;white-space:nowrap;transition:border-color .2s}
 .al-cta:hover{border-color:#a9c4ff}
 .al-bar :focus-visible{outline:2px solid #a9c4ff;outline-offset:2px}
-@media (max-width:420px){.al-tag em{display:none}.al-cta{display:none}}
+@media (max-width:560px){.al-tag em{display:none}.al-cta{display:none}}
+@media (max-width:380px){.al-tag{display:none}.al-alt{margin-left:auto}}
 
 /* folha de simulação */
 .al-sheet{position:fixed;inset:0;z-index:1100;display:grid;align-items:end;justify-items:center;background:rgba(3,4,8,.62);opacity:0;pointer-events:none;transition:opacity .25s}

@@ -54,7 +54,8 @@ h1 span{background:linear-gradient(100deg,var(--volt-hi),var(--volt) 60%,#8f7bff
 .models{display:grid;gap:18px;margin:56px 0 0;padding:0;list-style:none}
 @media (min-width:720px){.models{grid-template-columns:repeat(2,1fr)}}
 @media (min-width:1080px){.models{grid-template-columns:repeat(6,1fr)}.models li{grid-column:span 2}.models li:nth-child(4){grid-column:2/span 2}}
-.card{position:relative;display:flex;flex-direction:column;height:100%;border:1px solid var(--line);border-radius:26px;background:var(--panel);overflow:hidden;text-decoration:none;transition:border-color .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.card{position:relative;display:flex;flex-direction:column;height:100%;border:1px solid var(--line);border-radius:26px;background:var(--panel);overflow:hidden;transition:border-color .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.card:focus-within{border-color:var(--line-2)}
 .card:hover{border-color:var(--line-2);transform:translateY(-4px)}
 .stage{position:relative;height:380px;display:grid;place-items:end center;overflow:hidden;background:var(--tint)}
 .stage::after{content:"";position:absolute;inset:auto 0 0;height:70px;background:linear-gradient(transparent,var(--panel));pointer-events:none}
@@ -65,14 +66,18 @@ h1 span{background:linear-gradient(100deg,var(--volt-hi),var(--volt) 60%,#8f7bff
 .screen iframe{position:absolute;left:0;top:0;width:390px;height:800px;border:0;transform-origin:0 0;pointer-events:none}
 .num{position:absolute;left:18px;top:16px;z-index:1;font:600 12px var(--f-mono);letter-spacing:.12em;padding:6px 10px;border-radius:999px;background:rgba(5,7,13,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .pkg{position:absolute;right:18px;top:16px;z-index:1;font:500 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px;background:rgba(5,7,13,.72);color:var(--volt-hi);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.info{position:relative;padding:20px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.info{padding:20px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
 .seg{font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .info h2{font:700 24px/1.1 var(--f-display);letter-spacing:-.03em;margin:0}
 .info p{margin:0;color:var(--muted);font-size:15px}
 .feats{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 0;padding:0;list-style:none}
 .feats li{font:500 12px var(--f-sans);padding:5px 10px;border-radius:999px;border:1px solid var(--line-2);color:var(--fg)}
-.go{margin-top:auto;padding-top:12px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);font:600 14px var(--f-sans)}
+.go::after{content:"";position:absolute;inset:0;z-index:1}
+.go{text-decoration:none;margin-top:auto;padding-top:12px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);font:600 14px var(--f-sans)}
 .go small{font:500 12px var(--f-sans);color:var(--dim)}
+.ver{position:relative;z-index:2;display:inline-flex;align-self:flex-start;gap:2px;padding:3px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+.ver button{border:0;background:transparent;color:var(--muted);height:30px;padding:0 12px;border-radius:999px;font:600 12px var(--f-sans);cursor:pointer}
+.ver button[aria-pressed="true"]{background:var(--volt);color:#05070d}
 .go b{font:500 20px var(--f-mono);color:var(--volt-hi);transition:transform .25s}
 .card:hover .go b{transform:translateX(4px)}
 
@@ -116,13 +121,13 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
   </div>
   <p class="eyebrow"><i aria-hidden="true"></i>Hub de demos · 5 modelos</p>
   <h1>Um site pronto para <span>cada segmento.</span></h1>
-  <p class="lede">Cinco demonstrações navegáveis, com marcas fictícias e recursos de verdade. Escolha a do seu tipo de negócio, toque em tudo e imagine com a sua marca: a gente adapta cores, logo, fotos e textos em poucos dias.</p>
+  <p class="lede">Cinco demonstrações navegáveis, com marcas fictícias e recursos de verdade. Escolha a do seu tipo de negócio, toque em tudo e imagine com a sua marca: a gente adapta cores, logo, fotos e textos em poucos dias. Cada modelo tem duas versões: com fotos reais ou ilustrado.</p>
   <ul class="jump" aria-label="Ir para um modelo">
-    <li><a href="barbearia/"><b>01</b>Barbearia</a></li>
-    <li><a href="tatuagem/"><b>02</b>Tatuagem</a></li>
-    <li><a href="hamburgueria/"><b>03</b>Hamburgueria</a></li>
-    <li><a href="moda/"><b>04</b>Loja de roupas</a></li>
-    <li><a href="decoracao/"><b>05</b>Quadros e decoração</a></li>
+    <li><a href="barbearia/fotos/"><b>01</b>Barbearia</a></li>
+    <li><a href="tatuagem/fotos/"><b>02</b>Tatuagem</a></li>
+    <li><a href="hamburgueria/fotos/"><b>03</b>Hamburgueria</a></li>
+    <li><a href="moda/fotos/"><b>04</b>Loja de roupas</a></li>
+    <li><a href="decoracao/fotos/"><b>05</b>Quadros e decoração</a></li>
   </ul>
 </header>
 
@@ -151,7 +156,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
       <a class="btn" href="../#precos">Ver preços</a>
     </div>
   </div>
-  <p class="note">Todas as marcas, pessoas, preços e endereços das demonstrações são fictícios. As demos são conceitos: o projeto definitivo depende de aprovação e contratação.</p>
+  <p class="note">Todas as marcas, pessoas, preços e endereços das demonstrações são fictícios. As demos são conceitos: o projeto definitivo depende de aprovação e contratação. As fotos das versões com fotos reais são do banco gratuito <a href="https://www.pexels.com/" target="_blank" rel="noopener" style="color:var(--muted)">Pexels</a>; no seu site entram as fotos do seu negócio.</p>
 </main>
 <footer><div class="wrap"><span>Amplitude Lab · laboratório de experiências digitais</span><a href="../demos/">Demos feitas para clientes →</a></div></footer>
 
@@ -176,14 +181,25 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
       f: ['Quadro no ambiente', 'Medidas', 'Acabamentos', 'Coleções', 'Lista de orçamento'], act: 'Pedir orçamento' },
   ];
   const box = document.querySelector('[data-models]');
+  // cada modelo tem a versão com fotos reais (padrão) e a ilustrada
+  const url = (m, fotos) => m.slug + '/' + (fotos ? 'fotos/' : '');
   box.innerHTML = MODELS.map((m, i) =>
-    '<li><a class="card" href="' + m.slug + '/" style="--tint:' + m.tint + '">' +
+    '<li><div class="card" data-slug="' + m.slug + '" style="--tint:' + m.tint + '">' +
       '<div class="stage"><span class="num">' + String(i + 1).padStart(2, '0') + '</span><span class="pkg">' + m.pkg + '</span>' +
-        '<div class="phone" aria-hidden="true"><div class="screen"><iframe src="' + m.slug + '/" loading="lazy" tabindex="-1" title="Prévia ' + m.brand + '"></iframe></div></div></div>' +
-      '<div class="info"><span class="seg">' + m.seg + '</span><h2>' + m.brand + '</h2><p>' + m.d + '</p>' +
+        '<div class="phone" aria-hidden="true"><div class="screen"><iframe src="' + url(m, true) + '" loading="lazy" tabindex="-1" title="Prévia ' + m.brand + '"></iframe></div></div></div>' +
+      '<div class="info"><div class="ver" role="group" aria-label="Versão do modelo ' + m.brand + '"><button type="button" data-fotos="1" aria-pressed="true">Fotos reais</button><button type="button" data-fotos="" aria-pressed="false">Ilustrado</button></div>' +
+        '<span class="seg">' + m.seg + '</span><h2>' + m.brand + '</h2><p>' + m.d + '</p>' +
         '<ul class="feats">' + m.f.map((x) => '<li>' + x + '</li>').join('') + '</ul>' +
-        '<span class="go"><span>Abrir demo<br><small>Ação principal: ' + m.act + '</small></span><b aria-hidden="true">→</b></span></div>' +
-    '</a></li>').join('');
+        '<a class="go" href="' + url(m, true) + '"><span><span data-go>Abrir demo com fotos</span><br><small>Ação principal: ' + m.act + '</small></span><b aria-hidden="true">→</b></a></div>' +
+    '</div></li>').join('');
+  box.addEventListener('click', (e) => {
+    const b = e.target.closest('.ver button'); if (!b) return;
+    const card = b.closest('.card'), m = MODELS.find((x) => x.slug === card.dataset.slug), fotos = !!b.dataset.fotos;
+    card.querySelectorAll('.ver button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+    card.querySelector('iframe').src = url(m, fotos);
+    card.querySelector('.go').href = url(m, fotos);
+    card.querySelector('[data-go]').textContent = fotos ? 'Abrir demo com fotos' : 'Abrir demo ilustrada';
+  });
 
   // ajusta a escala de cada prévia à largura do celular
   const fit = (screen) => { const f = screen.querySelector('iframe'); f.style.transform = 'scale(' + (screen.clientWidth / 390) + ')'; };

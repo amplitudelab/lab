@@ -24,6 +24,10 @@ Publicado com GitHub Pages a partir da branch `main`.
   com marca fictícia e um botão fixo no topo para voltar ao hub. `modelos/kit.css` e
   `modelos/kit.js` têm a barra do hub e a simulação do WhatsApp (as mensagens montadas
   nas demos não são enviadas; o botão final leva ao WhatsApp da Amplitude Lab).
+  Cada modelo tem duas versões: a ilustrada (`modelos/<segmento>/`) e a com fotos
+  reais (`modelos/<segmento>/fotos/`), que usa fotos gratuitas do Pexels carregadas
+  direto de `images.pexels.com` pelo número da foto (`AL.px(id)` em `kit.js`). O
+  hub abre a versão com fotos e tem um seletor para a ilustrada.
 - `voxel-realms/`: jogo Voxel Realms (RPG voxel em Three.js), aberto em
   `https://symbiozyy.github.io/amplitude-lab/voxel-realms/` (detalhes em `voxel-realms/README.md`)
 

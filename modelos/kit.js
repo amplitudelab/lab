@@ -3,7 +3,8 @@
    - AL.whats(titulo, mensagem, segmento): mostra a mensagem que iria para o
      WhatsApp da loja. Como as marcas são fictícias, nada é enviado a elas; o
      botão principal leva para o WhatsApp da Amplitude Lab.
-   - AL.toast(texto): aviso curto no rodapé. */
+   - AL.toast(texto): aviso curto no rodapé.
+   - AL.px(id, largura): endereço de uma foto gratuita do Pexels. */
 (() => {
   'use strict';
   const LAB_WHATS = '5511952182016';
@@ -66,5 +67,8 @@
     toastT = setTimeout(() => toastEl.classList.remove('on'), 2600);
   }
 
-  window.AL = { whats, toast, labLink, embed };
+  // foto gratuita do Pexels pelo número da página (pexels.com/photo/<nome>-<id>/)
+  const px = (id, w = 900) => 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + w;
+
+  window.AL = { whats, toast, labLink, embed, px };
 })();
