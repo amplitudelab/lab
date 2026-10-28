@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Modelos por segmento · Amplitude Lab</title>
+<meta name="description" content="Cinco modelos de site navegáveis: barbearia, estúdio de tatuagem, hamburgueria, loja de roupas e loja de quadros. Escolha o seu segmento e veja funcionando.">
+<meta name="theme-color" content="#05070D">
+<meta property="og:title" content="Modelos por segmento · Amplitude Lab">
+<meta property="og:description" content="Barbearia, tatuagem, hamburgueria, moda e decoração: cinco sites prontos para navegar e adaptar à sua marca.">
+<meta property="og:image" content="https://symbiozyy.github.io/amplitude-lab/assets/og-image.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Hub dos modelos: mesmas cores e fontes do site principal. Cada card mostra a
+   demo ao vivo dentro de um celular (iframe reduzido) e leva para ela. */
+:root{
+  --bg:#05070d; --panel:#0d1322; --panel-2:#111a2e; --line:#1a2340; --line-2:#28345a;
+  --fg:#eaf0ff; --muted:#9ba8c6; --dim:#67739a;
+  --volt:#5b8cff; --volt-hi:#a9c4ff; --volt-deep:#2450d6;
+  --f-display:"Unbounded","Arial Black",sans-serif;
+  --f-sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.55 var(--f-sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--volt-hi);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.glow{position:absolute;inset:0 0 auto;height:620px;pointer-events:none;background:radial-gradient(60% 60% at 70% 0%,rgba(91,140,255,.22),transparent 70%),radial-gradient(40% 50% at 10% 10%,rgba(36,80,214,.18),transparent 70%)}
+header{position:relative;padding-top:calc(28px + env(safe-area-inset-top,0px))}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.back{font:500 12px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--fg)}
+.cta-s{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--line-2);text-decoration:none;font:600 13px var(--f-sans)}
+.cta-s:hover{border-color:var(--volt-hi)}
+.eyebrow{font:500 12px var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--volt-hi);margin:56px 0 14px;display:flex;align-items:center;gap:10px}
+.eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--volt);box-shadow:0 0 0 4px rgba(91,140,255,.2)}
+h1{font:800 clamp(38px,8.6vw,84px)/.98 var(--f-display);letter-spacing:-.045em;margin:0;max-width:15ch;text-wrap:balance}
+h1 span{background:linear-gradient(100deg,var(--volt-hi),var(--volt) 60%,#8f7bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{color:var(--muted);font-size:18px;max-width:56ch;margin:22px 0 0}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:30px 0 0;padding:0;list-style:none}
+.jump a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;background:var(--panel);border:1px solid var(--line);text-decoration:none;font:500 14px var(--f-sans);transition:border-color .2s}
+.jump a:hover{border-color:var(--line-2)}
+.jump b{font:600 11px var(--f-mono);color:var(--dim)}
+
+/* cards dos modelos */
+.models{display:grid;gap:18px;margin:56px 0 0;padding:0;list-style:none}
+@media (min-width:720px){.models{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1080px){.models{grid-template-columns:repeat(6,1fr)}.models li{grid-column:span 2}.models li:nth-child(4){grid-column:2/span 2}}
+.card{position:relative;display:flex;flex-direction:column;height:100%;border:1px solid var(--line);border-radius:26px;background:var(--panel);overflow:hidden;text-decoration:none;transition:border-color .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.card:hover{border-color:var(--line-2);transform:translateY(-4px)}
+.stage{position:relative;height:380px;display:grid;place-items:end center;overflow:hidden;background:var(--tint)}
+.stage::after{content:"";position:absolute;inset:auto 0 0;height:70px;background:linear-gradient(transparent,var(--panel));pointer-events:none}
+.phone{position:relative;width:228px;margin-bottom:-120px;border-radius:34px;padding:9px;background:#0a0c12;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 30px 60px -20px rgba(0,0,0,.6);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.card:hover .phone{transform:translateY(-14px)}
+.phone::before{content:"";position:absolute;top:15px;left:50%;width:62px;height:18px;margin-left:-31px;border-radius:999px;background:#0a0c12;z-index:2}
+.screen{position:relative;width:100%;aspect-ratio:390/800;border-radius:26px;overflow:hidden;background:var(--tint)}
+.screen iframe{position:absolute;left:0;top:0;width:390px;height:800px;border:0;transform-origin:0 0;pointer-events:none}
+.num{position:absolute;left:18px;top:16px;z-index:1;font:600 12px var(--f-mono);letter-spacing:.12em;padding:6px 10px;border-radius:999px;background:rgba(5,7,13,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.pkg{position:absolute;right:18px;top:16px;z-index:1;font:500 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px;background:rgba(5,7,13,.72);color:var(--volt-hi);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.info{position:relative;padding:20px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.seg{font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.info h2{font:700 24px/1.1 var(--f-display);letter-spacing:-.03em;margin:0}
+.info p{margin:0;color:var(--muted);font-size:15px}
+.feats{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 0;padding:0;list-style:none}
+.feats li{font:500 12px var(--f-sans);padding:5px 10px;border-radius:999px;border:1px solid var(--line-2);color:var(--fg)}
+.go{margin-top:auto;padding-top:12px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);font:600 14px var(--f-sans)}
+.go small{font:500 12px var(--f-sans);color:var(--dim)}
+.go b{font:500 20px var(--f-mono);color:var(--volt-hi);transition:transform .25s}
+.card:hover .go b{transform:translateX(4px)}
+
+/* como funciona */
+section{padding-block:84px 0}
+.label{font:500 12px var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--volt-hi)}
+h3.h{font:800 clamp(28px,5.4vw,46px)/1.02 var(--f-display);letter-spacing:-.04em;margin:12px 0 28px;max-width:20ch}
+.steps{display:grid;gap:12px;counter-reset:s}
+.steps div{border:1px solid var(--line);border-radius:22px;padding:24px;background:var(--panel)}
+.steps div::before{counter-increment:s;content:"0" counter(s);font:600 12px var(--f-mono);color:var(--volt-hi);letter-spacing:.12em}
+.steps b{display:block;font:700 18px/1.2 var(--f-display);letter-spacing:-.02em;margin:12px 0 8px}
+.steps p{margin:0;color:var(--muted);font-size:15px}
+@media (min-width:860px){.steps{grid-template-columns:repeat(3,1fr)}}
+.tiers{display:grid;gap:12px;margin-top:12px}
+.tier{display:grid;grid-template-columns:1fr auto;gap:4px 16px;align-items:center;border:1px solid var(--line);border-radius:22px;padding:20px 22px;background:linear-gradient(160deg,var(--panel-2),var(--panel))}
+.tier b{font:700 18px var(--f-display);letter-spacing:-.02em}
+.tier small{grid-column:1;color:var(--muted);font-size:14px}
+.tier span{grid-row:1/3;grid-column:2;font:500 12px var(--f-mono);color:var(--volt-hi);text-align:right;letter-spacing:.06em}
+@media (min-width:860px){.tiers{grid-template-columns:repeat(3,1fr)}}
+.final{margin:84px 0 0;border:1px solid var(--line-2);border-radius:30px;padding:clamp(28px,6vw,56px);background:radial-gradient(80% 120% at 100% 0%,rgba(91,140,255,.25),transparent 60%),var(--panel);display:grid;gap:22px;align-items:center}
+.final h3{font:800 clamp(28px,5.4vw,48px)/1.02 var(--f-display);letter-spacing:-.04em;margin:0}
+.final p{margin:10px 0 0;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 24px;border-radius:999px;border:1px solid var(--line-2);text-decoration:none;font:600 15px var(--f-sans);transition:background-color .2s,border-color .2s}
+.btn.main{background:var(--volt);border-color:var(--volt);color:#05070d}
+.btn.main:hover{background:var(--volt-hi);border-color:var(--volt-hi)}
+.btn:hover{border-color:var(--volt-hi)}
+@media (min-width:860px){.final{grid-template-columns:1.4fr 1fr}.final .btns{justify-content:flex-end}}
+.note{color:var(--dim);font-size:13px;margin:28px 0 0;max-width:70ch}
+footer{margin-top:56px;border-top:1px solid var(--line);padding-block:26px calc(30px + env(safe-area-inset-bottom,0px));color:var(--dim);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card,.phone,.go b{transition:none}}
+</style>
+</head>
+<body>
+<div class="glow" aria-hidden="true"></div>
+<header class="wrap">
+  <div class="topbar">
+    <a class="back" href="../">← Amplitude Lab</a>
+    <a class="cta-s" href="https://wa.me/5511952182016?text=Oi!%20Vi%20os%20modelos%20por%20segmento%20da%20Amplitude%20Lab%20e%20quero%20conversar." target="_blank" rel="noopener">Falar no WhatsApp</a>
+  </div>
+  <p class="eyebrow"><i aria-hidden="true"></i>Hub de demos · 5 modelos</p>
+  <h1>Um site pronto para <span>cada segmento.</span></h1>
+  <p class="lede">Cinco demonstrações navegáveis, com marcas fictícias e recursos de verdade. Escolha a do seu tipo de negócio, toque em tudo e imagine com a sua marca: a gente adapta cores, logo, fotos e textos em poucos dias.</p>
+  <ul class="jump" aria-label="Ir para um modelo">
+    <li><a href="barbearia/"><b>01</b>Barbearia</a></li>
+    <li><a href="tatuagem/"><b>02</b>Tatuagem</a></li>
+    <li><a href="hamburgueria/"><b>03</b>Hamburgueria</a></li>
+    <li><a href="moda/"><b>04</b>Loja de roupas</a></li>
+    <li><a href="decoracao/"><b>05</b>Quadros e decoração</a></li>
+  </ul>
+</header>
+
+<main class="wrap">
+  <ul class="models" data-models></ul>
+
+  <section>
+    <span class="label">Como funciona</span>
+    <h3 class="h">Do modelo ao seu site, sem começar do zero.</h3>
+    <div class="steps">
+      <div><b>Escolha o modelo</b><p>Navegue pela demo do seu segmento e anote o que quer manter, tirar ou acrescentar.</p></div>
+      <div><b>A gente personaliza</b><p>Trocamos identidade visual, fotos, serviços, preços e contatos. Você aprova antes de publicar, com uma rodada de ajustes inclusa.</p></div>
+      <div><b>No ar e no WhatsApp</b><p>Publicamos com domínio próprio, testamos no celular e no computador e ligamos os botões ao seu WhatsApp ou aos apps de entrega.</p></div>
+    </div>
+    <div class="tiers">
+      <div class="tier"><b>Página vitrine</b><small>Uma página com serviços, galeria, localização e WhatsApp</small><span>2 a 4 dias</span></div>
+      <div class="tier"><b>Site completo</b><small>Várias seções, agendamento ou orçamento, domínio próprio</small><span>5 a 10 dias</span></div>
+      <div class="tier"><b>Loja virtual</b><small>Catálogo, sacola, checkout e integração de pagamento</small><span>15 a 30 dias</span></div>
+    </div>
+  </section>
+
+  <div class="final">
+    <div><h3>Gostou de algum?</h3><p>Mande o nome do seu negócio e o modelo que mais combinou. Respondemos com uma prévia e o orçamento.</p></div>
+    <div class="btns">
+      <a class="btn main" href="https://wa.me/5511952182016?text=Oi!%20Vi%20os%20modelos%20da%20Amplitude%20Lab%20e%20quero%20um%20site%20para%20o%20meu%20neg%C3%B3cio." target="_blank" rel="noopener">Quero o meu</a>
+      <a class="btn" href="../#precos">Ver preços</a>
+    </div>
+  </div>
+  <p class="note">Todas as marcas, pessoas, preços e endereços das demonstrações são fictícios. As demos são conceitos: o projeto definitivo depende de aprovação e contratação.</p>
+</main>
+<footer><div class="wrap"><span>Amplitude Lab · laboratório de experiências digitais</span><a href="../demos/">Demos feitas para clientes →</a></div></footer>
+
+<script>
+(() => {
+  'use strict';
+  const MODELS = [
+    { slug: 'barbearia', seg: 'Barbearias', brand: 'Navalha Nobre', tint: '#17221d', pkg: 'Site completo',
+      d: 'Barbearia clássica com tabela de preços, equipe e galeria de cortes. O cliente escolhe serviço, barbeiro, dia e horário.',
+      f: ['Serviços e preços', 'Agendamento', 'Equipe', 'Galeria de cortes', 'Localização'], act: 'Agendar pelo WhatsApp' },
+    { slug: 'tatuagem', seg: 'Estúdios de tatuagem', brand: 'Roberto', tint: '#e8e0d0', pkg: 'Site completo',
+      d: 'Portfólio do artista com estilos de traço, experiência, diferenciais, agenda com guest spots e orçamento guiado.',
+      f: ['Estilo de traço', 'Portfólio filtrável', 'Agenda', 'Mapa do corpo', 'Orçamento'], act: 'Pedir orçamento' },
+    { slug: 'hamburgueria', seg: 'Lanchonetes e hamburguerias', brand: 'Brasa Burger', tint: '#ffc229', pkg: 'Cardápio digital',
+      d: 'Cardápio com combos, lanche montado na hora com adicionais, sacola com entrega ou retirada e links para os apps.',
+      f: ['Cardápio', 'Combos', 'Adicionais', 'Sacola', 'iFood · 99 · Keeta'], act: 'Fazer o pedido' },
+    { slug: 'moda', seg: 'Lojas de roupas', brand: 'Maré', tint: '#ece5d9', pkg: 'Loja virtual',
+      d: 'Vitrine com coleções, categorias, busca, cores e tamanhos, favoritos, sacola com frete e checkout ou WhatsApp.',
+      f: ['Coleções', 'Tamanhos e cores', 'Busca e filtros', 'Sacola e frete', 'Checkout'], act: 'Comprar ou chamar' },
+    { slug: 'decoracao', seg: 'Quadros e decoração', brand: 'Parede Viva', tint: '#dfe4d8', pkg: 'Site completo',
+      d: 'Galeria com simulador: o quadro aparece em escala real na sala, quarto ou escritório, com medida e moldura.',
+      f: ['Quadro no ambiente', 'Medidas', 'Acabamentos', 'Coleções', 'Lista de orçamento'], act: 'Pedir orçamento' },
+  ];
+  const box = document.querySelector('[data-models]');
+  box.innerHTML = MODELS.map((m, i) =>
+    '<li><a class="card" href="' + m.slug + '/" style="--tint:' + m.tint + '">' +
+      '<div class="stage"><span class="num">' + String(i + 1).padStart(2, '0') + '</span><span class="pkg">' + m.pkg + '</span>' +
+        '<div class="phone" aria-hidden="true"><div class="screen"><iframe src="' + m.slug + '/" loading="lazy" tabindex="-1" title="Prévia ' + m.brand + '"></iframe></div></div></div>' +
+      '<div class="info"><span class="seg">' + m.seg + '</span><h2>' + m.brand + '</h2><p>' + m.d + '</p>' +
+        '<ul class="feats">' + m.f.map((x) => '<li>' + x + '</li>').join('') + '</ul>' +
+        '<span class="go"><span>Abrir demo<br><small>Ação principal: ' + m.act + '</small></span><b aria-hidden="true">→</b></span></div>' +
+    '</a></li>').join('');
+
+  // ajusta a escala de cada prévia à largura do celular
+  const fit = (screen) => { const f = screen.querySelector('iframe'); f.style.transform = 'scale(' + (screen.clientWidth / 390) + ')'; };
+  const ro = new ResizeObserver((es) => es.forEach((e) => fit(e.target)));
+  document.querySelectorAll('.screen').forEach((s) => { fit(s); ro.observe(s); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Roberto Tattoo · Modelo de estúdio de tatuagem</title>
+<meta name="description" content="Modelo de site para tatuador: estilo de traço, experiência, portfólio, diferencial, agenda e pedido de orçamento.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f1ebdf">
+<link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="../kit.css">
+<script src="../kit.js"></script>
+<style>
+/* Folha de flash: papel creme, tinta preta e vermelho de carimbo. O portfólio é
+   desenhado em traço, filtrado por estilo, e o orçamento monta a mensagem. */
+:root{
+  --paper:#f1ebdf; --paper-2:#e8e0d0; --paper-3:#ddd3c0; --ink:#141210; --ink-2:#3b3631; --mute:#7a7268;
+  --red:#c2321f; --red-deep:#8f2213; --line:#cfc4af;
+  --goth:"Pirata One","Old English Text MT",serif;
+  --sans:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--paper);scroll-behavior:smooth;scroll-padding-top:calc(var(--al-h) + 12px)}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background-image:radial-gradient(rgba(20,18,16,.05) 1px,transparent 1px);background-size:6px 6px}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+svg{display:block}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font:700 12px var(--mono);letter-spacing:.14em;text-transform:uppercase}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px;border-bottom:2px solid var(--ink)}
+.top .sig{font:400 30px/1 var(--goth)}
+.top nav{display:none;gap:22px}
+.top nav a{text-decoration:none}
+.top nav a:hover{color:var(--red)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 22px;border:2px solid var(--ink);background:transparent;text-decoration:none;font:700 13px var(--mono);letter-spacing:.12em;text-transform:uppercase;transition:transform .15s,box-shadow .15s,background-color .2s}
+.btn.ink{background:var(--ink);color:var(--paper)}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+.btn.red:hover{box-shadow:4px 4px 0 var(--red-deep)}
+.top .btn{min-height:40px;padding:0 14px;font-size:11px}
+@media (min-width:860px){.top nav{display:flex}}
+
+/* hero */
+.hero{display:grid;gap:30px;padding-block:40px 56px;align-items:center}
+.hero h1{font:400 clamp(92px,28vw,210px)/.8 var(--goth);margin:0;letter-spacing:-.01em}
+.hero h1 span{display:block;font:700 clamp(14px,3.4vw,20px)/1.2 var(--mono);letter-spacing:.3em;text-transform:uppercase;margin-top:14px;color:var(--red)}
+.hero p.lede{font-size:19px;max-width:40ch;margin:22px 0 0;color:var(--ink-2)}
+.hero-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border:2px solid var(--ink);margin-top:30px;background:var(--paper)}
+.stats div{padding:14px 12px;border-right:2px solid var(--ink)}
+.stats div:last-child{border-right:0}
+.stats b{display:block;font:400 40px/1 var(--goth)}
+.stats small{font:700 10px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.flash{position:relative;border:2px solid var(--ink);background:var(--paper-2);aspect-ratio:4/5;max-width:440px;width:100%;margin:0 auto;box-shadow:10px 10px 0 var(--ink)}
+.flash svg{width:100%;height:100%}
+.flash .stamp{position:absolute;right:-14px;top:22px;transform:rotate(9deg);background:var(--red);color:#fff;padding:8px 12px;font:700 11px var(--mono);letter-spacing:.14em;text-transform:uppercase}
+@media (min-width:860px){.hero{grid-template-columns:1.15fr .85fr;padding-block:60px 84px}}
+
+.marq{background:var(--ink);color:var(--paper);overflow:hidden;border-block:2px solid var(--ink)}
+.marq div{display:flex;gap:36px;width:max-content;padding-block:12px;font:400 26px/1 var(--goth);animation:mq 34s linear infinite}
+.marq span::after{content:"✶";margin-left:36px;color:var(--red)}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+section{padding-block:70px}
+.head{margin-bottom:30px;max-width:660px}
+.head .mono{color:var(--red)}
+h2{font:400 clamp(52px,12vw,92px)/.9 var(--goth);margin:8px 0 12px}
+.head p{color:var(--ink-2);margin:0}
+
+/* estilo de traço */
+.styles{display:grid;gap:14px}
+.style{border:2px solid var(--ink);background:var(--paper);padding:20px}
+.style svg{width:100%;height:90px;margin-bottom:12px}
+.style h3{font:700 22px/1.2 var(--sans);margin:0 0 6px}
+.style p{margin:0;color:var(--ink-2);font-size:15px}
+.style .mono{color:var(--mute);display:block;margin-top:12px}
+@media (min-width:760px){.styles{grid-template-columns:repeat(3,1fr)}}
+
+/* portfólio */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.filters button{border:2px solid var(--ink);background:transparent;padding:8px 14px;min-height:42px;font:700 12px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.piece{border:2px solid var(--ink);background:var(--paper-2);padding:0;position:relative;aspect-ratio:1;overflow:hidden;transition:transform .2s}
+.piece:hover{transform:rotate(-1.2deg)}
+.piece svg{width:100%;height:100%}
+.piece .lbl{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;gap:6px;padding:8px 10px;background:var(--paper);border-top:2px solid var(--ink);font:700 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;text-align:left}
+.piece[hidden]{display:none}
+@media (min-width:760px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+/* visualizador */
+.view{position:fixed;inset:0;z-index:900;background:rgba(20,18,16,.8);display:grid;place-items:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
+.view.on{opacity:1;pointer-events:auto}
+.view-card{background:var(--paper);border:2px solid var(--ink);width:min(460px,100%);max-height:90vh;overflow:auto;box-shadow:10px 10px 0 var(--red)}
+.view-card .art{background:var(--paper-2);border-bottom:2px solid var(--ink);aspect-ratio:1}
+.view-card .art svg{width:100%;height:100%}
+.view-card .txt{padding:18px}
+.view-card h3{font:400 40px/1 var(--goth);margin:0 0 6px}
+.view-card .row{display:flex;gap:8px;margin-top:16px}
+.view-card .row .btn{flex:1;padding:0 10px}
+
+/* diferencial */
+.diff{display:grid;gap:0;border:2px solid var(--ink);background:var(--paper)}
+.diff div{padding:22px;border-bottom:2px solid var(--ink)}
+.diff div:last-child{border-bottom:0}
+.diff b{font:400 46px/1 var(--goth);color:var(--red);display:block}
+.diff h3{margin:6px 0 6px;font:700 20px var(--sans)}
+.diff p{margin:0;color:var(--ink-2);font-size:15px}
+@media (min-width:760px){.diff{grid-template-columns:repeat(4,1fr)}.diff div{border-bottom:0;border-right:2px solid var(--ink)}.diff div:last-child{border-right:0}}
+
+/* agenda */
+.agenda{display:grid;gap:18px}
+.cal{border:2px solid var(--ink);background:var(--paper)}
+.cal-h{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:2px solid var(--ink)}
+.cal-h b{font:400 32px/1 var(--goth)}
+.cal-h button{width:40px;height:40px;border:2px solid var(--ink);background:transparent;font:700 16px var(--mono)}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:12px}
+.cal-g .w{font:700 10px var(--mono);text-align:center;color:var(--mute);padding-bottom:4px}
+.cal-g .d{aspect-ratio:1;display:grid;place-items:center;font:700 14px var(--mono);border:1px solid transparent;position:relative}
+.cal-g .d.free{border-color:var(--ink);background:var(--paper-2)}
+.cal-g .d.free::after{content:"";position:absolute;bottom:4px;width:5px;height:5px;border-radius:50%;background:var(--red)}
+.cal-g .d.guest{background:var(--ink);color:var(--paper)}
+.cal-g .d.past{color:var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;padding:0 14px 14px;font:700 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;border:1px solid var(--ink);margin-right:6px;vertical-align:-1px}
+.places{display:grid;gap:10px;align-content:start}
+.place{border:2px solid var(--ink);padding:16px 18px;background:var(--paper);display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
+.place b{font:700 18px var(--sans)}
+.place small{grid-column:1;color:var(--mute);font-size:14px}
+.place .tag{grid-row:1/3;grid-column:2;font:700 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:6px 8px;background:var(--ink);color:var(--paper)}
+.place .tag.red{background:var(--red)}
+@media (min-width:860px){.agenda{grid-template-columns:1.1fr .9fr}}
+
+/* orçamento */
+.quote{display:grid;gap:18px}
+form{border:2px solid var(--ink);background:var(--paper);padding:20px;display:grid;gap:16px;box-shadow:10px 10px 0 var(--ink)}
+label.f{display:grid;gap:6px;font:700 11px var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.inp{border:2px solid var(--ink);background:var(--paper-2);min-height:50px;padding:10px 12px;font:500 16px var(--sans);letter-spacing:0;text-transform:none;border-radius:0;width:100%}
+textarea.inp{min-height:100px;resize:vertical}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:2px solid var(--ink);background:transparent;min-height:42px;padding:0 12px;font:600 14px var(--sans)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.range{display:flex;align-items:center;gap:14px}
+.range input{flex:1;accent-color:var(--red)}
+.range output{font:400 34px/1 var(--goth);min-width:76px;text-align:right}
+.est{border:2px dashed var(--ink);padding:14px 16px;display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.est b{font:400 34px/1 var(--goth);color:var(--red)}
+.est small{font-size:13px;color:var(--mute);display:block}
+.body-map{border:2px solid var(--ink);background:var(--paper-2);padding:18px;display:grid;place-items:center;align-self:start}
+.body-map svg{width:min(240px,70%);height:auto}
+.body-map .zone{fill:transparent;stroke:transparent;cursor:pointer;transition:fill .2s}
+.body-map .zone:hover{fill:rgba(194,50,31,.18)}
+.body-map .zone.on{fill:rgba(194,50,31,.45);stroke:var(--red);stroke-width:2}
+.body-map p{margin:12px 0 0;text-align:center;font-size:14px;color:var(--ink-2)}
+@media (min-width:860px){.quote{grid-template-columns:1.3fr .7fr}}
+
+.faq{display:grid;gap:8px}
+details{border:2px solid var(--ink);background:var(--paper)}
+summary{padding:16px 18px;font:700 17px var(--sans);cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:700 20px var(--mono);color:var(--red)}
+details[open] summary::after{content:"–"}
+details p{margin:0;padding:0 18px 18px;color:var(--ink-2)}
+
+footer{background:var(--ink);color:var(--paper);padding-block:40px calc(40px + env(safe-area-inset-bottom,0px))}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:end}
+footer .sig{font:400 64px/.9 var(--goth)}
+footer small{color:#a69d90}
+footer a{color:var(--paper)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.marq div{animation:none}.btn:hover,.piece:hover{transform:none}}
+</style>
+</head>
+<body>
+<nav class="al-bar" aria-label="Amplitude Lab">
+  <a class="al-back" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Hub de demos</a>
+  <span class="al-tag"><b>Modelo · Estúdio de tatuagem</b> <em>· artista fictício, conceito para demonstração</em></span>
+  <a class="al-cta" href="https://wa.me/5511952182016?text=Oi!%20Vi%20o%20modelo%20de%20est%C3%BAdio%20de%20tatuagem%20da%20Amplitude%20Lab%20e%20quero%20um%20site%20assim." target="_blank" rel="noopener">Quero este modelo</a>
+</nav>
+
+<header class="wrap top">
+  <span class="sig">Roberto</span>
+  <nav class="mono" aria-label="Seções"><a href="#traco">Traço</a><a href="#portfolio">Portfólio</a><a href="#agenda">Agenda</a><a href="#orcamento">Orçamento</a></nav>
+  <a class="btn red" href="#orcamento">Pedir orçamento</a>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <p class="mono" style="color:var(--mute);margin:0 0 6px">Tatuador · São Paulo · desde 2013</p>
+      <h1>Roberto<span>Fine line & blackwork</span></h1>
+      <p class="lede">Traço fino, preto sólido e desenho autoral. Cada peça nasce no papel antes de ir para a pele, feita para envelhecer bem.</p>
+      <div class="hero-acts">
+        <a class="btn red" href="#orcamento">Pedir orçamento</a>
+        <a class="btn" href="#portfolio">Ver portfólio</a>
+      </div>
+      <div class="stats">
+        <div><b>12</b><small>anos de<br>experiência</small></div>
+        <div><b>3,4 mil</b><small>tatuagens<br>feitas</small></div>
+        <div><b>4,9</b><small>nota dos<br>clientes</small></div>
+      </div>
+    </div>
+    <div class="flash" aria-hidden="true">
+      <span class="stamp">Flash disponível</span>
+      <svg viewBox="0 0 400 500" data-hero-art></svg>
+    </div>
+  </div>
+
+  <div class="marq" aria-hidden="true"><div>
+    <span>Desenho autoral</span><span>Material descartável</span><span>Retoque grátis em 60 dias</span><span>Atendimento com hora marcada</span>
+    <span>Desenho autoral</span><span>Material descartável</span><span>Retoque grátis em 60 dias</span><span>Atendimento com hora marcada</span>
+  </div></div>
+
+  <section id="traco">
+    <div class="wrap">
+      <div class="head"><p class="mono">01 · Estilo de traço</p><h2>Como eu desenho</h2><p>Três linguagens que domino e combino. Se não souber qual pedir, me mande a ideia que eu indico.</p></div>
+      <div class="styles">
+        <article class="style">
+          <svg viewBox="0 0 300 90" fill="none" stroke="#141210" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M10 70C60 10 90 80 140 40S230 10 290 50"/><path d="M10 78C60 18 90 88 140 48S230 18 290 58" opacity=".5"/><circle cx="140" cy="44" r="16"/></svg>
+          <h3>Fine line</h3><p>Linhas de agulha única, delicadas e precisas. Ideal para botânicos, lettering e peças pequenas.</p><span class="mono">Agulha 1RL · 3RL</span>
+        </article>
+        <article class="style">
+          <svg viewBox="0 0 300 90" aria-hidden="true"><path d="M10 80 60 20 110 80Z" fill="#141210"/><path d="M120 80 170 20 220 80Z" fill="none" stroke="#141210" stroke-width="10" stroke-linejoin="round"/><rect x="236" y="20" width="56" height="60" fill="#141210"/></svg>
+          <h3>Blackwork</h3><p>Preto sólido, contraste alto e composição gráfica. Envelhece muito bem e funciona em qualquer tom de pele.</p><span class="mono">Magnum · preto chapado</span>
+        </article>
+        <article class="style">
+          <svg viewBox="0 0 300 90" aria-hidden="true" data-dots></svg>
+          <h3>Pontilhismo</h3><p>Sombras construídas ponto a ponto. Dá profundidade sem pesar, ótimo para mandalas e geométricos.</p><span class="mono">Whip shading · dotwork</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="portfolio" style="padding-top:0">
+    <div class="wrap">
+      <div class="head"><p class="mono">02 · Portfólio</p><h2>Na pele</h2><p>Toque numa peça para ver detalhes. As marcadas como flash estão livres para tatuar do jeito que estão.</p></div>
+      <div class="filters" data-filters role="group" aria-label="Filtrar por estilo"></div>
+      <div class="grid" data-grid></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="head"><p class="mono">03 · Diferencial</p><h2>Por que aqui</h2></div>
+      <div class="diff">
+        <div><b>I</b><h3>Desenho exclusivo</h3><p>Nada de catálogo da internet. Seu desenho é feito para você e não se repete.</p></div>
+        <div><b>II</b><h3>Pensado para o corpo</h3><p>Testo o decalque no lugar e ajusto o fluxo do desenho ao músculo.</p></div>
+        <div><b>III</b><h3>Biossegurança</h3><p>Agulhas e biqueiras descartáveis, abertas na sua frente. Estúdio com alvará.</p></div>
+        <div><b>IV</b><h3>Retoque incluso</h3><p>Até 60 dias depois da sessão, o retoque é por minha conta.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="agenda" style="background:var(--paper-2);border-block:2px solid var(--ink)">
+    <div class="wrap">
+      <div class="head"><p class="mono">04 · Área de disponibilidade</p><h2>Agenda aberta</h2><p>Atendo no estúdio fixo e faço guest spots em outras cidades. Os dias marcados ainda têm horário.</p></div>
+      <div class="agenda">
+        <div class="cal">
+          <div class="cal-h"><button type="button" data-cal="-1" aria-label="Mês anterior">‹</button><b data-cal-title></b><button type="button" data-cal="1" aria-label="Próximo mês">›</button></div>
+          <div class="cal-g" data-cal-grid></div>
+          <div class="legend"><span><i style="background:var(--paper-2)"></i>Horário livre</span><span><i style="background:var(--ink)"></i>Guest spot</span></div>
+        </div>
+        <div class="places">
+          <div class="place"><b>Estúdio fixo · Vila Madalena</b><small>Terça a sábado, com hora marcada</small><span class="tag">Fixo</span></div>
+          <div class="place"><b>Guest spot · Curitiba</b><small data-guest1></small><span class="tag red">Guest</span></div>
+          <div class="place"><b>Guest spot · Belo Horizonte</b><small data-guest2></small><span class="tag red">Guest</span></div>
+          <div class="place"><b>Raio de atendimento</b><small>Sessões fechadas em eventos e casamentos até 100 km de São Paulo</small><span class="tag">Eventos</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="orcamento">
+    <div class="wrap">
+      <div class="head"><p class="mono">05 · Orçamento</p><h2>Me conta a ideia</h2><p>Preencha o básico e a mensagem já vai pronta. Respondo em até 24 horas com valor e datas.</p></div>
+      <div class="quote">
+        <form data-form novalidate>
+          <label class="f">Sua ideia<textarea class="inp" data-idea placeholder="Ex.: ramo de oliveira subindo pelo antebraço, traço fino"></textarea></label>
+          <div class="f" style="display:grid;gap:6px"><span class="mono">Estilo</span><div class="seg" data-style role="group" aria-label="Estilo">
+            <button type="button" aria-pressed="true">Fine line</button><button type="button" aria-pressed="false">Blackwork</button><button type="button" aria-pressed="false">Pontilhismo</button><button type="button" aria-pressed="false">Não sei, me indica</button>
+          </div></div>
+          <div class="f" style="display:grid;gap:6px"><span class="mono">Tamanho aproximado</span>
+            <div class="range"><input type="range" min="3" max="40" value="10" data-size aria-label="Tamanho em centímetros"><output data-size-out>10 cm</output></div>
+          </div>
+          <div class="f" style="display:grid;gap:6px"><span class="mono">Local do corpo · toque no desenho ao lado</span><div class="seg" data-place role="group" aria-label="Local do corpo"></div></div>
+          <label class="f">Seu nome<input class="inp" data-name type="text" autocomplete="given-name" placeholder="Como te chamo?"></label>
+          <div class="est"><span>Estimativa<small>Valor final depende do desenho</small></span><b data-est>R$ 0</b></div>
+          <button type="submit" class="btn red">Enviar pedido pelo WhatsApp</button>
+        </form>
+        <div class="body-map">
+          <svg viewBox="0 0 200 400" data-body aria-label="Mapa do corpo" role="group">
+            <g fill="none" stroke="#141210" stroke-width="2" stroke-linejoin="round">
+              <circle cx="100" cy="38" r="24"/>
+              <path d="M88 60v12M112 60v12"/>
+              <path d="M62 80Q100 70 138 80L146 190Q100 202 54 190Z"/>
+              <path d="M62 82 38 160 30 230M138 82 162 160 170 230"/>
+              <path d="M54 190 62 300 66 384M146 190 138 300 134 384M100 200v100"/>
+            </g>
+            <rect class="zone" data-z="Pescoço / nuca" x="84" y="58" width="32" height="18" rx="4"/>
+            <rect class="zone" data-z="Peito" x="64" y="84" width="72" height="44" rx="6"/>
+            <rect class="zone" data-z="Costela" x="60" y="128" width="80" height="60" rx="6"/>
+            <rect class="zone" data-z="Braço" x="28" y="84" width="34" height="76" rx="10"/>
+            <rect class="zone" data-z="Antebraço" x="22" y="160" width="28" height="74" rx="10"/>
+            <rect class="zone" data-z="Braço" x="138" y="84" width="34" height="76" rx="10"/>
+            <rect class="zone" data-z="Antebraço" x="150" y="160" width="28" height="74" rx="10"/>
+            <rect class="zone" data-z="Coxa" x="58" y="196" width="84" height="100" rx="10"/>
+            <rect class="zone" data-z="Panturrilha" x="58" y="300" width="84" height="84" rx="10"/>
+          </svg>
+          <p data-body-txt>Antebraço selecionado</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="head"><p class="mono">06 · Dúvidas</p><h2>Antes de vir</h2></div>
+      <div class="faq">
+        <details><summary>Como funciona o sinal?</summary><p>Para reservar a data, peço um sinal de 30% por Pix, descontado no dia da sessão. Remarcação gratuita com 48 horas de antecedência.</p></details>
+        <details><summary>Dói muito?</summary><p>Depende do local. Costela e pé incomodam mais; antebraço e coxa são tranquilos. Faço pausas sempre que precisar.</p></details>
+        <details><summary>Como cuidar depois?</summary><p>Lavar com sabonete neutro, pomada fina 3 vezes ao dia e nada de sol, piscina ou mar por 15 dias. Você recebe o guia completo por WhatsApp.</p></details>
+        <details><summary>Faz cobertura?</summary><p>Faço, principalmente em blackwork. Mande uma foto da tatuagem antiga no pedido de orçamento.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="view" data-view aria-hidden="true">
+  <div class="view-card" role="dialog" aria-modal="true" aria-labelledby="v-t">
+    <div class="art" data-v-art></div>
+    <div class="txt">
+      <p class="mono" style="color:var(--red);margin:0" data-v-meta></p>
+      <h3 id="v-t" data-v-title></h3>
+      <p style="margin:0;color:var(--ink-2)" data-v-desc></p>
+      <div class="row"><button type="button" class="btn red" data-v-want>Quero essa</button><button type="button" class="btn" data-v-close>Fechar</button></div>
+    </div>
+  </div>
+</div>
+
+<footer><div class="wrap"><div><span class="sig">Roberto</span><br><small>Artista fictício criado pela Amplitude Lab para demonstração</small></div><a href="../">← Voltar ao hub de demos</a></div></footer>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const money = (n) => 'R$ ' + n.toLocaleString('pt-BR');
+  const S = 'fill="none" stroke="#141210" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"';
+
+  // desenhos em traço (viewBox 200x200)
+  const ART = {
+    rosa: '<g ' + S + '><path d="M100 70c-18 0-30 12-30 28s14 30 30 30 30-14 30-30-12-28-30-28Z"/><path d="M100 82c-8 0-14 6-14 14s7 12 14 12 12-6 12-12-5-14-12-14Z"/><path d="M86 96c-6 8-4 18 6 22M114 96c6 8 4 18-6 22M76 88c-12-6-20 0-22 10M124 88c12-6 20 0 22 10"/><path d="M100 128c0 20-4 38-12 54"/><path d="M96 150c-14-8-28-6-34 4 12 6 24 4 34-4ZM98 164c12-10 26-12 34-4-10 8-24 10-34 4Z"/></g>',
+    adaga: '<g ' + S + '><path d="M100 20 112 120H88Z"/><path d="M100 30v84" stroke-width="1.6"/><path d="M70 120h60M70 120c-6 0-8 8-2 10M130 120c6 0 8 8 2 10"/><rect x="92" y="126" width="16" height="38" rx="4"/><path d="M92 136h16M92 146h16M92 156h16" stroke-width="1.6"/><circle cx="100" cy="172" r="8"/></g>',
+    andorinha: '<g ' + S + '><path d="M60 110c20-6 34-20 44-38 6-10 18-14 26-8-6 2-8 6-8 10 10 0 18 6 20 14-14-4-24 2-32 12l40 34c-20 4-38-4-50-14l-10 30c-6-14-6-28 0-40-12 4-22 4-30 0Z"/><circle cx="124" cy="74" r="2.5" fill="#141210"/><path d="M90 104c10 2 20 0 28-6" stroke-width="1.6"/></g>',
+    lua: '<g ' + S + '><path d="M118 40a62 62 0 1 0 0 120 50 50 0 1 1 0-120Z"/><path d="M140 64l4 10 10 4-10 4-4 10-4-10-10-4 10-4Z"/><path d="M150 120l3 7 7 3-7 3-3 7-3-7-7-3 7-3Z"/><circle cx="74" cy="84" r="3"/><circle cx="66" cy="112" r="2"/><circle cx="84" cy="132" r="2.5"/></g>',
+    serpente: '<g ' + S + '><path d="M60 170c40 0 60-20 40-40s-40-30-10-50 50-8 50-30"/><path d="M140 50c4-12 18-14 22-4s-6 16-14 14"/><path d="M162 50l12-2-10 8" stroke-width="2"/><path d="M56 166c-6 0-10 4-10 8" stroke-width="2"/><path d="M76 160l6 8M92 150l8 6M98 118l10 4M84 96l10-4M102 80l6-8M124 66l4-8" stroke-width="1.6"/></g>',
+    olho: '<g ' + S + '><path d="M30 100c30-40 110-40 140 0-30 40-110 40-140 0Z"/><circle cx="100" cy="100" r="22"/><circle cx="100" cy="100" r="9" fill="#141210"/><path d="M100 40v-14M70 46l-8-12M130 46l8-12M100 160v14M70 154l-8 12M130 154l8 12"/></g>',
+    mao: '<g ' + S + '><path d="M76 170v-60l-14-20c-4-6 4-14 10-8l12 14V52c0-8 12-8 12 0v44V44c0-8 12-8 12 0v52-44c0-8 12-8 12 0v48-36c0-8 12-8 12 0v66c0 22-14 40-36 40Z"/><path d="M100 120c-6 0-10 6-6 12l6 8 6-8c4-6 0-12-6-12Z" fill="#141210"/></g>',
+    mandala: '<g ' + S + '><circle cx="100" cy="100" r="16"/><circle cx="100" cy="100" r="70"/><circle cx="100" cy="100" r="44" stroke-width="1.6"/><g data-petals></g></g>',
+    borboleta: '<g ' + S + '><path d="M100 70v80"/><path d="M100 80c-20-30-60-34-64-10s24 34 64 20M100 80c20-30 60-34 64-10s-24 34-64 20"/><path d="M100 110c-16 4-40 16-34 34s30 0 34-18M100 110c16 4 40 16 34 34s-30 0-34-18"/><path d="M96 70c-4-12-10-18-16-20M104 70c4-12 10-18 16-20" stroke-width="2"/><circle cx="64" cy="76" r="6" fill="#141210"/><circle cx="136" cy="76" r="6" fill="#141210"/></g>',
+    montanha: '<g ' + S + '><circle cx="100" cy="100" r="70"/><path d="M38 132 78 80l18 22 22-34 44 64"/><path d="M78 80l-8 18 10-4 6 8M118 68l-6 16 8-4 6 8" stroke-width="2"/><path d="M58 150h84M70 160h60" stroke-width="2"/><circle cx="132" cy="62" r="8"/></g>',
+  };
+  // mandala com pétalas geradas
+  const petals = [...Array(12)].map((_, i) => '<path transform="rotate(' + i * 30 + ' 100 100)" d="M100 84c-8-14-8-26 0-38 8 12 8 24 0 38Z"/>').join('') +
+    [...Array(24)].map((_, i) => { const a = i * 15 * Math.PI / 180; return '<circle cx="' + (100 + 57 * Math.cos(a)).toFixed(1) + '" cy="' + (100 + 57 * Math.sin(a)).toFixed(1) + '" r="1.6" fill="#141210" stroke="none"/>'; }).join('');
+  ART.mandala = ART.mandala.replace('<g data-petals></g>', petals);
+
+  const WORKS = [
+    { a: 'rosa', n: 'Rosa de traço', st: 'Fine line', cm: 12, flash: true, d: 'Rosa aberta com ramo, para antebraço ou costela.' },
+    { a: 'adaga', n: 'Adaga clássica', st: 'Blackwork', cm: 16, flash: false, d: 'Releitura old school em preto sólido.' },
+    { a: 'andorinha', n: 'Andorinha', st: 'Fine line', cm: 8, flash: true, d: 'Pequena, cabe no pulso ou atrás da orelha.' },
+    { a: 'lua', n: 'Lua e estrelas', st: 'Pontilhismo', cm: 10, flash: true, d: 'Sombra em pontos que dá volume à lua.' },
+    { a: 'serpente', n: 'Serpente', st: 'Blackwork', cm: 24, flash: false, d: 'Desenhada para subir pela panturrilha.' },
+    { a: 'olho', n: 'Olho que tudo vê', st: 'Pontilhismo', cm: 9, flash: true, d: 'Símbolo de proteção com raios.' },
+    { a: 'mandala', n: 'Mandala', st: 'Pontilhismo', cm: 18, flash: false, d: 'Simetria total, ideal para ombro ou costas.' },
+    { a: 'borboleta', n: 'Borboleta', st: 'Fine line', cm: 7, flash: true, d: 'Asas delicadas com detalhe sólido.' },
+    { a: 'mao', n: 'Mão e coração', st: 'Blackwork', cm: 14, flash: false, d: 'Peça autoral sobre cuidado e entrega.' },
+    { a: 'montanha', n: 'Serra da Mantiqueira', st: 'Fine line', cm: 11, flash: true, d: 'Paisagem circular para quem ama trilha.' },
+  ];
+  const svg = (k, extra = '') => '<svg viewBox="0 0 200 200" ' + extra + ' aria-hidden="true">' + ART[k] + '</svg>';
+
+  // arte do hero: três desenhos na folha de flash
+  $('[data-hero-art]').innerHTML =
+    '<rect x="20" y="20" width="360" height="460" fill="none" stroke="#141210" stroke-width="2" stroke-dasharray="4 6"/>' +
+    '<g transform="translate(90 40) scale(1.1)">' + ART.rosa + '</g>' +
+    '<g transform="translate(30 250) scale(.8)">' + ART.andorinha + '</g>' +
+    '<g transform="translate(210 260) scale(.8)">' + ART.lua + '</g>' +
+    '<text x="200" y="460" text-anchor="middle" font-family="Pirata One,serif" font-size="30" fill="#c2321f">Roberto · Flash nº 07</text>';
+
+  // pontilhismo do card de estilo
+  let dots = '';
+  for (let i = 0; i < 260; i++) {
+    const x = 10 + (i * 37 % 280), y = 10 + (i * 53 % 70);
+    const r = 0.6 + (x / 280) * 2.4;
+    dots += '<circle cx="' + x + '" cy="' + y + '" r="' + r.toFixed(2) + '" fill="#141210"/>';
+  }
+  $('[data-dots]').innerHTML = dots;
+
+  // portfólio
+  const grid = $('[data-grid]');
+  grid.innerHTML = WORKS.map((w, i) => '<button type="button" class="piece" data-i="' + i + '" data-st="' + w.st + '" aria-label="' + w.n + '">' +
+    svg(w.a, 'style="padding:10% 10% 22%"') + '<span class="lbl"><span>' + w.n + '</span><span style="color:' + (w.flash ? 'var(--red)' : 'var(--mute)') + '">' + (w.flash ? 'Flash' : w.st) + '</span></span></button>').join('');
+  const FILTERS = ['Todos', 'Fine line', 'Blackwork', 'Pontilhismo', 'Flash livre'];
+  const fBox = $('[data-filters]');
+  fBox.innerHTML = FILTERS.map((f, i) => '<button type="button" aria-pressed="' + (i === 0) + '">' + f + '</button>').join('');
+  fBox.addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    $$('button', fBox).forEach((x) => x.setAttribute('aria-pressed', x === b));
+    const f = b.textContent;
+    $$('.piece', grid).forEach((p) => {
+      const w = WORKS[p.dataset.i];
+      p.hidden = !(f === 'Todos' || w.st === f || (f === 'Flash livre' && w.flash));
+    });
+  });
+
+  // visualizador
+  const view = $('[data-view]');
+  let cur = null, lastFocus = null;
+  const openView = (i) => {
+    cur = WORKS[i];
+    $('[data-v-art]').innerHTML = svg(cur.a, 'style="padding:8%"');
+    $('[data-v-title]').textContent = cur.n;
+    $('[data-v-meta]').textContent = cur.st + ' · cerca de ' + cur.cm + ' cm' + (cur.flash ? ' · flash livre' : ' · já tatuado');
+    $('[data-v-desc]').textContent = cur.d + (cur.flash ? ' Disponível para tatuar.' : ' Posso criar algo nessa linha para você.');
+    $('[data-v-want]').textContent = cur.flash ? 'Quero essa' : 'Quero parecido';
+    lastFocus = document.activeElement;
+    view.classList.add('on'); view.setAttribute('aria-hidden', 'false');
+    $('[data-v-want]').focus();
+  };
+  const closeView = () => { view.classList.remove('on'); view.setAttribute('aria-hidden', 'true'); if (lastFocus) lastFocus.focus(); };
+  grid.addEventListener('click', (e) => { const p = e.target.closest('.piece'); if (p) openView(p.dataset.i); });
+  view.addEventListener('click', (e) => { if (e.target === view || e.target.closest('[data-v-close]')) closeView(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && view.classList.contains('on')) closeView(); });
+  $('[data-v-want]').addEventListener('click', () => {
+    $('[data-idea]').value = (cur.flash ? 'Flash "' : 'Algo na linha de "') + cur.n + '" do portfólio.';
+    setStyle(cur.st); size.value = cur.cm; calc();
+    closeView();
+    $('#orcamento').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  // agenda
+  const now = new Date();
+  let calOff = 0;
+  const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  const guestDays = (y, m) => { const base = (m * 7 + 11) % 18 + 5; return [base, base + 1, base + 2]; };
+  function renderCal() {
+    const first = new Date(now.getFullYear(), now.getMonth() + calOff, 1);
+    const y = first.getFullYear(), m = first.getMonth();
+    const last = new Date(y, m + 1, 0).getDate();
+    const g = guestDays(y, m);
+    $('[data-cal-title]').textContent = MONTHS[m] + ' ' + y;
+    let html = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((w) => '<span class="w">' + w + '</span>').join('');
+    for (let i = 0; i < first.getDay(); i++) html += '<span></span>';
+    for (let d = 1; d <= last; d++) {
+      const date = new Date(y, m, d), dow = date.getDay();
+      const past = date < new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      let cls = 'd';
+      if (past) cls += ' past';
+      else if (g.includes(d)) cls += ' guest';
+      else if (dow >= 2 && dow <= 6 && (d * 13 + m) % 5 > 1) cls += ' free';
+      html += '<span class="' + cls + '">' + d + '</span>';
+    }
+    $('[data-cal-grid]').innerHTML = html;
+    $$('[data-cal]').forEach((b) => { b.disabled = (b.dataset.cal === '-1' && calOff === 0) || (b.dataset.cal === '1' && calOff === 2); b.style.opacity = b.disabled ? .3 : 1; });
+  }
+  $$('[data-cal]').forEach((b) => b.addEventListener('click', () => { calOff += Number(b.dataset.cal); renderCal(); }));
+  renderCal();
+  const gNext = new Date(now.getFullYear(), now.getMonth() + 1, 1), g1 = guestDays(0, gNext.getMonth());
+  $('[data-guest1]').textContent = g1[0] + ' a ' + g1[2] + ' de ' + MONTHS[gNext.getMonth()].toLowerCase() + ' · Estúdio parceiro no centro';
+  const gNext2 = new Date(now.getFullYear(), now.getMonth() + 2, 1), g2 = guestDays(0, gNext2.getMonth());
+  $('[data-guest2]').textContent = g2[0] + ' a ' + g2[2] + ' de ' + MONTHS[gNext2.getMonth()].toLowerCase() + ' · Savassi';
+
+  // orçamento
+  const PLACES = ['Antebraço', 'Braço', 'Peito', 'Costela', 'Coxa', 'Panturrilha', 'Pescoço / nuca'];
+  const placeBox = $('[data-place]');
+  placeBox.innerHTML = PLACES.map((p) => '<button type="button" aria-pressed="' + (p === 'Antebraço') + '">' + p + '</button>').join('');
+  let place = 'Antebraço', style = 'Fine line';
+  const size = $('[data-size]');
+  function setPlace(p) {
+    place = p;
+    $$('button', placeBox).forEach((b) => b.setAttribute('aria-pressed', b.textContent === p));
+    $$('.zone').forEach((z) => z.classList.toggle('on', z.dataset.z === p));
+    $('[data-body-txt]').textContent = p + ' selecionado';
+    calc();
+  }
+  function setStyle(s) {
+    style = s;
+    $$('[data-style] button').forEach((b) => b.setAttribute('aria-pressed', b.textContent === s));
+    calc();
+  }
+  function calc() {
+    const cm = Number(size.value);
+    $('[data-size-out]').textContent = cm + ' cm';
+    const mult = { 'Fine line': 1, 'Blackwork': 1.25, 'Pontilhismo': 1.35 }[style] || 1.1;
+    const hard = ['Costela', 'Pescoço / nuca'].includes(place) ? 1.15 : 1;
+    const v = Math.max(350, Math.round((250 + cm * cm * 3.2 * mult * hard) / 50) * 50);
+    $('[data-est]').textContent = cm > 25 ? 'a partir de ' + money(v) : money(v);
+  }
+  placeBox.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setPlace(b.textContent); });
+  $('[data-body]').addEventListener('click', (e) => { const z = e.target.closest('.zone'); if (z) setPlace(z.dataset.z); });
+  $('[data-style]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setStyle(b.textContent); });
+  size.addEventListener('input', calc);
+  setPlace('Antebraço');
+
+  $('[data-form]').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const idea = $('[data-idea]').value.trim();
+    if (!idea) { AL.toast('Conta rapidinho a sua ideia para eu orçar.'); $('[data-idea]').focus(); return; }
+    const name = $('[data-name]').value.trim();
+    AL.whats('Pedido de orçamento pronto', 'Oi, Roberto! ' + (name ? 'Aqui é ' + name + '. ' : '') + 'Quero um orçamento:\n\n' +
+      '🖋️ Ideia: ' + idea + '\n' + '🎨 Estilo: ' + style + '\n' + '📏 Tamanho: ' + size.value + ' cm\n' + '📍 Local: ' + place + '\n' +
+      '💬 Estimativa do site: ' + $('[data-est]').textContent + '\n\nVou mandar referências na sequência.', 'estúdio de tatuagem');
+  });
+})();
+</script>
+</body>
+</html>

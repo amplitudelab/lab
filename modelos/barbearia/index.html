@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Navalha Nobre · Modelo de barbearia</title>
+<meta name="description" content="Modelo de site para barbearia: serviços e preços, agendamento pelo WhatsApp, equipe, galeria de cortes e localização.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#101814">
+<link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../kit.css">
+<script src="../kit.js"></script>
+<style>
+/* Barbearia clássica: verde-garrafa, latão e creme. Tabela de preços com pontilhado
+   de quadro antigo, agendamento em cinco passos que termina no WhatsApp. */
+:root{
+  --bg:#101814; --bg-2:#0c120f; --panel:#17221d; --panel-2:#1d2a24; --line:#2a3a32;
+  --cream:#efe6d2; --dim:#a3b0a8; --mute:#748179;
+  --brass:#c9a45c; --brass-hi:#e2c587; --brass-deep:#8c6d34; --ok:#5fcf8f;
+  --serif:"DM Serif Display",Georgia,serif;
+  --sans:"Manrope","Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth;scroll-padding-top:calc(var(--al-h) + 12px)}
+body{margin:0;background:var(--bg);color:var(--cream);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+img,svg{display:block}
+:focus-visible{outline:2px solid var(--brass-hi);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* cabeçalho */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo svg{width:38px;height:38px}
+.logo b{font:400 22px/1 var(--serif);letter-spacing:.01em}
+.logo small{display:block;font:700 9px/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;color:var(--brass);margin-top:4px}
+.nav{display:none;gap:26px;font:600 13px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.nav a{text-decoration:none;transition:color .2s}
+.nav a:hover{color:var(--cream)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;border:1px solid var(--line);background:transparent;text-decoration:none;font:700 14px var(--sans);letter-spacing:.06em;text-transform:uppercase;transition:background-color .2s,border-color .2s,color .2s}
+.btn:hover{border-color:var(--brass)}
+.btn.gold{background:var(--brass);border-color:var(--brass);color:#141a16}
+.btn.gold:hover{background:var(--brass-hi);border-color:var(--brass-hi)}
+.btn svg{width:18px;height:18px}
+.top .btn{min-height:42px;padding:0 18px;font-size:12px}
+@media (min-width:880px){.nav{display:flex}}
+
+/* hero */
+.hero{display:grid;gap:34px;padding-block:48px 64px;align-items:center}
+.eyebrow{font:700 12px var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--brass);margin:0 0 16px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--brass)}
+h1{font:400 clamp(44px,11vw,88px)/.95 var(--serif);margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 em{color:var(--brass-hi)}
+.lede{color:var(--dim);font-size:18px;max-width:42ch;margin:20px 0 0}
+.hero-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font:600 13px var(--sans)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mute)}
+.dot.on{background:var(--ok);box-shadow:0 0 0 4px rgba(95,207,143,.16)}
+.stars{color:var(--brass-hi);letter-spacing:1px}
+.emblem{position:relative;width:min(420px,86vw);margin:0 auto;aspect-ratio:1}
+.emblem svg{width:100%;height:100%}
+.emblem .spin{transform-origin:50% 50%;animation:spin 60s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (min-width:880px){.hero{grid-template-columns:1.1fr .9fr;padding-block:72px 96px}}
+
+/* faixa */
+.ribbon{border-block:1px solid var(--line);background:var(--bg-2);overflow:hidden}
+.ribbon-in{display:flex;gap:42px;white-space:nowrap;padding-block:14px;font:400 22px var(--serif);font-style:italic;color:var(--brass);animation:slide 40s linear infinite;width:max-content}
+.ribbon-in span::after{content:"✦";font-style:normal;font-size:14px;margin-left:42px;color:var(--mute)}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* seções */
+section{padding-block:72px}
+.head{display:grid;gap:10px;margin-bottom:34px;max-width:640px}
+h2{font:400 clamp(36px,8vw,56px)/1 var(--serif);margin:0;letter-spacing:-.01em}
+.head p{color:var(--dim);margin:0}
+
+/* serviços */
+.board{display:grid;gap:22px}
+.board-col{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px}
+.board-col h3{font:700 12px var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--brass);margin:0 0 14px}
+.price{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline;padding-block:10px;border-bottom:1px dashed var(--line)}
+.price:last-child{border-bottom:0}
+.price b{font:400 21px/1.2 var(--serif)}
+.price i{border-bottom:2px dotted var(--mute);transform:translateY(-5px);opacity:.6}
+.price span{font:700 16px var(--sans);color:var(--brass-hi)}
+.price small{grid-column:1/-1;color:var(--mute);font-size:13px;margin-top:-6px}
+@media (min-width:760px){.board{grid-template-columns:1fr 1fr}}
+
+/* agendamento */
+.book{display:grid;gap:22px}
+.steps{display:grid;gap:14px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px}
+.step-t{display:flex;align-items:center;gap:12px;font:700 13px var(--sans);letter-spacing:.14em;text-transform:uppercase;margin:0 0 14px}
+.step-t i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--brass);color:#141a16;font-style:normal;font-size:13px;letter-spacing:0}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1px solid var(--line);background:var(--panel-2);border-radius:14px;padding:10px 14px;min-height:46px;text-align:left;transition:border-color .2s,background-color .2s}
+.opt small{display:block;color:var(--mute);font-size:12px}
+.opt[aria-pressed="true"]{border-color:var(--brass);background:rgba(201,164,92,.14)}
+.opt[disabled]{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.opt.pro{display:flex;align-items:center;gap:10px}
+.opt.pro svg{width:34px;height:34px;border-radius:50%;background:var(--brass-deep)}
+.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.day{border:1px solid var(--line);background:var(--panel-2);border-radius:12px;padding:8px 0;text-align:center;min-height:62px}
+.day b{display:block;font:400 22px/1.1 var(--serif)}
+.day small{font:700 10px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.day[aria-pressed="true"]{border-color:var(--brass);background:rgba(201,164,92,.14)}
+.day[disabled]{opacity:.3;cursor:not-allowed}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:6px}
+.slot{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;min-height:42px;font:600 14px var(--sans)}
+.slot[aria-pressed="true"]{background:var(--brass);border-color:var(--brass);color:#141a16}
+.slot[disabled]{opacity:.28;cursor:not-allowed;text-decoration:line-through}
+.empty{color:var(--mute);font-size:14px;margin:0}
+.field{width:100%;min-height:50px;border-radius:12px;border:1px solid var(--line);background:var(--panel-2);color:var(--cream);padding:0 14px;font:500 16px var(--sans)}
+.field::placeholder{color:var(--mute)}
+.summary{background:linear-gradient(160deg,#1f2d26,#141e19);border:1px solid var(--brass-deep);border-radius:22px;padding:24px;align-self:start;position:sticky;top:calc(var(--al-h) + 16px)}
+.summary h3{font:400 28px/1 var(--serif);margin:0 0 16px}
+.sum-row{display:flex;justify-content:space-between;gap:12px;padding-block:9px;border-bottom:1px dashed var(--line);font-size:15px}
+.sum-row span:first-child{color:var(--dim)}
+.sum-row span:last-child{text-align:right;font-weight:600}
+.sum-total{display:flex;justify-content:space-between;align-items:baseline;margin:16px 0 18px}
+.sum-total b{font:400 36px/1 var(--serif);color:var(--brass-hi)}
+.summary .btn{width:100%}
+.summary .btn[disabled]{opacity:.45;cursor:not-allowed}
+.hint{font-size:13px;color:var(--mute);margin:12px 0 0;text-align:center}
+@media (min-width:920px){.book{grid-template-columns:1.5fr 1fr}}
+
+/* equipe */
+.team{display:grid;gap:14px}
+.member{background:var(--panel);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.member .pic{background:radial-gradient(circle at 50% 30%,#e2c587,#8c6d34 75%);aspect-ratio:5/4;display:grid;place-items:end center}
+.member .pic svg{width:64%;height:auto}
+.member .txt{padding:18px 20px 22px}
+.member h3{font:400 26px/1.1 var(--serif);margin:0}
+.member .role{color:var(--brass);font:700 12px var(--sans);letter-spacing:.18em;text-transform:uppercase;margin:6px 0 10px}
+.member p{color:var(--dim);margin:0;font-size:15px}
+@media (min-width:760px){.team{grid-template-columns:repeat(3,1fr)}}
+
+/* galeria */
+.cuts{display:grid;grid-auto-flow:column;grid-auto-columns:min(70%,260px);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;scrollbar-width:thin}
+.cut{scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;text-align:left;padding:0}
+.cut .pic{aspect-ratio:1;background:linear-gradient(170deg,#d8b874,#8c6d34);display:grid;place-items:end center}
+.cut .pic svg{width:78%}
+.cut b{display:block;font:400 21px/1.2 var(--serif);padding:14px 16px 2px}
+.cut small{display:block;color:var(--mute);font-size:13px;padding:0 16px 16px}
+@media (min-width:880px){.cuts{grid-auto-flow:row;grid-template-columns:repeat(3,1fr);overflow:visible}}
+
+/* depoimentos */
+.quotes{display:grid;gap:14px}
+.quote{border-left:2px solid var(--brass);padding:4px 0 4px 20px}
+.quote p{font:400 22px/1.35 var(--serif);font-style:italic;margin:0}
+.quote small{display:block;color:var(--mute);margin-top:10px;font-size:13px;letter-spacing:.06em}
+@media (min-width:760px){.quotes{grid-template-columns:repeat(3,1fr);gap:28px}}
+
+/* onde */
+.where{display:grid;gap:18px}
+.map{border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#0f1713;min-height:280px}
+.map svg{width:100%;height:100%}
+.info{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px}
+.info h3{font:400 28px/1.1 var(--serif);margin:0 0 6px}
+.info address{font-style:normal;color:var(--dim)}
+.hours{list-style:none;padding:0;margin:18px 0}
+.hours li{display:flex;justify-content:space-between;padding-block:8px;border-bottom:1px dashed var(--line);font-size:15px}
+.hours li.today{color:var(--brass-hi);font-weight:700}
+.info-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.info-acts .btn{min-height:46px;padding:0 12px;font-size:12px}
+@media (min-width:880px){.where{grid-template-columns:1.3fr 1fr}}
+
+footer{border-top:1px solid var(--line);padding-block:34px calc(34px + env(safe-area-inset-bottom,0px));color:var(--mute);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:center}
+
+/* botão flutuante (celular) */
+.float{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+@media (min-width:880px){.float{display:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.emblem .spin,.ribbon-in{animation:none}}
+</style>
+</head>
+<body>
+<nav class="al-bar" aria-label="Amplitude Lab">
+  <a class="al-back" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Hub de demos</a>
+  <span class="al-tag"><b>Modelo · Barbearia</b> <em>· marca fictícia, conceito para demonstração</em></span>
+  <a class="al-cta" href="https://wa.me/5511952182016?text=Oi!%20Vi%20o%20modelo%20de%20barbearia%20da%20Amplitude%20Lab%20e%20quero%20um%20site%20assim." target="_blank" rel="noopener">Quero este modelo</a>
+</nav>
+
+<header class="wrap top">
+  <a class="logo" href="#inicio" aria-label="Navalha Nobre, início">
+    <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="18.5" stroke="#c9a45c" stroke-width="1.5"/><path d="M12 28 28 12M12 12l16 16" stroke="#efe6d2" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke="#c9a45c" stroke-width="1.5"/><circle cx="12" cy="28" r="3" stroke="#c9a45c" stroke-width="1.5"/></svg>
+    <span><b>Navalha Nobre</b><small>Barbearia · 2011</small></span>
+  </a>
+  <nav class="nav" aria-label="Seções"><a href="#servicos">Serviços</a><a href="#agendar">Agendar</a><a href="#equipe">Equipe</a><a href="#cortes">Cortes</a><a href="#onde">Onde estamos</a></nav>
+  <a class="btn gold" href="#agendar">Agendar</a>
+</header>
+
+<main id="inicio">
+  <div class="wrap hero">
+    <div>
+      <p class="eyebrow">Barbearia clássica · Pinheiros</p>
+      <h1>Corte na navalha, <em>tempo</em> de conversa.</h1>
+      <p class="lede">Cadeira de couro, toalha quente e barbeiro que lembra do seu corte. Escolha o serviço, o profissional e o horário em menos de um minuto.</p>
+      <div class="hero-acts">
+        <a class="btn gold" href="#agendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agendar horário</a>
+        <a class="btn" href="#servicos">Ver serviços</a>
+      </div>
+      <div class="chips">
+        <span class="chip"><span class="dot" data-open-dot></span><span data-open-txt>Horário de hoje</span></span>
+        <span class="chip"><span class="stars" aria-hidden="true">★★★★★</span> 4,9 · 312 avaliações</span>
+        <span class="chip">Estacionamento conveniado</span>
+      </div>
+    </div>
+    <div class="emblem" aria-hidden="true">
+      <svg viewBox="0 0 400 400">
+        <defs><path id="ring" d="M200 200m-150 0a150 150 0 1 1 300 0a150 150 0 1 1-300 0"/></defs>
+        <circle cx="200" cy="200" r="196" fill="#17221d" stroke="#2a3a32"/>
+        <circle cx="200" cy="200" r="178" fill="none" stroke="#c9a45c" stroke-width="1.5"/>
+        <g class="spin"><text fill="#c9a45c" font-family="Manrope,sans-serif" font-weight="700" font-size="17" letter-spacing="9"><textPath href="#ring">NAVALHA NOBRE ✦ BARBEARIA CLÁSSICA ✦ DESDE 2011 ✦ PINHEIROS ✦</textPath></text></g>
+        <circle cx="200" cy="200" r="122" fill="#101814" stroke="#c9a45c" stroke-width="1.5"/>
+        <circle cx="200" cy="200" r="114" fill="none" stroke="#2a3a32" stroke-dasharray="2 6"/>
+        <!-- navalha -->
+        <g transform="rotate(-38 200 200)">
+          <rect x="128" y="186" width="96" height="26" rx="5" fill="#efe6d2"/>
+          <path d="M224 186h44c6 0 10 6 8 12l-3 14h-49z" fill="#c9a45c"/>
+          <circle cx="138" cy="199" r="5" fill="#101814"/>
+        </g>
+        <!-- tesoura -->
+        <g transform="rotate(38 200 200)" fill="none" stroke="#e2c587" stroke-width="7" stroke-linecap="round">
+          <path d="M200 200 286 192M200 200 286 208"/>
+          <circle cx="146" cy="186" r="16"/><circle cx="146" cy="214" r="16"/>
+          <path d="M160 190 200 200M160 210 200 200"/>
+        </g>
+        <circle cx="200" cy="200" r="7" fill="#101814" stroke="#c9a45c" stroke-width="3"/>
+        <text x="200" y="300" text-anchor="middle" fill="#efe6d2" font-family="'DM Serif Display',serif" font-size="26">Est. 2011</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="ribbon" aria-hidden="true"><div class="ribbon-in">
+    <span>Toalha quente</span><span>Navalha descartável</span><span>Café ou cerveja na cortesia</span><span>Pagamento por Pix e cartão</span><span>Toalha quente</span><span>Navalha descartável</span><span>Café ou cerveja na cortesia</span><span>Pagamento por Pix e cartão</span>
+  </div></div>
+
+  <section id="servicos">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Serviços e preços</p><h2>Tabela da casa</h2><p>Preços fixos, sem surpresa no caixa. A duração já considera a toalha quente e o acabamento.</p></div>
+      <div class="board" data-board></div>
+    </div>
+  </section>
+
+  <section id="agendar" style="background:var(--bg-2);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Agendamento</p><h2>Reserve sua cadeira</h2><p>Escolha tudo aqui e confirme pelo WhatsApp com a mensagem pronta. Sem troca infinita de mensagens.</p></div>
+      <div class="book">
+        <div class="steps">
+          <div class="step"><p class="step-t"><i>1</i>Serviços <span style="color:var(--mute);letter-spacing:.04em;text-transform:none;font-weight:500">· pode marcar mais de um</span></p><div class="opts" data-svc role="group" aria-label="Serviços"></div></div>
+          <div class="step"><p class="step-t"><i>2</i>Profissional</p><div class="opts" data-pro role="group" aria-label="Profissional"></div></div>
+          <div class="step"><p class="step-t"><i>3</i>Dia</p><div class="days" data-days role="group" aria-label="Dia"></div></div>
+          <div class="step"><p class="step-t"><i>4</i>Horário</p><div class="slots" data-slots role="group" aria-label="Horário"></div></div>
+          <div class="step"><p class="step-t"><i>5</i>Seu nome</p><input class="field" data-name type="text" autocomplete="given-name" placeholder="Como podemos te chamar?" aria-label="Seu nome"></div>
+        </div>
+        <aside class="summary" aria-live="polite">
+          <h3>Resumo</h3>
+          <div class="sum-row"><span>Serviços</span><span data-s-svc>—</span></div>
+          <div class="sum-row"><span>Profissional</span><span data-s-pro>—</span></div>
+          <div class="sum-row"><span>Quando</span><span data-s-when>—</span></div>
+          <div class="sum-row"><span>Duração</span><span data-s-dur>—</span></div>
+          <div class="sum-total"><span style="color:var(--dim)">Total</span><b data-s-total>R$ 0</b></div>
+          <button type="button" class="btn gold" data-confirm disabled><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg><span data-confirm-txt>Escolha um serviço</span></button>
+          <p class="hint">Cancelamento grátis até 2 horas antes.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="equipe">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Equipe</p><h2>Quem segura a navalha</h2><p>Três barbeiros, três estilos. Escolha o seu ou deixe a casa indicar.</p></div>
+      <div class="team" data-team></div>
+    </div>
+  </section>
+
+  <section id="cortes" style="padding-top:0">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Galeria de cortes</p><h2>Mostre e a gente faz</h2><p>Os cortes mais pedidos da casa. Toque em um para já marcar o serviço.</p></div>
+      <div class="cuts" data-cuts></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap quotes">
+      <figure class="quote" style="margin:0"><p>“Primeira barbearia em que eu marco pelo celular e chego com a cadeira livre.”</p><small>— Felipe A. · cliente desde 2019</small></figure>
+      <figure class="quote" style="margin:0"><p>“O Caio acerta o degradê toda vez. Toalha quente faz diferença.”</p><small>— Renato M. · cliente desde 2022</small></figure>
+      <figure class="quote" style="margin:0"><p>“Levo meu filho junto e a gente sai os dois no capricho.”</p><small>— Marcos T. · cliente desde 2016</small></figure>
+    </div>
+  </section>
+
+  <section id="onde" style="background:var(--bg-2);border-top:1px solid var(--line)">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Onde estamos</p><h2>Passa aqui</h2></div>
+      <div class="where">
+        <div class="map" aria-hidden="true">
+          <svg viewBox="0 0 640 380" preserveAspectRatio="xMidYMid slice">
+            <rect width="640" height="380" fill="#0f1713"/>
+            <g stroke="#1d2a24" stroke-width="18" stroke-linecap="square">
+              <path d="M-10 90H660M-10 230H660M-10 330H660M120-10V400M300-10V400M470-10V400"/>
+            </g>
+            <path d="M-20 400 660 -20" stroke="#2a3a32" stroke-width="26"/>
+            <rect x="140" y="110" width="140" height="100" rx="6" fill="#16221c"/><rect x="320" y="110" width="130" height="100" rx="6" fill="#16221c"/>
+            <rect x="490" y="110" width="160" height="100" rx="6" fill="#1a2a20"/><circle cx="560" cy="160" r="26" fill="#1f3326"/>
+            <rect x="140" y="250" width="140" height="62" rx="6" fill="#16221c"/><rect x="320" y="250" width="130" height="62" rx="6" fill="#16221c"/>
+            <text x="20" y="84" fill="#748179" font-family="Manrope,sans-serif" font-size="12" letter-spacing="2">RUA DOS PINHEIROS</text>
+            <text x="20" y="224" fill="#748179" font-family="Manrope,sans-serif" font-size="12" letter-spacing="2">RUA FICTÍCIA</text>
+            <circle cx="300" cy="230" r="46" fill="rgba(201,164,92,.12)"/>
+            <path d="M300 236c-16-20-26-32-26-46a26 26 0 0 1 52 0c0 14-10 26-26 46Z" fill="#c9a45c"/>
+            <circle cx="300" cy="190" r="9" fill="#101814"/>
+          </svg>
+        </div>
+        <div class="info">
+          <h3>Navalha Nobre</h3>
+          <address>Rua dos Pinheiros, 000 · Pinheiros, São Paulo<br>Endereço de exemplo</address>
+          <ul class="hours" data-hours></ul>
+          <div class="info-acts">
+            <button type="button" class="btn" data-toast="No site real, abre a rota no Google Maps ou no Waze.">Como chegar</button>
+            <button type="button" class="btn" data-toast="No site real, liga direto para a barbearia.">Ligar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>© Navalha Nobre · marca fictícia criada pela Amplitude Lab para demonstração</span><a href="../">← Voltar ao hub de demos</a></div></footer>
+<a class="btn gold float" href="#agendar">Agendar</a>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const money = (n) => 'R$ ' + n.toLocaleString('pt-BR');
+
+  const SERVICES = [
+    { cat: 'Cabelo', id: 'corte', n: 'Corte clássico', d: 'Tesoura e máquina, lavagem e finalização', min: 40, p: 60 },
+    { cat: 'Cabelo', id: 'degrade', n: 'Degradê na navalha', d: 'Fade com acabamento na navalha', min: 50, p: 70 },
+    { cat: 'Cabelo', id: 'infantil', n: 'Corte infantil', d: 'Até 12 anos', min: 30, p: 45 },
+    { cat: 'Barba', id: 'barba', n: 'Barba com toalha quente', d: 'Navalha, toalha quente e balm', min: 30, p: 50 },
+    { cat: 'Barba', id: 'pigment', n: 'Pigmentação de barba', d: 'Preenche falhas, dura cerca de 7 dias', min: 25, p: 40 },
+    { cat: 'Combos', id: 'combo', n: 'Corte + barba', d: 'O pacote completo da casa', min: 70, p: 100 },
+    { cat: 'Combos', id: 'pai', n: 'Pai e filho', d: 'Dois cortes, mesma cadeira', min: 70, p: 95 },
+    { cat: 'Extras', id: 'sobr', n: 'Sobrancelha', d: 'Na navalha ou na pinça', min: 10, p: 20 },
+  ];
+  const PROS = [
+    { id: 'any', n: 'Sem preferência', s: 'Primeiro horário livre' },
+    { id: 'caio', n: 'Caio', s: 'Degradê e fade', hair: 'fade', beard: 'short', years: 9, bio: 'Campeão de fade da zona oeste. Detalhista no acabamento, rápido sem pressa.' },
+    { id: 'jorge', n: 'Seu Jorge', s: 'Navalha e barba', hair: 'social', beard: 'full', years: 31, bio: 'Fundador da casa. Barba na navalha do jeito antigo, com toalha quente e conversa boa.' },
+    { id: 'bia', n: 'Bia', s: 'Tesoura e texturizado', hair: 'crop', beard: '', years: 6, bio: 'Especialista em cortes texturizados e cabelo crespo. Tesoura afiada e olhar de estilista.' },
+  ];
+  const CUTS = [
+    { n: 'Degradê navalhado', s: 'Laterais no zero, transição suave', hair: 'fade', beard: '', svc: 'degrade' },
+    { n: 'Social clássico', s: 'Risca lateral, tesoura', hair: 'social', beard: '', svc: 'corte' },
+    { n: 'Pompadour', s: 'Volume na frente, laterais baixas', hair: 'pomp', beard: '', svc: 'corte' },
+    { n: 'Barba lenhador', s: 'Cheia, desenhada na navalha', hair: 'buzz', beard: 'full', svc: 'barba' },
+    { n: 'Crop texturizado', s: 'Franja picotada, moderno', hair: 'crop', beard: '', svc: 'corte' },
+    { n: 'Buzz + barba curta', s: 'Prático, pouca manutenção', hair: 'buzz', beard: 'short', svc: 'combo' },
+  ];
+  // seg=1 ... dom=0 · [abre, fecha] em horas, null = fechado
+  const HOURS = { 0: null, 1: [9, 20], 2: [9, 20], 3: [9, 20], 4: [9, 21], 5: [9, 21], 6: [8, 18] };
+  const DOW = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+
+  // retrato ilustrado: rosto creme, cabelo e barba em tinta escura
+  function head(hair, beard) {
+    const H = {
+      fade: '<path d="M34 60Q33 30 60 27Q87 30 86 60Q82 45 60 43Q38 45 34 60Z"/><path d="M34 62v10M86 62v10" stroke="#101814" stroke-width="3" opacity=".35"/>',
+      social: '<path d="M33 64Q29 28 58 26Q90 25 87 62Q85 46 71 41Q52 45 41 47Q35 52 33 64Z"/><path d="M50 30Q47 38 46 46" stroke="#e2c587" stroke-width="1.5" fill="none" opacity=".6"/>',
+      pomp: '<path d="M34 60Q28 22 60 14Q94 16 86 58Q82 40 60 37Q40 40 34 60Z"/>',
+      buzz: '<path d="M35 57Q37 34 60 33Q83 34 85 57Q78 45 60 44Q42 45 35 57Z" opacity=".75"/>',
+      crop: '<path d="M33 60Q33 28 60 26Q87 28 87 60L81 50 75 55 69 48 63 54 57 47 51 54 45 48 39 55Z"/>',
+    }[hair] || '';
+    const B = {
+      full: '<path d="M35 70Q37 110 60 112Q83 110 85 70Q80 94 60 94Q40 94 35 70Z"/><path d="M47 84Q60 77 73 84Q60 82 47 84Z"/>',
+      short: '<path d="M37 74Q40 102 60 104Q80 102 83 74Q78 92 60 92Q42 92 37 74Z" opacity=".55"/>',
+    }[beard] || '';
+    return '<svg viewBox="0 0 120 140" aria-hidden="true">' +
+      '<path d="M12 140Q18 112 60 108Q102 112 108 140Z" fill="#101814"/>' +
+      '<rect x="49" y="92" width="22" height="22" fill="#d9c49c"/>' +
+      '<ellipse cx="34" cy="70" rx="5" ry="8" fill="#d9c49c"/><ellipse cx="86" cy="70" rx="5" ry="8" fill="#d9c49c"/>' +
+      '<ellipse cx="60" cy="68" rx="26" ry="33" fill="#efe6d2"/>' +
+      '<g fill="#101814">' + H + B + '</g></svg>';
+  }
+
+  // tabela de preços
+  const cats = [...new Set(SERVICES.map((s) => s.cat))];
+  const groups = [cats.slice(0, 2), cats.slice(2)];
+  $('[data-board]').innerHTML = groups.map((g) => '<div class="board-col">' + g.map((c) =>
+    '<h3' + (c !== g[0] ? ' style="margin-top:26px"' : '') + '>' + c + '</h3>' +
+    SERVICES.filter((s) => s.cat === c).map((s) =>
+      '<div class="price"><b>' + s.n + '</b><i></i><span>' + money(s.p) + '</span><small>' + s.d + ' · ' + s.min + ' min</small></div>').join('')
+  ).join('') + '</div>').join('');
+
+  // equipe
+  $('[data-team]').innerHTML = PROS.slice(1).map((p) =>
+    '<article class="member"><div class="pic">' + head(p.hair, p.beard) + '</div><div class="txt"><h3>' + p.n + '</h3><p class="role">' + p.s + ' · ' + p.years + ' anos</p><p>' + p.bio + '</p></div></article>').join('');
+
+  // galeria
+  $('[data-cuts]').innerHTML = CUTS.map((c) =>
+    '<button type="button" class="cut" data-cut="' + c.svc + '"><div class="pic">' + head(c.hair, c.beard) + '</div><b>' + c.n + '</b><small>' + c.s + '</small></button>').join('');
+
+  // horários e status
+  const now = new Date();
+  const todayH = HOURS[now.getDay()];
+  const openNow = todayH && now.getHours() >= todayH[0] && now.getHours() < todayH[1];
+  $('[data-open-dot]').classList.toggle('on', !!openNow);
+  $('[data-open-txt]').textContent = openNow ? 'Aberto agora · até ' + todayH[1] + 'h' : (todayH ? 'Hoje das ' + todayH[0] + 'h às ' + todayH[1] + 'h' : 'Fechado hoje');
+  $('[data-hours]').innerHTML = [1, 2, 3, 4, 5, 6, 0].map((d) =>
+    '<li' + (d === now.getDay() ? ' class="today"' : '') + '><span>' + DOW[d] + '</span><span>' + (HOURS[d] ? HOURS[d][0] + 'h às ' + HOURS[d][1] + 'h' : 'Fechado') + '</span></li>').join('');
+
+  // agendamento
+  const state = { svc: new Set(['combo']), pro: 'any', day: null, slot: null };
+  const svcBox = $('[data-svc]'), proBox = $('[data-pro]'), dayBox = $('[data-days]'), slotBox = $('[data-slots]');
+
+  svcBox.innerHTML = SERVICES.map((s) => '<button type="button" class="opt" data-id="' + s.id + '" aria-pressed="false">' + s.n + '<small>' + money(s.p) + ' · ' + s.min + ' min</small></button>').join('');
+  proBox.innerHTML = PROS.map((p) => '<button type="button" class="opt pro" data-id="' + p.id + '" aria-pressed="false">' +
+    (p.hair ? head(p.hair, p.beard) : '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="17" fill="#2a3a32"/><path d="M11 17h12M17 11v12" stroke="#e2c587" stroke-width="2.4" stroke-linecap="round"/></svg>') +
+    '<span>' + p.n + '<small>' + p.s + '</small></span></button>').join('');
+
+  const days = [];
+  for (let i = 0; i < 8 && days.length < 7; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+    days.push(d);
+  }
+  dayBox.innerHTML = days.map((d, i) => {
+    const off = !HOURS[d.getDay()];
+    const lbl = i === 0 ? 'Hoje' : DOW[d.getDay()].slice(0, 3);
+    return '<button type="button" class="day" data-i="' + i + '" aria-pressed="false"' + (off ? ' disabled' : '') + ' aria-label="' + DOW[d.getDay()] + ' ' + d.getDate() + '"><small>' + lbl + '</small><b>' + d.getDate() + '</b></button>';
+  }).join('');
+
+  // horários ocupados variam por dia e profissional, sempre iguais na mesma visita
+  const busy = (seed, k) => ((seed * 9301 + k * 49297) % 233280) / 233280 < 0.32;
+
+  function duration() { let m = 0; state.svc.forEach((id) => { m += SERVICES.find((s) => s.id === id).min; }); return m; }
+  function total() { let t = 0; state.svc.forEach((id) => { t += SERVICES.find((s) => s.id === id).p; }); return t; }
+
+  function renderSlots() {
+    if (state.day === null) { slotBox.innerHTML = '<p class="empty">Escolha um dia para ver os horários.</p>'; return; }
+    const d = days[state.day], h = HOURS[d.getDay()];
+    const dur = Math.max(duration(), 30);
+    const seed = d.getDate() * 31 + PROS.findIndex((p) => p.id === state.pro) * 7 + 3;
+    const out = [];
+    for (let m = h[0] * 60, k = 0; m + dur <= h[1] * 60; m += 30, k++) {
+      const past = state.day === 0 && m <= now.getHours() * 60 + now.getMinutes() + 30;
+      const t = String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+      out.push('<button type="button" class="slot" data-t="' + t + '" aria-pressed="' + (state.slot === t) + '"' + (past || busy(seed, k) ? ' disabled' : '') + '>' + t + '</button>');
+    }
+    slotBox.innerHTML = out.length ? out.join('') : '<p class="empty">Sem horários para esse dia.</p>';
+    if (!out.some((b) => b.includes('data-t="' + state.slot + '"') && !b.includes('disabled'))) state.slot = null;
+  }
+
+  function sync() {
+    svcBox.querySelectorAll('.opt').forEach((b) => b.setAttribute('aria-pressed', state.svc.has(b.dataset.id)));
+    proBox.querySelectorAll('.opt').forEach((b) => b.setAttribute('aria-pressed', b.dataset.id === state.pro));
+    dayBox.querySelectorAll('.day').forEach((b) => b.setAttribute('aria-pressed', Number(b.dataset.i) === state.day));
+    renderSlots();
+    const names = [...state.svc].map((id) => SERVICES.find((s) => s.id === id).n);
+    $('[data-s-svc]').textContent = names.length ? names.join(', ') : '—';
+    $('[data-s-pro]').textContent = PROS.find((p) => p.id === state.pro).n;
+    $('[data-s-when]').textContent = state.day === null ? '—' :
+      (state.day === 0 ? 'Hoje' : DOW[days[state.day].getDay()]) + ', ' + days[state.day].toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + (state.slot ? ' às ' + state.slot : '');
+    $('[data-s-dur]').textContent = names.length ? duration() + ' min' : '—';
+    $('[data-s-total]').textContent = money(total());
+    const ready = names.length && state.day !== null && state.slot;
+    $('[data-confirm]').disabled = !ready;
+    $('[data-confirm-txt]').textContent = !names.length ? 'Escolha um serviço' : state.day === null ? 'Escolha o dia' : !state.slot ? 'Escolha o horário' : 'Confirmar pelo WhatsApp';
+  }
+
+  svcBox.addEventListener('click', (e) => { const b = e.target.closest('.opt'); if (!b) return; state.svc.has(b.dataset.id) ? state.svc.delete(b.dataset.id) : state.svc.add(b.dataset.id); sync(); });
+  proBox.addEventListener('click', (e) => { const b = e.target.closest('.opt'); if (!b) return; state.pro = b.dataset.id; sync(); });
+  dayBox.addEventListener('click', (e) => { const b = e.target.closest('.day'); if (!b || b.disabled) return; state.day = Number(b.dataset.i); state.slot = null; sync(); });
+  slotBox.addEventListener('click', (e) => { const b = e.target.closest('.slot'); if (!b || b.disabled) return; state.slot = b.dataset.t; sync(); });
+
+  $('[data-cuts]').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-cut]'); if (!b) return;
+    state.svc = new Set([b.dataset.cut]); sync();
+    $('#agendar').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    AL.toast(SERVICES.find((s) => s.id === b.dataset.cut).n + ' marcado. Agora é só escolher o dia.');
+  });
+
+  $('[data-confirm]').addEventListener('click', () => {
+    const name = $('[data-name]').value.trim();
+    const msg = 'Olá, Navalha Nobre! ' + (name ? 'Sou ' + name + ' e ' : '') + 'quero agendar:\n\n' +
+      '✂️ ' + [...state.svc].map((id) => SERVICES.find((s) => s.id === id).n).join(' + ') + '\n' +
+      '💈 Profissional: ' + PROS.find((p) => p.id === state.pro).n + '\n' +
+      '📅 ' + $('[data-s-when]').textContent + '\n' +
+      '⏱️ ' + duration() + ' min · ' + money(total()) + '\n\nPode confirmar?';
+    AL.whats('Agendamento pronto para enviar', msg, 'barbearia');
+  });
+
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-toast]'); if (b) AL.toast(b.dataset.toast); });
+  sync();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Maré · Modelo de loja de roupas</title>
+<meta name="description" content="Modelo de loja virtual de roupas: coleções, categorias, tamanhos, cores, sacola com frete e finalização pelo checkout ou WhatsApp.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f5f1ea">
+<link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;1,6..96,400&family=Inter+Tight:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../kit.css">
+<script src="../kit.js"></script>
+<style>
+/* Vitrine editorial: fundo de linho, tipografia Bodoni e peças desenhadas que
+   trocam de cor no próprio card. Estrutura de loja virtual completa. */
+:root{
+  --linen:#f5f1ea; --linen-2:#ece5d9; --card:#fbf9f5; --ink:#1e1d1b; --ink-2:#4a4640; --mute:#8b847a; --line:#ddd5c7;
+  --terra:#b8572f; --ok:#4f7a4a;
+  --serif:"Bodoni Moda",Didot,"Times New Roman",serif;
+  --sans:"Inter Tight","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--linen);scroll-behavior:smooth;scroll-padding-top:calc(var(--al-h) + 70px)}
+body{margin:0;background:var(--linen);color:var(--ink);font:400 15px/1.55 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+svg{display:block}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.k{font:600 11px var(--sans);letter-spacing:.2em;text-transform:uppercase}
+
+.announce{background:var(--ink);color:var(--linen);text-align:center;padding:9px 12px;font:500 12px var(--sans);letter-spacing:.06em}
+.hdr{position:sticky;top:var(--al-h);z-index:50;background:rgba(245,241,234,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hdr .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:64px;gap:12px}
+.hdr nav{display:none;gap:22px}
+.hdr nav button{border:0;background:none;padding:6px 0;font:500 13px var(--sans);letter-spacing:.04em}
+.hdr nav button:hover{text-decoration:underline;text-underline-offset:5px}
+.brand{font:400 30px/1 var(--serif);letter-spacing:.32em;text-decoration:none;padding-left:.32em}
+.icons{display:flex;justify-content:flex-end;gap:4px}
+.ic{position:relative;width:44px;height:44px;border:0;background:none;display:grid;place-items:center;border-radius:50%}
+.ic:hover{background:var(--linen-2)}
+.ic svg{width:21px;height:21px}
+.ic .n{position:absolute;top:4px;right:2px;min-width:18px;height:18px;border-radius:9px;background:var(--terra);color:#fff;font:700 10px/18px var(--sans);text-align:center;padding:0 4px}
+.ic .n:empty,.ic .n[data-z]{display:none}
+.menu-btn{justify-self:start}
+@media (min-width:920px){.hdr nav{display:flex}.menu-btn{display:none}}
+
+/* hero */
+.hero{display:grid;gap:0;border-bottom:1px solid var(--line)}
+.hero-txt{padding:48px 0 36px}
+.hero h1{font:400 clamp(54px,13vw,128px)/.88 var(--serif);margin:14px 0 0;letter-spacing:-.02em}
+.hero h1 i{color:var(--terra)}
+.hero p{max-width:38ch;color:var(--ink-2);font-size:17px;margin:18px 0 26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 28px;border:1px solid var(--ink);background:transparent;font:600 12px var(--sans);letter-spacing:.18em;text-transform:uppercase;text-decoration:none;transition:background-color .2s,color .2s}
+.btn.dark{background:var(--ink);color:var(--linen)}
+.btn.dark:hover{background:#000}
+.btn:hover{background:var(--ink);color:var(--linen)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.hero-art{position:relative;min-height:420px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.hero-art .b{position:relative;overflow:hidden;display:grid;place-items:center}
+.hero-art .b svg{width:72%;max-height:92%}
+.hero-art .b:nth-child(1){grid-row:1/3;background:#d9c3a0}
+.hero-art .b:nth-child(2){background:#2f4f6b}
+.hero-art .b:nth-child(3){background:#c98f84}
+.hero-art .cap{position:absolute;left:14px;bottom:12px;font:600 10px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:rgba(30,29,27,.75)}
+.hero-art .b:nth-child(2) .cap{color:rgba(245,241,234,.85)}
+@media (min-width:920px){.hero{grid-template-columns:1fr 1.1fr;align-items:stretch}.hero-txt{padding:80px 48px 64px 0;display:flex;flex-direction:column;justify-content:center}.hero-art{min-height:620px}}
+
+/* coleções */
+.cols{display:grid;gap:12px;padding-block:56px 20px}
+.col{position:relative;border:0;padding:0;text-align:left;background:var(--linen-2);aspect-ratio:4/3;overflow:hidden;display:grid;align-content:end}
+.col svg{position:absolute;right:-6%;top:6%;width:62%;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.col:hover svg{transform:translateY(-6px) rotate(-2deg)}
+.col span{position:relative;padding:18px}
+.col b{display:block;font:400 34px/1 var(--serif)}
+.col small{display:block;margin-top:6px;color:var(--ink-2)}
+@media (min-width:760px){.cols{grid-template-columns:repeat(3,1fr)}}
+
+/* loja */
+.shop{padding-block:40px 80px}
+.shop-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:14px;margin-bottom:18px}
+.shop-h h2{font:400 clamp(38px,8vw,60px)/1 var(--serif);margin:6px 0 0}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.search{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);height:44px;padding:0 12px;min-width:200px;flex:1}
+.search input{border:0;background:transparent;outline:0;width:100%;height:100%;font-size:14px}
+.search svg{width:16px;height:16px;color:var(--mute)}
+select{height:44px;border:1px solid var(--line);background:var(--card);padding:0 12px;font-size:14px;border-radius:0}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:22px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);height:38px;padding:0 16px;font:500 13px var(--sans)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--linen);border-color:var(--ink)}
+.count{color:var(--mute);font-size:13px;margin:-10px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px 12px}
+@media (min-width:760px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:1080px){.grid{grid-template-columns:repeat(4,1fr);gap:28px 18px}}
+.p{position:relative}
+.p .img{position:relative;aspect-ratio:3/4;display:grid;place-items:center;overflow:hidden;cursor:pointer;border:0;padding:0;width:100%;transition:background-color .35s}
+.p .img svg{width:70%;max-height:88%;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.p .img:hover svg{transform:scale(1.04)}
+.p .badge{position:absolute;left:10px;top:10px;background:var(--card);padding:4px 8px;font:600 10px var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.p .badge.sale{background:var(--terra);color:#fff}
+.p .heart{position:absolute;right:6px;top:6px;width:40px;height:40px;border:0;background:transparent;display:grid;place-items:center}
+.p .heart svg{width:20px;height:20px}
+.p .heart[aria-pressed="true"] svg{fill:var(--terra);stroke:var(--terra)}
+.p .quick{position:absolute;left:10px;right:10px;bottom:10px;height:42px;border:0;background:rgba(251,249,245,.94);font:600 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
+.p:hover .quick,.p .quick:focus-visible{opacity:1;transform:none}
+@media (hover:none){.p .quick{display:none}}
+.p .dots{display:flex;gap:6px;margin:12px 0 6px}
+.p .dot{width:18px;height:18px;border-radius:50%;border:1px solid rgba(30,29,27,.25);padding:0;outline-offset:2px}
+.p .dot[aria-pressed="true"]{box-shadow:0 0 0 2px var(--linen),0 0 0 3px var(--ink)}
+.p h3{font:500 14px/1.35 var(--sans);margin:0}
+.p .pr{margin-top:4px;font:600 14px var(--sans)}
+.p .pr s{color:var(--mute);font-weight:400;margin-right:6px}
+.p .inst{display:block;font-size:12px;color:var(--mute);font-weight:400}
+
+.perks{display:grid;gap:1px;background:var(--line);border-block:1px solid var(--line)}
+.perks div{background:var(--linen);padding:26px 20px;display:flex;gap:14px;align-items:start}
+.perks svg{width:26px;height:26px;flex:0 0 auto}
+.perks b{display:block;font:600 14px var(--sans)}
+.perks small{color:var(--mute)}
+@media (min-width:760px){.perks{grid-template-columns:repeat(4,1fr)}}
+footer{padding-block:40px calc(40px + env(safe-area-inset-bottom,0px));font-size:13px;color:var(--mute)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+
+/* produto e sacola */
+.ov{position:fixed;inset:0;z-index:800;background:rgba(30,29,27,.45);opacity:0;pointer-events:none;transition:opacity .25s}
+.ov.on{opacity:1;pointer-events:auto}
+.pd{position:fixed;z-index:810;left:50%;top:50%;width:min(980px,100% - 24px);max-height:min(92vh,760px);overflow:auto;background:var(--card);transform:translate(-50%,-46%);opacity:0;pointer-events:none;transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1);display:grid}
+.pd.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.pd .big{display:grid;place-items:center;min-height:340px;transition:background-color .35s;position:relative}
+.pd .big svg{width:62%;max-height:86%}
+.pd .txt{padding:26px 22px}
+.pd h3{font:400 34px/1.05 var(--serif);margin:6px 0 8px}
+.pd .pr{font:600 18px var(--sans)}
+.pd .pr s{color:var(--mute);font-weight:400;margin-right:8px}
+.pd .lbl{display:flex;justify-content:space-between;margin:22px 0 10px;font:600 11px var(--sans);letter-spacing:.16em;text-transform:uppercase}
+.pd .lbl button{border:0;background:none;padding:0;text-decoration:underline;text-underline-offset:3px;font:500 12px var(--sans);letter-spacing:0;text-transform:none}
+.sw{display:flex;gap:10px;flex-wrap:wrap}
+.sw button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(30,29,27,.25);padding:0}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 3px var(--card),0 0 0 4px var(--ink)}
+.sizes{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.sizes button{height:46px;border:1px solid var(--line);background:var(--card);font:600 13px var(--sans)}
+.sizes button[aria-pressed="true"]{background:var(--ink);color:var(--linen);border-color:var(--ink)}
+.sizes button[disabled]{color:var(--mute);background:repeating-linear-gradient(135deg,transparent 0 6px,var(--linen-2) 6px 7px);cursor:not-allowed}
+.pd .acts{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:22px}
+.pd .acts .btn{width:100%}
+.pd .desc{color:var(--ink-2);margin:20px 0 0;font-size:14px}
+.pd .x,.bag .x{position:absolute;right:10px;top:10px;width:42px;height:42px;border:0;background:var(--card);border-radius:50%;font:400 24px/1 var(--sans);z-index:2}
+.guide{margin-top:12px;border-collapse:collapse;width:100%;font-size:13px}
+.guide th,.guide td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:center}
+.guide th{font-weight:600}
+@media (min-width:760px){.pd{grid-template-columns:1.05fr 1fr}.pd .big{min-height:560px}.pd .txt{padding:44px 36px}}
+
+.bag{position:fixed;z-index:810;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--card);transform:translateX(102%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:grid;grid-template-rows:auto 1fr auto;padding-top:env(safe-area-inset-top,0px)}
+.bag.on{transform:none}
+.bag-h{padding:22px 22px 14px;border-bottom:1px solid var(--line)}
+.bag-h h3{font:400 30px/1 var(--serif);margin:0}
+.ship{margin-top:14px;font-size:13px}
+.ship i{display:block;height:3px;background:var(--line);margin-top:8px}
+.ship i b{display:block;height:100%;background:var(--ok);transition:width .4s}
+.lines{overflow:auto;padding:4px 22px}
+.ln{display:grid;grid-template-columns:76px 1fr;gap:14px;padding-block:14px;border-bottom:1px solid var(--line)}
+.ln .im{aspect-ratio:3/4;display:grid;place-items:center}
+.ln .im svg{width:78%}
+.ln b{display:block;font:500 14px var(--sans)}
+.ln small{display:block;color:var(--mute);font-size:12px}
+.ln .row{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.qty{display:flex;align-items:center;border:1px solid var(--line);height:34px}
+.qty button{width:32px;height:100%;border:0;background:none;font-size:16px}
+.qty span{min-width:22px;text-align:center;font-size:13px;font-weight:600}
+.bag-f{padding:16px 22px calc(18px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:grid;gap:10px}
+.bag-f[hidden]{display:none}
+.cep{display:flex;gap:6px}
+.cep input{flex:1;height:44px;border:1px solid var(--line);background:var(--linen);padding:0 12px;font-size:14px;border-radius:0}
+.cep button{height:44px;padding:0 16px;border:1px solid var(--ink);background:none;font:600 11px var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.sumrow{display:flex;justify-content:space-between;font-size:14px}
+.sumrow.t{font:600 17px var(--sans)}
+.empty{padding:40px 0;text-align:center;color:var(--mute)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.pd,.bag,.ov,.p .img svg,.col svg{transition:none}}
+</style>
+</head>
+<body>
+<nav class="al-bar" aria-label="Amplitude Lab">
+  <a class="al-back" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Hub de demos</a>
+  <span class="al-tag"><b>Modelo · Loja de roupas</b> <em>· marca fictícia, conceito para demonstração</em></span>
+  <a class="al-cta" href="https://wa.me/5511952182016?text=Oi!%20Vi%20o%20modelo%20de%20loja%20de%20roupas%20da%20Amplitude%20Lab%20e%20quero%20uma%20loja%20assim." target="_blank" rel="noopener">Quero este modelo</a>
+</nav>
+
+<div class="announce">Frete grátis acima de R$ 299 · Troca grátis em 30 dias · 3x sem juros</div>
+<header class="hdr">
+  <div class="wrap">
+    <div>
+      <nav aria-label="Categorias" data-topnav></nav>
+      <button type="button" class="ic menu-btn" data-jump aria-label="Ir para a loja"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+    <a class="brand" href="#">MARÉ</a>
+    <div class="icons">
+      <button type="button" class="ic" data-jump-search aria-label="Buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+      <button type="button" class="ic" data-wish-filter aria-label="Favoritos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg><span class="n" data-wish-n data-z></span></button>
+      <button type="button" class="ic" data-open-bag aria-label="Sacola"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="n" data-bag-n data-z></span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div class="hero-txt">
+      <span class="k" style="color:var(--terra)">Nova coleção · Verão 27</span>
+      <h1>Coleção <i>Costa</i></h1>
+      <p>Linho, algodão leve e cores tiradas do litoral: areia, maré e argila. Peças feitas em pequenos lotes, no Brasil.</p>
+      <div><button type="button" class="btn dark" data-col="Costa">Ver coleção</button></div>
+    </div>
+    <div class="hero-art" data-hero aria-hidden="true"></div>
+  </div>
+
+  <div class="wrap cols" data-cols></div>
+
+  <section class="wrap shop" id="loja">
+    <div class="shop-h">
+      <div><span class="k" style="color:var(--mute)" data-shop-k>Toda a loja</span><h2 data-shop-t>Vitrine</h2></div>
+      <div class="tools">
+        <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input type="search" data-q placeholder="Buscar peça" aria-label="Buscar peça"></label>
+        <select data-sort aria-label="Ordenar"><option value="rel">Relevância</option><option value="new">Novidades</option><option value="low">Menor preço</option><option value="high">Maior preço</option></select>
+      </div>
+    </div>
+    <div class="chips" data-chips role="group" aria-label="Categorias"></div>
+    <p class="count" data-count></p>
+    <div class="grid" data-grid></div>
+  </section>
+
+  <div class="perks">
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg><span><b>Frete grátis</b><small>Acima de R$ 299 para todo o Brasil</small></span></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2"/><path d="M20 4v5h-5M4 20v-5h5"/></svg><span><b>Troca grátis</b><small>Em até 30 dias, direto pelo site</small></span></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg><span><b>3x sem juros</b><small>Ou 5% de desconto no Pix</small></span></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 21c-4-3-8-6-8-11a5 5 0 0 1 8-4 5 5 0 0 1 8 4c0 5-4 8-8 11Z"/></svg><span><b>Feito no Brasil</b><small>Ateliê próprio, lotes pequenos</small></span></div>
+  </div>
+</main>
+<footer><div class="wrap"><span>© Maré · marca fictícia criada pela Amplitude Lab para demonstração</span><a href="../">← Voltar ao hub de demos</a></div></footer>
+
+<div class="ov" data-ov></div>
+<div class="pd" data-pd role="dialog" aria-modal="true" aria-labelledby="pd-t" aria-hidden="true">
+  <button type="button" class="x" data-close aria-label="Fechar">×</button>
+  <div class="big" data-pd-big></div>
+  <div class="txt">
+    <span class="k" style="color:var(--mute)" data-pd-k></span>
+    <h3 id="pd-t" data-pd-t></h3>
+    <div class="pr" data-pd-pr></div>
+    <div class="lbl"><span>Cor · <span data-pd-color style="font-weight:500;letter-spacing:0;text-transform:none"></span></span></div>
+    <div class="sw" data-pd-sw role="group" aria-label="Cor"></div>
+    <div class="lbl"><span>Tamanho</span><button type="button" data-guide>Guia de medidas</button></div>
+    <div class="sizes" data-pd-sz role="group" aria-label="Tamanho"></div>
+    <table class="guide" data-guide-t hidden><tr><th></th><th>PP</th><th>P</th><th>M</th><th>G</th><th>GG</th></tr><tr><td>Busto</td><td>82</td><td>88</td><td>94</td><td>100</td><td>108</td></tr><tr><td>Cintura</td><td>64</td><td>70</td><td>76</td><td>82</td><td>90</td></tr><tr><td>Quadril</td><td>90</td><td>96</td><td>102</td><td>108</td><td>116</td></tr></table>
+    <div class="acts"><button type="button" class="btn dark" data-pd-add>Escolha o tamanho</button><button type="button" class="btn" data-pd-wish aria-label="Favoritar" style="padding:0 16px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg></button></div>
+    <p class="desc" data-pd-d></p>
+  </div>
+</div>
+
+<aside class="bag" data-bag role="dialog" aria-modal="true" aria-labelledby="bag-t" aria-hidden="true">
+  <div class="bag-h" style="position:relative"><button type="button" class="x" data-close aria-label="Fechar">×</button><h3 id="bag-t">Sacola</h3><div class="ship" data-ship></div></div>
+  <div class="lines" data-lines></div>
+  <div class="bag-f" data-bag-f>
+    <div class="cep"><input data-cep inputmode="numeric" maxlength="9" placeholder="Seu CEP" aria-label="CEP"><button type="button" data-cep-go>Calcular</button></div>
+    <div class="sumrow"><span>Subtotal</span><span data-sub></span></div>
+    <div class="sumrow"><span>Frete</span><span data-fee>Informe o CEP</span></div>
+    <div class="sumrow t"><span>Total</span><span data-tot></span></div>
+    <button type="button" class="btn dark" data-checkout>Finalizar compra</button>
+    <button type="button" class="btn" data-whats>Finalizar pelo WhatsApp</button>
+  </div>
+</aside>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const brl = (n) => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  const COLORS = {
+    'Areia': '#d9c3a0', 'Terracota': '#b8572f', 'Oliva': '#6f7445', 'Azul-maré': '#2f4f6b',
+    'Off-white': '#efe9df', 'Preto': '#262422', 'Rosa-argila': '#c98f84', 'Céu': '#9fb8c9',
+  };
+  // fundo do card: tom claro que combina com a cor da peça
+  const BG = { 'Areia': '#ece3d3', 'Terracota': '#ead8cc', 'Oliva': '#e2e2d2', 'Azul-maré': '#d9e1e6', 'Off-white': '#dcd5c9', 'Preto': '#e4e0d9', 'Rosa-argila': '#efdcd7', 'Céu': '#e3eaee' };
+  const shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const f = (v) => Math.max(0, Math.min(255, Math.round(v * k))); return 'rgb(' + f(n >> 16) + ',' + f((n >> 8) & 255) + ',' + f(n & 255) + ')'; };
+
+  // peças desenhadas (viewBox 200x240); a cor vem do parâmetro
+  function garment(type, hex) {
+    const d = shade(hex, .72), S = 'stroke="' + d + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"';
+    const P = {
+      camiseta: '<path d="M60 30 84 22Q100 36 116 22L140 30 172 62 152 84 140 72V212H60V72L48 84 28 62Z" fill="' + hex + '" ' + S + '/><path d="M84 22Q100 44 116 22" fill="none" ' + S + '/><path d="M60 72 48 84M140 72l12 12" fill="none" ' + S + ' opacity=".5"/>',
+      vestido: '<path d="M80 18 86 20Q100 40 114 20L120 18 126 70Q122 86 132 100L164 220Q100 232 36 220L68 100Q78 86 74 70Z" fill="' + hex + '" ' + S + '/><path d="M74 70Q100 80 126 70" fill="none" ' + S + '/><path d="M100 84 92 222M112 96l18 120M88 96 70 216" fill="none" ' + S + ' opacity=".35"/>',
+      camisa: '<path d="M62 28 86 20 100 40 114 20 138 28 170 70 178 172 156 175 146 94 140 94V216H60V94H54L44 175 22 172 30 70Z" fill="' + hex + '" ' + S + '/><path d="M86 20 92 46 100 40 108 46 114 20" fill="' + shade(hex, .9) + '" ' + S + '/><path d="M100 40V216" fill="none" ' + S + '/>' + [64, 92, 120, 148, 176].map((y) => '<circle cx="106" cy="' + y + '" r="2.4" fill="' + d + '"/>').join('') + '<path d="M66 120h24v20H66Z" fill="none" ' + S + ' opacity=".6"/>',
+      calca: '<path d="M60 18H140L154 222H112L100 96 88 222H46Z" fill="' + hex + '" ' + S + '/><path d="M60 34H140" fill="none" ' + S + '/><path d="M100 34V96M74 40Q72 58 62 62M126 40Q128 58 138 62" fill="none" ' + S + ' opacity=".6"/>',
+      saia: '<path d="M68 36H132L164 206Q100 222 36 206Z" fill="' + hex + '" ' + S + '/><path d="M68 50H132" fill="none" ' + S + '/><path d="M84 50 70 210M100 50v162M116 50l14 160" fill="none" ' + S + ' opacity=".4"/>',
+      jaqueta: '<path d="M60 26 84 18 100 30 116 18 140 26 172 68 180 176 156 178 146 96 142 96V216H58V96H54L44 178 20 176 28 68Z" fill="' + hex + '" ' + S + '/><path d="M84 18 78 70 100 100 122 70 116 18" fill="' + shade(hex, .86) + '" ' + S + '/><path d="M100 100V216" fill="none" ' + S + '/><path d="M70 150h20M110 150h20" fill="none" ' + S + '/>',
+      bolsa: '<path d="M64 96Q64 40 100 40T136 96" fill="none" stroke="' + d + '" stroke-width="8" stroke-linecap="round"/><path d="M40 92H160L170 210H30Z" fill="' + hex + '" ' + S + '/><path d="M40 118H160" fill="none" ' + S + ' opacity=".5"/><rect x="92" y="110" width="16" height="14" rx="2" fill="' + d + '"/>',
+      chapeu: '<ellipse cx="100" cy="150" rx="86" ry="26" fill="' + hex + '" ' + S + '/><path d="M54 146Q56 82 100 80T146 146Q100 160 54 146Z" fill="' + hex + '" ' + S + '/><path d="M58 128Q100 140 142 128" fill="none" stroke="' + d + '" stroke-width="8"/>',
+    };
+    return '<svg viewBox="0 0 200 240" aria-hidden="true">' + P[type] + '</svg>';
+  }
+
+  const PRODUCTS = [
+    { id: 1, n: 'Vestido Midi Linho', cat: 'Vestidos', col: 'Costa', t: 'vestido', p: 349, colors: ['Areia', 'Terracota', 'Azul-maré'], out: ['PP'], tag: 'Novo', nw: 9, d: 'Midi com alças finas e fenda lateral. 100% linho lavado, toque macio desde o primeiro uso.' },
+    { id: 2, n: 'Camisa Oversized Linho', cat: 'Camisas', col: 'Linho Puro', t: 'camisa', p: 259, colors: ['Off-white', 'Céu', 'Oliva'], out: [], nw: 6, d: 'Modelagem ampla, ombro caído e bolso frontal. Usa aberta como terceira peça ou fechada.' },
+    { id: 3, n: 'Camiseta Essencial', cat: 'Camisetas', col: 'Essenciais', t: 'camiseta', p: 129, old: 159, colors: ['Off-white', 'Preto', 'Oliva', 'Rosa-argila'], out: ['GG'], tag: '-20%', nw: 2, d: 'Algodão pima 180 g, gola canelada que não deforma. A base de qualquer look.' },
+    { id: 4, n: 'Calça Pantalona', cat: 'Calças', col: 'Costa', t: 'calca', p: 299, colors: ['Areia', 'Preto', 'Terracota'], out: ['G'], tag: 'Novo', nw: 8, d: 'Cintura alta com pregas e caimento fluido. Viscolinho que não amassa na mala.' },
+    { id: 5, n: 'Saia Plissada', cat: 'Saias', col: 'Costa', t: 'saia', p: 219, colors: ['Rosa-argila', 'Azul-maré', 'Areia'], out: [], nw: 7, d: 'Plissado permanente, cós com elástico embutido. Gira bonito.' },
+    { id: 6, n: 'Jaqueta Sarja', cat: 'Jaquetas', col: 'Essenciais', t: 'jaqueta', p: 389, colors: ['Oliva', 'Preto', 'Areia'], out: ['PP', 'P'], nw: 3, d: 'Sarja de algodão encorpada com lapela larga. Atravessa as estações.' },
+    { id: 7, n: 'Bolsa Tote Couro', cat: 'Acessórios', col: 'Essenciais', t: 'bolsa', p: 329, colors: ['Terracota', 'Preto', 'Areia'], out: [], sizes: ['Único'], nw: 4, d: 'Couro legítimo curtido no vegetal, cabe notebook de 14”. Forro em algodão.' },
+    { id: 8, n: 'Chapéu Bucket Palha', cat: 'Acessórios', col: 'Costa', t: 'chapeu', p: 149, colors: ['Areia', 'Off-white'], out: [], sizes: ['P/M', 'G/GG'], tag: 'Novo', nw: 10, d: 'Palha natural trançada à mão com faixa de algodão.' },
+    { id: 9, n: 'Camiseta Boxy', cat: 'Camisetas', col: 'Essenciais', t: 'camiseta', p: 139, colors: ['Céu', 'Terracota', 'Preto'], out: ['M'], nw: 5, d: 'Corte reto e curto, malha pesada 220 g. Fica ótima com cintura alta.' },
+    { id: 10, n: 'Vestido Chemise', cat: 'Vestidos', col: 'Linho Puro', t: 'camisa', p: 319, old: 379, colors: ['Oliva', 'Off-white'], out: [], tag: '-15%', nw: 1, d: 'Chemise longo de linho com faixa na cintura. Abotoamento até a barra.' },
+    { id: 11, n: 'Calça Linho Reta', cat: 'Calças', col: 'Linho Puro', t: 'calca', p: 279, colors: ['Off-white', 'Oliva', 'Azul-maré'], out: ['GG'], nw: 5, d: 'Reta, cós com cordão e bolsos faca. Linho europeu certificado.' },
+    { id: 12, n: 'Saia Midi Linho', cat: 'Saias', col: 'Linho Puro', t: 'saia', p: 239, colors: ['Terracota', 'Areia'], out: ['PP'], nw: 4, d: 'Evasê com botões frontais de coco. Fresca e elegante.' },
+  ];
+  const SIZES = ['PP', 'P', 'M', 'G', 'GG'];
+  const CATS = ['Tudo', ...new Set(PRODUCTS.map((p) => p.cat))];
+  const pick = {};
+  PRODUCTS.forEach((p) => { pick[p.id] = p.colors[0]; });
+  const wish = new Set();
+
+  // hero e coleções
+  const hero = $('[data-hero]');
+  hero.innerHTML = '<div class="b">' + garment('vestido', COLORS['Terracota']) + '<span class="cap">Vestido Midi Linho</span></div>' +
+    '<div class="b">' + garment('camisa', COLORS['Off-white']) + '<span class="cap">Camisa Oversized</span></div>' +
+    '<div class="b">' + garment('chapeu', COLORS['Areia']) + '<span class="cap">Bucket Palha</span></div>';
+  const COLS = [
+    { n: 'Costa', s: 'Verão 27 · linho e cores do litoral', t: 'vestido', c: 'Azul-maré', bg: '#dfe4e2' },
+    { n: 'Linho Puro', s: 'Alfaiataria leve para o calor', t: 'camisa', c: 'Oliva', bg: '#e6e3d3' },
+    { n: 'Essenciais', s: 'Básicos que duram anos', t: 'camiseta', c: 'Preto', bg: '#e9e2d6' },
+  ];
+  $('[data-cols]').innerHTML = COLS.map((c) => '<button type="button" class="col" data-col="' + c.n + '" style="background:' + c.bg + '">' + garment(c.t, COLORS[c.c]) + '<span><span class="k" style="color:var(--mute)">Coleção</span><b>' + c.n + '</b><small>' + c.s + '</small></span></button>').join('');
+
+  // filtros
+  const f = { cat: 'Tudo', col: null, q: '', sort: 'rel', wish: false };
+  $('[data-chips]').innerHTML = CATS.map((c) => '<button type="button" class="chip" aria-pressed="' + (c === 'Tudo') + '">' + c + '</button>').join('');
+  $('[data-topnav]').innerHTML = ['Vestidos', 'Camisas', 'Calças', 'Acessórios'].map((c) => '<button type="button" data-cat="' + c + '">' + c + '</button>').join('');
+
+  function render() {
+    let list = PRODUCTS.filter((p) => (f.cat === 'Tudo' || p.cat === f.cat) && (!f.col || p.col === f.col) && (!f.wish || wish.has(p.id)) &&
+      (!f.q || (p.n + ' ' + p.cat + ' ' + p.colors.join(' ')).toLowerCase().includes(f.q)));
+    if (f.sort === 'low') list.sort((a, b) => a.p - b.p);
+    if (f.sort === 'high') list.sort((a, b) => b.p - a.p);
+    if (f.sort === 'new') list.sort((a, b) => b.nw - a.nw);
+    $$('[data-chips] .chip').forEach((b) => b.setAttribute('aria-pressed', b.textContent === f.cat));
+    $('[data-shop-k]').textContent = f.wish ? 'Seus favoritos' : f.col ? 'Coleção' : 'Toda a loja';
+    $('[data-shop-t]').textContent = f.wish ? 'Favoritos' : f.col || (f.cat === 'Tudo' ? 'Vitrine' : f.cat);
+    $('[data-count]').textContent = list.length + (list.length === 1 ? ' peça' : ' peças') + (f.col || f.wish ? ' · ' : '') + (f.col || f.wish ? 'toque em “Tudo” para ver a loja inteira' : '');
+    $('[data-grid]').innerHTML = list.length ? list.map((p) => {
+      const c = pick[p.id];
+      return '<article class="p" data-id="' + p.id + '">' +
+        '<button type="button" class="img" data-open style="background:' + BG[c] + '" aria-label="Ver ' + p.n + '">' + garment(p.t, COLORS[c]) + '</button>' +
+        (p.tag ? '<span class="badge' + (p.old ? ' sale' : '') + '">' + p.tag + '</span>' : '') +
+        '<button type="button" class="heart" data-heart aria-pressed="' + wish.has(p.id) + '" aria-label="Favoritar ' + p.n + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg></button>' +
+        '<button type="button" class="quick" data-open>Escolher tamanho</button>' +
+        '<div class="dots" role="group" aria-label="Cores">' + p.colors.map((cn) => '<button type="button" class="dot" data-c="' + cn + '" style="background:' + COLORS[cn] + '" aria-pressed="' + (cn === c) + '" aria-label="' + cn + '"></button>').join('') + '</div>' +
+        '<h3>' + p.n + '</h3><div class="pr">' + (p.old ? '<s>' + brl(p.old) + '</s>' : '') + brl(p.p) + '<span class="inst">3x de ' + brl(p.p / 3) + ' sem juros</span></div></article>';
+    }).join('') : '<p class="empty" style="grid-column:1/-1">Nada por aqui. ' + (f.wish ? 'Toque no coração das peças para salvar.' : 'Tente outra busca.') + '</p>';
+  }
+  $('[data-chips]').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; f.cat = b.textContent; f.col = null; f.wish = false; render(); });
+  $('[data-topnav]').addEventListener('click', (e) => { const b = e.target.closest('[data-cat]'); if (!b) return; f.cat = b.dataset.cat; f.col = null; f.wish = false; render(); jump(); });
+  $('[data-q]').addEventListener('input', (e) => { f.q = e.target.value.trim().toLowerCase(); render(); });
+  $('[data-sort]').addEventListener('change', (e) => { f.sort = e.target.value; render(); });
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-col]'); if (!b) return; f.col = b.dataset.col; f.cat = 'Tudo'; f.wish = false; render(); jump(); });
+  const jump = () => $('#loja').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  $('[data-jump]').addEventListener('click', jump);
+  $('[data-jump-search]').addEventListener('click', () => { jump(); setTimeout(() => $('[data-q]').focus({ preventScroll: true }), 400); });
+  $('[data-wish-filter]').addEventListener('click', () => { f.wish = true; f.col = null; f.cat = 'Tudo'; render(); jump(); });
+
+  function toggleWish(id) {
+    wish.has(id) ? wish.delete(id) : wish.add(id);
+    const n = $('[data-wish-n]'); n.textContent = wish.size || ''; wish.size ? n.removeAttribute('data-z') : n.setAttribute('data-z', '');
+  }
+  $('[data-grid]').addEventListener('click', (e) => {
+    const card = e.target.closest('.p'); if (!card) return;
+    const id = Number(card.dataset.id), p = PRODUCTS.find((x) => x.id === id);
+    const dot = e.target.closest('[data-c]');
+    if (dot) { pick[id] = dot.dataset.c; card.querySelector('.img').style.background = BG[pick[id]]; card.querySelector('.img').innerHTML = garment(p.t, COLORS[pick[id]]); $$('[data-c]', card).forEach((d) => d.setAttribute('aria-pressed', d === dot)); return; }
+    if (e.target.closest('[data-heart]')) { toggleWish(id); e.target.closest('[data-heart]').setAttribute('aria-pressed', wish.has(id)); if (f.wish) render(); return; }
+    if (e.target.closest('[data-open]')) openPd(p);
+  });
+
+  // produto
+  const ov = $('[data-ov]'), pd = $('[data-pd]'), bagEl = $('[data-bag]');
+  let cur = null, size = null, lastFocus = null;
+  function show(el) { lastFocus = document.activeElement; ov.classList.add('on'); el.classList.add('on'); el.setAttribute('aria-hidden', 'false'); el.querySelector('[data-close]').focus(); }
+  function hide() { [pd, bagEl].forEach((el) => { el.classList.remove('on'); el.setAttribute('aria-hidden', 'true'); }); ov.classList.remove('on'); if (lastFocus) lastFocus.focus(); }
+  ov.addEventListener('click', hide);
+  $$('[data-close]').forEach((b) => b.addEventListener('click', hide));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hide(); });
+
+  function openPd(p) {
+    cur = p; size = null;
+    $('[data-pd-k]').textContent = p.cat + ' · Coleção ' + p.col;
+    $('[data-pd-t]').textContent = p.n;
+    $('[data-pd-pr]').innerHTML = (p.old ? '<s>' + brl(p.old) + '</s>' : '') + brl(p.p) + ' <span style="font-weight:400;color:var(--mute);font-size:13px">· 3x sem juros ou ' + brl(p.p * .95) + ' no Pix</span>';
+    $('[data-pd-d]').textContent = p.d;
+    $('[data-guide-t]').hidden = true;
+    const sizes = p.sizes || SIZES;
+    $('[data-pd-sz]').style.gridTemplateColumns = 'repeat(' + Math.max(sizes.length, 2) + ',1fr)';
+    $('[data-pd-sz]').innerHTML = sizes.map((s) => '<button type="button" aria-pressed="false"' + (p.out.includes(s) ? ' disabled aria-label="' + s + ', esgotado"' : '') + '>' + s + '</button>').join('');
+    if (sizes.length === 1) size = sizes[0];
+    $('[data-pd-wish] svg').style.fill = wish.has(p.id) ? 'var(--terra)' : 'none';
+    renderPd();
+    show(pd);
+  }
+  function renderPd() {
+    const c = pick[cur.id];
+    $('[data-pd-big]').style.background = BG[c];
+    $('[data-pd-big]').innerHTML = garment(cur.t, COLORS[c]);
+    $('[data-pd-color]').textContent = c;
+    $('[data-pd-sw]').innerHTML = cur.colors.map((cn) => '<button type="button" style="background:' + COLORS[cn] + '" aria-pressed="' + (cn === c) + '" aria-label="' + cn + '" data-cn="' + cn + '"></button>').join('');
+    $$('[data-pd-sz] button').forEach((b) => b.setAttribute('aria-pressed', b.textContent === size));
+    const add = $('[data-pd-add]');
+    add.disabled = !size;
+    add.textContent = size ? 'Adicionar à sacola' : 'Escolha o tamanho';
+  }
+  $('[data-pd-sw]').addEventListener('click', (e) => { const b = e.target.closest('[data-cn]'); if (!b) return; pick[cur.id] = b.dataset.cn; renderPd(); render(); });
+  $('[data-pd-sz]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b || b.disabled) return; size = b.textContent; renderPd(); });
+  $('[data-guide]').addEventListener('click', () => { const t = $('[data-guide-t]'); t.hidden = !t.hidden; });
+  $('[data-pd-wish]').addEventListener('click', () => { toggleWish(cur.id); $('[data-pd-wish] svg').style.fill = wish.has(cur.id) ? 'var(--terra)' : 'none'; render(); });
+
+  // sacola
+  const bag = [];
+  let cep = null;
+  $('[data-pd-add]').addEventListener('click', () => {
+    const key = cur.id + '|' + pick[cur.id] + '|' + size;
+    const l = bag.find((x) => x.key === key);
+    l ? l.q++ : bag.push({ key, p: cur, color: pick[cur.id], size, q: 1 });
+    renderBag(); hide();
+    lastFocus = $('[data-open-bag]');
+    show(bagEl);
+  });
+  const sub = () => bag.reduce((s, l) => s + l.p.p * l.q, 0);
+  const fee = () => !cep ? null : sub() >= 299 ? 0 : (cep.startsWith('0') ? 18.9 : 27.9);
+  function renderBag() {
+    const n = bag.reduce((s, l) => s + l.q, 0), bn = $('[data-bag-n]');
+    bn.textContent = n || ''; n ? bn.removeAttribute('data-z') : bn.setAttribute('data-z', '');
+    const left = Math.max(0, 299 - sub());
+    $('[data-ship]').innerHTML = (left ? 'Faltam <b>' + brl(left) + '</b> para o frete grátis' : '<b style="color:var(--ok)">Você ganhou frete grátis</b>') + '<i><b style="width:' + Math.min(100, sub() / 299 * 100) + '%"></b></i>';
+    $('[data-lines]').innerHTML = bag.length ? bag.map((l, i) => '<div class="ln"><div class="im" style="background:' + BG[l.color] + '">' + garment(l.p.t, COLORS[l.color]) + '</div><div><b>' + l.p.n + '</b><small>' + l.color + ' · Tam. ' + l.size + '</small>' +
+      '<div class="row"><span class="qty"><button type="button" data-l="' + i + '" data-d="-1" aria-label="Menos">−</button><span>' + l.q + '</span><button type="button" data-l="' + i + '" data-d="1" aria-label="Mais">+</button></span><b>' + brl(l.p.p * l.q) + '</b></div></div></div>').join('')
+      : '<p class="empty">Sua sacola está vazia.</p>';
+    $('[data-bag-f]').hidden = !bag.length;
+    $('[data-sub]').textContent = brl(sub());
+    const fe = fee();
+    $('[data-fee]').textContent = fe === null ? 'Informe o CEP' : fe === 0 ? 'Grátis' : brl(fe) + ' · 4 a 7 dias úteis';
+    $('[data-tot]').textContent = brl(sub() + (fe || 0));
+  }
+  $('[data-lines]').addEventListener('click', (e) => { const b = e.target.closest('[data-l]'); if (!b) return; const l = bag[b.dataset.l]; l.q += Number(b.dataset.d); if (l.q <= 0) bag.splice(b.dataset.l, 1); renderBag(); });
+  $('[data-open-bag]').addEventListener('click', () => { renderBag(); show(bagEl); });
+  $('[data-cep]').addEventListener('input', (e) => { let v = e.target.value.replace(/\D/g, '').slice(0, 8); if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5); e.target.value = v; });
+  $('[data-cep-go]').addEventListener('click', () => { const v = $('[data-cep]').value.replace(/\D/g, ''); if (v.length !== 8) { AL.toast('Digite um CEP com 8 números.'); return; } cep = v; renderBag(); });
+  $('[data-checkout]').addEventListener('click', () => AL.toast('Na loja real, segue para o checkout com Pix, cartão e boleto.'));
+  $('[data-whats]').addEventListener('click', () => {
+    const fe = fee();
+    const msg = 'Oi, Maré! Quero finalizar esta compra:\n\n' + bag.map((l) => '• ' + l.q + '× ' + l.p.n + ' — ' + l.color + ', tam. ' + l.size + ' — ' + brl(l.p.p * l.q)).join('\n') +
+      '\n\nSubtotal: ' + brl(sub()) + (fe === null ? '\nFrete: a calcular' : '\nFrete: ' + (fe ? brl(fe) : 'grátis') + ' (CEP ' + cep.slice(0, 5) + '-' + cep.slice(5) + ')') +
+      '\n*Total: ' + brl(sub() + (fe || 0)) + '*\n\nPode me mandar o Pix?';
+    hide();
+    AL.whats('Compra pronta para fechar no WhatsApp', msg, 'loja de roupas');
+  });
+
+  render(); renderBag();
+})();
+</script>
+</body>
+</html>

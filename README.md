@@ -18,6 +18,12 @@ Publicado com GitHub Pages a partir da branch `main`.
   (`demos/<cliente>/index.html` e fotos em `img/`). A lista fica em
   `demos/index.html`, aberta em `https://symbiozyy.github.io/amplitude-lab/demos/`.
   As páginas têm `noindex` para não aparecerem no Google como site do cliente.
+- `modelos/`: hub com os cinco modelos por segmento do plano de negócio, aberto em
+  `https://symbiozyy.github.io/amplitude-lab/modelos/`. Cada modelo fica em
+  `modelos/<segmento>/index.html` (barbearia, tatuagem, hamburgueria, moda, decoracao),
+  com marca fictícia e um botão fixo no topo para voltar ao hub. `modelos/kit.css` e
+  `modelos/kit.js` têm a barra do hub e a simulação do WhatsApp (as mensagens montadas
+  nas demos não são enviadas; o botão final leva ao WhatsApp da Amplitude Lab).
 - `voxel-realms/`: jogo Voxel Realms (RPG voxel em Three.js), aberto em
   `https://symbiozyy.github.io/amplitude-lab/voxel-realms/` (detalhes em `voxel-realms/README.md`)
 
