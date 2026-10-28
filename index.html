@@ -206,6 +206,27 @@ section[id],footer[id]{scroll-margin-top:72px}
 .manifesto-progress i{display:block;height:2px;flex:1;max-width:80px;background:var(--line-2);position:relative;overflow:hidden}
 .manifesto-progress i b{position:absolute;inset:0;background:var(--volt);transform:scaleX(0);transform-origin:left}
 
+/* modelos por segmento (hub em modelos/) */
+.models-rail{display:grid;grid-auto-flow:column;grid-auto-columns:min(78%,300px);gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px var(--gutter) 18px;margin:0 calc(var(--gutter) * -1);scrollbar-width:none}
+.models-rail::-webkit-scrollbar{display:none}
+@media (min-width:1100px){.models-rail{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);overflow:visible;padding:0;margin:0}}
+.seg-card{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:440px;border-radius:var(--r);border:1px solid var(--line);overflow:hidden;scroll-snap-align:start;isolation:isolate;transition:border-color .3s,transform .45s var(--ease-out)}
+.seg-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .8s var(--ease-out)}
+.seg-card::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(5,7,13,0) 30%,rgba(5,7,13,.55) 58%,rgba(5,7,13,.96))}
+.seg-card:hover{border-color:var(--line-2);transform:translateY(-6px)}
+.seg-card:hover img{transform:scale(1.05)}
+.seg-num{position:absolute;left:16px;top:16px;font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;padding:6px 10px;border-radius:999px;background:rgba(5,7,13,.7);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.seg-body{padding:22px 20px 20px}
+.seg-kind{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--volt-hi)}
+.seg-body h3{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1.05;letter-spacing:-.03em;margin:8px 0 8px}
+.seg-body p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
+.seg-go{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.seg-go b{font-weight:500;color:var(--volt-hi);transition:transform .3s var(--ease-out)}
+.seg-card:hover .seg-go b{transform:translateX(4px)}
+.models-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:clamp(28px,4vw,44px)}
+.models-foot p{color:var(--dim);font-size:14px;margin:0 0 0 auto;max-width:44ch}
+@media (max-width:760px){.models-foot p{margin:4px 0 0}}
+
 /* laboratório de demos */
 .lab{position:relative;border-radius:28px;border:1px solid var(--line-2);background:linear-gradient(180deg,#0f1628,#080b14);padding:clamp(14px,3vw,36px);box-shadow:0 40px 120px -40px rgba(36,80,214,.45),inset 0 1px 0 rgba(255,255,255,.06);display:grid;gap:26px}
 @media (min-width:980px){.lab{grid-template-columns:1.1fr 1fr;align-items:stretch}}
@@ -536,6 +557,7 @@ section[id],footer[id]{scroll-margin-top:72px}
     <nav class="nav-links" aria-label="Principal">
       <a href="#servicos">Serviços</a>
       <a href="#demos">Demos</a>
+      <a href="#modelos">Modelos</a>
       <a href="#processo">Processo</a>
       <a href="#precos">Preços</a>
       <a href="#duvidas">Dúvidas</a>
@@ -548,6 +570,7 @@ section[id],footer[id]{scroll-margin-top:72px}
 <div class="menu" id="menu" aria-hidden="true">
   <a href="#servicos"><span>Serviços</span></a>
   <a href="#demos"><span>Demos</span></a>
+  <a href="#modelos"><span>Modelos</span></a>
   <a href="#processo"><span>Processo</span></a>
   <a href="#precos"><span>Preços</span></a>
   <a href="#duvidas"><span>Dúvidas</span></a>
@@ -809,15 +832,57 @@ section[id],footer[id]{scroll-margin-top:72px}
           <dt>Ideal para</dt><dd data-out-ideal>Profissionais, artistas, equipes de vendas</dd>
           <dt>Acesso</dt><dd data-out-acesso>Link, QR code impresso ou NFC</dd>
         </dl>
-        <p class="lab-note">Demos com clientes fictícios. A sua sai com a sua marca, seus textos e seus links. Quer ver sites completos? <a href="modelos/" style="color:var(--volt-hi)">Abra o hub de modelos por segmento →</a></p>
+        <p class="lab-note">Demos com clientes fictícios. A sua sai com a sua marca, seus textos e seus links. Quer ver sites completos? <a href="#modelos" style="color:var(--volt-hi)">Veja os modelos por segmento →</a></p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="modelos">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="label" data-reveal>04 / Modelos</span>
+      <h2 class="h2" data-split>Um site pronto para <span class="volt-text">cada segmento.</span></h2>
+      <p class="lead" data-reveal>Cinco sites completos, com marcas fictícias, para você navegar no celular como se fosse cliente. Escolha o do seu ramo: a gente troca cores, logo, fotos e textos pelos seus em poucos dias.</p>
+    </div>
+    <div class="models-rail" aria-label="Modelos por segmento">
+        <a class="seg-card" href="modelos/barbearia/fotos/" data-reveal>
+          <img src="modelos/img/1836983-p.webp" alt="Barbeiro fazendo um corte" loading="lazy" decoding="async">
+          <span class="seg-num">01</span>
+          <span class="seg-body"><span class="seg-kind">Barbearia</span><h3>Navalha Nobre</h3><p>Serviços e preços, agendamento em 5 passos, equipe e galeria de cortes.</p><span class="seg-go">Abrir modelo<b aria-hidden="true">→</b></span></span>
+        </a>
+        <a class="seg-card" href="modelos/tatuagem/fotos/" data-reveal>
+          <img src="modelos/img/6593479-p.webp" alt="Tatuador trabalhando no braço de um cliente" loading="lazy" decoding="async">
+          <span class="seg-num">02</span>
+          <span class="seg-body"><span class="seg-kind">Estúdio de tatuagem</span><h3>Roberto</h3><p>Portfólio na pele, estilos de traço, agenda com guest spots e orçamento guiado.</p><span class="seg-go">Abrir modelo<b aria-hidden="true">→</b></span></span>
+        </a>
+        <a class="seg-card" href="modelos/hamburgueria/fotos/" data-reveal>
+          <img src="modelos/img/18713424-p.webp" alt="Cheeseburger com bacon" loading="lazy" decoding="async">
+          <span class="seg-num">03</span>
+          <span class="seg-body"><span class="seg-kind">Hamburgueria</span><h3>Brasa Burger</h3><p>Cardápio com combos, lanche com adicionais, sacola e links para iFood, 99 e Keeta.</p><span class="seg-go">Abrir modelo<b aria-hidden="true">→</b></span></span>
+        </a>
+        <a class="seg-card" href="modelos/moda/fotos/" data-reveal>
+          <img src="modelos/img/19684582-p.webp" alt="Modelo de vestido branco e chapéu de palha na praia" loading="lazy" decoding="async">
+          <span class="seg-num">04</span>
+          <span class="seg-body"><span class="seg-kind">Loja de roupas</span><h3>Maré</h3><p>Coleções, tamanhos e cores, busca, sacola com frete e checkout ou WhatsApp.</p><span class="seg-go">Abrir modelo<b aria-hidden="true">→</b></span></span>
+        </a>
+        <a class="seg-card" href="modelos/decoracao/fotos/" data-reveal>
+          <img src="modelos/img/4857768-p.webp" alt="Sala com sofá e quadros na parede" loading="lazy" decoding="async">
+          <span class="seg-num">05</span>
+          <span class="seg-body"><span class="seg-kind">Quadros e decoração</span><h3>Parede Viva</h3><p>Simulador do quadro em escala real na parede, medidas, molduras e orçamento.</p><span class="seg-go">Abrir modelo<b aria-hidden="true">→</b></span></span>
+        </a>
+    </div>
+    <div class="models-foot" data-reveal>
+      <a class="btn btn-volt magnetic" href="modelos/">Abrir o hub de modelos</a>
+      <a class="btn btn-ghost magnetic" href="#monte">Quero o do meu negócio</a>
+      <p>Cada modelo tem versão com fotos reais e versão ilustrada. Fotos do banco gratuito Pexels.</p>
     </div>
   </div>
 </section>
 
 <section class="section process" id="processo">
   <div class="wrap section-head">
-    <span class="label" data-reveal>04 / Processo</span>
+    <span class="label" data-reveal>05 / Processo</span>
     <h2 class="h2" data-split>Como o experimento <span class="volt-text">vai ao ar.</span></h2>
   </div>
   <div class="process-viewport">
@@ -858,7 +923,7 @@ section[id],footer[id]{scroll-margin-top:72px}
 <section class="section" id="precos">
   <div class="wrap">
     <div class="section-head">
-      <span class="label" data-reveal>05 / Preços</span>
+      <span class="label" data-reveal>06 / Preços</span>
       <h2 class="h2" data-split>Escolha a sua <span class="volt-text">intensidade.</span></h2>
       <p class="lead" data-reveal>Preços fechados, sem surpresa no fim. Valores de lançamento para os primeiros clientes. Adicione o que precisa e monte o pedido logo abaixo.</p>
     </div>
@@ -976,7 +1041,7 @@ section[id],footer[id]{scroll-margin-top:72px}
 <section class="section" id="monte" style="padding-top:0">
   <div class="wrap">
     <div class="section-head">
-      <span class="label" data-reveal>06 / Monte seu orçamento</span>
+      <span class="label" data-reveal>07 / Monte seu orçamento</span>
       <h2 class="h2" data-split>Seu pedido, <span class="volt-text">do seu jeito.</span></h2>
       <p class="lead" data-reveal>Marque um pacote ou serviços avulsos e envie tudo pronto pelo WhatsApp. Se um pacote sair mais em conta, a gente avisa.</p>
     </div>
@@ -1055,7 +1120,7 @@ section[id],footer[id]{scroll-margin-top:72px}
 <section class="section" id="duvidas" style="padding-top:0">
   <div class="wrap">
     <div class="section-head">
-      <span class="label" data-reveal>07 / Dúvidas</span>
+      <span class="label" data-reveal>08 / Dúvidas</span>
       <h2 class="h2" data-split>Regras do <span class="volt-text">laboratório.</span></h2>
     </div>
     <div class="terms">
