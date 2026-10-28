@@ -1,5 +1,6 @@
-// Escultura 3D do manifesto: o frasco do logo em vidro, com líquido azul em
-// onda, anéis de amplitude girando em volta e bolhas subindo.
+// Escultura 3D do manifesto: o frasco do logo em vidro iridescente com brilho
+// de borda, líquido azul em onda, anéis de amplitude, um halo de partículas
+// girando em volta e bolhas subindo.
 import * as THREE from 'three';
 import { RoomEnvironment } from './vendor/RoomEnvironment.js';
 
@@ -40,6 +41,7 @@ export function mount(canvas, { reduced = false, mobile = false } = {}) {
   const glass = new THREE.MeshPhysicalMaterial({
     color: 0xcfdcff, metalness: 0, roughness: 0.04, transparent: true, opacity: 0.2,
     clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 2.2, side: THREE.DoubleSide, depthWrite: false,
+    iridescence: 0.7, iridescenceIOR: 1.35, iridescenceThicknessRange: [180, 520],
   });
   const chrome = new THREE.MeshPhysicalMaterial({ color: 0xf2f4fa, metalness: 1, roughness: 0.1, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.6 });
   const liquidMat = new THREE.MeshPhysicalMaterial({
@@ -52,6 +54,19 @@ export function mount(canvas, { reduced = false, mobile = false } = {}) {
   const flask = new THREE.Mesh(flaskGeo, glass);
   flask.renderOrder = 2;
   pulse.add(flask);
+  // Brilho de borda (fresnel) por fora do vidro
+  const rimMat = new THREE.ShaderMaterial({
+    uniforms: { uColor: { value: new THREE.Color(0x8fb0ff) }, uStrength: { value: 0.9 } },
+    vertexShader: `varying vec3 vN; varying vec3 vV;
+      void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`,
+    fragmentShader: `uniform vec3 uColor; uniform float uStrength; varying vec3 vN; varying vec3 vV;
+      void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 2.6); gl_FragColor = vec4(uColor, f * uStrength); }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  });
+  const rimShell = new THREE.Mesh(flaskGeo, rimMat);
+  rimShell.scale.setScalar(1.025);
+  rimShell.renderOrder = 3;
+  pulse.add(rimShell);
   // Aro cromado na boca do frasco
   const lip = new THREE.Mesh(new THREE.TorusGeometry(3.15, 0.42, 20, 64), chrome);
   lip.rotation.x = Math.PI / 2;
@@ -97,7 +112,7 @@ export function mount(canvas, { reduced = false, mobile = false } = {}) {
   }
 
   // Bolhas subindo dentro e em volta do frasco
-  const N = mobile ? 120 : 260;
+  const N = mobile ? 170 : 380;
   const pos = new Float32Array(N * 3);
   const speed = new Float32Array(N);
   const inside = new Uint8Array(N);
@@ -135,6 +150,42 @@ export function mount(canvas, { reduced = false, mobile = false } = {}) {
     size: 0.9, map: sprite, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending,
   }));
   root.add(bubbles);
+
+  // Halo: partículas em espiral girando em volta do frasco
+  const NH = mobile ? 700 : 1600;
+  const hPos = new Float32Array(NH * 3), hCol = new Float32Array(NH * 3);
+  const hBase = new Float32Array(NH * 3); // raio, ângulo, altura
+  const cA = new THREE.Color(0x5b8cff), cB = new THREE.Color(0xeaf0ff), tmp = new THREE.Color();
+  for (let i = 0; i < NH; i++) {
+    const band = Math.random();
+    const r = 13 + Math.pow(band, 0.6) * 20;
+    hBase[i * 3] = r;
+    hBase[i * 3 + 1] = Math.random() * Math.PI * 2;
+    hBase[i * 3 + 2] = (Math.random() - 0.5) * (4 + band * 10);
+    tmp.copy(cA).lerp(cB, Math.random() * 0.7);
+    hCol[i * 3] = tmp.r; hCol[i * 3 + 1] = tmp.g; hCol[i * 3 + 2] = tmp.b;
+  }
+  const hGeo = new THREE.BufferGeometry();
+  hGeo.setAttribute('position', new THREE.BufferAttribute(hPos, 3));
+  hGeo.setAttribute('color', new THREE.BufferAttribute(hCol, 3));
+  const halo = new THREE.Points(hGeo, new THREE.PointsMaterial({
+    size: 0.55, map: sprite, vertexColors: true, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending,
+  }));
+  halo.rotation.x = 0.32;
+  root.add(halo);
+  function updateHalo() {
+    const a = hPos;
+    const spread = 1 + levelS * 0.35;
+    for (let i = 0; i < NH; i++) {
+      const r = hBase[i * 3] * spread;
+      // as partículas de dentro giram mais rápido, como um redemoinho
+      const th = hBase[i * 3 + 1] + time * (0.9 - r / 60);
+      a[i * 3] = Math.cos(th) * r;
+      a[i * 3 + 1] = hBase[i * 3 + 2] + Math.sin(th * 3 + time) * 0.6 * (1 + levelS * 3);
+      a[i * 3 + 2] = Math.sin(th) * r;
+    }
+    hGeo.attributes.position.needsUpdate = true;
+  }
 
   // Luzes de recorte azul e branca por cima do ambiente
   const blue = new THREE.PointLight(0x5b8cff, 2600, 0, 2);
@@ -218,6 +269,8 @@ export function mount(canvas, { reduced = false, mobile = false } = {}) {
     rings.forEach(({ d, holder }) => { holder.rotation.y += dt * d.sp * (1 + levelS * 2); });
     updateRings();
     updateSurface();
+    updateHalo();
+    rimMat.uniforms.uStrength.value = 0.8 + levelS * 1.4;
 
     if (!reduced) {
       const a = pGeo.attributes.position.array;
@@ -253,6 +306,7 @@ export function mount(canvas, { reduced = false, mobile = false } = {}) {
   resize();
   updateRings();
   updateSurface();
+  updateHalo();
   const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { rootMargin: '100px' });
   io.observe(canvas);
   renderer.render(scene, camera);

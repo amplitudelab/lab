@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Amplitude Lab · Laboratório de experiências digitais</title>
-<meta name="description" content="Amplitude Lab: cartões digitais, páginas de agendamento, displays interativos, página central e remake visual para empresas, artistas e eventos.">
+<title>Amplitude Lab · Sites prontos por segmento</title>
+<meta name="description" content="Sites prontos para barbearias, estúdios de tatuagem, hamburguerias, lojas de roupas e de decoração. Com a sua marca, no ar em poucos dias e pedidos direto no WhatsApp. A partir de R$ 600.">
 <meta name="theme-color" content="#05070D">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
-<meta property="og:title" content="Amplitude Lab · Laboratório de experiências digitais">
-<meta property="og:description" content="Cartões digitais, agendamento, displays interativos e remake visual. Toque nas demos e monte seu orçamento.">
+<meta property="og:title" content="Amplitude Lab · Sites prontos por segmento">
+<meta property="og:description" content="Barbearias, tatuagem, hamburguerias, moda e decoração: navegue nos modelos e peça o seu pelo WhatsApp. A partir de R$ 600.">
 <meta property="og:url" content="https://symbiozyy.github.io/amplitude-lab/">
 <meta property="og:image" content="https://symbiozyy.github.io/amplitude-lab/assets/og-image.png">
 <meta property="og:image:width" content="1080">
@@ -206,6 +206,59 @@ section[id],footer[id]{scroll-margin-top:72px}
 .manifesto-progress i{display:block;height:2px;flex:1;max-width:80px;background:var(--line-2);position:relative;overflow:hidden}
 .manifesto-progress i b{position:absolute;inset:0;background:var(--volt);transform:scaleX(0);transform-origin:left}
 
+/* barra de progresso da rolagem */
+.scroll-bar{position:fixed;left:0;right:0;top:0;height:2px;z-index:101;pointer-events:none}
+.scroll-bar b{display:block;height:100%;background:linear-gradient(90deg,var(--volt-deep),var(--volt-hi));transform-origin:left;transform:scaleX(0);box-shadow:0 0 12px var(--volt)}
+
+/* herói: campo de partículas 3D por trás */
+.hero-gl{position:absolute;inset:0;width:100%;height:100%;z-index:-1;opacity:0;transition:opacity 1.6s var(--ease-out)}
+.hero.gl-on .hero-gl{opacity:1}
+.hero.gl-on .hero-viz{opacity:0}
+.hero-viz{transition:opacity .8s}
+.hero-lead b{color:var(--fg);font-weight:500}
+.hero-trust{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px 10px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.hero-trust li{padding:8px 14px;border:1px solid var(--line-2);border-radius:999px;background:rgba(5,7,13,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.hero-trust b{color:var(--volt-hi);font-weight:600}
+@media (max-width:560px){.hero-hint{display:none}}
+
+/* segmentos */
+.svc-acts{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:22px;position:relative;z-index:1}
+.svc-link{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--volt-hi);padding:10px 0}
+.svc-link svg{width:16px;height:16px;transition:transform .3s var(--ease-out)}
+.svc-link:hover svg{transform:translateX(4px)}
+.svc-wa{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#04250f;box-shadow:0 10px 26px -10px rgba(37,211,102,.7);transition:transform .25s var(--ease-out)}
+.svc-wa:hover{transform:scale(1.1) rotate(-6deg)}
+.svc-wa svg{width:22px;height:22px}
+.svc-other{border-style:dashed;background:linear-gradient(160deg,rgba(36,80,214,.12),transparent 60%)}
+.svc-other .btn{height:48px;font-size:11px;padding:0 18px}
+.tilt-glare{position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:radial-gradient(420px circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.09),transparent 45%);opacity:0;transition:opacity .3s;z-index:0}
+[data-tilt]:hover .tilt-glare{opacity:1}
+
+/* celular com o modelo de verdade */
+.screen iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:#fff}
+.screen-load{position:absolute;inset:0;z-index:2;display:grid;place-content:center;justify-items:center;gap:14px;background:#070a13;color:var(--muted);font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;transition:opacity .45s}
+.screen-load svg{width:58px;height:58px;color:var(--chrome);animation:bob 1.1s ease-in-out infinite alternate}
+.screen-load.off{opacity:0;pointer-events:none}
+@keyframes bob{to{transform:translateY(-8px) rotate(-6deg)}}
+.bench{grid-template-rows:auto auto}
+.bench-foot{display:flex;justify-content:space-between;gap:12px;width:min(320px,100%);margin-top:16px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.bench-foot a{color:var(--volt-hi);white-space:nowrap}
+.demo-ph{width:44px;height:44px;border-radius:12px;object-fit:cover;border:1px solid var(--line-2)}
+.lab-cta{height:52px;margin-left:auto}
+.lab-note a{color:var(--volt-hi)}
+@media (max-width:979px){
+  .demos{grid-auto-flow:column;grid-auto-columns:minmax(230px,80%);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}
+  .demos .demo-btn{grid-template-columns:auto 1fr;gap:12px;padding:12px 14px}
+  .demos .demo-btn .demo-eq{display:none}
+  .demos .demo-name{font-size:14px}
+  .demo-btn>span{min-width:0}
+  .demo-name,.demo-meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .demos .demo-meta{font-size:10px}
+  .demos::-webkit-scrollbar{display:none}
+  .demos li{scroll-snap-align:start}
+  .lab-cta{margin-left:0;flex:1}
+}
+
 /* laboratório de demos */
 .lab{position:relative;border-radius:28px;border:1px solid var(--line-2);background:linear-gradient(180deg,#0f1628,#080b14);padding:clamp(14px,3vw,36px);box-shadow:0 40px 120px -40px rgba(36,80,214,.45),inset 0 1px 0 rgba(255,255,255,.06);display:grid;gap:26px}
 @media (min-width:980px){.lab{grid-template-columns:1.1fr 1fr;align-items:stretch}}
@@ -215,13 +268,7 @@ section[id],footer[id]{scroll-margin-top:72px}
 .bench::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(50% 45% at 50% 55%,rgba(91,140,255,.22),transparent 70%)}
 .bench-readout{position:absolute;left:16px;right:16px;top:16px;display:flex;justify-content:space-between;gap:12px;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;pointer-events:none}
 .phone{width:min(320px,100%);aspect-ratio:340/690;border-radius:46px;padding:11px;background:linear-gradient(160deg,#2a3352,#121829 40%,#1d2440);box-shadow:0 0 0 1px #313c63,inset 0 1px 0 rgba(255,255,255,.15),0 40px 80px -30px rgba(0,0,0,.8),0 0 80px -20px rgba(91,140,255,.4)}
-.screen{position:relative;height:100%;border-radius:36px;overflow:hidden;background:#fff;color:#111;font-size:16px;line-height:1.45}
-.screen>section{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;opacity:0;visibility:hidden;scrollbar-width:none}
-.screen>section::-webkit-scrollbar{display:none}
-.screen>section.on{opacity:1;visibility:visible}
-.screen h3{margin:0;font-family:var(--f-sans);font-weight:600;letter-spacing:-.02em}
-.screen p{margin:0}
-.tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.screen{position:relative;height:100%;border-radius:36px;overflow:hidden;background:#070a13}
 .lab-side{display:grid;gap:22px;align-content:start}
 @media (max-width:979px){.lab-side{order:-1}.lab-side .deck-desc,.lab-side .spec-dl{display:none}}
 .deck-title{font-family:var(--f-display);font-weight:800;letter-spacing:-.04em;font-size:clamp(30px,3.6vw,50px);line-height:1;margin:0;overflow-wrap:anywhere}
@@ -248,85 +295,6 @@ section[id],footer[id]{scroll-margin-top:72px}
 .spec-dl dt{font-family:var(--f-mono);font-size:11px;line-height:2;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .spec-dl dd{margin:0}
 .lab-note{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--dim);margin:0}
-
-/* demo: cartão */
-.d-card{background:#f3efe8;color:#1f1b16;padding:30px 20px 26px;display:flex;flex-direction:column;gap:16px;min-height:100%}
-.d-card .ph{width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e7b98f,#a5603a 70%);margin:16px auto 0;display:grid;place-items:center;color:#fff;font:600 30px var(--f-sans)}
-.d-card h3{text-align:center;font-size:24px}
-.d-card .role{text-align:center;color:#6e6255;font-size:14px;margin-top:-10px}
-.d-card .acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.d-card .acts button{min-height:48px;border-radius:12px;border:1px solid #dcd3c6;background:#fff;color:#1f1b16;font:500 14px var(--f-sans)}
-.d-card .acts button.main{grid-column:span 2;background:#1f1b16;color:#f3efe8;border-color:#1f1b16}
-.d-card .gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.d-card .gal i{aspect-ratio:1;border-radius:8px;display:block}
-.d-card .foot{text-align:center;font-size:12px;color:#8a7d6e}
-
-/* demo: agendamento */
-.d-book{background:#f6f7f9;color:#12151c;min-height:100%;display:flex;flex-direction:column}
-.d-book .head{background:#12151c;color:#fff;padding:34px 20px 18px}
-.d-book .head h3{font-size:21px;margin-top:6px}
-.d-book .head p{color:#a9b0bf;font-size:13px;margin-top:4px}
-.d-book .body{padding:16px 16px 20px;display:flex;flex-direction:column;gap:16px}
-.d-book .lbl{font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:#6a7180}
-.d-book .grp{display:flex;flex-direction:column;gap:8px}
-.svc-list button,.days button,.slots button{border:1px solid #dde1e8;background:#fff;color:#12151c;border-radius:12px;font-family:var(--f-sans)}
-.svc-list button{min-height:52px;padding:0 14px;display:flex;justify-content:space-between;align-items:center;font-size:14px;text-align:left;width:100%}
-.svc-list button small{color:#6a7180;font-size:12px;display:block}
-.svc-list button[aria-pressed="true"],.days button[aria-pressed="true"],.slots button[aria-pressed="true"]{border-color:#2450d6;background:#eaf0ff;box-shadow:inset 0 0 0 1px #2450d6}
-.days{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
-.days button{min-width:52px;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;text-transform:uppercase;color:#6a7180}
-.days button b{font-size:17px;color:#12151c}
-.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.slots button{min-height:44px;font:500 13px var(--f-mono);font-variant-numeric:tabular-nums}
-.slots button:disabled{color:#b5bac5;text-decoration:line-through;background:#f0f2f5;cursor:not-allowed}
-.confirm{min-height:50px;border-radius:12px;background:#2450d6;color:#fff;font:600 15px var(--f-sans)}
-.confirm:disabled{background:#c3c9d6;cursor:not-allowed}
-.done{padding:44px 22px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
-.done .chk{width:64px;height:64px;border-radius:50%;background:#e3f7ee;display:grid;place-items:center}
-.done h3{font-size:22px}
-.done p{color:#5a6170;font-size:14px}
-.ticket{width:100%;margin-top:8px;border:1px dashed #c8cdd7;border-radius:12px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:6px;font-size:14px}
-.ticket div{display:flex;justify-content:space-between;gap:10px}
-.ticket span{color:#6a7180}
-.link-btn{color:#2450d6;font:500 14px var(--f-sans);min-height:44px}
-
-/* demo: evento */
-.d-ev{background:#0b0b0e;color:#f2f0ea;min-height:100%;display:flex;flex-direction:column}
-.d-ev .poster{padding:36px 20px 22px;background:radial-gradient(120% 90% at 80% 0%,#5a1e8c 0%,transparent 60%),radial-gradient(90% 80% at 0% 100%,#c2410c 0%,transparent 55%),#0b0b0e}
-.d-ev .poster h3{font-size:40px;line-height:.92;letter-spacing:-.04em;margin-top:10px;text-transform:uppercase;font-weight:700}
-.d-ev .poster p{margin-top:10px;font-size:13px;color:#d9d4c8}
-.stage-tabs{display:flex;gap:6px;padding:14px 16px 4px}
-.stage-tabs button{flex:1;min-height:40px;border-radius:10px;border:1px solid #2a2a33;color:#b9b5aa;font:500 13px var(--f-sans)}
-.stage-tabs button[aria-selected="true"]{background:#f2f0ea;color:#0b0b0e;border-color:#f2f0ea}
-.lineup{list-style:none;margin:0;padding:8px 16px 12px;display:flex;flex-direction:column}
-.lineup li{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #1e1e25}
-.lineup time{font:500 13px var(--f-mono);color:#8d897f;font-variant-numeric:tabular-nums}
-.lineup b{font-weight:600;font-size:15px;display:block}
-.lineup small{color:#8d897f;font-size:12px}
-.now-badge{font:500 10px var(--f-mono);letter-spacing:.12em;color:#0b0b0e;background:#f59e0b;padding:4px 7px;border-radius:999px}
-.d-ev .tix{margin:6px 16px 22px;min-height:50px;border-radius:12px;background:#f59e0b;color:#0b0b0e;font:600 15px var(--f-sans)}
-
-/* demo: cardápio */
-.d-menu{background:#fffaf2;color:#2b1d12;min-height:100%;display:flex;flex-direction:column;padding-bottom:84px}
-.d-menu .head{padding:36px 20px 14px;background:linear-gradient(160deg,#b4381f,#7b1e10);color:#fff3e6}
-.d-menu .head h3{font-size:26px;margin-top:4px;font-weight:700}
-.d-menu .head p{font-size:13px;color:#ffd9c4;margin-top:4px}
-.cats{display:flex;gap:6px;padding:12px 16px;position:sticky;top:0;background:#fffaf2;z-index:1;overflow-x:auto;scrollbar-width:none}
-.cats button{min-height:38px;padding:0 14px;border-radius:999px;border:1px solid #ead9c6;font:500 13px var(--f-sans);color:#7a5a40;white-space:nowrap}
-.cats button[aria-selected="true"]{background:#2b1d12;color:#fffaf2;border-color:#2b1d12}
-.dishes{list-style:none;margin:0;padding:4px 16px;display:flex;flex-direction:column}
-.dishes li{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #f0e3d3}
-.dishes .pic{width:56px;height:56px;border-radius:12px}
-.dishes b{display:block;font-weight:600;font-size:15px}
-.dishes small{display:block;color:#8c6f57;font-size:12px;line-height:1.35}
-.dishes .pr{font:500 13px var(--f-mono);color:#2b1d12;margin-top:2px;display:block}
-.dishes button{width:40px;height:40px;border-radius:50%;background:#2b1d12;color:#fffaf2;font-size:20px;line-height:1;display:grid;place-items:center}
-.cart{position:absolute;left:12px;right:12px;bottom:12px;min-height:54px;border-radius:14px;background:#2b1d12;color:#fffaf2;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font:600 14px var(--f-sans);transform:translateY(140%);transition:transform .35s var(--ease-out);z-index:3}
-.cart.on{transform:none}
-.cart span:last-child{font-family:var(--f-mono);font-weight:500}
-
-.ptoast{position:absolute;left:12px;right:12px;top:14px;background:#12151c;color:#fff;font-size:13px;line-height:1.4;padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(-8px);transition:.25s;pointer-events:none;z-index:5}
-.ptoast.on{opacity:1;transform:none}
 
 /* processo */
 .process{position:relative;overflow:hidden}
@@ -368,8 +336,6 @@ section[id],footer[id]{scroll-margin-top:72px}
 .price li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
 .price li svg{width:18px;height:18px;flex:none;color:var(--volt);margin-top:2px}
 .price-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
-.price .btn{margin-top:auto;width:100%;height:52px}
-.price-add.is-added{background:rgba(91,140,255,.14);border-color:var(--volt);color:var(--volt-hi)}
 .price.is-featured{border-color:transparent;background:linear-gradient(var(--panel-2),var(--panel-2)) padding-box,conic-gradient(from var(--ang,0deg),var(--volt-dark),var(--volt-hi),var(--chrome-hi),var(--volt-deep),var(--volt-dark)) border-box;border:1.5px solid transparent;box-shadow:0 30px 90px -30px rgba(91,140,255,.6)}
 @property --ang{syntax:"<angle>";inherits:false;initial-value:0deg}
 .price.is-featured{animation:spin 6s linear infinite}
@@ -377,6 +343,19 @@ section[id],footer[id]{scroll-margin-top:72px}
 .price.small .price-value{font-size:clamp(40px,3.6vw,54px)}
 .price.small{gap:14px}
 .badge{font-family:var(--f-mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border-radius:999px;background:var(--volt);color:#050a1c;white-space:nowrap}
+.price-from{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);width:100%}
+.price-acts{display:grid;gap:6px;margin-top:auto}
+.price-acts .btn{width:100%;height:52px}
+.price-sim{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:10px;border-radius:999px;transition:color .2s}
+.price-sim:hover{color:var(--fg)}
+.price-sim.is-added{color:var(--volt-hi)}
+.extra{position:relative;overflow:hidden}
+.extra .price-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px}
+.extra .price-acts .btn{width:auto;padding:0 20px}
+.included{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:12px}
+@media (min-width:860px){.included{grid-template-columns:repeat(4,1fr)}}
+.included li{padding:18px 20px;border-radius:14px;background:var(--panel);border:1px solid var(--line);color:var(--muted);font-size:14px}
+.included b{display:block;color:var(--fg);font-weight:600;margin-bottom:4px;font-size:15px}
 .extras{display:grid;gap:16px;margin-top:16px}
 @media (min-width:860px){.extras{grid-template-columns:1fr 1fr}}
 .extra{border-radius:var(--r);border:1px dashed var(--line-2);padding:26px 28px;display:grid;gap:12px;align-content:start}
@@ -405,6 +384,14 @@ section[id],footer[id]{scroll-margin-top:72px}
 .opt-sub{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;color:var(--muted);font-weight:400;margin-top:4px}
 .opt-price{font-family:var(--f-mono);font-size:14px;color:var(--chrome);text-align:right;white-space:nowrap}
 @media (max-width:520px){.opt{grid-template-columns:auto 1fr}.opt-price{grid-column:2;text-align:left}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line-2);font-size:14px;color:var(--muted);transition:background-color .2s,border-color .2s,color .2s}
+.chip:hover{border-color:var(--chrome-lo);color:var(--fg)}
+.chip[aria-checked="true"]{background:var(--volt);border-color:var(--volt);color:#050a1c;font-weight:600}
+.rec{margin:12px 0 0;padding:12px 14px;border-radius:12px;border:1px dashed var(--volt);background:rgba(91,140,255,.08);font-size:14px}
+.rec b{color:var(--volt-hi)}
+.opt-tier{display:block;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--volt-hi);margin-top:4px}
+.sum-range{display:block;font-size:15px;color:var(--fg);margin-top:6px}
 .suggest{margin-top:16px;padding:16px;border-radius:14px;border:1px dashed var(--volt);background:rgba(91,140,255,.08);display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .suggest p{margin:0;font-size:15px}
 .suggest .btn{height:42px;font-size:11px;padding:0 16px}
@@ -456,6 +443,20 @@ section[id],footer[id]{scroll-margin-top:72px}
 .toast svg{width:20px;height:20px;color:var(--volt-deep);flex:none}
 .toast path{stroke-dasharray:24;stroke-dashoffset:24}
 
+
+/* WhatsApp sempre à mão */
+.wa-float{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));z-index:95;display:flex;align-items:center;gap:10px;height:58px;padding:0 20px 0 16px;border-radius:999px;background:#25d366;color:#04250f;font-weight:600;font-size:15px;box-shadow:0 16px 40px -12px rgba(37,211,102,.75),inset 0 0 0 1px rgba(255,255,255,.25);transform:translateY(160%);transition:transform .55s var(--ease-out)}
+.wa-float.on{transform:none}
+.wa-float:hover{filter:brightness(1.06)}
+.wa-float svg{width:26px;height:26px;flex:none}
+.wa-float::before{content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid #25d366;animation:ping 2.6s ease-out infinite}
+@keyframes ping{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(1.3);opacity:0}}
+@media (max-width:640px){.wa-float span{display:none}.wa-float{width:58px;padding:0;justify-content:center}}
+.faq-cta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:32px}
+.faq-cta p{margin:0;color:var(--muted)}
+.final-lead{margin:22px auto 0}
+.spark{position:fixed;left:0;top:0;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:var(--volt-hi);pointer-events:none;z-index:300;box-shadow:0 0 10px var(--volt)}
+
 /* CTA final + rodapé */
 .final{position:relative;text-align:center;overflow:hidden;padding:clamp(110px,16vw,200px) 0;isolation:isolate}
 .final::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(50% 60% at 50% 100%,rgba(36,80,214,.4),transparent 70%)}
@@ -475,7 +476,7 @@ section[id],footer[id]{scroll-margin-top:72px}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .grain,.live::before,.scroll-cue i,.price.is-featured,.demo-btn[aria-selected="true"] .demo-eq i{animation:none}
+  .grain,.live::before,.scroll-cue i,.price.is-featured,.demo-btn[aria-selected="true"] .demo-eq i,.wa-float::before,.screen-load svg{animation:none}
   .manifesto{height:auto}
   .manifesto-sticky{position:relative;height:auto;min-height:100svh}
 }
@@ -534,34 +535,38 @@ section[id],footer[id]{scroll-margin-top:72px}
       <b>Amplitude <em>Lab</em></b>
     </a>
     <nav class="nav-links" aria-label="Principal">
-      <a href="#servicos">Serviços</a>
-      <a href="#demos">Demos</a>
+      <a href="#servicos">Segmentos</a>
+      <a href="#demos">Modelos</a>
       <a href="#processo">Processo</a>
       <a href="#precos">Preços</a>
+      <a href="#monte">Orçamento</a>
       <a href="#duvidas">Dúvidas</a>
     </nav>
-    <a class="btn btn-volt nav-cta magnetic" href="#monte">Montar orçamento</a>
+    <a class="btn btn-volt nav-cta magnetic" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Vim pelo site e quero um orçamento." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>WhatsApp</a>
     <button class="nav-burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu"><span></span><span></span></button>
   </div>
 </header>
+<div class="scroll-bar" aria-hidden="true"><b></b></div>
 
 <div class="menu" id="menu" aria-hidden="true">
-  <a href="#servicos"><span>Serviços</span></a>
-  <a href="#demos"><span>Demos</span></a>
+  <a href="#servicos"><span>Segmentos</span></a>
+  <a href="#demos"><span>Modelos</span></a>
   <a href="#processo"><span>Processo</span></a>
   <a href="#precos"><span>Preços</span></a>
+  <a href="#monte"><span>Orçamento</span></a>
   <a href="#duvidas"><span>Dúvidas</span></a>
-  <a href="#monte"><span class="volt-text">Montar orçamento</span></a>
-  <div class="menu-foot">Cartões · Agendamento · Displays · Remake</div>
+  <a href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Vim pelo site e quero um orçamento." target="_blank" rel="noopener"><span class="volt-text">Falar no WhatsApp</span></a>
+  <div class="menu-foot">Página vitrine · Site completo · Loja virtual</div>
 </div>
 
 <main id="conteudo">
 
 <section class="hero" id="inicio">
   <div class="hero-grid" aria-hidden="true"></div>
+  <canvas class="hero-gl" aria-hidden="true"></canvas>
   <canvas class="hero-viz" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
-    <div class="hero-tag" data-hero><span class="live">Ao vivo</span> Laboratório de experiências digitais</div>
+    <div class="hero-tag" data-hero><span class="live">Ao vivo</span> Sites prontos por segmento</div>
     <div class="flask-stage" data-hero-logo data-cursor="AGITE" role="button" tabindex="0" aria-label="Agitar o frasco">
       <svg viewBox="0 0 192 192" data-flask="hero" aria-hidden="true">
         <g clip-path="url(#flask-in)">
@@ -576,19 +581,21 @@ section[id],footer[id]{scroll-margin-top:72px}
       </svg>
     </div>
     <h1 data-hero-title><span class="line chrome-text">Sua marca com</span> <span class="line volt-text">mais amplitude.</span></h1>
-    <p class="hero-lead" data-hero>Cartões digitais, páginas de agendamento, displays interativos e remake visual para empresas, artistas e eventos. Tudo abre no celular do seu cliente, sem instalar nada.</p>
+    <p class="hero-lead" data-hero>Sites prontos para <b>barbearias, estúdios de tatuagem, hamburguerias, lojas de roupas e de decoração</b>. Com a sua marca, no ar em poucos dias e com cada pedido chegando direto no seu WhatsApp.</p>
     <div class="hero-ctas" data-hero>
-      <a class="btn btn-volt magnetic" href="#precos">Ver preços
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="btn btn-ghost magnetic" href="#demos">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
-        Testar demos</a>
+      <a class="btn btn-volt magnetic" href="#demos">Ver os modelos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-ghost magnetic" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Vim pelo site e quero um site para o meu negócio." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Falar no WhatsApp</a>
     </div>
+    <ul class="hero-trust" data-hero>
+      <li><b>A partir de R$ 600</b></li>
+      <li>No ar em 2 a 30 dias</li>
+      <li>Você aprova antes de pagar o resto</li>
+    </ul>
   </div>
   <div class="hero-foot" data-hero>
     <div class="wrap">
       <span class="meter">Amplitude <output data-amp>042</output>%</span>
-      <span>Link · QR code · Bio</span>
+      <span class="hero-hint">Toque no fundo para fazer ondas</span>
       <span class="scroll-cue"><i></i>Role</span>
     </div>
   </div>
@@ -598,24 +605,23 @@ section[id],footer[id]{scroll-margin-top:72px}
 <div class="marquee" aria-hidden="true" data-marquee="1">
   <div class="marquee-track">
     <div class="marquee-group">
-      <span>Cartão digital</span><svg><use href="#wave"/></svg>
-      <span class="outline">Agendamento</span><svg><use href="#wave"/></svg>
-      <span>Display interativo</span><svg><use href="#wave"/></svg>
-      <span class="outline">Página central</span><svg><use href="#wave"/></svg>
-      <span>Remake visual</span><svg><use href="#wave"/></svg>
-      <span class="outline">QR code</span><svg><use href="#wave"/></svg>
+      <span>Barbearias</span><svg><use href="#wave"/></svg>
+      <span class="outline">Estúdios de tatuagem</span><svg><use href="#wave"/></svg>
+      <span>Hamburguerias</span><svg><use href="#wave"/></svg>
+      <span class="outline">Lojas de roupas</span><svg><use href="#wave"/></svg>
+      <span>Quadros e decoração</span><svg><use href="#wave"/></svg>
     </div>
   </div>
 </div>
 <div class="marquee" aria-hidden="true" data-marquee="-1">
   <div class="marquee-track">
     <div class="marquee-group">
-      <span>Empresas</span><svg><use href="#wave"/></svg>
-      <span>Artistas</span><svg><use href="#wave"/></svg>
-      <span>Eventos</span><svg><use href="#wave"/></svg>
-      <span>Barbearias</span><svg><use href="#wave"/></svg>
-      <span>Clínicas</span><svg><use href="#wave"/></svg>
-      <span>Restaurantes</span><svg><use href="#wave"/></svg>
+      <span>Página vitrine</span><svg><use href="#wave"/></svg>
+      <span>Site completo</span><svg><use href="#wave"/></svg>
+      <span>Loja virtual</span><svg><use href="#wave"/></svg>
+      <span>Agendamento</span><svg><use href="#wave"/></svg>
+      <span>Cardápio digital</span><svg><use href="#wave"/></svg>
+      <span>Pedido no WhatsApp</span><svg><use href="#wave"/></svg>
     </div>
   </div>
 </div>
@@ -624,46 +630,66 @@ section[id],footer[id]{scroll-margin-top:72px}
 <section class="section" id="servicos">
   <div class="wrap">
     <div class="section-head">
-      <span class="label" data-reveal>01 / Serviços</span>
-      <h2 class="h2" data-split>Páginas feitas para o cliente <span class="volt-text">agir.</span></h2>
-      <p class="lead" data-reveal>Cada página tem uma função clara: chamar, agendar, comprar ou conhecer. Você divulga por link, QR code ou na bio.</p>
+      <span class="label" data-reveal>01 / Para quem</span>
+      <h2 class="h2" data-split>Um site pronto para o seu <span class="volt-text">segmento.</span></h2>
+      <p class="lead" data-reveal>Cada segmento já tem um modelo completo. A gente adapta cores, logo, fotos e textos à sua marca em horas, não semanas, e cada pedido cai direto no seu WhatsApp.</p>
     </div>
     <div class="services-grid">
-      <article class="svc" data-card>
-        <div class="svc-top"><span class="svc-num">A/01</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.4 1.7-2 3-2s2.4.6 3 2M14 10h4M14 13h3"/></svg></span></div>
-        <h3>Cartão digital</h3>
-        <p>Seu cartão de visita em forma de página: contato, redes, portfólio e um botão para salvar na agenda.</p>
-        <div class="svc-tags"><span>Profissionais</span><span>Artistas</span><span>NFC</span></div>
+      <article class="svc" data-card data-tilt>
+        <div class="svc-top"><span class="svc-num">S/01</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="7" r="3"/><circle cx="6" cy="17" r="3"/><path d="M8.6 8.5 20 18M8.6 15.5 20 6"/></svg></span></div>
+        <h3>Barbearias</h3>
+        <p>Serviços organizados, equipe apresentada e o cliente agendando sozinho, sem troca infinita de mensagens.</p>
+        <div class="svc-tags"><span>Agendamento</span><span>Equipe</span><span>Galeria de cortes</span></div>
+        <div class="svc-acts">
+          <button type="button" class="svc-link" data-demo-go="0">Ver o modelo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <a class="svc-wa" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Tenho uma barbearia e quero um site assim." target="_blank" rel="noopener" aria-label="Pedir no WhatsApp um site para barbearias"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg></a>
+        </div>
       </article>
-      <article class="svc" data-card>
-        <div class="svc-top"><span class="svc-num">A/02</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/><path d="M9 15l2 2 4-4"/></svg></span></div>
-        <h3>Página de agendamento</h3>
-        <p>O cliente escolhe serviço, dia e horário sozinho. O pedido chega pronto no seu WhatsApp.</p>
-        <div class="svc-tags"><span>Barbearias</span><span>Clínicas</span><span>Estúdios</span></div>
+      <article class="svc" data-card data-tilt>
+        <div class="svc-top"><span class="svc-num">S/02</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3l7 7-9.5 9.5a3 3 0 0 1-4.2 0l-2.8-2.8a3 3 0 0 1 0-4.2z"/><path d="M4.5 19.5 2 22M10 7l7 7"/></svg></span></div>
+        <h3>Estúdios de tatuagem</h3>
+        <p>Portfólio, estilo do artista e pedido de orçamento num só lugar, com a ideia do cliente já descrita.</p>
+        <div class="svc-tags"><span>Portfólio</span><span>Agenda</span><span>Orçamento guiado</span></div>
+        <div class="svc-acts">
+          <button type="button" class="svc-link" data-demo-go="1">Ver o modelo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <a class="svc-wa" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Tenho uma estúdio de tatuagem e quero um site assim." target="_blank" rel="noopener" aria-label="Pedir no WhatsApp um site para estúdios de tatuagem"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg></a>
+        </div>
       </article>
-      <article class="svc" data-card>
-        <div class="svc-top"><span class="svc-num">A/03</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M6 12l3-3 3 3 3-4 3 4"/></svg></span></div>
-        <h3>Display interativo</h3>
-        <p>Cardápio, catálogo, line-up ou apresentação navegável, direto no celular ou no telão.</p>
-        <div class="svc-tags"><span>Eventos</span><span>Restaurantes</span><span>Lojas</span></div>
+      <article class="svc" data-card data-tilt>
+        <div class="svc-top"><span class="svc-num">S/03</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10a8 6 0 0 1 16 0z"/><path d="M3 14h18M4 18h16a0 0 0 0 1 0 0 2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 7h.01M12 6h.01M16 7h.01"/></svg></span></div>
+        <h3>Lanchonetes e hamburguerias</h3>
+        <p>Cardápio com fotos, combos e adicionais. O pedido chega pronto no WhatsApp ou segue para iFood, 99 e Keeta.</p>
+        <div class="svc-tags"><span>Cardápio</span><span>Combos</span><span>Pedido no WhatsApp</span></div>
+        <div class="svc-acts">
+          <button type="button" class="svc-link" data-demo-go="2">Ver o modelo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <a class="svc-wa" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Tenho uma hamburgueria e quero um site assim." target="_blank" rel="noopener" aria-label="Pedir no WhatsApp um site para lanchonetes e hamburguerias"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg></a>
+        </div>
       </article>
-      <article class="svc" data-card>
-        <div class="svc-top"><span class="svc-num">A/04</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19M5 19l2.5-2.5M16.5 7.5L19 5"/></svg></span></div>
-        <h3>Página central</h3>
-        <p>Um endereço só com seus links, serviços, agenda e canais, com a cara da sua marca. Adeus agregador genérico.</p>
-        <div class="svc-tags"><span>Link na bio</span><span>Muitos canais</span></div>
+      <article class="svc" data-card data-tilt>
+        <div class="svc-top"><span class="svc-num">S/04</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6a2 2 0 1 1 2-2"/><path d="M12 6v2L3 15a1.5 1.5 0 0 0 1 2.6h16A1.5 1.5 0 0 0 21 15l-9-7"/></svg></span></div>
+        <h3>Lojas de roupas</h3>
+        <p>Vitrine com coleções, tamanhos e cores. Do micro ao grande: dá para fechar no WhatsApp ou ter loja virtual completa.</p>
+        <div class="svc-tags"><span>Vitrine</span><span>Carrinho</span><span>Checkout</span></div>
+        <div class="svc-acts">
+          <button type="button" class="svc-link" data-demo-go="3">Ver o modelo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <a class="svc-wa" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Tenho uma loja de roupas e quero um site assim." target="_blank" rel="noopener" aria-label="Pedir no WhatsApp um site para lojas de roupas"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg></a>
+        </div>
       </article>
-      <article class="svc" data-card>
-        <div class="svc-top"><span class="svc-num">A/05</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 5.6L20 9.5l-4.3 3.9L17 19l-5-3-5 3 1.3-5.6L4 9.5l5.6-.9z"/></svg></span></div>
-        <h3>Remake visual</h3>
-        <p>Identidade nova do zero: logotipo em todas as versões, artboard com cores e tipografia, kit para redes.</p>
-        <div class="svc-tags"><span>Logo</span><span>Artboard</span><span>Redes</span></div>
+      <article class="svc" data-card data-tilt>
+        <div class="svc-top"><span class="svc-num">S/05</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="8.5" r="1.5"/></svg></span></div>
+        <h3>Quadros e decoração</h3>
+        <p>Produtos mostrados na parede do cliente, com medidas e acabamentos, e orçamento montado em poucos toques.</p>
+        <div class="svc-tags"><span>Simulador</span><span>Medidas</span><span>Orçamento</span></div>
+        <div class="svc-acts">
+          <button type="button" class="svc-link" data-demo-go="4">Ver o modelo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <a class="svc-wa" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Tenho uma loja de quadros e decoração e quero um site assim." target="_blank" rel="noopener" aria-label="Pedir no WhatsApp um site para quadros e decoração"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg></a>
+        </div>
       </article>
-      <article class="svc" data-card>
-        <div class="svc-top"><span class="svc-num">A/06</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg></span></div>
-        <h3>Kit para redes &amp; QR</h3>
-        <p>Perfil, posts, stories, capas e ícones de destaques com a sua marca, mais QR code pronto para balcão e mesa.</p>
-        <div class="svc-tags"><span>Instagram</span><span>Impressos</span></div>
+      <article class="svc svc-other" data-card data-tilt>
+        <div class="svc-top"><span class="svc-num">S/06</span><span class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></div>
+        <h3>Outro segmento?</h3>
+        <p>Salão, clínica, café, loja de presentes. Se o seu negócio atende pelo WhatsApp, a gente monta um modelo para ele.</p>
+        <div class="svc-acts"><a class="btn btn-ghost magnetic" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Meu negócio é de outro segmento e quero um site. Posso contar como funciona?" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Conversar no WhatsApp</a></div>
       </article>
     </div>
   </div>
@@ -678,7 +704,7 @@ section[id],footer[id]{scroll-margin-top:72px}
       <div class="manifesto-lines">
         <p class="m-line chrome-text">Não é só um link.</p>
         <p class="m-line volt-text">É experiência.</p>
-        <p class="m-line"><span class="chrome-text">Toque, agende,</span> <span class="volt-text">compre.</span></p>
+        <p class="m-line"><span class="chrome-text">Agende, peça,</span> <span class="volt-text">compre.</span></p>
       </div>
       <div class="manifesto-progress" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i></div>
     </div>
@@ -688,128 +714,41 @@ section[id],footer[id]{scroll-margin-top:72px}
 <section class="section" id="demos">
   <div class="wrap">
     <div class="section-head">
-      <span class="label" data-reveal>03 / Demos</span>
+      <span class="label" data-reveal>03 / Modelos</span>
       <h2 class="h2" data-split>Toque na <span class="volt-text">amostra.</span></h2>
-      <p class="lead" data-reveal>Quatro experimentos funcionando de verdade, com clientes fictícios. Escolha um e navegue no celular.</p>
+      <p class="lead" data-reveal>Cinco sites completos funcionando de verdade, com marcas fictícias. Escolha o do seu segmento e navegue dentro do celular como se fosse o seu cliente.</p>
     </div>
     <div class="lab" data-lab data-reveal>
       <div class="bench">
-        <div class="bench-readout"><span class="live">Ao vivo</span><span data-spec>Amostra 01 / 04</span></div>
+        <div class="bench-readout"><span class="live">Ao vivo</span><span data-spec>Modelo 01 / 05</span></div>
         <div class="phone">
-          <div class="screen">
-            <section id="s-card" class="on" role="tabpanel" aria-labelledby="t-card">
-              <div class="d-card">
-                <div class="ph" aria-hidden="true">MO</div>
-                <h3>Marina Okada</h3>
-                <p class="role">Fotógrafa de casamentos · São Paulo</p>
-                <div class="acts">
-                  <button type="button" class="main demo-act" data-msg="Na página do cliente, este botão abre a conversa no WhatsApp.">Chamar no WhatsApp</button>
-                  <button type="button" class="demo-act" data-msg="Abre o perfil do Instagram do cliente.">Instagram</button>
-                  <button type="button" class="demo-act" data-msg="Leva ao portfólio completo.">Portfólio</button>
-                  <button type="button" class="demo-act" data-msg="Mostra a tabela de pacotes do cliente.">Pacotes</button>
-                  <button type="button" class="demo-act" data-msg="Salva nome, telefone e e-mail na agenda do celular.">Salvar contato</button>
-                </div>
-                <div class="gal" aria-hidden="true">
-                  <i style="background:linear-gradient(160deg,#d9c4a8,#8c6b4f)"></i>
-                  <i style="background:linear-gradient(160deg,#b9c7be,#5e7368)"></i>
-                  <i style="background:linear-gradient(160deg,#e8d5cf,#a0766c)"></i>
-                </div>
-                <p class="foot">Exemplo de cartão · cliente fictícia</p>
-              </div>
-            </section>
-
-            <section id="s-book" role="tabpanel" aria-labelledby="t-book">
-              <div class="d-book">
-                <div class="head">
-                  <span class="tag" style="color:#8a93a6">Agendamento online</span>
-                  <h3>Barbearia Norte</h3>
-                  <p>Rua das Palmeiras, 120 · exemplo fictício</p>
-                </div>
-                <div class="body" data-book-form>
-                  <div class="grp svc-list" role="group" aria-label="Serviço">
-                    <span class="lbl">1. Serviço</span>
-                    <button type="button" aria-pressed="true" data-svc="Corte" data-dur="40 min"><span>Corte<small>40 min</small></span><span>R$ 50</span></button>
-                    <button type="button" aria-pressed="false" data-svc="Barba" data-dur="30 min"><span>Barba<small>30 min</small></span><span>R$ 40</span></button>
-                    <button type="button" aria-pressed="false" data-svc="Corte + barba" data-dur="1h"><span>Corte + barba<small>1h</small></span><span>R$ 80</span></button>
-                  </div>
-                  <div class="grp"><span class="lbl">2. Dia</span><div class="days" data-days role="group" aria-label="Dia"></div></div>
-                  <div class="grp"><span class="lbl">3. Horário</span><div class="slots" data-slots role="group" aria-label="Horário"></div></div>
-                  <button type="button" class="confirm" data-confirm disabled>Escolha um horário</button>
-                </div>
-                <div class="done" data-book-done hidden>
-                  <div class="chk"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#14915f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
-                  <h3>Horário reservado</h3>
-                  <p>Na versão do cliente, a confirmação chega por WhatsApp.</p>
-                  <div class="ticket" data-ticket></div>
-                  <button type="button" class="link-btn" data-book-again>Fazer outro agendamento</button>
-                </div>
-              </div>
-            </section>
-
-            <section id="s-menu" role="tabpanel" aria-labelledby="t-menu">
-              <div class="d-menu">
-                <div class="head">
-                  <span class="tag" style="color:#ffd9c4">Cardápio digital · mesa 07</span>
-                  <h3>Cantina Vila</h3>
-                  <p>Massas e pizzas · exemplo fictício</p>
-                </div>
-                <div class="cats" role="tablist" aria-label="Categorias" data-cats></div>
-                <ul class="dishes" data-dishes></ul>
-              </div>
-              <button type="button" class="cart demo-act" data-cart data-msg="O pedido vai pronto para o WhatsApp ou para a cozinha."><span data-cart-count>0 itens</span><span data-cart-total>R$ 0</span></button>
-            </section>
-
-            <section id="s-ev" role="tabpanel" aria-labelledby="t-ev">
-              <div class="d-ev">
-                <div class="poster">
-                  <span class="tag" style="color:#d9d4c8">Sáb · 21 nov · 16h</span>
-                  <h3>Festival<br>Órbita</h3>
-                  <p>Galpão Leste · evento fictício</p>
-                </div>
-                <div class="stage-tabs" role="tablist" aria-label="Palcos">
-                  <button type="button" role="tab" aria-selected="true" data-stage="0">Palco Sol</button>
-                  <button type="button" role="tab" aria-selected="false" data-stage="1">Palco Lua</button>
-                </div>
-                <ul class="lineup" data-lineup></ul>
-                <button type="button" class="tix demo-act" data-msg="Leva direto para a venda de ingressos do evento.">Comprar ingresso</button>
-              </div>
-            </section>
-
-            <div class="ptoast" data-ptoast role="status" aria-live="polite"></div>
+          <div class="screen" id="lab-screen" role="tabpanel" data-screen>
+            <div class="screen-load" data-load><svg aria-hidden="true"><use href="#flask"/></svg><span>Carregando modelo</span></div>
           </div>
         </div>
+        <div class="bench-foot">
+          <span>Role e toque dentro da tela</span>
+          <a href="modelos/barbearia/fotos/" data-open target="_blank" rel="noopener">Abrir em tela cheia ↗</a>
+        </div>
       </div>
-
       <div class="lab-side">
         <div>
-          <p class="deck-title chrome-text" data-out-title>Cartão digital</p>
-          <div class="deck-meta" data-out-meta>Marina Okada · Fotógrafa</div>
-          <p class="deck-desc" data-out-desc>Contato, redes, portfólio e salvar na agenda em um toque.</p>
+          <p class="deck-title chrome-text" data-out-title>Navalha Nobre</p>
+          <div class="deck-meta" data-out-meta>Barbearia · Site completo</div>
+          <p class="deck-desc" data-out-desc>Tabela de preços, agendamento em cinco passos, equipe, galeria de cortes e localização.</p>
         </div>
-        <ol class="demos" role="tablist" aria-label="Demonstrações" data-demos>
-          <li><button class="demo-btn" type="button" role="tab" id="t-card" aria-controls="s-card" aria-selected="true"
-              data-title="Cartão digital" data-meta="Marina Okada · Fotógrafa" data-desc="Contato, redes, portfólio e salvar na agenda em um toque." data-ideal="Profissionais, artistas, equipes de vendas" data-acesso="Link, QR code impresso ou NFC">
-            <span class="demo-idx">01</span><span><span class="demo-name">Cartão digital</span><span class="demo-meta">Pacote Pulso</span></span><span class="demo-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button></li>
-          <li><button class="demo-btn" type="button" role="tab" id="t-book" aria-controls="s-book" aria-selected="false"
-              data-title="Agendamento" data-meta="Barbearia Norte · Corte e barba" data-desc="Serviço, dia e horário escolhidos pelo cliente. Sem troca infinita de mensagens." data-ideal="Barbearias, salões, clínicas, estúdios" data-acesso="Link na bio, QR no balcão e no espelho">
-            <span class="demo-idx">02</span><span><span class="demo-name">Agendamento</span><span class="demo-meta">Pacote Frequência</span></span><span class="demo-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button></li>
-          <li><button class="demo-btn" type="button" role="tab" id="t-menu" aria-controls="s-menu" aria-selected="false"
-              data-title="Cardápio digital" data-meta="Cantina Vila · Mesa 07" data-desc="Display interativo com categorias, fotos e pedido montado no celular." data-ideal="Restaurantes, bares, cafés, lojas" data-acesso="QR na mesa, link no delivery">
-            <span class="demo-idx">03</span><span><span class="demo-name">Cardápio digital</span><span class="demo-meta">Display interativo</span></span><span class="demo-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button></li>
-          <li><button class="demo-btn" type="button" role="tab" id="t-ev" aria-controls="s-ev" aria-selected="false"
-              data-title="Line-up de evento" data-meta="Festival Órbita · 2 palcos" data-desc="Programação por palco, quem está tocando agora e ingresso a um toque." data-ideal="Festivais, shows, feiras, casamentos" data-acesso="Telão, convite, pulseira com QR">
-            <span class="demo-idx">04</span><span><span class="demo-name">Line-up de evento</span><span class="demo-meta">Display interativo</span></span><span class="demo-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button></li>
-        </ol>
+        <ol class="demos" role="tablist" aria-label="Modelos por segmento" data-demos></ol>
         <div class="deck-controls">
-          <button class="ctrl" type="button" data-prev aria-label="Amostra anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-          <button class="ctrl" type="button" data-next aria-label="Próxima amostra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-          <a class="btn btn-ghost magnetic" href="#monte" style="height:52px;margin-left:auto">Quero uma assim</a>
+          <button class="ctrl" type="button" data-prev aria-label="Modelo anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+          <button class="ctrl" type="button" data-next aria-label="Próximo modelo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <a class="btn btn-volt magnetic lab-cta" href="https://wa.me/5511952182016" data-lab-wa target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Quero um site assim</a>
         </div>
         <dl class="spec-dl">
-          <dt>Ideal para</dt><dd data-out-ideal>Profissionais, artistas, equipes de vendas</dd>
-          <dt>Acesso</dt><dd data-out-acesso>Link, QR code impresso ou NFC</dd>
+          <dt>Pacote</dt><dd data-out-pkg></dd>
+          <dt>Prazo</dt><dd data-out-prazo></dd>
+          <dt>Seu cliente</dt><dd data-out-acao></dd>
         </dl>
-        <p class="lab-note">Demos com clientes fictícios. A sua sai com a sua marca, seus textos e seus links.</p>
+        <p class="lab-note">Marcas fictícias: tudo funciona, mas os pedidos feitos aqui são só uma simulação. <a href="modelos/">Ver os modelos lado a lado →</a></p>
       </div>
     </div>
   </div>
@@ -818,36 +757,36 @@ section[id],footer[id]{scroll-margin-top:72px}
 <section class="section process" id="processo">
   <div class="wrap section-head">
     <span class="label" data-reveal>04 / Processo</span>
-    <h2 class="h2" data-split>Como o experimento <span class="volt-text">vai ao ar.</span></h2>
+    <h2 class="h2" data-split>Do modelo ao seu site, <span class="volt-text">em dias.</span></h2>
   </div>
   <div class="process-viewport">
     <div class="process-track">
       <article class="step">
         <span class="step-num" aria-hidden="true">01</span>
         <span class="label">Etapa 01</span>
-        <h3>Diagnóstico</h3>
-        <p>Entendemos seu negócio, seu público e o que a página precisa fazer: chamar, agendar, vender ou apresentar.</p>
+        <h3>Briefing</h3>
+        <p>Uma conversa rápida no WhatsApp: sua marca, serviços e preços, fotos, contatos e redes. Você escolhe o modelo do seu segmento.</p>
         <span class="step-bar" aria-hidden="true"></span>
       </article>
       <article class="step">
         <span class="step-num" aria-hidden="true">02</span>
         <span class="label">Etapa 02</span>
-        <h3>Protótipo</h3>
-        <p>Você recebe uma primeira versão navegável para testar no próprio celular, antes de qualquer coisa ir ao ar.</p>
+        <h3>Personalização</h3>
+        <p>Adaptamos cores, logo, textos e imagens e ligamos os recursos: agendamento, cardápio, carrinho ou orçamento.</p>
         <span class="step-bar" aria-hidden="true"></span>
       </article>
       <article class="step">
         <span class="step-num" aria-hidden="true">03</span>
         <span class="label">Etapa 03</span>
-        <h3>Ajustes</h3>
-        <p>Refinamos textos, cores e funções a partir do seu retorno, dentro das rodadas do seu pacote.</p>
+        <h3>Você aprova</h3>
+        <p>Você testa no próprio celular antes de tudo ir ao ar. Uma rodada de ajustes já está inclusa.</p>
         <span class="step-bar" aria-hidden="true"></span>
       </article>
       <article class="step">
         <span class="step-num" aria-hidden="true">04</span>
         <span class="label">Etapa 04</span>
-        <h3>Publicação</h3>
-        <p>A página vai ao ar com link e QR code prontos para a bio, o balcão, a mesa e o convite.</p>
+        <h3>No ar</h3>
+        <p>Publicamos com domínio, link para a bio e QR code, e mostramos como usar. Se quiser, seguimos juntos no plano mensal.</p>
         <span class="step-bar" aria-hidden="true"></span>
       </article>
     </div>
@@ -859,143 +798,122 @@ section[id],footer[id]{scroll-margin-top:72px}
   <div class="wrap">
     <div class="section-head">
       <span class="label" data-reveal>05 / Preços</span>
-      <h2 class="h2" data-split>Escolha a sua <span class="volt-text">intensidade.</span></h2>
-      <p class="lead" data-reveal>Preços fechados, sem surpresa no fim. Valores de lançamento para os primeiros clientes. Adicione o que precisa e monte o pedido logo abaixo.</p>
+      <h2 class="h2" data-split>Escolha o tamanho do <span class="volt-text">seu site.</span></h2>
+      <p class="lead" data-reveal>Faixas de partida, sem escopo vago: cada proposta lista o que entra, o que não entra e o prazo de cada etapa. Você paga metade na aprovação e o resto só na entrega.</p>
     </div>
 
     <div class="prices" data-prices>
-      <article class="price" data-card data-id="pulso" data-kind="pkg" data-price="197" data-name="Pacote Pulso">
-        <div class="price-name"><span>Pulso</span><svg class="price-wave" viewBox="0 0 96 28" aria-hidden="true"><path d="M2 14 Q14 10 26 14 T50 14 T74 14 T98 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-        <div class="price-amount"><span class="price-value"><small>R$</small><span data-num="197">197</span></span><span class="price-terms">pagamento único</span></div>
-        <p class="price-desc">Para quem ainda não tem nada além do Instagram.</p>
+      <article class="price" data-card data-tilt data-id="vitrine">
+        <div class="price-name"><span>Página vitrine</span><svg class="price-wave" viewBox="0 0 96 28" aria-hidden="true"><path d="M2 14 Q14 10 26 14 T50 14 T74 14 T98 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+        <div class="price-amount"><span class="price-from">a partir de</span><span class="price-value"><small>R$</small><span data-num="600">600</span></span><span class="price-terms">até R$ 1.200 · 50% na aprovação, 50% na entrega</span></div>
+        <p class="price-desc">Para quem hoje depende só do Instagram e precisa de um endereço próprio.</p>
         <ul>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>Cartão digital com a sua marca</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>WhatsApp, Instagram, localização e salvar contato</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>Galeria com até 6 fotos</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>QR code pronto para imprimir</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Uma página com serviços e preços</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Galeria de fotos ou portfólio</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Localização e horários</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Botão de WhatsApp em todas as seções</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Versão pensada para o celular</li>
         </ul>
-        <div class="price-meta"><span>3 dias úteis</span><span>1 rodada de ajustes</span></div>
-        <button class="btn btn-ghost price-add" type="button" data-add="pulso">Adicionar</button>
+        <div class="price-meta"><span>2 a 4 dias</span><span>1 rodada de ajustes</span></div>
+        <div class="price-acts">
+          <a class="btn btn-ghost magnetic" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero um orçamento do pacote Página vitrine (a partir de R$ 600)." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Quero este</a>
+          <button class="price-sim" type="button" data-add="vitrine">Simular no orçamento</button>
+        </div>
       </article>
-
-      <article class="price is-featured" data-card data-id="frequencia" data-kind="pkg" data-price="597" data-name="Pacote Frequência">
-        <div class="price-name"><span>Frequência</span><span class="badge">Salões e estúdios</span></div>
-        <div class="price-amount"><span class="price-was">R$ 694 separado</span><span class="price-value"><small>R$</small><span data-num="597">597</span></span><span class="price-terms">pagamento único</span></div>
-        <p class="price-desc">Para quem atende com hora marcada e perde tempo no WhatsApp.</p>
+      <article class="price is-featured" data-card data-tilt data-id="completo">
+        <div class="price-name"><span>Site completo</span><span class="badge">Mais pedido</span></div>
+        <div class="price-amount"><span class="price-from">a partir de</span><span class="price-value"><small>R$</small><span data-num="1200">1.200</span></span><span class="price-terms">até R$ 2.500 · 50% na aprovação, 50% na entrega</span></div>
+        <p class="price-desc">Para quem agenda, orça ou recebe pedidos e quer o cliente decidindo sozinho.</p>
         <ul>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>Página de agendamento com serviços, preços e duração</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>Pedido chega pronto no seu WhatsApp</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>Portfólio ou galeria de trabalhos</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>Cartão digital incluso</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>1º mês de manutenção grátis</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Várias seções ou páginas</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Agendamento, orçamento ou cardápio com pedido no WhatsApp</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Equipe, portfólio e depoimentos</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Identidade adaptada à sua marca</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Domínio próprio configurado</li>
         </ul>
-        <div class="price-meta"><span>7 dias úteis</span><span>2 rodadas de ajustes</span></div>
-        <button class="btn btn-volt price-add" type="button" data-add="frequencia">Adicionar</button>
+        <div class="price-meta"><span>5 a 10 dias</span><span>1 rodada de ajustes</span></div>
+        <div class="price-acts">
+          <a class="btn btn-volt magnetic" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero um orçamento do pacote Site completo (a partir de R$ 1.200)." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Quero este</a>
+          <button class="price-sim" type="button" data-add="completo">Simular no orçamento</button>
+        </div>
       </article>
-
-      <article class="price" data-card data-id="amplitude" data-kind="pkg" data-price="1497" data-name="Pacote Amplitude">
-        <div class="price-name"><span>Amplitude</span><svg class="price-wave" viewBox="0 0 96 28" aria-hidden="true"><path d="M2 14 Q14 -4 26 14 T50 14 T74 14 T98 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-        <div class="price-amount"><span class="price-was">até R$ 1.691 separado</span><span class="price-value"><small>R$</small><span data-num="1497">1.497</span></span><span class="price-terms">em até 2x de R$ 748,50</span></div>
-        <p class="price-desc">Para renovar a marca e o digital de uma vez.</p>
+      <article class="price" data-card data-tilt data-id="loja">
+        <div class="price-name"><span>Loja virtual</span><svg class="price-wave" viewBox="0 0 96 28" aria-hidden="true"><path d="M2 14 Q14 -4 26 14 T50 14 T74 14 T98 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+        <div class="price-amount"><span class="price-from">a partir de</span><span class="price-value"><small>R$</small><span data-num="2500">2.500</span></span><span class="price-terms">até R$ 5.000 ou mais · 50% na aprovação, 50% na entrega</span></div>
+        <p class="price-desc">Para vender online com catálogo, carrinho e pagamento.</p>
         <ul>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>Remake visual: logo novo em todas as versões</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>Artboard da marca e kit para redes</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>Agendamento ou display interativo, à sua escolha</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>Cartão digital incluso</li>
-          <li><svg aria-hidden="true"><use href="#check"/></svg>2 meses de manutenção grátis</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Catálogo com coleções, tamanhos e cores</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Carrinho, frete e checkout</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Pagamento por Pix e cartão</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Busca, filtros e favoritos</li>
+          <li><svg aria-hidden="true"><use href="#check"/></svg>Finalização também pelo WhatsApp</li>
         </ul>
-        <div class="price-meta"><span>15 dias úteis</span><span>3 rodadas de ajustes</span></div>
-        <button class="btn btn-ghost price-add" type="button" data-add="amplitude">Adicionar</button>
+        <div class="price-meta"><span>15 a 30 dias</span><span>1 rodada de ajustes</span></div>
+        <div class="price-acts">
+          <a class="btn btn-ghost magnetic" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero um orçamento do pacote Loja virtual (a partir de R$ 2.500)." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Quero este</a>
+          <button class="price-sim" type="button" data-add="loja">Simular no orçamento</button>
+        </div>
       </article>
     </div>
 
-    <div class="sub-head" data-reveal><h3>Serviços avulsos</h3><p>Precisa de uma peça só? Cada serviço também sai sozinho.</p></div>
-    <div class="prices">
-      <article class="price small" data-card data-id="cartao" data-kind="item" data-price="197" data-name="Cartão digital">
-        <div class="price-name"><span>Cartão digital</span></div>
-        <div class="price-amount"><span class="price-value"><small>R$</small><span data-num="197">197</span></span></div>
-        <p class="price-desc">Contatos, redes, localização, galeria e QR code.</p>
-        <div class="price-meta"><span>3 dias úteis</span></div>
-        <button class="btn btn-ghost price-add" type="button" data-add="cartao">Adicionar</button>
-      </article>
-      <article class="price small" data-card data-id="central" data-kind="item" data-price="297" data-name="Página central">
-        <div class="price-name"><span>Página central</span></div>
-        <div class="price-amount"><span class="price-value"><small>R$</small><span data-num="297">297</span></span></div>
-        <p class="price-desc">Todos os seus links, serviços e canais num endereço só.</p>
-        <div class="price-meta"><span>3 dias úteis</span></div>
-        <button class="btn btn-ghost price-add" type="button" data-add="central">Adicionar</button>
-      </article>
-      <article class="price small" data-card data-id="agendamento" data-kind="item" data-price="497" data-name="Página de agendamento">
-        <div class="price-name"><span>Agendamento</span></div>
-        <div class="price-amount"><span class="price-value"><small>R$</small><span data-num="497">497</span></span></div>
-        <p class="price-desc">Serviços, preços, dias e horários; o pedido chega no WhatsApp.</p>
-        <div class="price-meta"><span>7 dias úteis</span></div>
-        <button class="btn btn-ghost price-add" type="button" data-add="agendamento">Adicionar</button>
-      </article>
-      <article class="price small" data-card data-id="display" data-kind="item" data-price="597" data-name="Display interativo">
-        <div class="price-name"><span>Display interativo</span></div>
-        <div class="price-amount"><span class="price-value"><small>R$</small><span data-num="597">597</span></span></div>
-        <p class="price-desc">Cardápio, catálogo, line-up de evento ou portfólio navegável.</p>
-        <div class="price-meta"><span>7 dias úteis</span></div>
-        <button class="btn btn-ghost price-add" type="button" data-add="display">Adicionar</button>
-      </article>
-      <article class="price small" data-card data-id="remake" data-kind="item" data-price="897" data-name="Remake visual">
-        <div class="price-name"><span>Remake visual</span></div>
-        <div class="price-amount"><span class="price-value"><small>R$</small><span data-num="897">897</span></span></div>
-        <p class="price-desc">Logo em todas as versões, artboard da marca, kit para redes e destaques.</p>
-        <div class="price-meta"><span>10 dias úteis</span></div>
-        <button class="btn btn-ghost price-add" type="button" data-add="remake">Adicionar</button>
-      </article>
-      <article class="price small" data-card data-id="kit" data-kind="item" data-price="247" data-name="Kit para redes">
-        <div class="price-name"><span>Kit para redes</span></div>
-        <div class="price-amount"><span class="price-value"><small>R$</small><span data-num="247">247</span></span></div>
-        <p class="price-desc">Perfil, 3 posts, story, capas e 8 destaques com a marca que você já tem.</p>
-        <div class="price-meta"><span>5 dias úteis</span></div>
-        <button class="btn btn-ghost price-add" type="button" data-add="kit">Adicionar</button>
-      </article>
-    </div>
-
+    <div class="sub-head" data-reveal><h3>Plano mensal · opcional</h3><p>Para mudar preços, fotos e horários sem dor de cabeça.</p></div>
     <div class="extras">
-      <div class="extra" data-reveal>
-        <span class="label">Mensal · opcional</span>
-        <h4>Manutenção</h4>
-        <div class="price-amount"><span class="price-value"><small>R$</small>49</span><span class="price-terms">por mês, cancele quando quiser</span></div>
-        <p>Página no ar, até 2 alterações por mês (preços, horários, fotos e textos) e suporte no WhatsApp em dias úteis. Sem manutenção, a página continua sua; alterações avulsas custam R$ 30.</p>
-        <button class="btn btn-ghost price-add" type="button" data-add="manutencao" style="justify-self:start">Adicionar</button>
+      <div class="extra" data-reveal data-tilt>
+        <span class="label">Básico</span>
+        <div class="price-amount"><span class="price-value"><small>R$</small><span data-num="79">79</span></span><span class="price-terms">por mês, cancele quando quiser</span></div>
+        <p>Hospedagem acompanhada, ajustes de conteúdo (preços, horários, fotos e textos) e suporte pelo WhatsApp.</p>
+        <div class="price-acts"><a class="btn btn-ghost magnetic" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero saber do plano mensal Básico (R$ 79)." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Quero o básico</a><button class="price-sim" type="button" data-add="basico">Simular</button></div>
       </div>
-      <div class="extra" data-reveal>
-        <span class="label">Endereço próprio · opcional</span>
-        <h4>Domínio .com.br</h4>
-        <p>Quer um endereço como <b style="color:var(--fg);font-weight:500">suabarbearia.com.br</b>? O domínio fica registrado no seu nome no Registro.br e você paga a anuidade direto a eles. A configuração é por nossa conta, sem custo extra.</p>
-        <p>Sem domínio, sua página funciona normalmente num endereço gratuito.</p>
+      <div class="extra" data-reveal data-tilt>
+        <span class="label">Completo</span>
+        <div class="price-amount"><span class="price-value"><small>R$</small><span data-num="199">199</span></span><span class="price-terms">por mês, cancele quando quiser</span></div>
+        <p>Tudo do básico, mais ajustes e pequenas novidades no site sem custo extra, dentro de um limite de horas por mês, e prioridade no atendimento.</p>
+        <div class="price-acts"><a class="btn btn-ghost magnetic" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero saber do plano mensal Completo (R$ 199)." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Quero o completo</a><button class="price-sim" type="button" data-add="completo-mensal">Simular</button></div>
       </div>
     </div>
+
+    <ul class="included" data-reveal>
+      <li><b>Personalização do modelo</b>identidade visual, textos e fotos</li>
+      <li><b>Recursos do seu negócio</b>agendamento, pedidos, pagamento e integrações</li>
+      <li><b>Hospedagem e domínio</b>repassados com clareza, no seu nome</li>
+      <li><b>Ajustes depois da entrega</b>prazo combinado na proposta</li>
+    </ul>
   </div>
 </section>
 
 <section class="section" id="monte" style="padding-top:0">
   <div class="wrap">
     <div class="section-head">
-      <span class="label" data-reveal>06 / Monte seu orçamento</span>
-      <h2 class="h2" data-split>Seu pedido, <span class="volt-text">do seu jeito.</span></h2>
-      <p class="lead" data-reveal>Marque um pacote ou serviços avulsos e envie tudo pronto pelo WhatsApp. Se um pacote sair mais em conta, a gente avisa.</p>
+      <span class="label" data-reveal>06 / Orçamento</span>
+      <h2 class="h2" data-split>Monte o seu <span class="volt-text">em 1 minuto.</span></h2>
+      <p class="lead" data-reveal>Marque o que o seu site precisa fazer. A gente indica o tamanho certo e você envia tudo pronto pelo WhatsApp.</p>
     </div>
 
     <div class="builder">
       <div class="panel" data-reveal>
-        <p class="panel-title"><span>Componentes</span><span>Valor</span></p>
-        <div data-opts></div>
-        <div class="suggest" data-suggest hidden>
-          <p data-suggest-text></p>
-          <button class="btn btn-volt" type="button" data-suggest-apply>Trocar pelo pacote</button>
+        <p class="opt-group">1 · Seu segmento</p>
+        <div class="chips" role="radiogroup" aria-label="Segmento" data-segs>
+          <button type="button" class="chip" role="radio" aria-checked="false" data-seg="Barbearia">Barbearia</button>
+          <button type="button" class="chip" role="radio" aria-checked="false" data-seg="Estúdio de tatuagem">Estúdio de tatuagem</button>
+          <button type="button" class="chip" role="radio" aria-checked="false" data-seg="Lanchonete ou hamburgueria">Lanchonete ou hamburgueria</button>
+          <button type="button" class="chip" role="radio" aria-checked="false" data-seg="Loja de roupas">Loja de roupas</button>
+          <button type="button" class="chip" role="radio" aria-checked="false" data-seg="Quadros e decoração">Quadros e decoração</button>
+          <button type="button" class="chip" role="radio" aria-checked="false" data-seg="Outro">Outro</button>
         </div>
+        <p class="opt-group">2 · O que o site precisa fazer</p>
+        <div class="opts" data-feats></div>
+        <p class="opt-group">3 · Tamanho do site</p>
+        <div class="opts" data-pkgs></div>
+        <p class="rec" data-rec hidden></p>
+        <p class="opt-group">4 · Plano mensal (opcional)</p>
+        <div class="opts" data-mnt></div>
       </div>
 
       <div class="panel summary" data-reveal>
         <p class="panel-title"><span>Resumo</span><span data-count-items>0 itens</span></p>
-        <ul class="sum-lines" data-lines><li class="sum-empty">Nenhum item escolhido ainda.</li></ul>
+        <ul class="sum-lines" data-lines><li class="sum-empty">Escolha o segmento e o que o site precisa fazer.</li></ul>
         <div class="sum-total">
-          <div><small>Total único</small></div>
+          <div><small>Investimento a partir de</small><span class="sum-range" data-range>escolha o segmento</span></div>
           <div class="sum-value"><small>R$</small><span data-total>0</span></div>
         </div>
         <p class="sum-extra" data-extra hidden></p>
@@ -1008,25 +926,17 @@ section[id],footer[id]{scroll-margin-top:72px}
               <span class="field-err">Conta pra gente o seu nome.</span>
             </div>
             <div class="field">
-              <label for="f-neg">Empresa ou projeto</label>
+              <label for="f-neg">Nome do negócio</label>
               <input id="f-neg" name="negocio" autocomplete="organization">
             </div>
           </div>
           <div class="row2">
             <div class="field">
-              <label for="f-seg">Segmento</label>
-              <select id="f-seg" name="segmento">
-                <option>Barbearia ou salão</option>
-                <option>Clínica ou estúdio</option>
-                <option>Restaurante ou café</option>
-                <option>Evento ou festival</option>
-                <option>Artista ou criador</option>
-                <option>Loja</option>
-                <option>Outro</option>
-              </select>
+              <label for="f-ig">Instagram</label>
+              <input id="f-ig" name="instagram" placeholder="@seunegocio" autocomplete="off">
             </div>
             <div class="field">
-              <label for="f-prazo">Prazo</label>
+              <label for="f-prazo">Para quando</label>
               <select id="f-prazo" name="prazo">
                 <option>Sem pressa</option>
                 <option>Próximo mês</option>
@@ -1036,13 +946,11 @@ section[id],footer[id]{scroll-margin-top:72px}
             </div>
           </div>
           <div class="field">
-            <label for="f-msg">Mensagem</label>
-            <textarea id="f-msg" name="mensagem" placeholder="Ex.: tenho uma barbearia e quero que os clientes agendem sozinhos."></textarea>
+            <label for="f-msg">Algo mais?</label>
+            <textarea id="f-msg" name="mensagem" placeholder="Ex.: quero que os clientes agendem sozinhos e vejam a equipe."></textarea>
           </div>
           <div class="form-actions">
-            <button class="btn btn-volt magnetic" type="submit">
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>
-              Enviar pelo WhatsApp</button>
+            <button class="btn btn-volt magnetic" type="submit"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Enviar pelo WhatsApp</button>
             <button class="btn btn-ghost" type="button" data-copy>Copiar pedido</button>
           </div>
           <p class="form-msg" data-form-msg role="status"></p>
@@ -1059,19 +967,21 @@ section[id],footer[id]{scroll-margin-top:72px}
       <h2 class="h2" data-split>Regras do <span class="volt-text">laboratório.</span></h2>
     </div>
     <div class="terms">
-      <div data-reveal><span class="label">Pagamento</span><h3>50% para começar</h3><p>A outra metade só na entrega, com a página aprovada. Pix ou transferência.</p></div>
-      <div data-reveal><span class="label">Prévia</span><h3>Você vê antes</h3><p>Um protótipo navegável para testar no celular antes da versão final.</p></div>
-      <div data-reveal><span class="label">Ajustes</span><h3>Rodadas incluídas</h3><p>Cada pacote tem suas rodadas. Mudanças de escopo são orçadas à parte.</p></div>
-      <div data-reveal><span class="label">Material</span><h3>O que precisamos</h3><p>Logo (se tiver), fotos, lista de serviços com preços e seus horários.</p></div>
+      <div data-reveal><span class="label">Pagamento</span><h3>50% para começar</h3><p>A outra metade só na entrega, com o site aprovado. Pix ou transferência.</p></div>
+      <div data-reveal><span class="label">Prévia</span><h3>Você vê antes</h3><p>O site com a sua marca para testar no celular antes de ir ao ar.</p></div>
+      <div data-reveal><span class="label">Ajustes</span><h3>Uma rodada inclusa</h3><p>Pedidos fora da proposta são orçados à parte, sempre combinados antes.</p></div>
+      <div data-reveal><span class="label">Sem promessa vazia</span><h3>Só o que entregamos</h3><p>Vitrine, organização e facilidade de contato. O resto é com o seu bom trabalho.</p></div>
     </div>
     <div class="faq" data-reveal>
-      <details><summary>Preciso ter site para contratar?</summary><p>Não. A página que fazemos já é o seu endereço na internet. Você coloca o link na bio, no WhatsApp e no QR code do balcão.</p></details>
-      <details><summary>Como o agendamento funciona na prática?</summary><p>O cliente escolhe o serviço, o dia e o horário na sua página. O pedido chega no seu WhatsApp com tudo preenchido, e você só confirma. Nada de aplicativo para o cliente baixar.</p></details>
-      <details><summary>Tenho mensalidade obrigatória?</summary><p>Não. Você paga o pacote uma vez. A manutenção mensal é opcional e serve para quem quer mudar preços, horários e fotos sem se preocupar.</p></details>
-      <details><summary>Já uso um aplicativo de agendamento. Faz sentido?</summary><p>Sim. Criamos uma página com a sua marca que reúne serviços, preços, localização e o botão de agendar, levando para o aplicativo que você já usa ou para o seu WhatsApp.</p></details>
-      <details><summary>Em quanto tempo fica pronto?</summary><p>De 3 a 15 dias úteis, conforme o pacote. O prazo começa quando recebemos o material e o pagamento inicial.</p></details>
-      <details><summary>A marca e a página ficam minhas?</summary><p>Sim. Logotipo, artes e textos são seus. Entregamos os arquivos do logo e do kit de redes para você usar onde quiser.</p></details>
+      <details><summary>Preciso ter site ou domínio para contratar?</summary><p>Não. A gente publica o seu site e configura o domínio (o endereço, como suamarca.com.br) no seu nome. Você coloca o link na bio, no WhatsApp e no QR code do balcão.</p></details>
+      <details><summary>Como os pedidos e agendamentos chegam?</summary><p>Pelo seu WhatsApp, com tudo preenchido: serviço, horário, itens do pedido ou ideia do orçamento. Para lanchonetes, o site também leva para iFood, 99 e Keeta, se você já usa.</p></details>
+      <details><summary>O site vai ficar igual ao modelo?</summary><p>Não. O modelo é a estrutura; cores, logo, fotos, textos, serviços e preços são os seus. É isso que faz ficar pronto rápido sem parecer genérico.</p></details>
+      <details><summary>Tenho mensalidade obrigatória?</summary><p>Não. O site é pago uma vez. O plano mensal (R$ 79 ou R$ 199) é opcional, para quem quer ajustes e suporte sem se preocupar.</p></details>
+      <details><summary>Em quanto tempo fica pronto?</summary><p>Página vitrine em 2 a 4 dias, site completo em 5 a 10 dias e loja virtual em 15 a 30 dias, contando a partir do material e do pagamento inicial.</p></details>
+      <details><summary>Como funciona o pagamento?</summary><p>50% na aprovação da proposta e 50% na entrega, por Pix ou transferência. Hospedagem e domínio são repassados com clareza, sem custo escondido.</p></details>
+      <details><summary>O que preciso mandar?</summary><p>Logo (se tiver), fotos do seu trabalho ou produtos, lista de serviços com preços, horários, endereço e redes. Se faltar algo, a gente ajuda a organizar.</p></details>
     </div>
+    <div class="faq-cta" data-reveal><p>Ficou alguma dúvida?</p><a class="btn btn-ghost magnetic" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Tenho uma dúvida sobre o site." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Perguntar no WhatsApp</a></div>
   </div>
 </section>
 
@@ -1079,9 +989,10 @@ section[id],footer[id]{scroll-margin-top:72px}
   <div class="wrap">
     <svg class="final-flask" viewBox="0 0 64 64" aria-hidden="true" data-reveal><use href="#flask"/></svg>
     <h2 class="h2" data-split><span class="chrome-text">Bora dar amplitude</span> <span class="volt-text">à sua marca?</span></h2>
+    <p class="lead final-lead" data-reveal>Mande o nome do seu negócio e o modelo que mais combinou. Respondemos com uma prévia e o orçamento.</p>
     <div class="hero-ctas">
-      <a class="btn btn-volt magnetic" href="#monte">Montar orçamento</a>
-      <a class="btn btn-ghost magnetic" href="https://wa.me/5511952182016" data-wa-direct target="_blank" rel="noopener">Chamar no WhatsApp</a>
+      <a class="btn btn-volt magnetic" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero dar mais amplitude para a minha marca." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>Chamar no WhatsApp</a>
+      <a class="btn btn-ghost magnetic" href="#monte">Montar orçamento</a>
     </div>
   </div>
 </section>
@@ -1098,8 +1009,9 @@ section[id],footer[id]{scroll-margin-top:72px}
       <div>
         <h4>Navegação</h4>
         <ul>
-          <li><a href="#servicos">Serviços</a></li>
-          <li><a href="#demos">Demos</a></li>
+          <li><a href="#servicos">Segmentos</a></li>
+          <li><a href="#demos">Modelos</a></li>
+          <li><a href="modelos/">Todos os modelos</a></li>
           <li><a href="#processo">Processo</a></li>
           <li><a href="#precos">Preços</a></li>
           <li><a href="#duvidas">Dúvidas</a></li>
@@ -1121,6 +1033,7 @@ section[id],footer[id]{scroll-margin-top:72px}
   </div>
 </footer>
 
+<a class="wa-float" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Vim pelo site e quero um orçamento." target="_blank" rel="noopener" aria-label="Falar no WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg><span>Fale com a gente</span></a>
 <div class="toast" role="status" aria-live="polite" data-toast><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span data-toast-text></span></div>
 
 <script src="vendor/gsap.min.js"></script>

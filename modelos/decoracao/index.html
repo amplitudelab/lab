@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Parede Viva · Modelo de loja de quadros</title>
+<meta name="description" content="Modelo de site para loja de quadros e decoração: coleções, medidas, acabamentos, simulação do quadro no ambiente e pedido de orçamento.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#efeae2">
+<link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Karla:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../kit.css">
+<script src="../kit.js"></script>
+<style>
+/* Galeria: parede de gesso, carvalho e verde-sálvia. O destaque é ver o quadro em
+   escala real no ambiente (sala, quarto ou escritório) antes de pedir. */
+:root{
+  --wall:#efeae2; --wall-2:#e6dfd3; --card:#f8f5f0; --ink:#23211d; --ink-2:#55504a; --mute:#8d867b; --line:#d8d0c2;
+  --oak:#b88b5a; --sage:#6f8064; --sage-2:#dfe4d8;
+  --serif:"Cormorant Garamond",Garamond,Georgia,serif;
+  --sans:"Karla","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--wall);scroll-behavior:smooth;scroll-padding-top:calc(var(--al-h) + 12px)}
+body{margin:0;background:var(--wall);color:var(--ink);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+svg{display:block}
+:focus-visible{outline:2px solid var(--sage);outline-offset:3px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.k{font:700 11px var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--sage)}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:20px}
+.logo{font:italic 500 30px/1 var(--serif);text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo svg{width:30px;height:30px}
+.top nav{display:none;gap:26px;font:600 14px var(--sans)}
+.top nav a{text-decoration:none}
+.top nav a:hover{color:var(--sage)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:0 24px;border-radius:999px;border:1px solid var(--ink);background:transparent;text-decoration:none;font:700 14px var(--sans);letter-spacing:.02em;transition:background-color .2s,color .2s}
+.btn:hover{background:var(--ink);color:var(--wall)}
+.btn.dark{background:var(--ink);color:var(--wall)}
+.btn.dark:hover{background:#000}
+.top .btn{min-height:42px;padding:0 18px;font-size:13px}
+@media (min-width:900px){.top nav{display:flex}}
+
+.intro{padding-block:20px 26px;display:grid;gap:12px}
+h1{font:400 clamp(46px,10vw,96px)/.95 var(--serif);margin:0;letter-spacing:-.01em;max-width:14ch}
+h1 i{color:var(--sage)}
+.intro p{color:var(--ink-2);max-width:52ch;margin:0;font-size:17px}
+
+/* simulador */
+.studio{display:grid;gap:18px;padding-bottom:64px}
+.studio > *,.panel > *{min-width:0}
+.scene{position:relative;border-radius:22px;overflow:hidden;background:var(--wall-2);box-shadow:0 30px 60px -30px rgba(35,33,29,.35);align-self:start}
+.scene svg{width:100%;height:auto}
+.scene .rulers{position:absolute;left:14px;top:14px;display:flex;gap:6px;flex-wrap:wrap}
+.pill{background:rgba(248,245,240,.9);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-radius:999px;padding:6px 12px;font:600 12px var(--sans)}
+.rooms{position:absolute;right:12px;bottom:12px;display:flex;gap:4px;background:rgba(248,245,240,.92);border-radius:999px;padding:4px}
+.rooms button{border:0;background:transparent;border-radius:999px;padding:8px 12px;font:600 12px var(--sans);min-height:36px}
+.rooms button[aria-pressed="true"]{background:var(--ink);color:var(--wall)}
+@media (max-width:640px){.rooms{position:static;justify-content:center;margin:8px auto 10px;width:max-content}}
+.panel{background:var(--card);border-radius:22px;padding:22px;display:grid;gap:20px;align-self:start}
+.panel h2{font:500 36px/1 var(--serif);margin:4px 0 2px}
+.panel .by{color:var(--mute);font-size:14px;margin:0}
+.g > b{display:flex;justify-content:space-between;font:700 12px var(--sans);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+.g > b span{font-weight:500;letter-spacing:0;text-transform:none;color:var(--mute)}
+.thumbs{display:grid;grid-auto-flow:column;grid-auto-columns:64px;gap:8px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:thin}
+.thumb{border:0;padding:0;background:none;border-radius:6px;outline-offset:3px}
+.thumb svg{width:64px;height:auto;border-radius:4px;box-shadow:0 2px 6px rgba(35,33,29,.2)}
+.thumb[aria-pressed="true"]{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--ink)}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.opt{border:1px solid var(--line);background:var(--wall);border-radius:14px;padding:10px 12px;text-align:left;min-height:54px;transition:border-color .2s}
+.opt b{display:block;font:700 14px var(--sans)}
+.opt small{color:var(--mute);font-size:12px}
+.opt[aria-pressed="true"]{border-color:var(--ink);background:var(--card);box-shadow:inset 0 0 0 1px var(--ink)}
+.opt .fin{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid rgba(0,0,0,.2)}
+.walls{display:flex;gap:8px}
+.walls button{width:38px;height:38px;border-radius:50%;border:1px solid rgba(0,0,0,.15)}
+.walls button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--ink)}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--wall)}
+.toggle small{display:block;color:var(--mute);font-size:12px}
+.sw{position:relative;width:48px;height:28px;border-radius:999px;border:0;background:var(--line);flex:0 0 auto;transition:background-color .2s}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw[aria-checked="true"]{background:var(--sage)}
+.sw[aria-checked="true"]::after{transform:translateX(20px)}
+.price{display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--line);padding-top:16px}
+.price b{font:500 40px/1 var(--serif)}
+.price small{display:block;color:var(--mute);font-size:13px}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (min-width:980px){.studio{grid-template-columns:1.45fr 1fr}.scene{position:sticky;top:calc(var(--al-h) + 16px)}}
+
+/* coleções */
+section{padding-block:72px}
+.sec-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:26px}
+.sec-h h2{font:400 clamp(40px,8vw,68px)/1 var(--serif);margin:6px 0 0}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px;font:600 13px var(--sans);min-height:40px}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--wall);border-color:var(--ink)}
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 14px}
+@media (min-width:760px){.gallery{grid-template-columns:repeat(4,1fr);gap:40px 22px}}
+.art{border:0;background:none;padding:0;text-align:left}
+.art .fr{background:var(--wall-2);padding:14%;border-radius:6px;transition:background-color .3s}
+.art .fr svg{width:100%;height:auto;box-shadow:0 0 0 6px #23211d,0 18px 30px -12px rgba(35,33,29,.5);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.art:hover .fr svg{transform:translateY(-4px)}
+.art b{display:block;font:500 22px/1.2 var(--serif);margin-top:12px}
+.art small{color:var(--mute);font-size:13px}
+.art[hidden]{display:none}
+
+.how{display:grid;gap:12px}
+.how div{background:var(--card);border-radius:22px;padding:24px}
+.how b{font:italic 400 52px/1 var(--serif);color:var(--oak)}
+.how h3{font:600 19px var(--sans);margin:10px 0 6px}
+.how p{margin:0;color:var(--ink-2);font-size:15px}
+@media (min-width:760px){.how{grid-template-columns:repeat(3,1fr)}}
+.table{width:100%;border-collapse:collapse;background:var(--card);border-radius:22px;overflow:hidden;font-size:15px}
+.table th,.table td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--line)}
+.table th{font:700 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--mute);background:var(--wall-2)}
+.table tr:last-child td{border-bottom:0}
+.scroll{overflow-x:auto;border-radius:22px}
+
+/* lista de orçamento */
+.list-btn{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;display:none;align-items:center;gap:10px;min-height:54px;padding:0 20px;border-radius:999px;border:0;background:var(--ink);color:var(--wall);font:700 14px var(--sans);box-shadow:0 14px 30px rgba(35,33,29,.35)}
+.list-btn.on{display:inline-flex}
+.list-btn i{font-style:normal;background:var(--oak);color:#fff;border-radius:999px;min-width:24px;height:24px;display:inline-grid;place-items:center;font-size:12px}
+.sheet{position:fixed;inset:0;z-index:800;background:rgba(35,33,29,.45);display:grid;align-items:end;justify-items:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet.on{opacity:1;pointer-events:auto}
+.sp{width:min(560px,100%);max-height:90vh;overflow:auto;background:var(--card);border-radius:24px 24px 0 0;padding:22px max(18px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));transform:translateY(24px);transition:transform .3s}
+.sheet.on .sp{transform:none}
+@media (min-width:640px){.sheet{align-items:center}.sp{border-radius:24px}}
+.sp h3{font:500 34px/1 var(--serif);margin:0 0 12px}
+.it{display:grid;grid-template-columns:56px 1fr auto;gap:14px;align-items:center;padding-block:12px;border-bottom:1px solid var(--line)}
+.it svg{width:56px;height:auto;box-shadow:0 0 0 3px #23211d}
+.it b{display:block;font:600 15px var(--sans)}
+.it small{display:block;color:var(--mute);font-size:13px}
+.it button{border:0;background:none;color:var(--mute);font-size:22px;width:40px;height:40px}
+.sp .tot{display:flex;justify-content:space-between;margin:16px 0;font:600 17px var(--sans)}
+.sp .acts{grid-template-columns:1fr}
+
+footer{border-top:1px solid var(--line);padding-block:34px calc(90px + env(safe-area-inset-bottom,0px));font-size:13px;color:var(--mute)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.sheet,.sp,.art .fr svg{transition:none}}
+</style>
+</head>
+<body>
+<nav class="al-bar" aria-label="Amplitude Lab">
+  <a class="al-back" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Hub de demos</a>
+  <span class="al-tag"><b>Modelo · Quadros e decoração</b> <em>· marca fictícia, conceito para demonstração</em></span>
+  <a class="al-alt" href="fotos/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Ver com fotos</a>
+  <a class="al-cta" href="https://wa.me/5511952182016?text=Oi!%20Vi%20o%20modelo%20de%20loja%20de%20quadros%20da%20Amplitude%20Lab%20e%20quero%20um%20site%20assim." target="_blank" rel="noopener">Quero este modelo</a>
+</nav>
+
+<header class="wrap top">
+  <a class="logo" href="#"><svg viewBox="0 0 30 30" fill="none" aria-hidden="true"><rect x="3" y="3" width="24" height="24" stroke="#23211d" stroke-width="2"/><rect x="8" y="8" width="14" height="14" fill="#6f8064"/><circle cx="18" cy="12" r="2.4" fill="#efeae2"/></svg>Parede Viva</a>
+  <nav aria-label="Seções"><a href="#simulador">Ver na parede</a><a href="#colecoes">Coleções</a><a href="#medidas">Medidas</a><a href="#como">Como funciona</a></nav>
+  <a class="btn" href="#colecoes">Coleções</a>
+</header>
+
+<main>
+  <div class="wrap intro">
+    <span class="k">Quadros autorais · prontos para pendurar</span>
+    <h1>Veja na sua <i>parede</i> antes de comprar.</h1>
+    <p>Escolha a obra, a medida e o acabamento. O ambiente abaixo mostra o quadro em escala real, ao lado de móveis de tamanho padrão.</p>
+  </div>
+
+  <div class="wrap studio" id="simulador">
+    <div class="scene">
+      <svg viewBox="0 0 400 260" data-scene role="img" aria-label="Simulação do quadro no ambiente"></svg>
+      <div class="rulers"><span class="pill" data-ruler></span></div>
+      <div class="rooms" role="group" aria-label="Ambiente" data-rooms>
+        <button type="button" aria-pressed="true" data-room="sala">Sala</button><button type="button" aria-pressed="false" data-room="quarto">Quarto</button><button type="button" aria-pressed="false" data-room="escritorio">Escritório</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div><span class="k" data-p-col></span><h2 data-p-title></h2><p class="by" data-p-by></p></div>
+      <div class="g"><b>Obra <span>role para ver mais</span></b><div class="thumbs" data-thumbs role="group" aria-label="Obra"></div></div>
+      <div class="g"><b>Medida <span data-p-size></span></b><div class="opts" data-sizes role="group" aria-label="Medida"></div></div>
+      <div class="g"><b>Acabamento</b><div class="opts" data-finishes role="group" aria-label="Acabamento"></div></div>
+      <div class="g"><b>Composição</b><div class="opts" data-sets role="group" aria-label="Composição"></div></div>
+      <div class="toggle"><span><b>Passe-partout e vidro</b><small>Borda branca de 5 cm e vidro antirreflexo</small></span><button type="button" class="sw" role="switch" aria-checked="false" data-pp aria-label="Passe-partout e vidro"></button></div>
+      <div class="g"><b>Cor da sua parede</b><div class="walls" data-walls role="group" aria-label="Cor da parede"></div></div>
+      <div class="price"><span><small>Total</small><b data-price></b></span><small data-inst style="text-align:right"></small></div>
+      <div class="acts"><button type="button" class="btn" data-add>Adicionar à lista</button><button type="button" class="btn dark" data-quote>Pedir orçamento</button></div>
+    </div>
+  </div>
+
+  <section id="colecoes" style="background:var(--card)">
+    <div class="wrap">
+      <div class="sec-h"><div><span class="k">Coleções</span><h2>Obras da casa</h2></div><div class="filters" data-filters role="group" aria-label="Filtrar coleção"></div></div>
+      <div class="gallery" data-gallery></div>
+    </div>
+  </section>
+
+  <section id="medidas">
+    <div class="wrap">
+      <div class="sec-h"><div><span class="k">Medidas e acabamentos</span><h2>Tabela de referência</h2></div></div>
+      <div class="scroll"><table class="table">
+        <thead><tr><th>Medida</th><th>Indicado para</th><th>Moldura preta ou branca</th><th>Madeira natural</th><th>Canvas</th></tr></thead>
+        <tbody data-table></tbody>
+      </table></div>
+      <p style="color:var(--mute);font-size:14px;margin-top:14px">Medidas sob encomenda e projetos para empresas: peça um orçamento com a foto e a largura da sua parede.</p>
+    </div>
+  </section>
+
+  <section id="como" style="padding-top:0">
+    <div class="wrap how">
+      <div><b>i.</b><h3>Escolha e simule</h3><p>Teste obras, medidas e molduras no ambiente que mais parece com o seu.</p></div>
+      <div><b>ii.</b><h3>Produção artesanal</h3><p>Impressão fine art em papel algodão 310 g e moldura montada à mão em até 7 dias úteis.</p></div>
+      <div><b>iii.</b><h3>Chega pronto</h3><p>Embalagem reforçada, ganchos e nível de bolso inclusos. É só pendurar.</p></div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap"><span>© Parede Viva · marca fictícia criada pela Amplitude Lab para demonstração</span><a href="../">← Voltar ao hub de demos</a></div></footer>
+
+<button type="button" class="list-btn" data-list-btn>Minha lista <i data-list-n>0</i></button>
+<div class="sheet" data-sheet aria-hidden="true"><div class="sp" role="dialog" aria-modal="true" aria-labelledby="l-t">
+  <h3 id="l-t">Lista de orçamento</h3>
+  <div data-items></div>
+  <div class="tot"><span>Total estimado</span><span data-l-tot></span></div>
+  <div class="acts"><button type="button" class="btn dark" data-send>Enviar pelo WhatsApp</button><button type="button" class="btn" data-close>Continuar escolhendo</button></div>
+</div></div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const brl = (n) => n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+
+  // ── obras (viewBox 300x400, retrato 3:4) ─────────────────────────────────
+  const ARTS = [
+    { id: 'sol', n: 'Sol de Fim de Tarde', by: 'Lia Moraes', col: 'Abstratos',
+      g: '<rect width="300" height="400" fill="#e9d8c0"/><rect y="250" width="300" height="150" fill="#c9773f"/><rect y="300" width="300" height="100" fill="#9c4f2b"/><circle cx="150" cy="210" r="86" fill="#d8572e"/><rect y="250" width="300" height="10" fill="#e9d8c0"/>' },
+    { id: 'arcos', n: 'Arcos', by: 'Tomás Reis', col: 'Minimalistas',
+      g: '<rect width="300" height="400" fill="#efe6d6"/><path d="M40 400V230a110 110 0 0 1 220 0V400Z" fill="#7f8f73"/><path d="M80 400V250a70 70 0 0 1 140 0V400Z" fill="#d9b48a"/><path d="M115 400V270a35 35 0 0 1 70 0V400Z" fill="#efe6d6"/><circle cx="220" cy="90" r="26" fill="#c9773f"/>' },
+    { id: 'bauhaus', n: 'Bauhaus Nº 3', by: 'Lia Moraes', col: 'Abstratos',
+      g: '<rect width="300" height="400" fill="#f1ead9"/><rect x="40" y="40" width="120" height="120" fill="#2f4a6b"/><circle cx="200" cy="120" r="60" fill="#d8a531"/><path d="M40 360a110 110 0 0 1 220 0Z" fill="#c4462b"/><rect x="170" y="210" width="90" height="40" fill="#23211d"/><circle cx="90" cy="250" r="22" fill="none" stroke="#23211d" stroke-width="8"/>' },
+    { id: 'serra', n: 'Serra Azul', by: 'Caio Duarte', col: 'Natureza',
+      g: '<rect width="300" height="400" fill="#dfe6ea"/><circle cx="210" cy="110" r="34" fill="#f2e8d5"/><path d="M0 260 70 170l50 50 60-90 120 150V400H0Z" fill="#9fb4c3"/><path d="M0 300 90 220l60 50 70-60 80 90V400H0Z" fill="#5f7d93"/><path d="M0 340 110 280l80 40 110-40V400H0Z" fill="#2f4a5f"/>' },
+    { id: 'folha', n: 'Folha', by: 'Tomás Reis', col: 'Natureza',
+      g: '<rect width="300" height="400" fill="#e9e4d6"/><path d="M150 360C40 300 50 130 150 50c100 80 110 250 0 310Z" fill="#5c7458"/><path d="M150 360V70" stroke="#e9e4d6" stroke-width="4"/>' + [110, 150, 190, 230, 270].map((y, i) => '<path d="M150 ' + y + 'q-' + (40 + i * 4) + ' -10 -' + (60 - i * 2) + ' -40M150 ' + y + 'q' + (40 + i * 4) + ' -10 ' + (60 - i * 2) + ' -40" stroke="#e9e4d6" stroke-width="3" fill="none"/>').join('') },
+    { id: 'linha', n: 'Linha Contínua', by: 'Ana Prado', col: 'Minimalistas',
+      g: '<rect width="300" height="400" fill="#f4efe6"/><path d="M90 330c10-60 40-80 40-120s-40-50-40-90 30-70 70-70 70 30 60 80-40 50-30 80 40 30 30 60-60 40-50 90" fill="none" stroke="#23211d" stroke-width="3.5" stroke-linecap="round"/><path d="M150 150c10 6 22 6 30 0M160 200c8 4 16 4 22-2" fill="none" stroke="#23211d" stroke-width="3" stroke-linecap="round"/><circle cx="200" cy="300" r="34" fill="#d9a38a" opacity=".85"/>' },
+    { id: 'mar', n: 'Mar Calmo', by: 'Caio Duarte', col: 'Minimalistas',
+      g: '<defs><linearGradient id="gm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2e3cf"/><stop offset=".55" stop-color="#e7c9b0"/><stop offset=".56" stop-color="#7e9aa8"/><stop offset="1" stop-color="#3f5f70"/></linearGradient></defs><rect width="300" height="400" fill="url(#gm)"/><rect x="0" y="236" width="300" height="2" fill="#f2e3cf" opacity=".7"/><rect x="60" y="262" width="180" height="2" fill="#f2e3cf" opacity=".5"/><rect x="100" y="290" width="100" height="2" fill="#f2e3cf" opacity=".4"/>' },
+    { id: 'jardim', n: 'Jardim Noturno', by: 'Ana Prado', col: 'Natureza',
+      g: '<rect width="300" height="400" fill="#23302a"/><circle cx="90" cy="110" r="40" fill="#d9a531"/><path d="M40 400c0-90 30-150 70-170-10 60 0 110 30 170Z" fill="#5c7458"/><path d="M130 400c0-120 50-190 110-210-20 80-10 140 20 210Z" fill="#7f9a6f"/><path d="M200 400c10-60 40-100 80-110-10 40-10 80 0 110Z" fill="#a8b98f"/><circle cx="220" cy="80" r="3" fill="#f2e8d5"/><circle cx="250" cy="140" r="2" fill="#f2e8d5"/><circle cx="170" cy="60" r="2.5" fill="#f2e8d5"/>' },
+  ];
+  // cada obra tem gradiente próprio só quando precisa; ids únicos por instância
+  let uid = 0;
+  const artSvg = (a, attrs = '') => { const k = 'u' + (uid++); return '<svg viewBox="0 0 300 400" ' + attrs + ' aria-hidden="true">' + a.g.replace(/id="gm"/g, 'id="gm' + k + '"').replace(/url\(#gm\)/g, 'url(#gm' + k + ')') + '</svg>'; };
+  const artInner = (a) => { const k = 'u' + (uid++); return a.g.replace(/id="gm"/g, 'id="gm' + k + '"').replace(/url\(#gm\)/g, 'url(#gm' + k + ')'); };
+
+  const SIZES = [{ w: 30, h: 40, p: 149, use: 'Lavabo, corredor, composições' }, { w: 45, h: 60, p: 239, use: 'Aparador, cabeceira pequena' }, { w: 60, h: 80, p: 339, use: 'Sofá de 2 lugares, escritório' }, { w: 90, h: 120, p: 589, use: 'Sofá de 3 lugares, sala ampla' }];
+  const FINISH = [
+    { id: 'preta', n: 'Moldura preta', c: '#23211d', k: 1 }, { id: 'madeira', n: 'Madeira natural', c: '#b88b5a', k: 1.15 },
+    { id: 'branca', n: 'Moldura branca', c: '#f6f3ee', k: 1 }, { id: 'canvas', n: 'Canvas', c: null, k: .9 },
+  ];
+  const SETS = [{ id: 1, n: 'Peça única', s: 'Uma obra' }, { id: 3, n: 'Trio', s: 'Mesma coleção · 10% off' }];
+  const WALLS = ['#efeae2', '#e3d3bd', '#c9d1c0', '#d9b8a3', '#5d6b73'];
+  const st = { art: 'sol', size: 2, fin: 'madeira', set: 1, pp: false, wall: WALLS[0], room: 'sala' };
+
+  // ── ambiente (unidades em centímetros: 400 de largura, chão em y=240) ────
+  const FLOOR = 240;
+  const ROOM = {
+    sala: { top: FLOOR - 85, draw: () =>
+      '<ellipse cx="200" cy="252" rx="150" ry="9" fill="rgba(0,0,0,.12)"/>' +
+      '<rect x="95" y="' + (FLOOR - 85) + '" width="210" height="50" rx="12" fill="#8a9a8c"/><rect x="85" y="' + (FLOOR - 55) + '" width="230" height="40" rx="10" fill="#7a8b7d"/>' +
+      '<rect x="80" y="' + (FLOOR - 60) + '" width="22" height="48" rx="9" fill="#6c7d70"/><rect x="298" y="' + (FLOOR - 60) + '" width="22" height="48" rx="9" fill="#6c7d70"/>' +
+      '<rect x="110" y="' + (FLOOR - 72) + '" width="40" height="28" rx="8" fill="#d9b48a"/><rect x="252" y="' + (FLOOR - 72) + '" width="40" height="28" rx="8" fill="#efe6d6"/>' +
+      '<path d="M100 ' + (FLOOR - 15) + 'v15M300 ' + (FLOOR - 15) + 'v15" stroke="#3b3631" stroke-width="3"/>' +
+      '<rect x="340" y="' + (FLOOR - 40) + '" width="26" height="40" rx="3" fill="#c9b79d"/><path d="M353 ' + (FLOOR - 40) + 'c-30-30-24-70-6-90 4 30 10 50 6 90Zm0 0c20-30 34-46 40-70-20 10-34 30-40 70Zm0 0c-10-30-34-40-50-44 10 20 30 34 50 44Z" fill="#5c7458"/>' },
+    quarto: { top: FLOOR - 100, draw: () =>
+      '<rect x="100" y="' + (FLOOR - 100) + '" width="200" height="70" rx="8" fill="#c9b79d"/><rect x="92" y="' + (FLOOR - 48) + '" width="216" height="40" rx="6" fill="#f4efe6"/>' +
+      '<rect x="92" y="' + (FLOOR - 30) + '" width="216" height="22" rx="4" fill="#8a9a8c"/><rect x="115" y="' + (FLOOR - 62) + '" width="70" height="20" rx="8" fill="#fff"/><rect x="215" y="' + (FLOOR - 62) + '" width="70" height="20" rx="8" fill="#fff"/>' +
+      '<rect x="40" y="' + (FLOOR - 50) + '" width="44" height="50" rx="3" fill="#b88b5a"/><rect x="52" y="' + (FLOOR - 82) + '" width="20" height="32" rx="10" fill="#efe6d6"/><path d="M62 ' + (FLOOR - 82) + 'v-8" stroke="#3b3631" stroke-width="2"/>' +
+      '<rect x="316" y="' + (FLOOR - 50) + '" width="44" height="50" rx="3" fill="#b88b5a"/>' },
+    escritorio: { top: FLOOR - 120, draw: () =>
+      '<rect x="110" y="' + (FLOOR - 76) + '" width="180" height="6" fill="#b88b5a"/><path d="M118 ' + (FLOOR - 70) + 'V' + FLOOR + 'M282 ' + (FLOOR - 70) + 'V' + FLOOR + '" stroke="#3b3631" stroke-width="4"/>' +
+      '<rect x="170" y="' + (FLOOR - 120) + '" width="62" height="40" rx="3" fill="#23211d"/><rect x="196" y="' + (FLOOR - 80) + '" width="10" height="4" fill="#23211d"/><rect x="174" y="' + (FLOOR - 116) + '" width="54" height="32" fill="#5d6b73"/>' +
+      '<path d="M135 ' + (FLOOR - 76) + 'l8-30 18-8" stroke="#3b3631" stroke-width="3" fill="none"/><path d="M155 ' + (FLOOR - 120) + 'l14 4-4 12-14-4Z" fill="#3b3631"/>' +
+      '<rect x="184" y="' + (FLOOR - 50) + '" width="40" height="8" rx="3" fill="#6c7d70"/><path d="M204 ' + (FLOOR - 42) + 'V' + (FLOOR - 6) + 'M190 ' + FLOOR + 'h28" stroke="#3b3631" stroke-width="3"/><rect x="186" y="' + (FLOOR - 86) + '" width="36" height="38" rx="8" fill="#6c7d70" opacity=".9"/>' +
+      '<rect x="320" y="' + (FLOOR - 160) + '" width="50" height="160" fill="#c9b79d"/><path d="M320 ' + (FLOOR - 120) + 'h50M320 ' + (FLOOR - 80) + 'h50M320 ' + (FLOOR - 40) + 'h50" stroke="#a89678" stroke-width="2"/>' +
+      '<rect x="326" y="' + (FLOOR - 140) + '" width="6" height="20" fill="#7f8f73"/><rect x="334" y="' + (FLOOR - 138) + '" width="6" height="18" fill="#c4462b"/><rect x="342" y="' + (FLOOR - 142) + '" width="6" height="22" fill="#2f4a6b"/>' },
+  };
+
+  function frame(a, x, y, w, h) {
+    const f = FINISH.find((v) => v.id === st.fin);
+    const bw = f.c ? (w >= 60 ? 3.2 : 2.4) : 0;           // espessura da moldura
+    const pp = st.pp && f.c ? (w >= 60 ? 6 : 4) : 0;       // passe-partout
+    let s = '<rect x="' + (x + 1.6) + '" y="' + (y + 2.4) + '" width="' + w + '" height="' + h + '" fill="rgba(0,0,0,.18)" filter="url(#blur)"/>';
+    if (f.c) s += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + f.c + '"/>' + (f.id === 'madeira' ? '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="url(#wood)" opacity=".35"/>' : '');
+    if (pp) s += '<rect x="' + (x + bw) + '" y="' + (y + bw) + '" width="' + (w - 2 * bw) + '" height="' + (h - 2 * bw) + '" fill="#fbf9f4"/>';
+    const ix = x + bw + pp, iy = y + bw + pp, iw = w - 2 * (bw + pp), ih = h - 2 * (bw + pp);
+    s += '<svg x="' + ix + '" y="' + iy + '" width="' + iw + '" height="' + ih + '" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">' + artInner(a) + '</svg>';
+    if (!f.c) s += '<rect x="' + (x + w) + '" y="' + (y + 1) + '" width="1.4" height="' + h + '" fill="rgba(0,0,0,.25)"/>';
+    if (st.pp) s += '<rect x="' + ix + '" y="' + iy + '" width="' + iw + '" height="' + (ih * .4) + '" fill="url(#glare)"/>';
+    return s;
+  }
+
+  function renderScene() {
+    const a = ARTS.find((v) => v.id === st.art), sz = SIZES[st.size], room = ROOM[st.room];
+    const pieces = st.set === 3 ? trio(a) : [a];
+    const gap = 8, totalW = sz.w * pieces.length + gap * (pieces.length - 1);
+    // centro do quadro a 150 cm do chão, sempre ao menos 15 cm acima do móvel
+    const cy = Math.min(FLOOR - 150, room.top - 15 - sz.h / 2);
+    const y = Math.max(6, cy - sz.h / 2);
+    let x = 200 - totalW / 2;
+    const dark = st.wall === WALLS[4];
+    let s = '<defs><filter id="blur"><feGaussianBlur stdDeviation="1.6"/></filter>' +
+      '<linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient>' +
+      '<linearGradient id="glare" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
+      '<radialGradient id="light" cx=".5" cy="0" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>' +
+      '<rect width="400" height="260" fill="' + st.wall + '"/><rect width="400" height="' + FLOOR + '" fill="url(#light)"/>' +
+      '<rect y="' + FLOOR + '" width="400" height="20" fill="#c9a77f"/><rect y="' + (FLOOR - 6) + '" width="400" height="6" fill="' + (dark ? '#4b575e' : '#f6f2ea') + '"/>' +
+      [40, 120, 200, 280, 360].map((px) => '<path d="M' + px + ' ' + FLOOR + 'l-14 20" stroke="#b8946b" stroke-width="1"/>').join('');
+    pieces.forEach((p) => { s += frame(p, x, y, sz.w, sz.h); x += sz.w + gap; });
+    s += room.draw();
+    // régua da largura total
+    const rx = 200 - totalW / 2;
+    s += '<g stroke="' + (dark ? '#efeae2' : '#23211d') + '" stroke-width=".8" opacity=".6"><path d="M' + rx + ' ' + (y - 4) + 'h' + totalW + 'M' + rx + ' ' + (y - 6) + 'v4M' + (rx + totalW) + ' ' + (y - 6) + 'v4"/></g>';
+    $('[data-scene]').innerHTML = s;
+    $('[data-ruler]').textContent = (st.set === 3 ? '3 × ' : '') + sz.w + ' × ' + sz.h + ' cm' + (st.set === 3 ? ' · ' + totalW + ' cm de largura' : '');
+  }
+  function trio(a) { const same = ARTS.filter((v) => v.col === a.col); const i = same.indexOf(a); return [same[(i + 1) % same.length], a, same[(i + 2) % same.length]]; }
+
+  function price() {
+    const sz = SIZES[st.size], f = FINISH.find((v) => v.id === st.fin);
+    let p = sz.p * f.k + (st.pp && f.c ? 40 + sz.w : 0);
+    p = Math.round(p / 10) * 10 - 1;
+    return st.set === 3 ? Math.round(p * 3 * .9 / 10) * 10 - 1 : p;
+  }
+
+  // ── painel ───────────────────────────────────────────────────────────────
+  $('[data-thumbs]').innerHTML = ARTS.map((a) => '<button type="button" class="thumb" data-a="' + a.id + '" aria-label="' + a.n + '">' + artSvg(a) + '</button>').join('');
+  $('[data-sizes]').innerHTML = SIZES.map((s, i) => '<button type="button" class="opt" data-s="' + i + '"><b>' + s.w + ' × ' + s.h + '</b><small>a partir de ' + brl(s.p) + '</small></button>').join('');
+  $('[data-finishes]').innerHTML = FINISH.map((f) => '<button type="button" class="opt" data-f="' + f.id + '"><b><span class="fin" style="background:' + (f.c || 'repeating-linear-gradient(45deg,#e6dfd3 0 3px,#fff 3px 6px)') + '"></span>' + f.n + '</b><small>' + (f.k > 1 ? '+15%' : f.k < 1 ? '−10%' : 'Incluso') + '</small></button>').join('');
+  $('[data-sets]').innerHTML = SETS.map((s) => '<button type="button" class="opt" data-set="' + s.id + '"><b>' + s.n + '</b><small>' + s.s + '</small></button>').join('');
+  $('[data-walls]').innerHTML = WALLS.map((w, i) => '<button type="button" style="background:' + w + '" data-w="' + w + '" aria-label="Parede ' + ['off-white', 'areia', 'sálvia', 'terracota claro', 'grafite'][i] + '"></button>').join('');
+
+  function sync() {
+    const a = ARTS.find((v) => v.id === st.art), sz = SIZES[st.size];
+    $('[data-p-col]').textContent = 'Coleção ' + a.col;
+    $('[data-p-title]').textContent = st.set === 3 ? 'Trio ' + a.col : a.n;
+    $('[data-p-by]').textContent = st.set === 3 ? trio(a).map((v) => v.n).join(' · ') : 'por ' + a.by + ' · impressão fine art';
+    $('[data-p-size]').textContent = sz.use;
+    $$('[data-a]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.a === st.art));
+    $$('[data-s]').forEach((b) => b.setAttribute('aria-pressed', Number(b.dataset.s) === st.size));
+    $$('[data-f]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.f === st.fin));
+    $$('[data-set]').forEach((b) => b.setAttribute('aria-pressed', Number(b.dataset.set) === st.set));
+    $$('[data-w]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.w === st.wall));
+    $$('[data-room]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.room === st.room));
+    const canvas = st.fin === 'canvas';
+    $('[data-pp]').setAttribute('aria-checked', st.pp && !canvas);
+    $('[data-pp]').disabled = canvas;
+    $('[data-pp]').closest('.toggle').style.opacity = canvas ? .5 : 1;
+    $('[data-price]').textContent = brl(price());
+    $('[data-inst]').innerHTML = 'ou 4x de ' + brl(price() / 4) + '<br>Frete grátis acima de R$ 400';
+    renderScene();
+  }
+  const on = (sel, fn) => $(sel).addEventListener('click', (e) => { const b = e.target.closest('button'); if (b && !b.disabled) { fn(b); sync(); } });
+  on('[data-thumbs]', (b) => { st.art = b.dataset.a; });
+  on('[data-sizes]', (b) => { st.size = Number(b.dataset.s); if (st.set === 3 && st.size === 3) { st.size = 2; AL.toast('Para o trio, a maior medida é 60 × 80 cm.'); } });
+  on('[data-finishes]', (b) => { st.fin = b.dataset.f; });
+  on('[data-sets]', (b) => { st.set = Number(b.dataset.set); if (st.set === 3 && st.size === 3) st.size = 2; });
+  on('[data-walls]', (b) => { st.wall = b.dataset.w; });
+  on('[data-rooms]', (b) => { st.room = b.dataset.room; });
+  $('[data-pp]').addEventListener('click', () => { st.pp = !st.pp; sync(); });
+
+  // ── galeria ──────────────────────────────────────────────────────────────
+  const COLS = ['Todas', ...new Set(ARTS.map((a) => a.col))];
+  $('[data-filters]').innerHTML = COLS.map((c, i) => '<button type="button" aria-pressed="' + (i === 0) + '">' + c + '</button>').join('');
+  $('[data-gallery]').innerHTML = ARTS.map((a) => '<button type="button" class="art" data-g="' + a.id + '" data-col="' + a.col + '"><div class="fr">' + artSvg(a) + '</div><b>' + a.n + '</b><small>' + a.by + ' · ' + a.col + ' · a partir de ' + brl(SIZES[0].p) + '</small></button>').join('');
+  $('[data-filters]').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    $$('[data-filters] button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+    $$('[data-g]').forEach((g) => { g.hidden = b.textContent !== 'Todas' && g.dataset.col !== b.textContent; });
+  });
+  $('[data-gallery]').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-g]'); if (!b) return;
+    st.art = b.dataset.g; sync();
+    $('#simulador').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+  $('[data-table]').innerHTML = SIZES.map((s) => '<tr><td><b>' + s.w + ' × ' + s.h + ' cm</b></td><td>' + s.use + '</td><td>' + brl(s.p) + '</td><td>' + brl(Math.round(s.p * 1.15 / 10) * 10 - 1) + '</td><td>' + brl(Math.round(s.p * .9 / 10) * 10 - 1) + '</td></tr>').join('');
+
+  // ── lista de orçamento ───────────────────────────────────────────────────
+  const list = [];
+  const sheet = $('[data-sheet]');
+  let lastFocus = null;
+  const desc = (it) => (it.set === 3 ? 'Trio · ' : '') + it.size + ' cm · ' + it.fin + (it.pp ? ' · passe-partout e vidro' : '');
+  function current() {
+    const a = ARTS.find((v) => v.id === st.art), sz = SIZES[st.size], f = FINISH.find((v) => v.id === st.fin);
+    return { art: a, n: st.set === 3 ? 'Trio ' + a.col : a.n, set: st.set, size: sz.w + ' × ' + sz.h, fin: f.n, pp: st.pp && !!f.c, p: price() };
+  }
+  function renderList() {
+    $('[data-list-n]').textContent = list.length;
+    $('[data-list-btn]').classList.toggle('on', list.length > 0);
+    $('[data-items]').innerHTML = list.length ? list.map((it, i) => '<div class="it">' + artSvg(it.art) + '<span><b>' + it.n + '</b><small>' + desc(it) + '</small><small style="color:var(--ink);font-weight:600">' + brl(it.p) + '</small></span><button type="button" data-rm="' + i + '" aria-label="Remover">×</button></div>').join('') : '<p style="color:var(--mute)">Sua lista está vazia.</p>';
+    $('[data-l-tot]').textContent = brl(list.reduce((s, it) => s + it.p, 0));
+  }
+  const openSheet = () => { lastFocus = document.activeElement; renderList(); sheet.classList.add('on'); sheet.setAttribute('aria-hidden', 'false'); $('[data-send]').focus(); };
+  const closeSheet = () => { sheet.classList.remove('on'); sheet.setAttribute('aria-hidden', 'true'); if (lastFocus) lastFocus.focus(); };
+  sheet.addEventListener('click', (e) => { if (e.target === sheet || e.target.closest('[data-close]')) closeSheet(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sheet.classList.contains('on')) closeSheet(); });
+  $('[data-items]').addEventListener('click', (e) => { const b = e.target.closest('[data-rm]'); if (!b) return; list.splice(b.dataset.rm, 1); renderList(); });
+  $('[data-add]').addEventListener('click', () => { list.push(current()); renderList(); AL.toast(current().n + ' entrou na sua lista.'); });
+  $('[data-list-btn]').addEventListener('click', openSheet);
+  const send = (items) => {
+    const msg = 'Olá, Parede Viva! Quero um orçamento:\n\n' + items.map((it) => '🖼️ ' + it.n + '\n   ' + desc(it) + ' — ' + brl(it.p)).join('\n') +
+      '\n\nTotal estimado: ' + brl(items.reduce((s, it) => s + it.p, 0)) + '\nAmbiente: ' + { sala: 'sala', quarto: 'quarto', escritorio: 'escritório' }[st.room] + '\n\nPosso mandar a foto da parede?';
+    AL.whats('Orçamento pronto para enviar', msg, 'loja de quadros e decoração');
+  };
+  $('[data-quote]').addEventListener('click', () => send(list.length ? list : [current()]));
+  $('[data-send]').addEventListener('click', () => { if (!list.length) return; closeSheet(); send(list); });
+
+  sync(); renderList();
+})();
+</script>
+</body>
+</html>

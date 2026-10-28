@@ -1,6 +1,6 @@
 /* AMPLITUDE LAB: animações (GSAP + ScrollTrigger + SplitText), frasco com
-   líquido em onda, demos interativas no celular, calculadora de orçamento e
-   envio pelo WhatsApp. */
+   líquido em onda, campo de partículas 3D no herói, modelos por segmento
+   rodando dentro do celular, calculadora de orçamento e envio pelo WhatsApp. */
 (() => {
   'use strict';
 
@@ -10,7 +10,6 @@
     whatsapp: '5511952182016',
     instagram: 'amplitude_lab', // usuário sem @
     currency: 'R$',
-    maintenance: 49,             // valor mensal da manutenção
   };
 
   const $ = (s, r = document) => r.querySelector(s);
@@ -30,7 +29,8 @@
 
   // ── Contatos ─────────────────────────────────────────────────────────────
   const waLink = (text) => `https://wa.me/${CONFIG.whatsapp}${text ? '?text=' + encodeURIComponent(text) : ''}`;
-  $('[data-wa-direct]').href = waLink('Olá, Amplitude Lab! Quero dar mais amplitude para a minha marca.');
+  // Todo botão com data-wa abre o WhatsApp com a mensagem pronta
+  $$('[data-wa]').forEach((a) => { a.href = waLink(a.dataset.wa); });
 
   // ── Toast ────────────────────────────────────────────────────────────────
   const toastEl = $('[data-toast]');
@@ -121,8 +121,10 @@
 
   // Agitar: clique, toque ou Enter no frasco do herói
   const stage = $('.flask-stage');
+  let hero3d = null;
   function agitate() {
     kick(0.9);
+    if (hero3d) { const r = stage.getBoundingClientRect(); hero3d.ripple(r.left + r.width / 2, r.bottom + 40, 1.5); }
     if (reduced) return;
     gsap.timeline()
       .to(stage, { rotation: -9, duration: 0.12, ease: 'power2.out' })
@@ -302,8 +304,9 @@
       { a: 34, f: 2.2, sp: -0.7, col: 'rgba(197,203,217,0.32)', lw: 1.2 },
       { a: 24, f: 3.3, sp: 1.4, col: 'rgba(169,196,255,0.28)', lw: 1 },
     ];
+    const heroEl = $('.hero');
     function draw() {
-      if (!visible) return;
+      if (!visible || heroEl.classList.contains('gl-on')) return;
       t += reduced ? 0 : 0.012;
       lvl += (energy - lvl) * 0.15;
       cx.clearRect(0, 0, w, h);
@@ -491,51 +494,97 @@
   })();
 
   // ════════════════════════════════════════════════════════════════════════
-  // LABORATÓRIO DE DEMOS (celular interativo)
+  // MODELOS POR SEGMENTO: o site de cada modelo roda dentro do celular
   // ════════════════════════════════════════════════════════════════════════
   (function lab() {
     const root = $('[data-lab]');
+    const MODELS = [
+      { slug: 'barbearia', seg: 'Barbearia', brand: 'Navalha Nobre', pkg: 'Site completo', from: 1200, prazo: '5 a 10 dias', ph: '1836983', who: 'uma barbearia',
+        acao: 'Agenda serviço, barbeiro e horário', desc: 'Tabela de preços, agendamento em cinco passos, equipe, galeria de cortes e localização com horários.' },
+      { slug: 'tatuagem', seg: 'Estúdio de tatuagem', brand: 'Roberto', pkg: 'Site completo', from: 1200, prazo: '5 a 10 dias', ph: '6593479', who: 'um estúdio de tatuagem',
+        acao: 'Pede orçamento com ideia, local e tamanho', desc: 'Estilos de traço, portfólio na pele, agenda com guest spots e orçamento guiado com mapa do corpo.' },
+      { slug: 'hamburgueria', seg: 'Hamburgueria', brand: 'Brasa Burger', pkg: 'Site completo', from: 1200, prazo: '5 a 10 dias', ph: '18713424', who: 'uma hamburgueria',
+        acao: 'Monta o lanche e envia o pedido', desc: 'Cardápio com fotos e combos, lanche com adicionais, sacola com entrega ou retirada e links para iFood, 99 e Keeta.' },
+      { slug: 'moda', seg: 'Loja de roupas', brand: 'Maré', pkg: 'Loja virtual', from: 2500, prazo: '15 a 30 dias', ph: '19684582', who: 'uma loja de roupas',
+        acao: 'Escolhe cor e tamanho e compra', desc: 'Coleções, categorias, busca, cores e tamanhos, favoritos, sacola com frete e checkout ou WhatsApp.' },
+      { slug: 'decoracao', seg: 'Quadros e decoração', brand: 'Parede Viva', pkg: 'Site completo', from: 1200, prazo: '5 a 10 dias', ph: '4857768', who: 'uma loja de quadros e decoração',
+        acao: 'Vê o quadro na parede e pede orçamento', desc: 'Simulador do quadro em escala real na sala, quarto ou escritório, com medida, moldura e lista de orçamento.' },
+    ];
+    const list = $('[data-demos]', root);
+    MODELS.forEach((m, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<button class="demo-btn" type="button" role="tab" id="t-${m.slug}" aria-controls="lab-screen" aria-selected="${i === 0}">` +
+        `<img class="demo-ph" src="modelos/img/${m.ph}-p.webp" alt="" loading="lazy" decoding="async">` +
+        `<span><span class="demo-name"></span><span class="demo-meta"></span></span>` +
+        '<span class="demo-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>';
+      $('.demo-name', li).textContent = m.seg;
+      $('.demo-meta', li).textContent = `${m.brand} · ${m.pkg}`;
+      list.appendChild(li);
+    });
     const tabs = $$('.demo-btn', root);
-    const screens = tabs.map((t) => $('#' + t.getAttribute('aria-controls')));
-    const phone = $('.phone', root);
-    let cur = 0;
+    const screen = $('[data-screen]', root), load = $('[data-load]', root), phone = $('.phone', root);
+    const frames = {};
+    let cur = 0, started = false;
 
-    // Avisos dentro do celular
-    const pt = $('[data-ptoast]', root);
-    let ptTimer;
-    const ptoast = (msg) => {
-      pt.textContent = msg; pt.classList.add('on');
-      clearTimeout(ptTimer); ptTimer = setTimeout(() => pt.classList.remove('on'), 2600);
-      kick(0.3);
-    };
-    $$('.demo-act', root).forEach((b) => b.addEventListener('click', () => ptoast(b.dataset.msg)));
+    // O site é desenhado em 390 px de largura e reduzido para caber na tela do celular
+    function fit(f) {
+      const w = screen.clientWidth, h = screen.clientHeight;
+      if (!w) return;
+      const k = w / 390;
+      f.style.width = '390px';
+      f.style.height = `${h / k}px`;
+      f.style.transform = `scale(${k})`;
+    }
+    new ResizeObserver(() => Object.values(frames).forEach(fit)).observe(screen);
+
+    function frameFor(m) {
+      if (frames[m.slug]) return frames[m.slug];
+      const f = document.createElement('iframe');
+      f.title = `Modelo ${m.brand} (${m.seg})`;
+      f.loading = 'eager';
+      f.addEventListener('load', () => { f.dataset.ready = '1'; if (MODELS[cur] === m) load.classList.add('off'); });
+      f.src = `modelos/${m.slug}/fotos/`;
+      screen.appendChild(f);
+      fit(f);
+      frames[m.slug] = f;
+      return f;
+    }
+    function paint() {
+      const m = MODELS[cur];
+      const f = frameFor(m);
+      Object.values(frames).forEach((x) => { x.style.visibility = x === f ? 'visible' : 'hidden'; });
+      load.classList.toggle('off', !!f.dataset.ready);
+    }
+
+    function details() {
+      const m = MODELS[cur];
+      $('[data-spec]', root).textContent = `Modelo ${String(cur + 1).padStart(2, '0')} / ${String(MODELS.length).padStart(2, '0')}`;
+      $('[data-out-pkg]', root).textContent = `${m.pkg} · a partir de ${money(m.from)}`;
+      $('[data-out-prazo]', root).textContent = m.prazo;
+      $('[data-out-acao]', root).textContent = m.acao;
+      $('[data-open]', root).href = `modelos/${m.slug}/fotos/`;
+      $('[data-lab-wa]', root).href = waLink(`Oi, Amplitude Lab! Vi o modelo ${m.brand} no site e quero um site assim para ${m.who}.`);
+    }
 
     function show(i, focus) {
       const next = (i + tabs.length) % tabs.length;
-      if (next === cur && screens[cur].classList.contains('on')) { if (focus) tabs[cur].focus(); return; }
-      const from = screens[cur], to = screens[next];
+      if (next === cur && started) { if (focus) tabs[cur].focus(); return; }
       cur = next;
       tabs.forEach((t, k) => { t.setAttribute('aria-selected', String(k === cur)); t.tabIndex = k === cur ? 0 : -1; });
       if (focus) tabs[cur].focus();
-      const d = tabs[cur].dataset;
-      $('[data-spec]', root).textContent = `Amostra ${String(cur + 1).padStart(2, '0')} / ${String(tabs.length).padStart(2, '0')}`;
-      $('[data-out-ideal]', root).textContent = d.ideal;
-      $('[data-out-acesso]', root).textContent = d.acesso;
+      tabs[cur].scrollIntoView({ block: 'nearest', inline: 'center', behavior: reduced ? 'auto' : 'smooth' });
+      const m = MODELS[cur];
+      details();
+      started = true;
+      paint();
+      kick(0.3);
       const title = $('[data-out-title]', root), meta = $('[data-out-meta]', root), desc = $('[data-out-desc]', root);
-      pt.classList.remove('on');
-      if (reduced) {
-        from.classList.remove('on'); to.classList.add('on');
-        title.textContent = d.title; meta.textContent = d.meta; desc.textContent = d.desc;
-        return;
-      }
+      const write = () => { title.textContent = m.brand; meta.textContent = `${m.seg} · ${m.pkg}`; desc.textContent = m.desc; };
+      if (reduced) { write(); return; }
       gsap.timeline()
-        .to([title, meta, desc], { yPercent: -30, opacity: 0, duration: 0.15, ease: 'power3.in', onComplete: () => { title.textContent = d.title; meta.textContent = d.meta; desc.textContent = d.desc; } })
+        .to([title, meta, desc], { yPercent: -30, opacity: 0, duration: 0.15, ease: 'power3.in', onComplete: write })
         .fromTo([title, meta, desc], { yPercent: 40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.45, stagger: 0.05 });
-      gsap.timeline()
-        .to(from, { opacity: 0, y: -14, duration: 0.18, ease: 'power3.in', onComplete: () => { from.classList.remove('on'); gsap.set(from, { clearProps: 'all' }); } })
-        .add(() => { to.classList.add('on'); to.scrollTop = 0; })
-        .fromTo(to, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, clearProps: 'transform' });
-      gsap.fromTo(phone, { scale: 0.985 }, { scale: 1, duration: 0.6, ease: 'back.out(2)' });
+      gsap.fromTo(phone, { scale: 0.97, rotateY: -8, transformPerspective: 1000 }, { scale: 1, rotateY: 0, duration: 0.8, ease: 'back.out(1.6)' });
     }
     tabs.forEach((t, i) => {
       t.tabIndex = i === 0 ? 0 : -1;
@@ -547,367 +596,185 @@
     });
     $('[data-next]', root).addEventListener('click', () => show(cur + 1));
     $('[data-prev]', root).addEventListener('click', () => show(cur - 1));
+    details();
 
-    // ── Agendamento ──
-    const book = { svc: 'Corte', dur: '40 min', day: 0, slot: null };
-    const wd = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-    const mo = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
-    const days = [];
-    for (let d = new Date(), i = 0; days.length < 6 && i < 14; i++) {
-      const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + i + 1);
-      if (x.getDay() !== 0) days.push(x);
-    }
-    const daysEl = $('[data-days]', root), slotsEl = $('[data-slots]', root), conf = $('[data-confirm]', root);
-    const hours = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
-    const taken = (di, hi) => ((di * 7 + hi * 3) % 5) === 0;
-    function renderDays() {
-      daysEl.innerHTML = '';
-      days.forEach((d, i) => {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.setAttribute('aria-pressed', String(book.day === i));
-        b.setAttribute('aria-label', `${wd[d.getDay()]}, ${d.getDate()} de ${mo[d.getMonth()]}`);
-        b.innerHTML = `${wd[d.getDay()]}<b>${d.getDate()}</b>`;
-        b.onclick = () => { book.day = i; book.slot = null; renderDays(); renderSlots(); };
-        daysEl.appendChild(b);
-      });
-    }
-    function renderSlots() {
-      slotsEl.innerHTML = '';
-      hours.forEach((h, hi) => {
-        const b = document.createElement('button');
-        b.type = 'button'; b.textContent = h;
-        b.disabled = taken(book.day, hi);
-        if (b.disabled) b.setAttribute('aria-label', h + ', ocupado');
-        b.setAttribute('aria-pressed', String(book.slot === h));
-        b.onclick = () => { book.slot = h; renderSlots(); kick(0.2); };
-        slotsEl.appendChild(b);
-      });
-      conf.disabled = !book.slot;
-      conf.textContent = book.slot ? `Confirmar ${book.slot}` : 'Escolha um horário';
-    }
-    $$('.svc-list button', root).forEach((b) => b.addEventListener('click', () => {
-      $$('.svc-list button', root).forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      book.svc = b.dataset.svc; book.dur = b.dataset.dur;
+    // O primeiro site só carrega quando a seção se aproxima
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      if (!started) { started = true; paint(); }
+    }, { rootMargin: '500px 0px' });
+    io.observe(root);
+
+    // Cards de segmento levam direto ao modelo
+    $$('[data-demo-go]').forEach((b) => b.addEventListener('click', () => {
+      show(Number(b.dataset.demoGo));
+      $('#demos').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
     }));
-    conf.addEventListener('click', () => {
-      const d = days[book.day];
-      const tk = $('[data-ticket]', root);
-      tk.innerHTML = '';
-      [['Serviço', book.svc], ['Duração', book.dur], ['Quando', `${wd[d.getDay()]}, ${d.getDate()} ${mo[d.getMonth()]} · ${book.slot}`]].forEach(([k, v]) => {
-        const row = document.createElement('div');
-        const a = document.createElement('span'); a.textContent = k;
-        const b = document.createElement('b'); b.textContent = v;
-        row.append(a, b); tk.appendChild(row);
-      });
-      $('[data-book-form]', root).hidden = true;
-      const done = $('[data-book-done]', root);
-      done.hidden = false;
-      kick(0.6);
-      if (!reduced) gsap.from($$('.chk, h3, p, .ticket, .link-btn', done), { y: 16, opacity: 0, duration: 0.5, stagger: 0.06 });
-    });
-    $('[data-book-again]', root).addEventListener('click', () => {
-      book.slot = null; renderDays(); renderSlots();
-      $('[data-book-form]', root).hidden = false; $('[data-book-done]', root).hidden = true;
-    });
-    renderDays(); renderSlots();
-
-    // ── Cardápio ──
-    const MENU = [
-      ['Pizzas', [
-        ['Margherita', 'Tomate, muçarela de búfala e manjericão', 52, '#e9b16b,#b4381f'],
-        ['Calabresa', 'Calabresa artesanal e cebola roxa', 48, '#d98a4e,#7b1e10'],
-        ['Quatro queijos', 'Muçarela, gorgonzola, parmesão e provolone', 56, '#f0d39a,#c08a3e'],
-      ]],
-      ['Massas', [
-        ['Carbonara', 'Spaghetti, guanciale, ovo e pecorino', 46, '#f3e1b0,#c99a45'],
-        ['Lasanha da nonna', 'Ragu de carne e bechamel', 54, '#e08a5a,#8f2e18'],
-        ['Nhoque ao sugo', 'Nhoque de batata com molho de tomate', 42, '#f2c48e,#c2502a'],
-      ]],
-      ['Bebidas', [
-        ['Limonada siciliana', 'Feita na hora', 14, '#f6f0a8,#c9c25a'],
-        ['Soda italiana', 'Maçã verde ou frutas vermelhas', 16, '#bfe7c2,#d0566b'],
-        ['Vinho da casa', 'Taça de tinto ou branco', 24, '#a3304a,#4a0f1f'],
-      ]],
-    ];
-    const cart = { n: 0, total: 0 };
-    const catsEl = $('[data-cats]', root), dishesEl = $('[data-dishes]', root), cartEl = $('[data-cart]', root);
-    function renderDishes(c) {
-      dishesEl.innerHTML = '';
-      MENU[c][1].forEach(([name, desc, price, grad]) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<i class="pic" style="background:linear-gradient(150deg,${grad})"></i><div><b></b><small></small><span class="pr"></span></div><button type="button">+</button>`;
-        $('b', li).textContent = name;
-        $('small', li).textContent = desc;
-        $('.pr', li).textContent = money(price);
-        const add = $('button', li);
-        add.setAttribute('aria-label', `Adicionar ${name}`);
-        add.addEventListener('click', () => {
-          cart.n++; cart.total += price;
-          $('[data-cart-count]', root).textContent = `Ver pedido · ${cart.n} ${cart.n === 1 ? 'item' : 'itens'}`;
-          $('[data-cart-total]', root).textContent = money(cart.total);
-          cartEl.classList.add('on');
-          kick(0.25);
-          if (!reduced) gsap.fromTo(add, { scale: 0.8 }, { scale: 1, duration: 0.45, ease: 'back.out(3)' });
-        });
-        dishesEl.appendChild(li);
-      });
-    }
-    MENU.forEach(([cat], i) => {
-      const b = document.createElement('button');
-      b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = cat;
-      b.setAttribute('aria-selected', String(i === 0));
-      b.addEventListener('click', () => {
-        $$('button', catsEl).forEach((x) => x.setAttribute('aria-selected', String(x === b)));
-        renderDishes(i);
-      });
-      catsEl.appendChild(b);
-    });
-    renderDishes(0);
-
-    // ── Evento ──
-    const stages = [
-      [['16:00', 'Coletivo Maré', 'Abertura · house'], ['17:30', 'Duna Rosa', 'Indie eletrônico'], ['19:00', 'Kairo', 'Ao vivo · synth'], ['21:00', 'Vértice', 'Headliner · techno']],
-      [['16:30', 'Lia Moraes', 'Voz e violão'], ['18:00', 'Os Tropicais', 'Samba-rock'], ['19:45', 'Banda Faro', 'Rock alternativo'], ['21:30', 'Neon Baile', 'Encerramento · funk']],
-    ];
-    const live = [2, 1];
-    const lu = $('[data-lineup]', root);
-    function renderLineup(s) {
-      lu.innerHTML = '';
-      stages[s].forEach((a, i) => {
-        const li = document.createElement('li');
-        li.innerHTML = '<time></time><div><b></b><small></small></div><span></span>';
-        $('time', li).textContent = a[0]; $('b', li).textContent = a[1]; $('small', li).textContent = a[2];
-        if (i === live[s]) { const n = $('span', li); n.className = 'now-badge'; n.textContent = 'AGORA'; }
-        lu.appendChild(li);
-      });
-      if (!reduced) gsap.from(lu.children, { x: -10, opacity: 0, duration: 0.4, stagger: 0.05 });
-    }
-    $$('.stage-tabs button', root).forEach((b) => b.addEventListener('click', () => {
-      $$('.stage-tabs button', root).forEach((x) => x.setAttribute('aria-selected', String(x === b)));
-      renderLineup(Number(b.dataset.stage));
-    }));
-    renderLineup(0);
   })();
 
   // ════════════════════════════════════════════════════════════════════════
-  // ORÇAMENTO: cards de preço + calculadora + formulário
+  // ORÇAMENTO: segmento + o que o site faz → tamanho recomendado → WhatsApp
   // ════════════════════════════════════════════════════════════════════════
   (function quote() {
-    const items = $$('.price[data-id]').map((el) => ({
-      id: el.dataset.id,
-      kind: el.dataset.kind,
-      name: el.dataset.name,
-      price: Number(el.dataset.price),
-      desc: $('.price-desc', el).textContent.trim(),
-    }));
-    items.push({ id: 'manutencao', kind: 'monthly', name: 'Manutenção mensal', price: CONFIG.maintenance, desc: 'Até 2 alterações por mês e suporte' });
-    const byId = Object.fromEntries(items.map((s) => [s.id, s]));
-    const state = Object.fromEntries(items.map((s) => [s.id, false]));
-
-    // O que cada pacote já inclui e quantos meses de manutenção dá de brinde
-    const PKG = {
-      pulso: { covers: ['cartao'], months: 0 },
-      frequencia: { covers: ['cartao', 'agendamento'], months: 1, core: ['agendamento'] },
-      amplitude: { covers: ['cartao', 'remake', 'kit', 'agendamento|display'], months: 2, core: ['remake', 'agendamento|display'] },
+    // Faixas do plano de negócio (valores de partida)
+    const PKGS = [
+      { id: 'vitrine', name: 'Página vitrine', lo: 600, hi: 1200, prazo: '2 a 4 dias', desc: 'Uma página com serviços, galeria, localização e WhatsApp' },
+      { id: 'completo', name: 'Site completo', lo: 1200, hi: 2500, prazo: '5 a 10 dias', desc: 'Várias seções, agendamento, orçamento ou pedidos e domínio próprio' },
+      { id: 'loja', name: 'Loja virtual', lo: 2500, hi: 5000, plus: true, prazo: '15 a 30 dias', desc: 'Catálogo, carrinho, checkout e pagamento online' },
+    ];
+    const MNT = [
+      { id: 'nenhum', name: 'Sem plano', price: 0, desc: 'Ajustes avulsos quando você precisar' },
+      { id: 'basico', name: 'Básico', price: 79, desc: 'Hospedagem acompanhada, ajustes de conteúdo e suporte' },
+      { id: 'completo-mensal', name: 'Completo', price: 199, desc: 'Ajustes e novidades sem custo extra, dentro de um limite de horas' },
+    ];
+    const FEATS = [
+      { id: 'whats', name: 'WhatsApp, localização e horários', tier: 0 },
+      { id: 'galeria', name: 'Galeria de fotos ou portfólio', tier: 0 },
+      { id: 'agenda', name: 'Agendamento de horários', tier: 1 },
+      { id: 'orcamento', name: 'Pedido de orçamento guiado', tier: 1 },
+      { id: 'cardapio', name: 'Cardápio com pedido no WhatsApp', tier: 1 },
+      { id: 'equipe', name: 'Equipe, depoimentos e várias seções', tier: 1 },
+      { id: 'carrinho', name: 'Catálogo com carrinho e frete', tier: 2 },
+      { id: 'pagamento', name: 'Pagamento online (Pix e cartão)', tier: 2 },
+    ];
+    // O que cada segmento costuma precisar (o cliente pode mudar)
+    const SEG_FEATS = {
+      'Barbearia': ['whats', 'galeria', 'agenda', 'equipe'],
+      'Estúdio de tatuagem': ['whats', 'galeria', 'orcamento'],
+      'Lanchonete ou hamburgueria': ['whats', 'cardapio'],
+      'Loja de roupas': ['whats', 'carrinho', 'pagamento'],
+      'Quadros e decoração': ['whats', 'galeria', 'orcamento'],
+      'Outro': ['whats'],
     };
-    const pkgIds = Object.keys(PKG);
-    const currentPkg = () => pkgIds.find((p) => state[p]) || null;
+    const state = { seg: null, feats: new Set(), pkg: null, manual: false, mnt: 'nenhum' };
+    const pkgById = Object.fromEntries(PKGS.map((p) => [p.id, p]));
+    const mntById = Object.fromEntries(MNT.map((m) => [m.id, m]));
+    const range = (p) => `${money(p.lo)} a ${money(p.hi)}${p.plus ? ' ou mais' : ''}`;
 
-    // Itens cobertos (por um pacote, ou o kit pelo remake) → { id: motivo }
-    function coveredBy(st, pkg) {
-      const out = {};
-      if (pkg) {
-        for (const c of PKG[pkg].covers) {
-          if (c.includes('|')) {
-            const hit = c.split('|').find((x) => st[x]);
-            if (hit) out[hit] = byId[pkg].name;
-          } else if (st[c]) out[c] = byId[pkg].name;
-        }
-      }
-      if (!out.kit && st.kit && st.remake) out.kit = 'Remake visual';
-      return out;
+    function row(type, name, id, title, sub, right) {
+      const r = document.createElement('div');
+      r.className = 'opt';
+      r.dataset.id = id;
+      r.innerHTML = `<input type="${type}" name="${name}" id="o-${id}"><label class="opt-name" for="o-${id}"></label><span class="opt-price"></span>`;
+      const lab = $('.opt-name', r);
+      lab.textContent = title;
+      if (sub) { const s2 = document.createElement('span'); s2.className = 'opt-sub'; s2.textContent = sub; lab.appendChild(s2); }
+      $('.opt-price', r).textContent = right;
+      return r;
     }
-
-    // ── Linhas da calculadora ──
-    const opts = $('[data-opts]');
-    const groups = [['Pacotes', 'pkg'], ['Avulsos', 'item'], ['Mensal', 'monthly']];
-    groups.forEach(([label, kind]) => {
-      const h = document.createElement('p');
-      h.className = 'opt-group'; h.textContent = label;
-      opts.appendChild(h);
-      const box = document.createElement('div');
-      box.className = 'opts';
-      items.filter((s) => s.kind === kind).forEach((s) => {
-        const row = document.createElement('div');
-        row.className = 'opt';
-        row.dataset.id = s.id;
-        row.innerHTML = `<input type="checkbox" id="o-${s.id}"><label class="opt-name" for="o-${s.id}"></label><span class="opt-price"></span>`;
-        const lab = $('.opt-name', row);
-        lab.textContent = s.name;
-        const sub = document.createElement('span');
-        sub.className = 'opt-sub'; sub.textContent = s.desc;
-        lab.appendChild(sub);
-        $('.opt-price', row).textContent = s.kind === 'monthly' ? `${money(s.price)}/mês` : money(s.price);
-        $('input', row).addEventListener('change', (e) => set(s.id, e.target.checked));
-        box.appendChild(row);
-      });
-      opts.appendChild(box);
+    const featBox = $('[data-feats]'), pkgBox = $('[data-pkgs]'), mntBox = $('[data-mnt]');
+    FEATS.forEach((f) => {
+      const r = row('checkbox', 'feat', f.id, f.name, '', PKGS[f.tier].name);
+      $('input', r).addEventListener('change', (e) => { e.target.checked ? state.feats.add(f.id) : state.feats.delete(f.id); render(); });
+      featBox.appendChild(r);
     });
+    PKGS.forEach((p) => {
+      const r = row('radio', 'pkg', p.id, p.name, `${p.desc} · ${p.prazo}`, `${money(p.lo)} a ${fmt(p.hi)}${p.plus ? '+' : ''}`);
+      $('input', r).addEventListener('change', () => { state.pkg = p.id; state.manual = true; render(); });
+      pkgBox.appendChild(r);
+    });
+    MNT.forEach((m) => {
+      const r = row('radio', 'mnt', m.id, m.name, m.desc, m.price ? `${money(m.price)}/mês` : '—');
+      $('input', r).addEventListener('change', () => { state.mnt = m.id; render(); });
+      mntBox.appendChild(r);
+    });
+    $$('[data-seg]').forEach((c) => c.addEventListener('click', () => {
+      state.seg = c.dataset.seg;
+      state.feats = new Set(SEG_FEATS[state.seg]);
+      state.manual = false;
+      render();
+      kick(0.25);
+    }));
+
+    const recommended = () => PKGS[Math.max(0, ...[...state.feats].map((id) => FEATS.find((f) => f.id === id).tier))];
+    const currentPkg = () => (state.manual && state.pkg ? pkgById[state.pkg] : recommended());
 
     const totalEl = $('[data-total]');
     const shown = { v: 0 };
-
-    function set(id, on, quiet) {
-      if (on && PKG[id]) pkgIds.forEach((p) => { if (p !== id) state[p] = false; });
-      state[id] = on;
-      render(quiet);
-    }
-
-    function compute() {
-      const pkg = currentPkg();
-      const cov = coveredBy(state, pkg);
-      const lines = [];
-      let total = 0;
-      if (pkg) { lines.push({ label: byId[pkg].name, value: money(byId[pkg].price) }); total += byId[pkg].price; }
-      items.filter((s) => s.kind === 'item' && state[s.id]).forEach((s) => {
-        if (cov[s.id]) lines.push({ label: s.name, value: 'incluso', inc: true, why: cov[s.id] });
-        else { lines.push({ label: s.name, value: money(s.price) }); total += s.price; }
-      });
-      const months = pkg ? PKG[pkg].months : 0;
-      if (state.manutencao) lines.push({ label: 'Manutenção', value: `${money(CONFIG.maintenance)}/mês`, monthly: true });
-      return { pkg, cov, lines, total, months };
-    }
-
-    // Melhor pacote para o que foi escolhido avulso
-    function suggestion() {
-      if (currentPkg()) return null;
-      const chosen = items.filter((s) => s.kind === 'item' && state[s.id]).map((s) => s.id);
-      if (!chosen.length) return null;
-      let best = null;
-      for (const p of pkgIds) {
-        const def = PKG[p];
-        if (!def.core) continue;
-        const coreOk = def.core.every((c) => c.split('|').some((x) => state[x]));
-        if (!coreOk) continue;
-        const sim = { ...state, [p]: true };
-        const cov = coveredBy(sim, p);
-        const covIds = Object.keys(cov).filter((id) => cov[id] === byId[p].name);
-        // O kit coberto pelo remake já não era cobrado
-        const nowCov = coveredBy(state, null);
-        const before = covIds.reduce((a, id) => a + (nowCov[id] ? 0 : byId[id].price), 0);
-        const after = byId[p].price;
-        // O que o pacote dá além do que a pessoa escolheu
-        const gains = def.covers.filter((c) => !c.includes('|') && !state[c] && !(c === 'kit' && state.remake)).map((c) => byId[c]);
-        if (def.covers.some((c) => c === 'agendamento|display') && !covIds.some((id) => id === 'agendamento' || id === 'display')) gains.push(byId.agendamento);
-        const gainValue = gains.reduce((a, s) => a + s.price, 0) + def.months * CONFIG.maintenance;
-        const diff = after - before;
-        if (diff < 0 || diff < gainValue) {
-          const score = gainValue - diff;
-          if (!best || score > best.score) best = { p, covIds, diff, gains, months: def.months, score };
-        }
-      }
-      return best;
-    }
-
     function render(quiet) {
-      const { pkg, cov, lines, total, months } = compute();
-      $$('.opt', opts).forEach((row) => {
-        const id = row.dataset.id;
-        row.classList.toggle('is-on', state[id]);
-        row.classList.toggle('is-covered', !!cov[id]);
-        $('input', row).checked = state[id];
-        const pr = $('.opt-price', row);
-        const s = byId[id];
-        pr.textContent = cov[id] ? 'incluso' : s.kind === 'monthly' ? `${money(s.price)}/mês` : money(s.price);
-      });
-      $$('[data-add]').forEach((b) => {
-        const on = state[b.dataset.add];
-        b.classList.toggle('is-added', on);
-        b.textContent = on ? 'No orçamento ✓' : 'Adicionar';
-      });
+      const rec = recommended(), pkg = currentPkg();
+      const touched = state.seg || state.feats.size || state.manual;
+      $$('[data-seg]').forEach((c) => c.setAttribute('aria-checked', String(c.dataset.seg === state.seg)));
+      $$('.opt', featBox).forEach((r) => { const on = state.feats.has(r.dataset.id); r.classList.toggle('is-on', on); $('input', r).checked = on; });
+      $$('.opt', pkgBox).forEach((r) => { const on = touched && r.dataset.id === pkg.id; r.classList.toggle('is-on', on); $('input', r).checked = on; });
+      $$('.opt', mntBox).forEach((r) => { const on = r.dataset.id === state.mnt; r.classList.toggle('is-on', on); $('input', r).checked = on; });
 
+      const recEl = $('[data-rec]');
+      recEl.hidden = !state.feats.size;
+      if (state.feats.size) {
+        recEl.innerHTML = '';
+        const b = document.createElement('b'); b.textContent = rec.name;
+        if (PKGS.indexOf(pkg) < PKGS.indexOf(rec)) recEl.append('Para o que você marcou, o tamanho indicado é ', b, '. O escolhido pode não comportar tudo.');
+        else recEl.append('Indicado para o que você marcou: ', b, '.');
+      }
+
+      const lines = [];
+      if (state.seg) lines.push(['Segmento', state.seg]);
+      if (touched) lines.push([pkg.name, range(pkg)]);
+      const feats = FEATS.filter((f) => state.feats.has(f.id));
+      if (feats.length) lines.push(['Recursos', `${feats.length} ${feats.length === 1 ? 'item' : 'itens'}`]);
+      if (state.mnt !== 'nenhum') lines.push([`Plano ${mntById[state.mnt].name}`, `${money(mntById[state.mnt].price)}/mês`]);
       const ul = $('[data-lines]');
       ul.innerHTML = '';
       if (!lines.length) {
-        const li = document.createElement('li'); li.className = 'sum-empty'; li.textContent = 'Nenhum item escolhido ainda.'; ul.appendChild(li);
+        const li = document.createElement('li'); li.className = 'sum-empty'; li.textContent = 'Escolha o segmento e o que o site precisa fazer.'; ul.appendChild(li);
       } else {
-        lines.forEach((l) => {
+        lines.forEach(([a, b]) => {
           const li = document.createElement('li');
-          if (l.inc) li.className = 'is-inc';
-          const a = document.createElement('span'); a.textContent = l.label;
-          const b = document.createElement('span'); b.textContent = l.value;
-          li.append(a, b); ul.appendChild(li);
+          const x = document.createElement('span'); x.textContent = a;
+          const y = document.createElement('span'); y.textContent = b;
+          li.append(x, y); ul.appendChild(li);
         });
         if (!quiet && !reduced) gsap.from(ul.children, { x: -8, opacity: 0, duration: 0.3, stagger: 0.03 });
       }
-      const count = lines.length;
-      $('[data-count-items]').textContent = `${count} ${count === 1 ? 'item' : 'itens'}`;
-
+      $('[data-count-items]').textContent = `${lines.length} ${lines.length === 1 ? 'item' : 'itens'}`;
+      $('[data-range]').textContent = touched ? range(pkg) : 'escolha o segmento';
       const notes = [];
-      if (months) notes.push(`O ${byId[pkg].name} inclui ${months === 1 ? 'o 1º mês' : `${months} meses`} de manutenção grátis.`);
-      if (state.manutencao) notes.push(`Manutenção: ${money(CONFIG.maintenance)} por mês${months ? ', começando depois do período grátis' : ''}.`);
-      if (cov.kit === 'Remake visual') notes.push('O remake visual já inclui o kit para redes.');
+      if (touched) notes.push(`Prazo: ${pkg.prazo}. Pagamento: 50% na aprovação e 50% na entrega.`);
+      if (state.mnt !== 'nenhum') notes.push(`Plano mensal ${mntById[state.mnt].name}: ${money(mntById[state.mnt].price)} por mês, cancele quando quiser.`);
       const extra = $('[data-extra]');
       extra.hidden = !notes.length; extra.textContent = notes.join(' ');
 
+      const total = touched ? pkg.lo : 0;
       gsap.to(shown, {
         v: total, duration: reduced ? 0 : 0.6, ease: 'power3.out', overwrite: true,
         onUpdate: () => { totalEl.textContent = fmt(Math.round(shown.v)); },
       });
       if (!quiet && !reduced && total) gsap.fromTo('.sum-value', { scale: 1.06 }, { scale: 1, duration: 0.4, ease: 'back.out(2)', overwrite: true });
 
-      const sug = $('[data-suggest]');
-      const best = suggestion();
-      if (best) {
-        const name = byId[best.p].name;
-        const extras = best.gains.map((s) => s.name.toLowerCase());
-        if (best.months) extras.push(best.months === 1 ? '1 mês de manutenção' : `${best.months} meses de manutenção`);
-        const list = extras.length > 1 ? extras.slice(0, -1).join(', ') + ' e ' + extras[extras.length - 1] : extras[0];
-        $('[data-suggest-text]').textContent = best.diff < 0
-          ? `Isso cabe no ${name}: economize ${money(-best.diff)}${list ? ` e ganhe ${list}` : ''}.`
-          : best.diff === 0
-            ? `Pelo mesmo valor, o ${name} ainda inclui ${list}.`
-            : `Por + ${money(best.diff)}, o ${name} inclui também ${list}.`;
-        sug.dataset.p = best.p;
-        sug.dataset.cov = best.covIds.join(',');
-        if (sug.hidden) { sug.hidden = false; if (!reduced) gsap.from(sug, { y: 12, opacity: 0, duration: 0.45 }); }
-      } else sug.hidden = true;
+      $$('[data-add]').forEach((b) => {
+        const id = b.dataset.add;
+        const on = pkgById[id] ? touched && pkg.id === id : state.mnt === id;
+        b.classList.toggle('is-added', on);
+        b.textContent = on ? 'No orçamento ✓' : (pkgById[id] ? 'Simular no orçamento' : 'Simular');
+      });
     }
 
-    $('[data-suggest-apply]').addEventListener('click', () => {
-      const sug = $('[data-suggest]');
-      const p = sug.dataset.p;
-      sug.dataset.cov.split(',').filter(Boolean).forEach((id) => { state[id] = false; });
-      if (state.kit && state.remake) state.kit = false;
-      set(p, true);
-      toast(`Trocado pelo ${byId[p].name}.`);
-    });
-
+    // Botões dos cards de preço levam a escolha para o orçamento
     $$('[data-add]').forEach((b) => b.addEventListener('click', () => {
       const id = b.dataset.add;
-      const was = state[id];
-      set(id, !was);
-      if (!was) {
-        toast(`${byId[id].name} no orçamento.`);
-        if (!reduced) gsap.fromTo(b, { scale: 0.94 }, { scale: 1, duration: 0.45, ease: 'back.out(3)' });
-      }
+      if (pkgById[id]) { state.pkg = id; state.manual = true; } else state.mnt = id;
+      render();
+      toast(`${pkgById[id] ? pkgById[id].name : 'Plano ' + mntById[id].name} no orçamento.`);
+      $('#monte').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
     }));
 
     // Mensagem do pedido
     const form = $('[data-form]');
     function buildMessage() {
       const f = new FormData(form);
-      const { lines, total, months, pkg } = compute();
+      const pkg = currentPkg();
       const out = ['*Pedido de orçamento: Amplitude Lab*', ''];
       out.push(`Nome: ${f.get('nome').trim()}`);
-      if (f.get('negocio').trim()) out.push(`Empresa/projeto: ${f.get('negocio').trim()}`);
-      out.push(`Segmento: ${f.get('segmento')}`);
-      out.push('', '*Itens*');
-      lines.forEach((l) => out.push(`• ${l.label}: ${l.inc ? `incluso (${l.why})` : l.value}`));
-      out.push('', `*Total único: ${money(total)}*`);
-      if (months) out.push(`${byId[pkg].name} com ${months === 1 ? '1 mês' : `${months} meses`} de manutenção grátis`);
-      out.push('', `Prazo: ${f.get('prazo')}`);
+      if (f.get('negocio').trim()) out.push(`Negócio: ${f.get('negocio').trim()}`);
+      if (f.get('instagram').trim()) out.push(`Instagram: ${f.get('instagram').trim()}`);
+      out.push(`Segmento: ${state.seg || 'não informado'}`);
+      out.push('', `*${pkg.name}*: ${range(pkg)} · ${pkg.prazo}`);
+      const feats = FEATS.filter((x) => state.feats.has(x.id));
+      if (feats.length) { out.push('', '*O site precisa de*'); feats.forEach((x) => out.push(`• ${x.name}`)); }
+      if (state.mnt !== 'nenhum') out.push('', `Plano mensal: ${mntById[state.mnt].name} (${money(mntById[state.mnt].price)}/mês)`);
+      out.push('', `Para quando: ${f.get('prazo')}`);
       if (f.get('mensagem').trim()) out.push('', f.get('mensagem').trim());
       return out.join('\n');
     }
@@ -917,9 +784,9 @@
       const nome = $('#f-nome');
       const field = nome.closest('.field');
       field.classList.toggle('is-error', !nome.value.trim());
-      if (!compute().lines.length) {
-        msg.textContent = 'Escolha pelo menos um item acima.';
-        if (!reduced) gsap.fromTo('[data-opts]', { x: -10 }, { x: 0, duration: 0.4, ease: 'elastic.out(1, 0.3)' });
+      if (!state.seg) {
+        msg.textContent = 'Escolha o seu segmento lá em cima.';
+        if (!reduced) gsap.fromTo('[data-segs]', { x: -10 }, { x: 0, duration: 0.4, ease: 'elastic.out(1, 0.3)' });
         return false;
       }
       if (!nome.value.trim()) {
@@ -953,15 +820,85 @@
       toast('Pedido copiado.');
     });
 
-    // Link direto para um pacote: index.html?pacote=frequencia#monte
+    // Link direto para um pacote: index.html?pacote=completo#monte
     const pre = new URLSearchParams(location.search).get('pacote');
-    if (pre && byId[pre]) state[pre] = true;
+    if (pre && pkgById[pre]) { state.pkg = pre; state.manual = true; }
     render(true);
   })();
+
+  // ════════════════════════════════════════════════════════════════════════
+  // INTERAÇÕES: barra de rolagem, WhatsApp flutuante, cards 3D, faíscas
+  // ════════════════════════════════════════════════════════════════════════
+  const bar = $('.scroll-bar b');
+  ScrollTrigger.create({ start: 0, end: 'max', onUpdate: (s) => gsap.set(bar, { scaleX: s.progress }) });
+  const waFloat = $('.wa-float');
+  ScrollTrigger.create({ start: () => innerHeight * 0.5, end: 'max', onToggle: (s) => waFloat.classList.toggle('on', s.isActive) });
+
+  if (finePointer && !reduced) {
+    $$('[data-tilt]').forEach((el) => {
+      const glare = document.createElement('span');
+      glare.className = 'tilt-glare';
+      el.prepend(glare);
+      const rx = gsap.quickTo(el, 'rotationX', { duration: 0.5, ease: 'power3' });
+      const ry = gsap.quickTo(el, 'rotationY', { duration: 0.5, ease: 'power3' });
+      el.addEventListener('pointerenter', () => gsap.set(el, { transformPerspective: 900 }));
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        rx((0.5 - y) * 7); ry((x - 0.5) * 9);
+        el.style.setProperty('--gx', `${x * 100}%`);
+        el.style.setProperty('--gy', `${y * 100}%`);
+      });
+      el.addEventListener('pointerleave', () => { rx(0); ry(0); });
+    });
+  }
+
+  // Faíscas azuis quando alguém clica para falar com a gente
+  if (!reduced) {
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-wa], .btn-volt, [data-lab-wa]');
+      if (!b) return;
+      for (let i = 0; i < 14; i++) {
+        const sp = document.createElement('i');
+        sp.className = 'spark';
+        document.body.appendChild(sp);
+        const a = Math.random() * Math.PI * 2, d = 40 + Math.random() * 70;
+        gsap.fromTo(sp, { x: e.clientX, y: e.clientY, scale: 1, opacity: 1 },
+          { x: e.clientX + Math.cos(a) * d, y: e.clientY + Math.sin(a) * d, scale: 0, opacity: 0, duration: 0.6 + Math.random() * 0.4, ease: 'power3.out', onComplete: () => sp.remove() });
+      }
+      kick(0.4);
+    });
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // HERÓI 3D: campo de partículas (carrega depois da abertura)
+  // ════════════════════════════════════════════════════════════════════════
+  function heroGL() {
+    const heroEl = $('.hero');
+    import('./hero3d.js')
+      .then((m) => {
+        hero3d = m.mount($('.hero-gl'), { reduced, mobile: isMobile() });
+        if (!hero3d) return;
+        heroEl.classList.add('gl-on');
+        addEventListener('pointermove', (e) => hero3d.setPointer(e.clientX, e.clientY, pointer.nx, pointer.ny), { passive: true });
+        heroEl.addEventListener('pointerleave', () => hero3d.leave());
+        heroEl.addEventListener('pointerdown', (e) => {
+          if (e.target.closest('a, button, .flask-stage')) return;
+          hero3d.ripple(e.clientX, e.clientY, 1.1);
+          kick(0.35);
+        });
+        gsap.ticker.add(() => hero3d.setEnergy(energy));
+        ScrollTrigger.create({ trigger: heroEl, start: 'top top', end: 'bottom top', onUpdate: (s) => hero3d.setScroll(s.progress) });
+        // onda de boas-vindas saindo do frasco
+        setTimeout(() => { const r = stage.getBoundingClientRect(); hero3d.ripple(r.left + r.width / 2, r.bottom + 40, 1.4); }, 400);
+      })
+      .catch(() => {});
+  }
 
   // ── Início ───────────────────────────────────────────────────────────────
   runLoader().then(() => {
     fontsReady.then(heroIntro);
+    heroGL();
     ScrollTrigger.refresh();
   });
   fontsReady.then(() => ScrollTrigger.refresh());
