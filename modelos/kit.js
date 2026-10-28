@@ -4,7 +4,7 @@
      WhatsApp da loja. Como as marcas são fictícias, nada é enviado a elas; o
      botão principal leva para o WhatsApp da Amplitude Lab.
    - AL.toast(texto): aviso curto no rodapé.
-   - AL.px(id, largura): endereço de uma foto gratuita do Pexels. */
+   - AL.px(id, largura): endereço de uma foto do Pexels salva em img/. */
 (() => {
   'use strict';
   const LAB_WHATS = '5511952182016';
@@ -67,8 +67,9 @@
     toastT = setTimeout(() => toastEl.classList.remove('on'), 2600);
   }
 
-  // foto gratuita do Pexels pelo número da página (pexels.com/photo/<nome>-<id>/)
-  const px = (id, w = 900) => 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=' + w;
+  // fotos do Pexels guardadas em modelos/img/: <id>.webp (1200 px) e <id>-p.webp (600 px)
+  const IMG = new URL('img/', document.currentScript.src).href;
+  const px = (id, w = 900) => IMG + id + (w <= 600 ? '-p' : '') + '.webp';
 
   window.AL = { whats, toast, labLink, embed, px };
 })();
