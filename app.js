@@ -8,6 +8,8 @@
   const CONFIG = {
     // WhatsApp com DDI + DDD + número, só dígitos (ex.: "5511999999999").
     whatsapp: '5511952182016',
+    // Cada orçamento enviado entra no CRM como lead e proposta
+    crm: { url: 'https://ozregdgphaxkxumsujys.supabase.co/functions/v1/site-quote', slug: 'amplitudelab' },
     instagram: 'amplitude_lab', // usuário sem @
     currency: 'R$',
   };
@@ -563,7 +565,7 @@
       $('[data-out-prazo]', root).textContent = m.prazo;
       $('[data-out-acao]', root).textContent = m.acao;
       $('[data-open]', root).href = `modelos/${m.slug}/fotos/`;
-      $('[data-lab-wa]', root).href = waLink(`Oi, Amplitude Lab! Vi o modelo ${m.brand} no site e quero um site assim para ${m.who}.`);
+      $('[data-lab-wa]', root).dataset.orcSeg = m.seg === 'Hamburgueria' ? 'Lanchonete ou hamburgueria' : m.seg;
     }
 
     function show(i, focus) {
@@ -760,6 +762,19 @@
       $('#monte').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
     }));
 
+    // Botões de orçamento levam ao formulário com a escolha marcada. O WhatsApp só abre no envio.
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('[data-orc]');
+      if (!a) return;
+      e.preventDefault();
+      const { orcSeg, orcPkg, orcMnt } = a.dataset;
+      if (orcSeg) { state.seg = orcSeg; state.feats = new Set(SEG_FEATS[orcSeg] || []); state.manual = false; }
+      if (orcPkg) { state.pkg = orcPkg; state.manual = true; }
+      if (orcMnt) state.mnt = orcMnt;
+      render();
+      $('#monte').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+    });
+
     // Mensagem do pedido
     const form = $('[data-form]');
     function buildMessage() {
@@ -767,6 +782,7 @@
       const pkg = currentPkg();
       const out = ['*Pedido de orçamento: Amplitude Lab*', ''];
       out.push(`Nome: ${f.get('nome').trim()}`);
+      out.push(`WhatsApp: ${f.get('whatsapp').trim()}`);
       if (f.get('negocio').trim()) out.push(`Negócio: ${f.get('negocio').trim()}`);
       if (f.get('instagram').trim()) out.push(`Instagram: ${f.get('instagram').trim()}`);
       out.push(`Segmento: ${state.seg || 'não informado'}`);
@@ -794,13 +810,35 @@
         nome.focus();
         return false;
       }
+      const zap = $('#f-zap');
+      const zapDigits = zap.value.replace(/\D/g, '');
+      const zapOk = zapDigits.length >= 10 && zapDigits.length <= 13;
+      zap.closest('.field').classList.toggle('is-error', !zapOk);
+      if (!zapOk) {
+        if (!reduced) gsap.fromTo(zap.closest('.field'), { x: -10 }, { x: 0, duration: 0.4, ease: 'elastic.out(1, 0.3)' });
+        zap.focus();
+        return false;
+      }
       return true;
     }
     $('#f-nome').addEventListener('input', (e) => { if (e.target.value.trim()) e.target.closest('.field').classList.remove('is-error'); });
 
+    // Envia em segundo plano: não segura a abertura do WhatsApp, mesmo se a internet falhar.
+    function sendLead() {
+      const f = new FormData(form);
+      const body = {
+        slug: CONFIG.crm.slug, nome: f.get('nome'), whatsapp: f.get('whatsapp'), negocio: f.get('negocio'), instagram: f.get('instagram'),
+        segmento: state.seg, pacote: currentPkg().id, plano: state.mnt, prazo: f.get('prazo'), mensagem: f.get('mensagem'), website: f.get('website'),
+        recursos: FEATS.filter((x) => state.feats.has(x.id)).map((x) => x.name),
+      };
+      fetch(CONFIG.crm.url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body), keepalive: true }).catch(() => {});
+    }
+    $('#f-zap').addEventListener('input', (e) => { if (e.target.value.replace(/\D/g, '').length >= 10) e.target.closest('.field').classList.remove('is-error'); });
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!validate()) return;
+      sendLead();
       const url = waLink(buildMessage());
       const win = window.open(url, '_blank', 'noopener');
       if (!win) location.href = url;
@@ -856,7 +894,7 @@
   // Faíscas azuis quando alguém clica para falar com a gente
   if (!reduced) {
     document.addEventListener('click', (e) => {
-      const b = e.target.closest('[data-wa], .btn-volt, [data-lab-wa]');
+      const b = e.target.closest('[data-wa], [data-orc], .btn-volt');
       if (!b) return;
       for (let i = 0; i < 14; i++) {
         const sp = document.createElement('i');

@@ -5,344 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <style>[hidden]:not([hidden=until-found i]){display:none!important}img{max-width:100%}</style>
-<title>Amplitude CRM</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<style>
-/* Layout: bancada de laboratório. Sidebar + palco no PC, barra inferior no celular.
-   Fundo navy com osciloscópio de partículas; cada cliente (tenant) troca o acento da marca. */
-:root{
-  --bg:#0A0F1C; --bg2:#0F1626; --panel:#131B2E; --panel2:#18223A; --line:#222C44;
-  --fg:#E9EEF7; --muted:#9AA5BB; --dim:#6B7690;
-  --ok:#3FCF9B; --warn:#F5B547; --bad:#FF7A7A; --on-accent:#0A0F1C;
-  --acc-d:#5B8CFF; --acc-l:#2450D6; --acc-d-deep:#2E4E9C; --acc-l-deep:#142E80;
-  --acc-d-soft:#5B8CFF26; --acc-l-soft:#2450D61A;
-  --accent:var(--acc-d); --accent-deep:var(--acc-d-deep); --accent-soft:var(--acc-d-soft);
-  --shadow:0 18px 40px -24px #000c;
-  --f-sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-  --r:14px;
-  color-scheme:dark;
-}
-@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
-  --bg:#F2F5FA; --bg2:#E8EDF5; --panel:#FFFFFF; --panel2:#F6F8FC; --line:#D5DDEA;
-  --fg:#0A0F1C; --muted:#46526D; --dim:#5D6983;
-  --ok:#0B7F57; --warn:#8F5600; --bad:#C0392B; --on-accent:#FFFFFF;
-  --accent:var(--acc-l); --accent-deep:var(--acc-l-deep); --accent-soft:var(--acc-l-soft);
-  --shadow:0 18px 36px -26px #0A0F1C55; color-scheme:light}}
-:root[data-theme="light"]{
-  --bg:#F2F5FA; --bg2:#E8EDF5; --panel:#FFFFFF; --panel2:#F6F8FC; --line:#D5DDEA;
-  --fg:#0A0F1C; --muted:#46526D; --dim:#5D6983;
-  --ok:#0B7F57; --warn:#8F5600; --bad:#C0392B; --on-accent:#FFFFFF;
-  --accent:var(--acc-l); --accent-deep:var(--acc-l-deep); --accent-soft:var(--acc-l-soft);
-  --shadow:0 18px 36px -26px #0A0F1C55; color-scheme:light}
-
-*{box-sizing:border-box}
-html,body{height:100%}
-body{background:var(--bg);color:var(--fg);font:400 15px/1.5 var(--f-sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-button,input,select,textarea{font:inherit;color:inherit}
-a{color:var(--accent)}
-h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.02em;text-wrap:balance}
-p{margin:0}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
-.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.num{font-variant-numeric:tabular-nums}
-.muted{color:var(--muted)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-svg.i{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-
-#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;transition:opacity .6s}
-body.in-app #fx{opacity:.45}
-
-/* ---------- botões 3D ---------- */
-.b3{--c:var(--accent);--cd:var(--accent-deep);--tc:var(--on-accent);
-  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  min-height:44px;padding:0 18px;border:0;border-radius:12px;cursor:pointer;
-  background:linear-gradient(180deg,#ffffff2e,#ffffff00 55%),var(--c);color:var(--tc);font-weight:600;font-size:15px;
-  box-shadow:0 4px 0 var(--cd),0 10px 18px -10px var(--cd);transform:translateY(0);
-  transition:transform .09s ease,box-shadow .09s ease,filter .2s;text-decoration:none;white-space:nowrap;user-select:none;-webkit-tap-highlight-color:transparent}
-.b3:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 5px 0 var(--cd),0 14px 22px -12px var(--cd)}
-.b3:active{transform:translateY(4px);box-shadow:0 0 0 var(--cd),0 4px 10px -8px var(--cd)}
-.b3.ghost{--c:var(--panel2);--cd:var(--line);--tc:var(--fg);background:var(--panel2);border:1px solid var(--line)}
-.b3.ok{--c:var(--ok);--cd:#0B5E40;--tc:#04140D}
-.b3.danger{--c:var(--bad);--cd:#7A1F1F;--tc:#fff}
-.b3.sm{min-height:36px;padding:0 12px;font-size:13px;border-radius:10px;box-shadow:0 3px 0 var(--cd)}
-.b3.sm:active{transform:translateY(3px);box-shadow:0 0 0 var(--cd)}
-.b3.icon{width:44px;padding:0}
-.b3.sm.icon{width:36px}
-.b3[disabled]{opacity:.45;pointer-events:none}
-.link{background:none;border:0;color:var(--accent);font-weight:600;cursor:pointer;padding:6px 2px;min-height:36px}
-
-/* ---------- login ---------- */
-#login{position:relative;z-index:1;min-height:100%;display:grid;place-items:center;
-  padding-block:32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.lg{width:min(440px,100%);display:flex;flex-direction:column;gap:22px}
-.lg-card{background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border:1px solid var(--line);border-radius:22px;padding:28px 24px;display:flex;flex-direction:column;gap:18px;box-shadow:var(--shadow);
-  transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .25s ease-out}
-.lg-brand{display:flex;align-items:center;gap:12px}
-.lg h1{font-size:clamp(26px,6vw,32px);line-height:1.1}
-.lg-sub{color:var(--muted)}
-.field{display:flex;flex-direction:column;gap:6px;min-width:0}
-.field label,.flabel{font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.inp{width:100%;min-height:46px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);font-size:16px}
-.inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-textarea.inp{min-height:84px;resize:vertical}
-.tenants{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.tpick{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);cursor:pointer;text-align:left;min-width:0;min-height:52px}
-.tpick[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.tpick span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:500}
-.trust{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center}
-.trust span{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
-.trust svg{width:16px;height:16px;color:var(--ok)}
-.note{font-size:13px;color:var(--muted);background:var(--accent-soft);border-radius:10px;padding:10px 12px}
-
-.logo{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none;font:700 15px var(--f-sans);
-  background:var(--accent);color:var(--on-accent);box-shadow:0 3px 0 var(--accent-deep)}
-.logo.sm{width:32px;height:32px;border-radius:9px;font-size:12px}
-
-/* ---------- app shell ---------- */
-#app{position:relative;z-index:1;min-height:100%;display:grid;grid-template-columns:240px minmax(0,1fr)}
-.side{position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:18px;padding:18px 14px;border-right:1px solid var(--line);background:color-mix(in srgb,var(--bg) 92%,transparent)}
-.side .tn{display:flex;align-items:center;gap:10px;padding:4px 6px;min-width:0}
-.side .tn b{display:block;font-size:15px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.side nav{display:flex;flex-direction:column;gap:2px}
-.nv{display:flex;align-items:center;gap:12px;min-height:42px;padding:0 12px;border-radius:10px;border:0;background:none;color:var(--muted);cursor:pointer;text-align:left;font-weight:500;position:relative}
-.nv:hover{background:var(--panel);color:var(--fg)}
-.nv[aria-current="page"]{background:var(--panel);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
-.nv[aria-current="page"] svg{color:var(--accent)}
-.nv .badge{margin-left:auto}
-.badge{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--on-accent);font:600 11px/20px var(--f-sans);text-align:center}
-.powered{margin-top:auto;display:flex;align-items:center;gap:8px;padding:10px 8px;color:var(--dim);font-size:12px}
-.powered svg{width:18px;height:18px}
-
-.main{min-width:0;display:flex;flex-direction:column}
-.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:10px;min-height:64px;
-  padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-body.in-app::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-.top .ttl{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
-.top .ttl .mt{display:none}
-.top h1{font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.url{font:500 12px var(--f-mono);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
-.url b{color:var(--accent);font-weight:500}
-.srch{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;min-width:200px}
-.srch kbd{margin-left:auto;font:500 11px var(--f-mono);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
-.sel{min-height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);padding:0 10px;max-width:150px}
-.ib{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;cursor:pointer;color:var(--muted)}
-.ib:hover{color:var(--fg)}
-.ib[aria-pressed="true"]{color:var(--accent);border-color:var(--accent)}
-
-#view{padding-block:22px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px;min-width:0;max-width:1400px;width:100%}
-.vh{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.vh h2{font-size:clamp(24px,3vw,30px);line-height:1.1}
-.vh p{color:var(--muted);margin-top:4px;max-width:60ch}
-.acts{display:flex;gap:8px;flex-wrap:wrap}
-
-.bnav{display:none}
-
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
-.card h3{font-size:16px}
-.card .ch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-.grid{display:grid;gap:14px;min-width:0}
-.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.g3{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.kpi{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0;overflow:hidden;
-  transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .2s ease-out}
-.kpi::after{content:"";position:absolute;inset:auto -20% -60% auto;width:140px;height:140px;border-radius:50%;background:radial-gradient(var(--accent-soft),transparent 70%);pointer-events:none}
-.kpi b{font-size:clamp(20px,2.4vw,26px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.15}
-.kpi small{color:var(--muted);font-size:13px}
-.kpi.alert small{color:var(--bad);font-weight:600}
-
-.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:600;background:var(--panel2);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
-.chip.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
-.chip.ok{color:var(--ok);border-color:currentColor;background:transparent}
-.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
-.chip.bad{color:var(--bad);border-color:currentColor;background:transparent}
-.dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
-
-.rows{display:flex;flex-direction:column}
-.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);min-width:0}
-.row:first-child{border-top:0}
-.row .grow{flex:1;min-width:0}
-.row .t{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row .s{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ico{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--panel2);color:var(--accent);flex:none}
-.ico.bad{color:var(--bad)} .ico.ok{color:var(--ok)} .ico.warn{color:var(--warn)}
-.empty{padding:26px 10px;text-align:center;color:var(--muted);font-size:14px}
-
-.bars{display:flex;flex-direction:column;gap:10px}
-.bar{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14px}
-.bar .track{height:12px;border-radius:6px;background:var(--panel2);overflow:hidden}
-.bar .fill{height:100%;border-radius:6px;background:var(--accent);transform-origin:left;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
-.bar .fill.alt{background:var(--dim)}
-@keyframes grow{from{transform:scaleX(0)}}
-.chart svg{width:100%;height:auto;display:block}
-.chart .bin{fill:var(--accent)} .chart .bout{fill:var(--dim)}
-.chart text{fill:var(--muted);font:500 12px var(--f-mono)}
-.chart line{stroke:var(--line)}
-.legend{display:flex;gap:16px;font-size:13px;color:var(--muted)}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-
-/* ---------- kanban ---------- */
-.kwrap{overflow-x:auto;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px));padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
-.kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:12px;min-width:min-content}
-.kcol{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:240px;scroll-snap-align:start;transition:border-color .15s,background .15s}
-.kcol.over{border-color:var(--accent);background:var(--accent-soft)}
-.kh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 4px 6px}
-.kh b{font-size:14px}
-.kh small{font:500 12px var(--f-mono);color:var(--muted)}
-.kcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;cursor:pointer;text-align:left;width:100%;
-  box-shadow:0 2px 0 var(--line);transition:transform .12s,box-shadow .12s}
-.kcard:hover{transform:translateY(-2px);box-shadow:0 5px 0 var(--line)}
-.kcard.dragging{opacity:.5}
-.kcard .t{font-weight:600;font-size:15px;line-height:1.25}
-.kcard .m{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
-.kcard .v{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
-.fu{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
-.fu.late{color:var(--bad)} .fu.today{color:var(--warn)} .fu.next{color:var(--muted)}
-.fu svg{width:14px;height:14px}
-
-/* ---------- drawer / modal / palette ---------- */
-.scrim{position:fixed;inset:0;z-index:40;background:#050811a6;opacity:0;pointer-events:none;transition:opacity .2s}
-.scrim.on{opacity:1;pointer-events:auto}
-.drawer{position:fixed;z-index:41;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--bg);border-left:1px solid var(--line);
-  display:flex;flex-direction:column;transform:translateX(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);box-shadow:var(--shadow)}
-.drawer.on{transform:none}
-.dh{display:flex;align-items:flex-start;gap:12px;padding:18px 18px 14px;padding-top:calc(18px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--line)}
-.dh .grow{flex:1;min-width:0}
-.dh h2{font-size:22px;line-height:1.15;overflow-wrap:anywhere}
-.db{flex:1;overflow-y:auto;padding:18px;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px}
-.sec{display:flex;flex-direction:column;gap:10px}
-.pills{display:flex;flex-wrap:wrap;gap:6px}
-.pill{min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:13px;font-weight:500}
-.pill[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
-.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;font-size:14px}
-.kv dt{color:var(--muted)} .kv dd{margin:0;overflow-wrap:anywhere}
-.sel-text{user-select:all;font-variant-numeric:tabular-nums}
-.tl{display:flex;flex-direction:column;gap:0;list-style:none;margin:0;padding:0}
-.tl li{position:relative;padding:0 0 14px 22px;font-size:14px}
-.tl li::before{content:"";position:absolute;left:5px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
-.tl li::after{content:"";position:absolute;left:8.5px;top:16px;bottom:0;width:1px;background:var(--line)}
-.tl li:last-child::after{display:none}
-.tl small{display:block;color:var(--muted);font-size:12px}
-.confirm{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--bad);border-radius:12px}
-
-.modal{position:fixed;z-index:42;left:50%;top:50%;width:min(560px,calc(100% - 24px));max-height:calc(100% - 40px);overflow:auto;transform:translate(-50%,-46%) scale(.98);opacity:0;pointer-events:none;
-  background:var(--bg);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);transition:transform .22s,opacity .22s}
-.modal.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
-.mh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 18px 0}
-.mh h2{font-size:20px}
-.mb{padding:18px;display:flex;flex-direction:column;gap:14px}
-.fg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.fg .full{grid-column:1/-1}
-.items{display:flex;flex-direction:column;gap:8px}
-.item{display:grid;grid-template-columns:minmax(0,1fr) 64px 110px;gap:6px}
-.mf{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding-top:4px}
-.err{color:var(--bad);font-size:13px}
-
-.pal{position:fixed;z-index:43;left:50%;top:12vh;width:min(600px,calc(100% - 24px));transform:translate(-50%,-8px);opacity:0;pointer-events:none;
-  background:var(--bg);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);transition:.18s;overflow:hidden}
-.pal.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
-.pal .inp{border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;min-height:56px;padding:0 18px}
-.pal .inp:focus{box-shadow:none}
-.pal ul{list-style:none;margin:0;padding:6px;max-height:52vh;overflow:auto}
-.pal li button{width:100%;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;border:0;background:none;cursor:pointer;text-align:left;min-height:44px}
-.pal li button[aria-selected="true"]{background:var(--panel)}
-.pal li .k{margin-left:auto;font:500 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-
-#toast{position:fixed;z-index:60;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;pointer-events:none;transition:.22s;
-  display:flex;align-items:center;gap:12px;background:var(--fg);color:var(--bg);padding:10px 12px 10px 16px;border-radius:14px;font-weight:500;font-size:14px;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
-#toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
-#toast button{background:var(--bg);color:var(--fg);border:0;border-radius:9px;min-height:34px;padding:0 12px;font-weight:600;cursor:pointer;white-space:nowrap}
-
-#lock{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding-inline:16px}
-#lock .card{display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;max-width:380px;padding:28px}
-
-/* público (proposta e formulário) */
-.phone{width:min(340px,100%);margin-inline:auto;border-radius:36px;padding:10px;background:var(--panel2);border:1px solid var(--line);box-shadow:var(--shadow)}
-.screen{border-radius:28px;overflow:hidden;background:#FFFFFF;color:#111827;min-height:520px;display:flex;flex-direction:column}
-.ph-head{padding:26px 20px 18px;color:#fff;display:flex;flex-direction:column;gap:6px}
-.ph-head h4{font-size:22px;letter-spacing:-.02em}
-.ph-body{padding:18px;display:flex;flex-direction:column;gap:12px}
-.ph-body label{font-size:12px;font-weight:600;color:#4B5563}
-.ph-body .pi{width:100%;min-height:44px;border:1px solid #D1D5DB;border-radius:10px;padding:8px 12px;background:#fff;color:#111827;font-size:16px}
-.ph-body .ck{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#4B5563;font-weight:400}
-.ph-body .ck input{width:18px;height:18px;margin-top:1px;flex:none}
-.ph-btn{min-height:48px;border:0;border-radius:12px;color:#fff;font-weight:600;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #0003;transition:transform .08s,box-shadow .08s}
-.ph-btn:active{transform:translateY(4px);box-shadow:0 0 0 #0003}
-.ptable{width:100%;border-collapse:collapse;font-size:14px;color:#111827}
-.ptable td{padding:8px 0;border-bottom:1px solid #E5E7EB}
-.ptable td:last-child{text-align:right;font-variant-numeric:tabular-nums}
-.ptable tr.tot td{font-weight:700;border-bottom:0;font-size:16px}
-pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);font:400 12px/1.6 var(--f-mono);white-space:pre-wrap;word-break:break-all;color:var(--fg)}
-.tbl{overflow-x:auto}
-.tbl table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
-.tbl th{font:500 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
-.tbl td{padding:10px;border-bottom:1px solid var(--line)}
-.tbl td.c,.tbl th.c{text-align:center}
-.yes{color:var(--ok)} .no{color:var(--dim)}
-.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-.wd{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:12px;border:1px solid var(--line);background:var(--panel);cursor:pointer;min-width:0}
-.wd small{font:500 11px var(--f-mono);text-transform:uppercase;color:var(--muted)}
-.wd b{font-size:18px;font-variant-numeric:tabular-nums}
-.wd i{height:6px;display:flex;gap:3px}
-.wd i span{width:6px;height:6px;border-radius:50%;background:var(--accent)}
-.wd[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.wd[aria-pressed="true"] small{color:var(--on-accent)}
-.wd[aria-pressed="true"] i span{background:var(--on-accent)}
-.chk{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);background:none;cursor:pointer;display:grid;place-items:center;flex:none;color:var(--on-accent)}
-.chk[aria-checked="true"]{background:var(--ok);border-color:var(--ok)}
-.chk svg{width:16px;height:16px;stroke-width:3}
-.row.done .t{text-decoration:line-through;color:var(--muted)}
-.switch{display:flex;align-items:center;gap:10px;min-height:40px;font-size:14px;cursor:pointer}
-.switch input{width:20px;height:20px;accent-color:var(--accent)}
-
-/* ---------- página pública do cliente ---------- */
-#site{position:relative;z-index:1;min-height:100%;background:var(--bg)}
-.st-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--panel);border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
-.st-hero{padding-block:44px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:radial-gradient(120% 100% at 85% 0%,var(--accent-soft),transparent 60%)}
-.st-in{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
-.st-hero h1{font-size:clamp(34px,7vw,56px);line-height:1}
-.st-body{padding-block:8px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.svcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-@media (max-width:560px){.svcs{grid-template-columns:minmax(0,1fr)}}
-.svc{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:64px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--panel);cursor:pointer;text-align:left;box-shadow:0 3px 0 var(--line);transition:transform .1s,box-shadow .1s}
-.svc:active{transform:translateY(3px);box-shadow:0 0 0 var(--line)}
-.svc[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 3px 0 var(--accent-deep),inset 0 0 0 1px var(--accent)}
-.svc b{font-variant-numeric:tabular-nums;white-space:nowrap}
-.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.slot{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font:500 14px var(--f-mono)}
-.slot[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
-.slot:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
-
-/* ---------- responsivo ---------- */
-@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:minmax(0,1fr)}.srch{min-width:0}.srch span,.srch kbd{display:none}.url{display:none}}
-@media (max-width:860px){
-  #app{grid-template-columns:minmax(0,1fr)}
-  .side{display:none}
-  .top .ttl .mt{display:grid}
-  .top .sel,.hide-m{display:none}
-  .g2{grid-template-columns:minmax(0,1fr)}
-  #view{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
-  .bnav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;z-index:6;left:0;right:0;bottom:0;
-    padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));
-    background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}
-  .bnav button{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:54px;border:0;background:none;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;border-radius:12px;position:relative}
-  .bnav button[aria-current="page"]{color:var(--accent)}
-  .bnav button[aria-current="page"] svg{transform:translateY(-1px)}
-  .bnav .badge{position:absolute;top:2px;right:calc(50% - 22px);min-width:16px;height:16px;font-size:10px;line-height:16px;padding:0 4px}
-  .drawer{top:auto;height:92%;width:100%;border-left:0;border-top:1px solid var(--line);border-radius:22px 22px 0 0;transform:translateY(102%)}
-  .drawer .dh{padding-top:18px}
-  .modal{top:auto;bottom:0;left:0;width:100%;max-height:92%;border-radius:22px 22px 0 0;transform:translateY(100%);padding-bottom:env(safe-area-inset-bottom,0px)}
-  .modal.on{transform:none}
-  .kanban{grid-auto-columns:minmax(260px,82vw)}
-}
-@media (max-width:520px){.fg{grid-template-columns:minmax(0,1fr)}.bar{grid-template-columns:84px minmax(0,1fr) auto}.item{grid-template-columns:minmax(0,1fr) 54px 92px}.kpi{padding:14px}.vh .acts .b3{flex:1}}
-@media (hover:none){.kpi,.lg-card{transform:none}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-</style>
 </head>
 <body>
 <title>Amplitude CRM</title>
@@ -1380,12 +1042,13 @@ V.clientes = () => {
 };
 
 const PSTAT = {draft:['Rascunho',''], sent:['Enviada','warn'], viewed:['Vista','acc'], accepted:['Aceita','ok'], declined:['Recusada','bad']};
-V.propostas = () => head('Propostas', 'Monte a proposta em 1 minuto e mande um link. O cliente abre no celular e aceita com um toque.', can('edit') ? `<button class="b3" data-act="newProposal">${icon('plus')}Nova proposta</button>` : '')
+V.propostas = () => head('Propostas', REAL ? 'Monte o orçamento e gere o link de pagamento da InfinitePay com o valor certo. Pedidos do site chegam aqui sozinhos.' : 'Monte a proposta em 1 minuto e mande um link. O cliente abre no celular e aceita com um toque.', can('edit') ? `<button class="b3" data-act="newProposal">${icon('plus')}Nova proposta</button>` : '')
   + `<div class="grid g2">${S.proposals.slice().sort((a, b) => b.created - a.created).map(p => { const st = PSTAT[p.status];
     return `<article class="card"><div class="ch"><h3>${esc(p.title)}</h3><span class="chip ${st[1]}"><span class="dot"></span>${st[0]}</span></div>
-      <dl class="kv"><dt>Para</dt><dd>${esc(clientName(p.client) || leadName(p.lead) || '—')}</dd><dt>Total</dt><dd class="num"><b>${money(propTotal(p))}</b></dd><dt>Validade</dt><dd>${fdate(p.valid)} (${rel(p.valid)})</dd></dl>
-      <div class="acts" style="margin-top:14px"><button class="b3 sm" data-act="viewProposal" data-id="${p.id}">${icon('eye')}Ver como o cliente</button>
-      <button class="b3 sm ghost" data-act="copyProposal" data-id="${p.id}">${icon('copy')}Copiar link</button></div></article>`; }).join('') || '<p class="empty">Nenhuma proposta ainda.</p>'}</div>`;
+      <dl class="kv"><dt>Para</dt><dd>${esc(clientName(p.client) || leadName(p.lead) || '—')}</dd><dt>Total</dt><dd class="num"><b>${money(propTotal(p))}</b></dd><dt>Validade</dt><dd>${fdate(p.valid)} (${rel(p.valid)})</dd>${REAL && p.url ? `<dt>Link</dt><dd class="num">${money(p.payCents)}</dd>` : ''}</dl>
+      ${p.items.some(i => !i.u) ? `<p class="muted" style="font-size:13px;margin-top:8px">${p.items.filter(i => !i.u).map(i => esc(i.d.replace(/^Inclui: /, ''))).join(' · ')}</p>` : ''}
+      ${REAL ? propActions(p) : `<div class="acts" style="margin-top:14px"><button class="b3 sm" data-act="viewProposal" data-id="${p.id}">${icon('eye')}Ver como o cliente</button>
+      <button class="b3 sm ghost" data-act="copyProposal" data-id="${p.id}">${icon('copy')}Copiar link</button></div>`}</article>`; }).join('') || '<p class="empty">Nenhuma proposta ainda.</p>'}</div>`;
 
 V._ag = null;
 V.agenda = () => {
@@ -1530,7 +1193,7 @@ function openLead(id) {
       <textarea class="inp" id="noteTxt" name="t" placeholder="Ex.: pediu para retornar depois do dia 10" required></textarea>
       <div class="acts"><button class="b3 sm" type="submit">Salvar no histórico</button></div></form>` : ''}
     <div class="sec"><span class="flabel">Histórico</span><ul class="tl">${acts.map(a => `<li><b>${ACT[a.kind] || 'Nota'}</b> · ${esc(a.body)}<small>${esc(a.by)} · ${fdate(a.at)} ${ftime(a.at)}</small></li>`).join('') || '<li>Sem registros.</li>'}</ul></div>
-    ${ed ? `<div class="sec"><span class="flabel">Ações</span><div class="acts">${(() => { const pc = S.charges.find(c => c.lead === l.id && c.status === 'pending' && c.url); return l.paidAt ? '' : pc ? `<button class="b3 sm" data-pay="show" data-c="${pc.id}">${icon('card')}Ver link de pagamento</button>` : `<button class="b3 sm" data-pay="link" data-l="${l.id}">${icon('card')}Gerar link de pagamento</button>`; })()}<button class="b3 sm ghost" data-act="newProposal" data-lead="${l.id}">${icon('file')}Criar proposta</button>
+    ${ed ? `<div class="sec"><span class="flabel">Ações</span><div class="acts">${(() => { const pp = REAL && S.proposals.slice().reverse().find(x => x.lead === l.id && x.status !== 'accepted'); return pp ? (pp.url ? `<a class="b3 sm" href="${esc(pp.url)}" target="_blank" rel="noopener">${icon('card')}Abrir pagamento</a>` : `<button class="b3 sm" data-prop="link" data-id="${pp.id}">${icon('card')}Link da proposta · ${money(propTotal(pp))}</button>`) : ''; })()}${(() => { if (REAL && S.proposals.some(x => x.lead === l.id && x.status !== 'accepted')) return ''; const pc = S.charges.find(c => c.lead === l.id && c.status === 'pending' && c.url); return l.paidAt ? '' : pc ? `<button class="b3 sm" data-pay="show" data-c="${pc.id}">${icon('card')}Ver link de pagamento</button>` : `<button class="b3 sm" data-pay="link" data-l="${l.id}">${icon('card')}Gerar link de pagamento</button>`; })()}<button class="b3 sm ghost" data-act="newProposal" data-lead="${l.id}">${icon('file')}Criar proposta</button>
       ${can('del') ? `<button class="b3 sm ghost" data-act="askAnon">${icon('shield')}Anonimizar (LGPD)</button>` : ''}</div><div id="anonBox"></div></div>` : ''}
   </div>`;
   showLayer('#drawer');
@@ -1629,7 +1292,87 @@ function modalClient() {
   }, 'Criar cliente');
 }
 function itemRow(d = '', q = 1, u = '') { return `<div class="item"><input class="inp" name="d" placeholder="Descrição" value="${esc(d)}" aria-label="Descrição do item"><input class="inp" name="q" inputmode="numeric" value="${q}" aria-label="Quantidade"><input class="inp" name="u" inputmode="decimal" placeholder="R$" value="${u}" aria-label="Valor unitário"></div>`; }
+function propActions(p) {
+  if (!can('edit') || p.status === 'accepted') return can('del') ? `<div class="acts" style="margin-top:14px"><button class="b3 sm ghost" data-prop="del" data-id="${p.id}">Excluir</button></div>` : '';
+  const pago = p.url ? `<a class="b3 sm" href="${esc(p.url)}" target="_blank" rel="noopener">${icon('card')}Abrir pagamento</a><button class="b3 sm ghost" data-copy="${esc(p.url)}">${icon('copy')}Copiar link</button><button class="b3 sm ghost" data-prop="show" data-id="${p.id}">${icon('wa')}WhatsApp</button><button class="b3 sm ghost" data-prop="link" data-id="${p.id}">Novo link</button>`
+    : `<button class="b3 sm" data-prop="link" data-id="${p.id}">${icon('card')}Gerar link de pagamento</button>`;
+  return `<div class="acts" style="margin-top:14px">${pago}<button class="b3 sm ghost" data-prop="edit" data-id="${p.id}">Editar</button>${can('del') ? `<button class="b3 sm ghost" data-prop="del" data-id="${p.id}">Excluir</button>` : ''}</div>`;
+}
+function propContact(p) { return S.leads.find(x => x.id === p.lead) || S.clients.find(x => x.id === p.client) || {name:'', phone:''}; }
+function payFields(total) {
+  return `<div class="fg">${sel('pay', 'Cobrar agora', [['total', total ? `Valor total · ${money(total)}` : 'Valor total'], ['half', total ? `Entrada de 50% · ${money(Math.round(total / 2))}` : 'Entrada de 50%'], ['other', 'Outro valor']])}<div class="field" id="mPayBox" hidden><label for="m_payOther">Outro valor (R$)</label><input class="inp" id="m_payOther" name="payOther" inputmode="decimal" placeholder="0,00"></div></div>`;
+}
+function bindPayFields() { const s = $('#m_pay'); if (s) s.onchange = () => { $('#mPayBox').hidden = s.value !== 'other'; }; }
+function payAmount(fd, total) {
+  const k = fd.get('pay');
+  const v = k === 'half' ? Math.round(total / 2) : k === 'other' ? cents(fd.get('payOther')) : total;
+  if (v < 100) return {error:'O valor mínimo do link é R$ 1,00.'};
+  if (v > total) return {error:'O valor do link não pode passar do total.'};
+  return {amount:v};
+}
+function modalPropLink(id) {
+  const p = S.proposals.find(x => x.id === id); if (!p) return;
+  const total = propTotal(p);
+  modal('Gerar link de pagamento', `<p><b>${esc(p.title)}</b><br><span class="muted">Para ${esc(propContact(p).name || 'cliente')}</span></p>${payFields(total)}<p class="note">O link abre direto na página de pagamento da InfinitePay, com Pix e cartão. Quando o cliente pagar, o lead vira pagante sozinho e o aviso chega no sino.</p>`,
+  fd => { const r = payAmount(fd, total); if (r.error) return r.error; Real.proposalLink(id, r.amount); }, 'Gerar link');
+  bindPayFields();
+}
+function modalProposalReal(leadId, editId) {
+  const ed = editId && S.proposals.find(x => x.id === editId);
+  const opts = [['new', '+ Cliente novo', !leadId && !ed]].concat(openLeads().map(l => ['lead:' + l.id, l.name + ' (lead)', l.id === leadId]), S.clients.map(c => ['client:' + c.id, c.name]));
+  const it = NICHE[T.id].items[0];
+  const rows = ed ? ed.items.map(i => itemRow(i.d, i.q, reais(i.u))).join('') : itemRow(it[0], 1, reais(it[1]));
+  modal(ed ? 'Editar orçamento' : 'Novo orçamento', `<div class="fg">${ed ? '' : sel('to', 'Para', opts, 'full')}
+    ${ed ? '' : `<div class="field full" id="mNewBox" ${leadId ? 'hidden' : ''}><div class="fg">${inp('nName', 'Nome do cliente', 'autocomplete="off"')}${inp('nPhone', 'WhatsApp', 'inputmode="tel" placeholder="(11) 90000-0000"')}</div></div>`}
+    ${inp('title', 'Título', `full required value="${esc(ed ? ed.title : it[0])}"`)}</div>
+    <div class="field"><span class="flabel">Itens · descrição, quantidade e valor</span><div class="items" id="mItems">${rows}</div><button class="link" type="button" data-act="addItem" style="align-self:flex-start">+ Adicionar item</button></div>
+    ${payFields(0)}${inp('valid', 'Válida até', `type="date" value="${ymd(ed ? ed.valid : at(7))}"`)}
+    <p class="note">Ao salvar, o link da InfinitePay é gerado com este valor. Nada abre em forma de site.</p>`,
+  fd => {
+    const ds = fd.getAll('d'), qs = fd.getAll('q'), us = fd.getAll('u');
+    const items = ds.map((d, i) => ({d:String(d).trim(), q:Math.max(1, parseInt(qs[i], 10) || 1), u:cents(us[i])})).filter(x => x.d);
+    const total = items.reduce((a, x) => a + x.q * x.u, 0);
+    if (total < 100) return 'Coloque pelo menos um item com valor.';
+    const r = payAmount(fd, total); if (r.error) return r.error;
+    const title = String(fd.get('title') || items[0].d).trim(), valid = fromYmd(fd.get('valid')) || at(7);
+    if (ed) { Object.assign(ed, {title, items, valid}); const l = S.leads.find(x => x.id === ed.lead); if (l) l.value = total; audit(`Orçamento “${title}” editado`); save(); Real.proposalLink(ed.id, r.amount); return; }
+    let lead = null, client = null; const to = String(fd.get('to') || 'new');
+    if (to === 'new') {
+      const name = String(fd.get('nName') || '').trim(), ph = String(fd.get('nPhone') || '').replace(/\D/g, '');
+      if (name.length < 2) return 'Escreva o nome do cliente.';
+      if (ph && (ph.length < 10 || ph.length > 13)) return 'Digite o WhatsApp com DDD.';
+      const l = {id:uid(), name, phone:ph ? fmtPhone(ph.replace(/^55(?=\d{10,11}$)/, '')) : '', email:'', interest:title, source:'presencial', stage:'s3', value:total, follow:at(1, 10), created:Date.now(), consent:null, client:null, demo:false};
+      S.leads.push(l); lead = l.id;
+    } else { const [k, id] = to.split(':'); if (k === 'lead') lead = id; else client = id; }
+    const p = {id:uid(), lead, client, title, items, status:'draft', valid, token:uid() + uid(), created:Date.now()};
+    S.proposals.push(p);
+    if (lead) { const l = S.leads.find(x => x.id === lead); if (['s1', 's2'].includes(l.stage)) l.stage = 's3'; l.value = total; S.acts.push({id:uid(), lead, kind:'proposal', body:`Orçamento “${title}” de ${money(total)} criado.`, at:Date.now(), by:ROLES[role].n}); }
+    audit(`Orçamento “${title}” criado (${money(total)})`); save();
+    Real.proposalLink(p.id, r.amount);
+  }, 'Salvar e gerar link');
+  bindPayFields();
+  const s = $('#m_to'); if (s) s.onchange = () => { $('#mNewBox').hidden = s.value !== 'new'; };
+}
+function showPropLink(p) {
+  const c = propContact(p), msg = `Oi, ${first(c.name) || 'tudo bem'}! Aqui é da ${brandName()}. Segue o link para pagar ${p.title} (${money(p.payCents)}) por Pix ou cartão: ${p.url}`;
+  const dg = String(c.phone || '').replace(/\D/g, ''), num = dg.length < 10 ? '' : (dg.startsWith('55') ? dg : '55' + dg);
+  modal('Link de pagamento pronto', `<div class="field"><span class="flabel">${esc(p.title)} · ${money(p.payCents)}</span><pre class="code">${esc(p.url)}</pre></div>
+    <div class="acts"><a class="b3" href="${esc(p.url)}" target="_blank" rel="noopener">${icon('card')}Abrir pagamento</a><button class="b3 ghost" type="button" data-copy="${esc(p.url)}">${icon('copy')}Copiar link</button><a class="b3 ghost" href="https://wa.me/${num}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${icon('wa')}Mandar no WhatsApp</a></div>
+    <p class="note">Quando o cliente pagar, o lead vira pagante sozinho e o aviso chega no sino.</p>`, null);
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-prop]'); if (!b || !REAL) return;
+  const k = b.dataset.prop, id = b.dataset.id, p = S.proposals.find(x => x.id === id);
+  if (k === 'link') { closeLayers(); setTimeout(() => modalPropLink(id), 30); }
+  if (k === 'edit') modalProposalReal(null, id);
+  if (k === 'show' && p) showPropLink(p);
+  if (k === 'del') {
+    if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Confirmar exclusão'; return; }
+    S.proposals = S.proposals.filter(x => x.id !== id); audit(`Orçamento “${p ? p.title : ''}” excluído`); save(); render(); toast('Orçamento excluído.');
+  }
+});
 function modalProposal(leadId) {
+  if (REAL) return modalProposalReal(leadId);
   const opts = openLeads().map(l => ['lead:' + l.id, l.name + ' (lead)', l.id === leadId]).concat(S.clients.map(c => ['client:' + c.id, c.name]));
   const it = NICHE[T.id].items[0];
   modal('Nova proposta', `<div class="fg">${sel('to', 'Para', opts, 'full')}${inp('title', 'Título', `full required value="${esc(it[0])}"`)}</div>
@@ -2001,15 +1744,15 @@ const Real = (() => {
     acts:{table:'activities', to:a => ({id:a.id, tenant_id:tid, lead_id:a.lead || null, kind:a.kind, body:a.body, meta:Object.assign({}, a.meta, {by:a.by}), created_at:iso(a.at)}),
       from:r => ({id:r.id, lead:r.lead_id, kind:r.kind, body:r.body || '', by:(r.meta && r.meta.by) || 'Sistema', meta:r.meta || {}, at:ms(r.created_at)})},
     proposals:{table:'proposals', to:p => ({id:p.id, tenant_id:tid, lead_id:p.lead || null, client_id:p.client || null, title:p.title, items:p.items, total_cents:propTotal(p), status:p.status, valid_until:day(p.valid), public_token:p.token.replace(/-/g, ''), created_at:iso(p.created)}),
-      from:r => ({id:r.id, lead:r.lead_id, client:r.client_id, title:r.title, items:r.items || [], status:r.status, valid:fromDay(r.valid_until) || Date.now(), token:r.public_token, created:ms(r.created_at)})},
+      from:r => ({id:r.id, lead:r.lead_id, client:r.client_id, title:r.title, items:r.items || [], status:r.status, valid:fromDay(r.valid_until) || Date.now(), token:r.public_token, created:ms(r.created_at), url:r.checkout_url, payCents:Number(r.pay_cents) || 0})},
     tasks:{table:'tasks', to:t => ({id:t.id, tenant_id:tid, title:t.title, kind:t.kind, due_at:iso(t.due), remind_at:t.remind ? iso(t.due - t.remind * 60000) : null, done_at:iso(t.done), created_at:iso(t.created || t.due)}),
       from:r => ({id:r.id, title:r.title, kind:r.kind, due:ms(r.due_at), done:ms(r.done_at), remind:r.remind_at ? Math.round((ms(r.due_at) - ms(r.remind_at)) / 60000) : 0, created:ms(r.created_at)})},
     charges:{table:'charges', to:c => ({id:c.id, tenant_id:tid, client_id:c.client || null, lead_id:c.lead || null, description:c.desc, amount_cents:c.amount, due_date:day(c.due), method:c.method || null, status:c.status, paid_at:iso(c.paid)}),
       from:r => ({id:r.id, client:r.client_id, lead:r.lead_id, desc:r.description, amount:Number(r.amount_cents), due:fromDay(r.due_date), method:r.method, status:r.status, paid:ms(r.paid_at), url:r.checkout_url, gateway:r.gateway})},
     cash:{table:'cash_entries', to:c => ({id:c.id, tenant_id:tid, charge_id:c.charge || null, direction:c.dir, category:c.cat, description:c.desc, amount_cents:c.amount, occurred_on:day(c.date)}),
       from:r => ({id:r.id, charge:r.charge_id, dir:r.direction, cat:r.category, desc:r.description || r.category, amount:Number(r.amount_cents), date:fromDay(r.occurred_on)})},
-    notes:{table:'notifications', to:n => ({id:n.id, tenant_id:tid, lead_id:n.lead || null, kind:'paid', title:n.title, body:n.body, read_at:n.read ? (n.readAt = n.readAt || new Date().toISOString()) : null, created_at:iso(n.at)}),
-      from:r => ({id:r.id, lead:r.lead_id, title:r.title, body:r.body || '', read:!!r.read_at, readAt:r.read_at, at:ms(r.created_at)})}
+    notes:{table:'notifications', to:n => ({id:n.id, tenant_id:tid, lead_id:n.lead || null, kind:n.kind || 'paid', title:n.title, body:n.body, read_at:n.read ? (n.readAt = n.readAt || new Date().toISOString()) : null, created_at:iso(n.at)}),
+      from:r => ({id:r.id, lead:r.lead_id, kind:r.kind, title:r.title, body:r.body || '', read:!!r.read_at, readAt:r.read_at, at:ms(r.created_at)})}
   };
   const remember = () => { Object.entries(MAP).forEach(([k, m]) => { snap[k] = {}; S[k].forEach(x => snap[k][x.id] = JSON.stringify(m.to(x))); }); snap.brand = JSON.stringify({b:S.brand, f:S.form}); };
   async function flush() {
@@ -2148,6 +1891,15 @@ const Real = (() => {
     l.value = p[1]; await sync(); await chain; await reload(); render();
     showPayLink(S.charges.find(c => c.id === r.charge_id) || {id:r.charge_id, lead:l.id, desc:p[0], amount:p[1], url:r.url});
   }
+  async function proposalLink(id, amount) {
+    toast('Gerando o link na InfinitePay…');
+    await sync(); await chain;
+    const r = await fn('proposal-link', {proposal_id:id, amount_cents:amount});
+    if (r.error) { await reload(); render(); return toast(r.error); }
+    await reload(); render();
+    const p = S.proposals.find(x => x.id === id);
+    if (p) showPropLink(p);
+  }
   function invite() {
     modal('Convidar pessoa', `<div class="fg">${inp('n', 'Nome', 'required')}${sel('r', 'Perfil', ['sales', 'finance', 'viewer', 'admin'].map(k => [k, ROLES[k].n]))}</div><p class="note">Você recebe um link de uso único, válido por 7 dias. A pessoa escolhe o próprio e-mail e a própria senha.</p>`,
     fd => { const n = String(fd.get('n') || '').trim(); if (!n) return 'Escreva o nome.';
@@ -2201,7 +1953,7 @@ const Real = (() => {
     const {data:{session}} = await sb.auth.getSession();
     if (session && (location.hash || '').indexOf('type=recovery') < 0) await openApp();
   }
-  return {boot, sync, fn, reload, logout, payLink, invite, paintLogin, submitLogin, forgot, tenantId:() => tid};
+  return {boot, sync, fn, reload, logout, payLink, proposalLink, invite, paintLogin, submitLogin, forgot, tenantId:() => tid};
 })();
 
 /* tema do sistema mudou ou o host trocou data-theme */
