@@ -219,7 +219,7 @@
       nav.classList.toggle('is-hidden', self.direction === 1 && y > 400);
     },
   });
-  $$('.nav-links a').forEach((a) => {
+  $$('.nav-links a[href^="#"]').forEach((a) => {
     const sec = $(a.getAttribute('href'));
     if (!sec) return;
     ScrollTrigger.create({ trigger: sec, start: 'top 50%', end: 'bottom 50%', toggleClass: { targets: a, className: 'is-active' } });

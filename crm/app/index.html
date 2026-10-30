@@ -1,0 +1,1393 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<style>[hidden]:not([hidden=until-found i]){display:none!important}img{max-width:100%}</style>
+<title>Amplitude CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: bancada de laboratório. Sidebar + palco no PC, barra inferior no celular.
+   Fundo navy com osciloscópio de partículas; cada cliente (tenant) troca o acento da marca. */
+:root{
+  --bg:#0A0F1C; --bg2:#0F1626; --panel:#131B2E; --panel2:#18223A; --line:#222C44;
+  --fg:#E9EEF7; --muted:#9AA5BB; --dim:#6B7690;
+  --ok:#3FCF9B; --warn:#F5B547; --bad:#FF7A7A; --on-accent:#0A0F1C;
+  --acc-d:#5B8CFF; --acc-l:#2450D6; --acc-d-deep:#2E4E9C; --acc-l-deep:#142E80;
+  --acc-d-soft:#5B8CFF26; --acc-l-soft:#2450D61A;
+  --accent:var(--acc-d); --accent-deep:var(--acc-d-deep); --accent-soft:var(--acc-d-soft);
+  --shadow:0 18px 40px -24px #000c;
+  --f-sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#F2F5FA; --bg2:#E8EDF5; --panel:#FFFFFF; --panel2:#F6F8FC; --line:#D5DDEA;
+  --fg:#0A0F1C; --muted:#46526D; --dim:#5D6983;
+  --ok:#0B7F57; --warn:#8F5600; --bad:#C0392B; --on-accent:#FFFFFF;
+  --accent:var(--acc-l); --accent-deep:var(--acc-l-deep); --accent-soft:var(--acc-l-soft);
+  --shadow:0 18px 36px -26px #0A0F1C55; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#F2F5FA; --bg2:#E8EDF5; --panel:#FFFFFF; --panel2:#F6F8FC; --line:#D5DDEA;
+  --fg:#0A0F1C; --muted:#46526D; --dim:#5D6983;
+  --ok:#0B7F57; --warn:#8F5600; --bad:#C0392B; --on-accent:#FFFFFF;
+  --accent:var(--acc-l); --accent-deep:var(--acc-l-deep); --accent-soft:var(--acc-l-soft);
+  --shadow:0 18px 36px -26px #0A0F1C55; color-scheme:light}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:400 15px/1.5 var(--f-sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+svg.i{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;transition:opacity .6s}
+body.in-app #fx{opacity:.45}
+
+/* ---------- botões 3D ---------- */
+.b3{--c:var(--accent);--cd:var(--accent-deep);--tc:var(--on-accent);
+  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:0 18px;border:0;border-radius:12px;cursor:pointer;
+  background:linear-gradient(180deg,#ffffff2e,#ffffff00 55%),var(--c);color:var(--tc);font-weight:600;font-size:15px;
+  box-shadow:0 4px 0 var(--cd),0 10px 18px -10px var(--cd);transform:translateY(0);
+  transition:transform .09s ease,box-shadow .09s ease,filter .2s;text-decoration:none;white-space:nowrap;user-select:none;-webkit-tap-highlight-color:transparent}
+.b3:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 5px 0 var(--cd),0 14px 22px -12px var(--cd)}
+.b3:active{transform:translateY(4px);box-shadow:0 0 0 var(--cd),0 4px 10px -8px var(--cd)}
+.b3.ghost{--c:var(--panel2);--cd:var(--line);--tc:var(--fg);background:var(--panel2);border:1px solid var(--line)}
+.b3.ok{--c:var(--ok);--cd:#0B5E40;--tc:#04140D}
+.b3.danger{--c:var(--bad);--cd:#7A1F1F;--tc:#fff}
+.b3.sm{min-height:36px;padding:0 12px;font-size:13px;border-radius:10px;box-shadow:0 3px 0 var(--cd)}
+.b3.sm:active{transform:translateY(3px);box-shadow:0 0 0 var(--cd)}
+.b3.icon{width:44px;padding:0}
+.b3.sm.icon{width:36px}
+.b3[disabled]{opacity:.45;pointer-events:none}
+.link{background:none;border:0;color:var(--accent);font-weight:600;cursor:pointer;padding:6px 2px;min-height:36px}
+
+/* ---------- login ---------- */
+#login{position:relative;z-index:1;min-height:100%;display:grid;place-items:center;
+  padding-block:32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.lg{width:min(440px,100%);display:flex;flex-direction:column;gap:22px}
+.lg-card{background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--line);border-radius:22px;padding:28px 24px;display:flex;flex-direction:column;gap:18px;box-shadow:var(--shadow);
+  transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .25s ease-out}
+.lg-brand{display:flex;align-items:center;gap:12px}
+.lg h1{font-size:clamp(26px,6vw,32px);line-height:1.1}
+.lg-sub{color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label,.flabel{font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.inp{width:100%;min-height:46px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);font-size:16px}
+.inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea.inp{min-height:84px;resize:vertical}
+.tenants{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tpick{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);cursor:pointer;text-align:left;min-width:0;min-height:52px}
+.tpick[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.tpick span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:500}
+.trust{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center}
+.trust span{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.trust svg{width:16px;height:16px;color:var(--ok)}
+.note{font-size:13px;color:var(--muted);background:var(--accent-soft);border-radius:10px;padding:10px 12px}
+
+.logo{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none;font:700 15px var(--f-sans);
+  background:var(--accent);color:var(--on-accent);box-shadow:0 3px 0 var(--accent-deep)}
+.logo.sm{width:32px;height:32px;border-radius:9px;font-size:12px}
+
+/* ---------- app shell ---------- */
+#app{position:relative;z-index:1;min-height:100%;display:grid;grid-template-columns:240px minmax(0,1fr)}
+.side{position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:18px;padding:18px 14px;border-right:1px solid var(--line);background:color-mix(in srgb,var(--bg) 92%,transparent)}
+.side .tn{display:flex;align-items:center;gap:10px;padding:4px 6px;min-width:0}
+.side .tn b{display:block;font-size:15px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.side nav{display:flex;flex-direction:column;gap:2px}
+.nv{display:flex;align-items:center;gap:12px;min-height:42px;padding:0 12px;border-radius:10px;border:0;background:none;color:var(--muted);cursor:pointer;text-align:left;font-weight:500;position:relative}
+.nv:hover{background:var(--panel);color:var(--fg)}
+.nv[aria-current="page"]{background:var(--panel);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.nv[aria-current="page"] svg{color:var(--accent)}
+.nv .badge{margin-left:auto}
+.badge{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--on-accent);font:600 11px/20px var(--f-sans);text-align:center}
+.powered{margin-top:auto;display:flex;align-items:center;gap:8px;padding:10px 8px;color:var(--dim);font-size:12px}
+.powered svg{width:18px;height:18px}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:10px;min-height:64px;
+  padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+body.in-app::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.top .ttl{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.top .ttl .mt{display:none}
+.top h1{font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.url{font:500 12px var(--f-mono);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.url b{color:var(--accent);font-weight:500}
+.srch{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;min-width:200px}
+.srch kbd{margin-left:auto;font:500 11px var(--f-mono);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.sel{min-height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);padding:0 10px;max-width:150px}
+.ib{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;cursor:pointer;color:var(--muted)}
+.ib:hover{color:var(--fg)}
+.ib[aria-pressed="true"]{color:var(--accent);border-color:var(--accent)}
+
+#view{padding-block:22px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px;min-width:0;max-width:1400px;width:100%}
+.vh{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.vh h2{font-size:clamp(24px,3vw,30px);line-height:1.1}
+.vh p{color:var(--muted);margin-top:4px;max-width:60ch}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+
+.bnav{display:none}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
+.card h3{font-size:16px}
+.card .ch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.grid{display:grid;gap:14px;min-width:0}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0;overflow:hidden;
+  transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .2s ease-out}
+.kpi::after{content:"";position:absolute;inset:auto -20% -60% auto;width:140px;height:140px;border-radius:50%;background:radial-gradient(var(--accent-soft),transparent 70%);pointer-events:none}
+.kpi b{font-size:clamp(20px,2.4vw,26px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi small{color:var(--muted);font-size:13px}
+.kpi.alert small{color:var(--bad);font-weight:600}
+
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:600;background:var(--panel2);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
+.chip.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.chip.ok{color:var(--ok);border-color:currentColor;background:transparent}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.chip.bad{color:var(--bad);border-color:currentColor;background:transparent}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+
+.rows{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);min-width:0}
+.row:first-child{border-top:0}
+.row .grow{flex:1;min-width:0}
+.row .t{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .s{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ico{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--panel2);color:var(--accent);flex:none}
+.ico.bad{color:var(--bad)} .ico.ok{color:var(--ok)} .ico.warn{color:var(--warn)}
+.empty{padding:26px 10px;text-align:center;color:var(--muted);font-size:14px}
+
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14px}
+.bar .track{height:12px;border-radius:6px;background:var(--panel2);overflow:hidden}
+.bar .fill{height:100%;border-radius:6px;background:var(--accent);transform-origin:left;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+.bar .fill.alt{background:var(--dim)}
+@keyframes grow{from{transform:scaleX(0)}}
+.chart svg{width:100%;height:auto;display:block}
+.chart .bin{fill:var(--accent)} .chart .bout{fill:var(--dim)}
+.chart text{fill:var(--muted);font:500 12px var(--f-mono)}
+.chart line{stroke:var(--line)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* ---------- kanban ---------- */
+.kwrap{overflow-x:auto;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px));padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:12px;min-width:min-content}
+.kcol{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:240px;scroll-snap-align:start;transition:border-color .15s,background .15s}
+.kcol.over{border-color:var(--accent);background:var(--accent-soft)}
+.kh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 4px 6px}
+.kh b{font-size:14px}
+.kh small{font:500 12px var(--f-mono);color:var(--muted)}
+.kcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;cursor:pointer;text-align:left;width:100%;
+  box-shadow:0 2px 0 var(--line);transition:transform .12s,box-shadow .12s}
+.kcard:hover{transform:translateY(-2px);box-shadow:0 5px 0 var(--line)}
+.kcard.dragging{opacity:.5}
+.kcard .t{font-weight:600;font-size:15px;line-height:1.25}
+.kcard .m{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
+.kcard .v{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
+.fu{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.fu.late{color:var(--bad)} .fu.today{color:var(--warn)} .fu.next{color:var(--muted)}
+.fu svg{width:14px;height:14px}
+
+/* ---------- drawer / modal / palette ---------- */
+.scrim{position:fixed;inset:0;z-index:40;background:#050811a6;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;z-index:41;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--bg);border-left:1px solid var(--line);
+  display:flex;flex-direction:column;transform:translateX(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);box-shadow:var(--shadow)}
+.drawer.on{transform:none}
+.dh{display:flex;align-items:flex-start;gap:12px;padding:18px 18px 14px;padding-top:calc(18px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--line)}
+.dh .grow{flex:1;min-width:0}
+.dh h2{font-size:22px;line-height:1.15;overflow-wrap:anywhere}
+.db{flex:1;overflow-y:auto;padding:18px;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px}
+.sec{display:flex;flex-direction:column;gap:10px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:13px;font-weight:500}
+.pill[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;overflow-wrap:anywhere}
+.sel-text{user-select:all;font-variant-numeric:tabular-nums}
+.tl{display:flex;flex-direction:column;gap:0;list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 14px 22px;font-size:14px}
+.tl li::before{content:"";position:absolute;left:5px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.tl li::after{content:"";position:absolute;left:8.5px;top:16px;bottom:0;width:1px;background:var(--line)}
+.tl li:last-child::after{display:none}
+.tl small{display:block;color:var(--muted);font-size:12px}
+.confirm{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--bad);border-radius:12px}
+
+.modal{position:fixed;z-index:42;left:50%;top:50%;width:min(560px,calc(100% - 24px));max-height:calc(100% - 40px);overflow:auto;transform:translate(-50%,-46%) scale(.98);opacity:0;pointer-events:none;
+  background:var(--bg);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);transition:transform .22s,opacity .22s}
+.modal.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+.mh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 18px 0}
+.mh h2{font-size:20px}
+.mb{padding:18px;display:flex;flex-direction:column;gap:14px}
+.fg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fg .full{grid-column:1/-1}
+.items{display:flex;flex-direction:column;gap:8px}
+.item{display:grid;grid-template-columns:minmax(0,1fr) 64px 110px;gap:6px}
+.mf{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding-top:4px}
+.err{color:var(--bad);font-size:13px}
+
+.pal{position:fixed;z-index:43;left:50%;top:12vh;width:min(600px,calc(100% - 24px));transform:translate(-50%,-8px);opacity:0;pointer-events:none;
+  background:var(--bg);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);transition:.18s;overflow:hidden}
+.pal.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.pal .inp{border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;min-height:56px;padding:0 18px}
+.pal .inp:focus{box-shadow:none}
+.pal ul{list-style:none;margin:0;padding:6px;max-height:52vh;overflow:auto}
+.pal li button{width:100%;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;border:0;background:none;cursor:pointer;text-align:left;min-height:44px}
+.pal li button[aria-selected="true"]{background:var(--panel)}
+.pal li .k{margin-left:auto;font:500 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+
+#toast{position:fixed;z-index:60;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;pointer-events:none;transition:.22s;
+  display:flex;align-items:center;gap:12px;background:var(--fg);color:var(--bg);padding:10px 12px 10px 16px;border-radius:14px;font-weight:500;font-size:14px;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+#toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#toast button{background:var(--bg);color:var(--fg);border:0;border-radius:9px;min-height:34px;padding:0 12px;font-weight:600;cursor:pointer;white-space:nowrap}
+
+#lock{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding-inline:16px}
+#lock .card{display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;max-width:380px;padding:28px}
+
+/* público (proposta e formulário) */
+.phone{width:min(340px,100%);margin-inline:auto;border-radius:36px;padding:10px;background:var(--panel2);border:1px solid var(--line);box-shadow:var(--shadow)}
+.screen{border-radius:28px;overflow:hidden;background:#FFFFFF;color:#111827;min-height:520px;display:flex;flex-direction:column}
+.ph-head{padding:26px 20px 18px;color:#fff;display:flex;flex-direction:column;gap:6px}
+.ph-head h4{font-size:22px;letter-spacing:-.02em}
+.ph-body{padding:18px;display:flex;flex-direction:column;gap:12px}
+.ph-body label{font-size:12px;font-weight:600;color:#4B5563}
+.ph-body .pi{width:100%;min-height:44px;border:1px solid #D1D5DB;border-radius:10px;padding:8px 12px;background:#fff;color:#111827;font-size:16px}
+.ph-body .ck{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#4B5563;font-weight:400}
+.ph-body .ck input{width:18px;height:18px;margin-top:1px;flex:none}
+.ph-btn{min-height:48px;border:0;border-radius:12px;color:#fff;font-weight:600;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #0003;transition:transform .08s,box-shadow .08s}
+.ph-btn:active{transform:translateY(4px);box-shadow:0 0 0 #0003}
+.ptable{width:100%;border-collapse:collapse;font-size:14px;color:#111827}
+.ptable td{padding:8px 0;border-bottom:1px solid #E5E7EB}
+.ptable td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.ptable tr.tot td{font-weight:700;border-bottom:0;font-size:16px}
+pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);font:400 12px/1.6 var(--f-mono);white-space:pre-wrap;word-break:break-all;color:var(--fg)}
+.tbl{overflow-x:auto}
+.tbl table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.tbl th{font:500 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px;border-bottom:1px solid var(--line)}
+.tbl td.c,.tbl th.c{text-align:center}
+.yes{color:var(--ok)} .no{color:var(--dim)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.wd{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:12px;border:1px solid var(--line);background:var(--panel);cursor:pointer;min-width:0}
+.wd small{font:500 11px var(--f-mono);text-transform:uppercase;color:var(--muted)}
+.wd b{font-size:18px;font-variant-numeric:tabular-nums}
+.wd i{height:6px;display:flex;gap:3px}
+.wd i span{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.wd[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.wd[aria-pressed="true"] small{color:var(--on-accent)}
+.wd[aria-pressed="true"] i span{background:var(--on-accent)}
+.chk{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);background:none;cursor:pointer;display:grid;place-items:center;flex:none;color:var(--on-accent)}
+.chk[aria-checked="true"]{background:var(--ok);border-color:var(--ok)}
+.chk svg{width:16px;height:16px;stroke-width:3}
+.row.done .t{text-decoration:line-through;color:var(--muted)}
+.switch{display:flex;align-items:center;gap:10px;min-height:40px;font-size:14px;cursor:pointer}
+.switch input{width:20px;height:20px;accent-color:var(--accent)}
+
+/* ---------- página pública do cliente ---------- */
+#site{position:relative;z-index:1;min-height:100%;background:var(--bg)}
+.st-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--panel);border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.st-hero{padding-block:44px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:radial-gradient(120% 100% at 85% 0%,var(--accent-soft),transparent 60%)}
+.st-in{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.st-hero h1{font-size:clamp(34px,7vw,56px);line-height:1}
+.st-body{padding-block:8px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.svcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.svcs{grid-template-columns:minmax(0,1fr)}}
+.svc{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:64px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--panel);cursor:pointer;text-align:left;box-shadow:0 3px 0 var(--line);transition:transform .1s,box-shadow .1s}
+.svc:active{transform:translateY(3px);box-shadow:0 0 0 var(--line)}
+.svc[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 3px 0 var(--accent-deep),inset 0 0 0 1px var(--accent)}
+.svc b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.slot{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font:500 14px var(--f-mono)}
+.slot[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.slot:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+
+/* ---------- responsivo ---------- */
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:minmax(0,1fr)}.srch{min-width:0}.srch span,.srch kbd{display:none}.url{display:none}}
+@media (max-width:860px){
+  #app{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .top .ttl .mt{display:grid}
+  .top .sel,.hide-m{display:none}
+  .g2{grid-template-columns:minmax(0,1fr)}
+  #view{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .bnav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;z-index:6;left:0;right:0;bottom:0;
+    padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));
+    background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+  .bnav button{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:54px;border:0;background:none;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;border-radius:12px;position:relative}
+  .bnav button[aria-current="page"]{color:var(--accent)}
+  .bnav button[aria-current="page"] svg{transform:translateY(-1px)}
+  .bnav .badge{position:absolute;top:2px;right:calc(50% - 22px);min-width:16px;height:16px;font-size:10px;line-height:16px;padding:0 4px}
+  .drawer{top:auto;height:92%;width:100%;border-left:0;border-top:1px solid var(--line);border-radius:22px 22px 0 0;transform:translateY(102%)}
+  .drawer .dh{padding-top:18px}
+  .modal{top:auto;bottom:0;left:0;width:100%;max-height:92%;border-radius:22px 22px 0 0;transform:translateY(100%);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .modal.on{transform:none}
+  .kanban{grid-auto-columns:minmax(260px,82vw)}
+}
+@media (max-width:520px){.fg{grid-template-columns:minmax(0,1fr)}.bar{grid-template-columns:84px minmax(0,1fr) auto}.item{grid-template-columns:minmax(0,1fr) 54px 92px}.kpi{padding:14px}.vh .acts .b3{flex:1}}
+@media (hover:none){.kpi,.lg-card{transform:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="flask" viewBox="0 0 64 64" fill="none">
+      <path d="M28 6 V22 L12.5 51 Q9.5 58 17 58 H47 Q54.5 58 51.5 51 L36 22 V6" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/>
+      <line x1="24" y1="6" x2="40" y2="6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M17 44 Q24.5 36 32 44 Q39.5 52 47 44" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="24.5" cy="40" r="3" fill="var(--accent)"/><circle cx="33" cy="30" r="2" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-kanban" viewBox="0 0 24 24"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.6 5.2"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5M8.5 13h7M8.5 17h5"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 7h15a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/><circle cx="16.5" cy="13.5" r="1.3"/></symbol>
+    <symbol id="i-magnet" viewBox="0 0 24 24"><path d="M5 4h4v8a3 3 0 0 0 6 0V4h4v8a7 7 0 0 1-14 0z"/><path d="M5 8h4M15 8h4"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.6-3.4 8.2-8 9-4.6-.8-8-4.4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8.4 19z"/><path d="M9 9.5c.3 2.2 2.3 4.3 4.6 4.8l1.2-1.2 2 1-.4 1.6c-3.8.5-8.3-3.8-8-7.6l1.6-.4 1 2z"/></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path d="M14 4h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-5M10 8l-4 4 4 4M6 12h10"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  </defs>
+</svg>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<!-- ================= LOGIN ================= -->
+<section id="login" aria-label="Acesso">
+  <div class="lg">
+    <div class="lg-card tilt" id="lgCard">
+      <div class="lg-brand"><span class="logo" id="lgLogo">AL</span><div><p class="mono" id="lgUrl">app.amplitudelab.com.br</p><b id="lgName">Amplitude Lab</b></div></div>
+      <div><h1>Seu painel de clientes, vendas e caixa.</h1><p class="lg-sub" style="margin-top:8px">Entre com o seu e-mail. Mandamos um link de acesso que vale uma vez só, sem senha para decorar.</p></div>
+      <form id="lgForm" class="field" novalidate>
+        <label for="lgEmail">E-mail</label>
+        <input class="inp" id="lgEmail" type="email" autocomplete="email" inputmode="email" placeholder="voce@empresa.com.br">
+        <p class="note" id="lgNote" hidden></p>
+        <button class="b3" type="submit" style="margin-top:8px"><svg class="i"><use href="#i-mail"/></svg>Receber link de acesso</button>
+      </form>
+      <div class="field">
+        <span class="flabel">Demonstração: escolha um cliente</span>
+        <div class="tenants" id="lgTenants"></div>
+        <button class="b3 ghost" id="lgDemo" type="button">Entrar na demonstração</button>
+        <button class="link" id="lgSite" type="button">Ver a página pública deste cliente</button>
+      </div>
+    </div>
+    <div class="trust">
+      <span><svg class="i"><use href="#i-shield"/></svg>Dados isolados por cliente</span>
+      <span><svg class="i"><use href="#i-lock"/></svg>Login sem senha + 2FA</span>
+      <span><svg class="i"><use href="#i-check"/></svg>Pronto para a LGPD</span>
+    </div>
+    <p class="mono" style="text-align:center">Protótipo · os dados de exemplo ficam só neste navegador</p>
+  </div>
+</section>
+
+<!-- ================= PÁGINA PÚBLICA ================= -->
+<section id="site" hidden aria-label="Página do cliente"></section>
+
+<!-- ================= APP ================= -->
+<div id="app" hidden>
+  <aside class="side" aria-label="Menu">
+    <div class="tn"><span class="logo" id="sLogo"></span><div style="min-width:0"><b id="sName"></b><span class="mono" id="sNiche"></span></div></div>
+    <nav id="sNav" aria-label="Seções"></nav>
+    <div class="powered" id="powered"><svg aria-hidden="true"><use href="#flask"/></svg>feito pela Amplitude Lab</div>
+  </aside>
+  <div class="main">
+    <header class="top">
+      <div class="ttl"><span class="logo sm mt" id="mLogo"></span><h1 id="vTitle">Painel</h1><span class="url" id="tUrl"></span></div>
+      <button class="srch" id="openPal" type="button" aria-label="Buscar ou executar ação"><svg class="i"><use href="#i-search"/></svg><span>Buscar ou criar…</span><kbd>Ctrl K</kbd></button>
+      <label class="sr" for="roleSel">Ver como</label>
+      <select class="sel" id="roleSel" title="Perfil de acesso (demonstração)"></select>
+      <button class="ib hide-m" id="fxBtn" type="button" aria-label="Efeitos visuais" title="Efeitos visuais"><svg class="i"><use href="#i-spark"/></svg></button>
+      <button class="ib hide-m" id="themeBtn" type="button" aria-label="Trocar tema" title="Trocar tema"><svg class="i"><use href="#i-moon"/></svg></button>
+      <button class="ib" id="lockBtn" type="button" aria-label="Bloquear painel" title="Bloquear painel"><svg class="i"><use href="#i-lock"/></svg></button>
+    </header>
+    <main id="view" tabindex="-1"></main>
+  </div>
+  <nav class="bnav" id="bNav" aria-label="Seções"></nav>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle"></aside>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle"></div>
+<div class="pal" id="pal" role="dialog" aria-modal="true" aria-label="Busca rápida">
+  <label class="sr" for="palIn">Buscar</label>
+  <input class="inp" id="palIn" placeholder="Buscar lead, cliente ou ação…" autocomplete="off">
+  <ul id="palList" role="listbox"></ul>
+</div>
+<div id="toast" role="status" aria-live="polite"><span id="toastMsg"></span></div>
+<div id="lock" hidden>
+  <div class="card">
+    <span class="logo" id="lockLogo"></span>
+    <h2>Painel bloqueado</h2>
+    <p class="muted">Bloqueamos depois de 5 minutos parado para proteger os dados dos seus clientes. Na versão real, desbloquear pede seu e-mail ou a biometria do aparelho.</p>
+    <button class="b3" id="unlock" type="button">Desbloquear</button>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+/* ============ utilidades ============ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
+const DAY = 864e5;
+const d0 = () => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); };
+const at = (days, h = 10, m = 0) => { const d = new Date(d0() + days * DAY); d.setHours(h, m, 0, 0); return d.getTime(); };
+const dayOf = t => { const d = new Date(t); d.setHours(0,0,0,0); return d.getTime(); };
+const BRL = new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'});
+const money = c => BRL.format((c || 0) / 100);
+const MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const SEM = ['dom','seg','ter','qua','qui','sex','sáb'];
+const fdate = t => { const d = new Date(t); return d.getDate() + ' ' + MES[d.getMonth()]; };
+const ftime = t => new Date(t).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+const rel = t => { const n = Math.round((dayOf(t) - d0()) / DAY); if (n === 0) return 'hoje'; if (n === 1) return 'amanhã'; if (n === -1) return 'ontem'; return n > 0 ? `em ${n} dias` : `há ${-n} dias`; };
+const ymd = t => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+const fromYmd = (v, hm = '09:00') => v ? new Date(v + 'T' + hm).getTime() : null;
+const cents = s => { s = String(s || '').trim().replace(/[R$\s]/g, ''); if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.'); const v = parseFloat(s); return isFinite(v) && v > 0 ? Math.round(v * 100) : 0; };
+const reais = c => (c / 100).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+const first = n => String(n || '').trim().split(/\s+/)[0];
+const initials = n => String(n || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+const slugify = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.|\.$/g, '');
+const icon = (n, cls = 'i') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function mix(hex, to, t) { const p = h => [1,3,5].map(i => parseInt(h.slice(i, i+2), 16)); const a = p(hex), b = p(to); return '#' + a.map((v, i) => Math.round(v + (b[i] - v) * t).toString(16).padStart(2, '0')).join(''); }
+
+/* ============ configuração ============ */
+const TENANTS = [
+  {id:'norte',  slug:'barbearianorte', name:'Barbearia Norte',      niche:'Barbearia', d:'#F5A524', l:'#8F5300', plan:'Pro'},
+  {id:'okada',  slug:'marinaokada',    name:'Marina Okada Fotografia', niche:'Artista', d:'#EFA27C', l:'#9C4A22', plan:'White-label'},
+  {id:'orbita', slug:'festivalorbita', name:'Festival Órbita',      niche:'Evento',    d:'#B9A0FF', l:'#5B3CC4', plan:'Pro'},
+  {id:'lab',    slug:'app',            name:'Amplitude Lab',        niche:'Estúdio',   d:'#5B8CFF', l:'#2450D6', plan:'Interno'}
+];
+const STAGES = [{id:'s1',n:'Novo'},{id:'s2',n:'Contato feito'},{id:'s3',n:'Proposta'},{id:'s4',n:'Negociação'},{id:'s5',n:'Fechado',k:'won'},{id:'s6',n:'Perdido',k:'lost'}];
+const SRC = {site:'Página', form:'Formulário', whatsapp:'WhatsApp', instagram:'Instagram', email:'E-mail', indicacao:'Indicação', presencial:'Presencial'};
+const ACT = {note:'Nota', call:'Ligação', whatsapp:'WhatsApp', email:'E-mail', stage:'Etapa', form:'Formulário', proposal:'Proposta', payment:'Pagamento'};
+const ROLES = {
+  owner:   {n:'Dono',       can:['crm','edit','fin','team','del']},
+  sales:   {n:'Vendas',     can:['crm','edit']},
+  finance: {n:'Financeiro', can:['crm','fin']},
+  viewer:  {n:'Leitura',    can:['crm']}
+};
+const NAV = [
+  ['painel','Painel','home',null], ['funil','Funil','kanban','crm'], ['clientes','Clientes','users','crm'],
+  ['propostas','Propostas','file','crm'], ['agenda','Agenda','cal','crm'], ['financeiro','Financeiro','wallet','fin'],
+  ['captacao','Captação','magnet','edit'], ['equipe','Equipe e acesso','shield','team']
+];
+const NICHE = {
+  norte: {people:['Rafael Lima','Diego Martins','Caio Souza','Lucas Prado','Bruno Teles','Igor Nunes','Thiago Reis','Mateus Alves','Henrique Dias','Pedro Lopes','André Kato','Vitor Hugo'],
+    int:['Plano mensal de corte','Corte + barba','Dia do noivo','Pacote para equipe','Barba terapia','Corte infantil'], vals:[12000,8000,45000,60000,7000,5000],
+    clients:['Rafael Lima','Escritório Ponto Norte','Academia Forja','Diego Martins'], items:[['Plano mensal · 4 cortes',16000],['Barba terapia',6000],['Pacote noivo + padrinhos',45000]],
+    tasks:['Confirmar horários de sábado','Ligar para Escritório Ponto Norte','Repor pomada e óleo','Postar antes e depois no Instagram','Revisar comissões da semana','Mandar lembrete do plano mensal'],
+    inc:['Atendimentos do dia','Planos mensais','Venda de produtos'], exp:['Produtos','Aluguel','Comissões'], base:180000, form:'Agende seu horário'},
+  okada: {people:['Juliana e Paulo','Camila Rocha','Agência Brisa','Beatriz Lemos','Noivos Ana e Leo','Renata Faria','Studio Pilates Ar','Carla Mendes','Família Tanaka','Larissa Prado','Hotel Vista','Fernanda Gil'],
+    int:['Casamento completo','Ensaio pré-wedding','Book profissional','Evento corporativo','Ensaio gestante','Álbum premium'], vals:[850000,180000,95000,320000,120000,250000],
+    clients:['Juliana e Paulo','Agência Brisa','Hotel Vista','Família Tanaka'], items:[['Cobertura do casamento (10h)',650000],['Ensaio pré-wedding',150000],['Álbum premium 30x30',180000]],
+    tasks:['Entregar prévia do ensaio Camila','Reunião de roteiro com Ana e Leo','Backup dos cartões de memória','Visita técnica no Hotel Vista','Editar 40 fotos da Agência Brisa','Enviar contrato da Família Tanaka'],
+    inc:['Sinal de casamento','Ensaios','Álbuns'], exp:['Equipamento','Edição terceirizada','Deslocamento'], base:420000, form:'Peça seu orçamento'},
+  orbita: {people:['Coletivo Maré','Agência Faro','Cervejaria Vale','Marca Solar','Rádio Leste','Loja Pulso','Duna Rosa','Neon Baile','Kairo ao vivo','Hamburgueria 41','App Rota','Lia Moraes'],
+    int:['Cota de patrocínio prata','Ingressos corporativos','Estande no festival','Camarote para 20 pessoas','Parceria de mídia','Apresentação no Palco Lua'], vals:[1500000,480000,900000,600000,250000,350000],
+    clients:['Cervejaria Vale','Agência Faro','Marca Solar','Rádio Leste'], items:[['Cota prata de patrocínio',1200000],['Estande 3x3 m',450000],['Camarote 20 pessoas',600000]],
+    tasks:['Fechar mapa de estandes','Enviar kit de mídia para Marca Solar','Reunião com a produção do Palco Lua','Checar alvará e bombeiros','Aprovar arte do lote 2','Confirmar rider do Kairo'],
+    inc:['Venda de ingressos','Patrocínio','Bar e alimentação'], exp:['Estrutura e som','Cachês','Segurança'], base:1600000, form:'Quero patrocinar ou expor'},
+  lab: {people:['Barbearia Central','Studio Ink Leste','Clínica Sorriso Vivo','DJ Kairo','Café Ponto 7','Pet Shop Amigo','Ótica Visão','Academia Forja','Doceria Lua','Escola de Dança Ritmo','Tattoo Norte','Consultório Dra. Lia'],
+    int:['Página de agendamento','Cartão digital','Remake visual','Display interativo','Página central','CRM Amplitude'], vals:[49000,19000,90000,65000,35000,29900],
+    clients:['Barbearia Norte','Marina Okada Fotografia','Festival Órbita','Studio Ink Leste'], items:[['Página de agendamento',49000],['Remake visual completo',90000],['CRM Amplitude · plano Pro (mensal)',29900]],
+    tasks:['Gravar Reel de antes e depois','Enviar demo para Café Ponto 7','Follow-up Clínica Sorriso Vivo','Configurar subdomínio da Barbearia Norte','Revisar metas da semana','Cobrar parcela do Festival Órbita'],
+    inc:['Projetos','Assinaturas do CRM','Remakes'], exp:['Ferramentas e hospedagem','Anúncios','Impostos'], base:150000, form:'Quero minha página'}
+};
+
+/* ============ estado ============ */
+let T = TENANTS[0], S = null, role = 'owner', view = 'painel';
+const prefs = store.get('amp-crm:prefs', {fx:true, theme:null, tenant:'norte'});
+const savePrefs = () => store.set('amp-crm:prefs', prefs);
+const can = x => ROLES[role].can.includes(x);
+const stageOf = id => STAGES.find(s => s.id === id) || STAGES[0];
+const isOpen = l => !stageOf(l.stage).k;
+const save = () => store.set('amp-crm:v1:' + T.id, S);
+const audit = a => { S.audit.unshift({at:Date.now(), who:ROLES[role].n, a}); S.audit.length = Math.min(S.audit.length, 80); };
+const brandName = () => S.brand.name || T.name;
+const host = () => `${T.slug}.amplitudelab.com.br`;
+
+function seed(tid) {
+  const N = NICHE[tid], r = rng([...tid].reduce((a, c) => a * 31 + c.charCodeAt(0), 7));
+  const srcs = ['instagram','whatsapp','form','indicacao','instagram','presencial','form','whatsapp','email','instagram','indicacao','form'];
+  const stagePat = [0,0,1,1,1,2,2,3,3,4,4,5], fu = [0,-2,0,1,-1,2,3,0,4,null,null,null];
+  const leads = N.people.map((n, i) => ({
+    id:'l'+i, name:n, demo:true,
+    phone:`(11) 9${String(5000 + i * 173).slice(-4)}-${String(2000 + i * 311).slice(-4)}`,
+    email:slugify(n) + '@exemplo.com.br', interest:N.int[i % N.int.length], source:srcs[i],
+    stage:STAGES[stagePat[i]].id, value:Math.round(N.vals[i % N.vals.length] * (.8 + r() * .5) / 1000) * 1000,
+    follow:fu[i] == null ? null : at(fu[i], 9 + (i % 8)), created:at(-(i * 3 + 2), 11), consent:srcs[i] === 'form' ? at(-(i * 3 + 2), 11) : null,
+    client:null, lost:i === 11 ? 'Achou caro neste momento' : ''
+  }));
+  const acts = [];
+  leads.forEach((l, i) => {
+    acts.push({id:uid(), lead:l.id, kind:l.source === 'form' ? 'form' : 'note', body:`Chegou por ${SRC[l.source]} · interesse: ${l.interest}`, at:l.created, by:'Sistema'});
+    if (stagePat[i] > 0) acts.push({id:uid(), lead:l.id, kind:'whatsapp', body:'Primeira conversa no WhatsApp, pediu valores.', at:l.created + DAY, by:'Vendas'});
+    if (stagePat[i] > 1) acts.push({id:uid(), lead:l.id, kind:'proposal', body:'Proposta enviada.', at:l.created + 2 * DAY, by:'Vendas'});
+  });
+  const clients = N.clients.map((n, i) => ({id:'c'+i, name:n, email:slugify(n) + '@exemplo.com.br', phone:`(11) 9${String(7100 + i * 97).slice(-4)}-${String(4100 + i * 53).slice(-4)}`, doc:'', since:at(-60 - i * 25), contacts:[{name:i % 2 ? 'Responsável financeiro' : first(n), role:i % 2 ? 'Financeiro' : 'Decisor'}]}));
+  leads[9].client = 'c0'; leads[10].client = 'c1';
+  const P = (it, q = 1) => ({d:it[0], q, u:it[1]});
+  const proposals = [
+    {id:'p0', lead:'l9', client:'c0', title:N.items[0][0], items:[P(N.items[0]), P(N.items[1])], status:'accepted', valid:at(10), token:uid() + uid(), created:at(-12)},
+    {id:'p1', lead:'l5', client:null, title:N.items[2][0], items:[P(N.items[2])], status:'sent', valid:at(7), token:uid() + uid(), created:at(-3)},
+    {id:'p2', lead:'l6', client:null, title:N.items[1][0], items:[P(N.items[1], 2)], status:'draft', valid:at(14), token:uid() + uid(), created:at(-1)}
+  ];
+  const tdays = [-1,0,0,1,2,5], tk = ['task','meeting','task','task','meeting','task'];
+  const tasks = N.tasks.map((t, i) => ({id:'t'+i, title:t, kind:tk[i], due:at(tdays[i], 9 + i * 2), done:null, remind:15}));
+  const amt = N.base;
+  const charges = [
+    {id:'f0', client:'c0', desc:N.items[0][0] + ' · parcela 1', amount:amt, due:at(-20), status:'paid', paid:at(-19), method:'pix'},
+    {id:'f1', client:'c1', desc:N.items[1][0], amount:Math.round(amt * .6), due:at(-3), status:'paid', paid:at(-3), method:'pix'},
+    {id:'f2', client:'c2', desc:N.items[2][0], amount:Math.round(amt * .8), due:at(-4), status:'pending', paid:null, method:'boleto'},
+    {id:'f3', client:'c0', desc:N.items[0][0] + ' · parcela 2', amount:amt, due:at(6), status:'pending', paid:null, method:'pix'},
+    {id:'f4', client:'c3', desc:N.items[1][0], amount:Math.round(amt * .5), due:at(12), status:'pending', paid:null, method:'card'},
+    {id:'f5', client:'c1', desc:N.items[0][0], amount:Math.round(amt * .9), due:at(-35), status:'paid', paid:at(-34), method:'transfer'}
+  ];
+  const cash = [], now = new Date();
+  for (let m = -5; m <= 0; m++) {
+    const ms = new Date(now.getFullYear(), now.getMonth() + m, 1).getTime();
+    const lim = m === 0 ? now.getDate() : 28;
+    for (let k = 0; k < 4; k++) { const day = 1 + Math.floor(r() * lim); if (ms + (day - 1) * DAY > Date.now()) continue;
+      cash.push({id:uid(), dir:'in', cat:N.inc[k % 3], desc:N.inc[k % 3], amount:Math.round(amt * (.5 + r() * .7) / 100) * 100, date:ms + (day - 1) * DAY}); }
+    for (let k = 0; k < 3; k++) { const day = 1 + Math.floor(r() * lim); if (ms + (day - 1) * DAY > Date.now()) continue;
+      cash.push({id:uid(), dir:'out', cat:N.exp[k], desc:N.exp[k], amount:Math.round(amt * (.3 + r() * .45) / 100) * 100, date:ms + (day - 1) * DAY}); }
+  }
+  charges.filter(c => c.status === 'paid').forEach(c => cash.push({id:uid(), dir:'in', cat:'Cobranças', desc:c.desc, amount:c.amount, date:c.paid, charge:c.id}));
+  return {v:1, leads, acts, clients, proposals, tasks, charges, cash, audit:[],
+    form:{title:N.form, email:true, interest:true, msg:false, wa:'', consent:'Autorizo o contato por WhatsApp e e-mail sobre este pedido.'},
+    brand:{name:'', color:'', hide:false, domain:''},
+    members:[{n:'Você', e:'voce@' + T.slug + '.com.br', r:'owner'}, {n:'Ana Ribeiro', e:'ana@exemplo.com.br', r:'sales'}, {n:'Júlio Campos', e:'julio@exemplo.com.br', r:'finance'}, {n:'Escritório contábil', e:'contador@exemplo.com.br', r:'viewer'}]};
+}
+function load(tid) {
+  T = TENANTS.find(t => t.id === tid) || TENANTS[0];
+  S = store.get('amp-crm:v1:' + T.id, null);
+  if (!S || S.v !== 1) { S = seed(T.id); save(); }
+  applyBrand();
+}
+
+/* ============ tema e marca ============ */
+function isLight() {
+  const a = document.documentElement.getAttribute('data-theme');
+  if (a) return a === 'light';
+  return matchMedia('(prefers-color-scheme: light)').matches;
+}
+function brandPair() {
+  const c = S && S.brand.color;
+  if (c && /^#[0-9a-f]{6}$/i.test(c)) return {d:mix(c, '#ffffff', .25), l:mix(c, '#000000', .35)};
+  return {d:T.d, l:T.l};
+}
+function applyBrand() {
+  const {d, l} = brandPair(), st = document.documentElement.style;
+  st.setProperty('--acc-d', d); st.setProperty('--acc-l', l);
+  st.setProperty('--acc-d-deep', mix(d, '#000000', .45)); st.setProperty('--acc-l-deep', mix(l, '#000000', .45));
+  st.setProperty('--acc-d-soft', d + '26'); st.setProperty('--acc-l-soft', l + '1A');
+  FX.color();
+}
+function applyTheme() {
+  if (prefs.theme) document.documentElement.setAttribute('data-theme', prefs.theme);
+  FX.color();
+}
+
+/* ============ partículas (osciloscópio + explosões) ============ */
+const FX = (() => {
+  const cv = $('#fx'), ctx = cv.getContext('2d');
+  const coarse = matchMedia('(pointer: coarse)').matches, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w = 0, h = 0, dpr = 1, t = 0, last = 0, raf = 0, px = -1e4, py = -1e4, acc = '#5B8CFF', mode = 'login';
+  const bursts = [];
+  function size() { dpr = Math.min(window.devicePixelRatio || 1, coarse ? 1.25 : 1.5); w = innerWidth; h = innerHeight; cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); if (reduce || !prefs.fx) draw(); }
+  function waves() {
+    const login = mode === 'login', n = login ? 3 : 2, gap = w < 700 ? 16 : 13, cols = Math.min(140, Math.ceil(w / gap) + 1);
+    const sig = 2 * Math.pow(Math.max(140, w * .12), 2);
+    for (let i = 0; i < n; i++) {
+      const base = h * (login ? [.68, .76, .84][i] : [.62, .7][i]), amp = h * (login ? .055 : .035) * (1 + i * .35);
+      const k = 2 * Math.PI / (w * (.5 + i * .2)), sp = .55 + i * .22;
+      ctx.beginPath();
+      for (let c = 0; c < cols; c++) {
+        const x = c * gap, env = Math.sin(Math.PI * Math.min(1, x / w));
+        const near = Math.exp(-((x - px) ** 2) / sig) * Math.max(0, 1 - Math.abs(py - base) / (h * .45));
+        const y = base + amp * env * (1 + 1.8 * near) * Math.sin(x * k + t * sp + i * 1.7);
+        const r = .9 + env * (1.1 + near * 1.4);
+        ctx.moveTo(x + r, y); ctx.arc(x, y, r, 0, 6.2832);
+      }
+      ctx.globalAlpha = (login ? .9 : .5) * (1 - i * .25);
+      ctx.fillStyle = acc; ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    if (prefs.fx) waves();
+    for (let i = bursts.length - 1; i >= 0; i--) {
+      const p = bursts[i]; p.vy += .16; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.life -= .017;
+      if (p.life <= 0) { bursts.splice(i, 1); continue; }
+      ctx.globalAlpha = Math.min(1, p.life * 1.4); ctx.fillStyle = p.c;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (.4 + p.life * .6), 0, 6.2832); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function loop(ts) {
+    raf = requestAnimationFrame(loop);
+    if (document.hidden) return;
+    if (ts - last < (coarse ? 32 : 15)) return;
+    t += Math.min(64, ts - last || 16) / 1000; last = ts;
+    draw();
+    if (!prefs.fx && !bursts.length) { cancelAnimationFrame(raf); raf = 0; }
+  }
+  function start() { if (!raf && !reduce) { last = performance.now(); raf = requestAnimationFrame(loop); } else if (reduce) draw(); }
+  addEventListener('resize', size, {passive:true});
+  addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; }, {passive:true});
+  addEventListener('pointerleave', () => { px = py = -1e4; });
+  return {
+    init() { size(); start(); },
+    color() { acc = (isLight() ? brandPair().l : brandPair().d); if (reduce || !raf) draw(); },
+    mode(m) { mode = m; if (!raf) draw(); },
+    toggle() { if (prefs.fx) start(); else if (!bursts.length) draw(); },
+    burst(x, y) {
+      if (reduce || !prefs.fx) return;
+      const cols = [acc, isLight() ? '#0B7F57' : '#3FCF9B', isLight() ? '#0A0F1C' : '#E9EEF7'], n = coarse ? 26 : 46;
+      for (let i = 0; i < n; i++) { const a = Math.random() * 6.2832, s = 2 + Math.random() * 5;
+        bursts.push({x, y, vx:Math.cos(a) * s, vy:Math.sin(a) * s - 3, r:2 + Math.random() * 2.5, life:1, c:cols[i % 3]}); }
+      if (!raf) { last = performance.now(); raf = requestAnimationFrame(loop); }
+    }
+  };
+})();
+
+/* inclinação 3D leve, só em telas com mouse */
+if (matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  let pend = null;
+  document.addEventListener('pointermove', e => {
+    const el = e.target.closest && e.target.closest('.tilt');
+    if (pend) return;
+    pend = requestAnimationFrame(() => {
+      pend = null;
+      $$('.tilt').forEach(x => { if (x !== el) { x.style.setProperty('--rx', '0deg'); x.style.setProperty('--ry', '0deg'); } });
+      if (!el) return;
+      const r = el.getBoundingClientRect(), dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5;
+      el.style.setProperty('--ry', (dx * 6).toFixed(2) + 'deg'); el.style.setProperty('--rx', (-dy * 6).toFixed(2) + 'deg');
+    });
+  }, {passive:true});
+}
+
+/* ============ toast ============ */
+let toastT;
+function toast(msg, action) {
+  const el = $('#toast'); $('#toastMsg').textContent = msg;
+  el.querySelectorAll('button').forEach(b => b.remove());
+  if (action) { const b = document.createElement('button'); b.type = 'button'; b.textContent = action.label; b.onclick = () => { el.classList.remove('on'); action.run(); }; el.append(b); }
+  el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), action ? 6000 : 2600);
+}
+async function copy(text, label) {
+  try { await navigator.clipboard.writeText(text); toast(label || 'Copiado'); }
+  catch (e) { toast('Não deu para copiar automaticamente. Selecione o texto e copie.'); }
+}
+
+/* ============ derivados ============ */
+const openLeads = () => S.leads.filter(isOpen);
+const monthStart = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1).getTime(); };
+const isLate = c => c.status === 'pending' && dayOf(c.due) < d0();
+const clientName = id => (S.clients.find(c => c.id === id) || {}).name || '';
+const leadName = id => (S.leads.find(l => l.id === id) || {}).name || '';
+const propTotal = p => p.items.reduce((a, i) => a + i.q * i.u, 0);
+const phoneShown = p => can('edit') || can('fin') ? p : String(p || '').replace(/\d(?=(?:\D*\d){2})/g, '•');
+function followClass(t) { if (!t) return ''; const n = dayOf(t) - d0(); return n < 0 ? 'late' : n === 0 ? 'today' : 'next'; }
+function waLink(l) {
+  const txt = `Oi, ${first(l.name)}! Aqui é da ${brandName()}. Vi seu interesse em ${l.interest || 'nossos serviços'}. Posso te ajudar?`;
+  const dg = String(l.phone || '').replace(/\D/g, '');
+  const num = l.demo || dg.length < 10 ? '' : (dg.startsWith('55') ? dg : '55' + dg);
+  return `https://wa.me/${num}?text=${encodeURIComponent(txt)}`;
+}
+function agendaItems() {
+  const items = S.tasks.map(t => ({id:t.id, type:'task', title:t.title, kind:t.kind, due:t.due, done:t.done}));
+  openLeads().filter(l => l.follow).forEach(l => items.push({id:l.id, type:'follow', title:'Follow-up: ' + l.name, kind:'follow_up', due:l.follow, done:null, lead:l.id}));
+  return items.sort((a, b) => a.due - b.due);
+}
+function nextSteps() {
+  const end = d0() + DAY, out = [];
+  openLeads().filter(l => l.follow && l.follow < end).forEach(l => out.push({k:'lead', id:l.id, t:'Follow-up com ' + l.name, s:`${l.interest} · ${rel(l.follow)}`, late:dayOf(l.follow) < d0(), ic:'wa'}));
+  S.tasks.filter(t => !t.done && t.due < end).forEach(t => out.push({k:'task', id:t.id, t:t.title, s:`${t.kind === 'meeting' ? 'Reunião' : 'Tarefa'} · ${rel(t.due)} ${ftime(t.due)}`, late:dayOf(t.due) < d0(), ic:t.kind === 'meeting' ? 'users' : 'check'}));
+  if (can('fin')) S.charges.filter(isLate).forEach(c => out.push({k:'charge', id:c.id, t:'Cobrança atrasada · ' + clientName(c.client), s:`${money(c.amount)} · venceu ${rel(c.due)}`, late:true, ic:'wallet'}));
+  return out.sort((a, b) => b.late - a.late);
+}
+
+/* ============ navegação ============ */
+const allowed = v => { const n = NAV.find(x => x[0] === v); return n && (!n[3] || can(n[3])); };
+function badgeFor(v) { if (v === 'funil') { const n = S.leads.filter(l => l.stage === 's1').length; return n || ''; } if (v === 'agenda') { const n = nextSteps().filter(x => x.k !== 'charge').length; return n || ''; } return ''; }
+function renderNav() {
+  $('#sNav').innerHTML = NAV.filter(n => allowed(n[0])).map(n => `<button class="nv" data-go="${n[0]}" ${view === n[0] ? 'aria-current="page"' : ''}>${icon(n[2])}${n[1]}${badgeFor(n[0]) ? `<span class="badge">${badgeFor(n[0])}</span>` : ''}</button>`).join('');
+  const mob = ['painel','funil','agenda', can('fin') ? 'financeiro' : 'clientes'];
+  const inMore = !mob.includes(view);
+  $('#bNav').innerHTML = mob.map(v => { const n = NAV.find(x => x[0] === v); const b = badgeFor(v);
+    return `<button data-go="${v}" ${view === v ? 'aria-current="page"' : ''}>${icon(n[2])}${n[1]}${b ? `<span class="badge">${b}</span>` : ''}</button>`; }).join('')
+    + `<button data-act="more" ${inMore ? 'aria-current="page"' : ''}>${icon('more')}Mais</button>`;
+}
+function go(v, focus) {
+  if (!allowed(v)) { toast('Seu perfil não tem acesso a esta área.'); v = 'painel'; }
+  view = v; render();
+  if (focus) $('#view').focus({preventScroll:true});
+  window.scrollTo({top:0});
+}
+function render() {
+  $('#vTitle').textContent = (NAV.find(n => n[0] === view) || NAV[0])[1];
+  $('#view').innerHTML = V[view]();
+  renderNav();
+  $('#fxBtn').setAttribute('aria-pressed', prefs.fx);
+}
+function renderChrome() {
+  const nm = brandName(), ini = initials(nm);
+  ['#sLogo', '#mLogo', '#lockLogo'].forEach(s => $(s).textContent = ini);
+  $('#sName').textContent = nm; $('#sNiche').textContent = T.niche + ' · ' + T.plan;
+  $('#tUrl').innerHTML = `<b>${esc(T.slug)}</b>.amplitudelab.com.br`;
+  $('#powered').hidden = !!S.brand.hide;
+  $('#roleSel').innerHTML = Object.entries(ROLES).map(([k, r]) => `<option value="${k}" ${k === role ? 'selected' : ''}>Ver como: ${r.n}</option>`).join('');
+  document.title = nm + ' · Amplitude CRM';
+}
+
+/* ============ views ============ */
+const V = {};
+const head = (title, sub, actions = '') => `<div class="vh"><div><h2>${title}</h2>${sub ? `<p>${sub}</p>` : ''}</div>${actions ? `<div class="acts">${actions}</div>` : ''}</div>`;
+const leadBtn = can => can ? `<button class="b3" data-act="newLead">${icon('plus')}Novo lead</button>` : '';
+
+V.painel = () => {
+  const ol = openLeads(), pipe = ol.reduce((a, l) => a + l.value, 0), ms = monthStart();
+  const recv = S.cash.filter(c => c.dir === 'in' && c.date >= ms).reduce((a, c) => a + c.amount, 0);
+  const pend = S.charges.filter(c => c.status === 'pending'), late = pend.filter(isLate);
+  const won = S.leads.filter(l => stageOf(l.stage).k === 'won').length, closed = S.leads.filter(l => !isOpen(l)).length;
+  const h = new Date().getHours(), hi = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+  const steps = nextSteps();
+  const kpis = [
+    `<div class="kpi tilt"><span class="mono">Leads em aberto</span><b>${ol.length}</b><small>${S.leads.filter(l => l.stage === 's1').length} novos esperando contato</small></div>`,
+    `<div class="kpi tilt"><span class="mono">Em negociação</span><b>${money(pipe)}</b><small>soma do funil aberto</small></div>`,
+    can('fin') ? `<div class="kpi tilt"><span class="mono">Recebido no mês</span><b>${money(recv)}</b><small>${MES[new Date().getMonth()]} até hoje</small></div>`
+               : `<div class="kpi tilt"><span class="mono">Taxa de fechamento</span><b>${closed ? Math.round(won / closed * 100) : 0}%</b><small>${won} de ${closed} decididos</small></div>`,
+    can('fin') ? `<div class="kpi tilt ${late.length ? 'alert' : ''}"><span class="mono">A receber</span><b>${money(pend.reduce((a, c) => a + c.amount, 0))}</b><small>${late.length ? `${late.length} atrasada${late.length > 1 ? 's' : ''} · ${money(late.reduce((a, c) => a + c.amount, 0))}` : 'nenhuma atrasada'}</small></div>`
+               : `<div class="kpi tilt"><span class="mono">Tarefas hoje</span><b>${steps.length}</b><small>follow-ups e compromissos</small></div>`
+  ].join('');
+  const openSt = STAGES.filter(s => !s.k), maxC = Math.max(1, ...openSt.map(s => S.leads.filter(l => l.stage === s.id).length));
+  const funnel = openSt.map(s => { const ls = S.leads.filter(l => l.stage === s.id);
+    return `<div class="bar"><span>${s.n}</span><div class="track"><div class="fill" style="width:${ls.length / maxC * 100}%"></div></div><span class="num muted">${ls.length} · ${money(ls.reduce((a, l) => a + l.value, 0)).replace(',00', '')}</span></div>`; }).join('');
+  const bySrc = Object.keys(SRC).map(k => [k, S.leads.filter(l => l.source === k).length]).filter(x => x[1]).sort((a, b) => b[1] - a[1]);
+  const maxS = Math.max(1, ...bySrc.map(x => x[1]));
+  const srcs = bySrc.map(([k, n]) => `<div class="bar"><span>${SRC[k]}</span><div class="track"><div class="fill alt" style="width:${n / maxS * 100}%"></div></div><span class="num muted">${n}</span></div>`).join('');
+  return head(`${hi}, ${esc(brandName())}.`, steps.length ? `Você tem ${steps.length} ${steps.length > 1 ? 'coisas' : 'coisa'} para resolver hoje. Comece pelas atrasadas.` : 'Nada pendente para hoje. Bom momento para prospectar.', leadBtn(can('edit')))
+  + `<div class="kpis">${kpis}</div>
+  <div class="grid g3">
+    <section class="card"><div class="ch"><h3>Próximos passos</h3><span class="chip acc">${steps.length}</span></div>
+      <div class="rows">${steps.length ? steps.slice(0, 7).map(x => `<div class="row"><span class="ico ${x.late ? 'bad' : ''}">${icon(x.ic)}</span><div class="grow"><p class="t">${esc(x.t)}</p><p class="s">${x.late ? '<b style="color:var(--bad)">Atrasado</b> · ' : ''}${esc(x.s)}</p></div>
+        ${x.k === 'lead' ? `<button class="b3 sm ghost" data-act="openLead" data-id="${x.id}">Abrir</button>` : x.k === 'task' ? `<button class="b3 sm ghost" data-act="doneTask" data-id="${x.id}">Concluir</button>` : `<button class="b3 sm ghost" data-act="payCharge" data-id="${x.id}">Recebido</button>`}</div>`).join('') : '<p class="empty">Tudo em dia.</p>'}</div>
+    </section>
+    <section class="card"><div class="ch"><h3>Funil agora</h3><button class="link" data-go="funil">Abrir funil</button></div><div class="bars">${funnel}</div>
+      <div class="ch" style="margin:20px 0 12px"><h3>De onde vêm os leads</h3></div><div class="bars">${srcs}</div></section>
+  </div>
+  ${can('fin') ? `<section class="card"><div class="ch"><h3>Fluxo de caixa · 6 meses</h3><div class="legend"><span><i style="background:var(--accent)"></i>Entradas</span><span><i style="background:var(--dim)"></i>Saídas</span></div></div>${cashChart()}</section>` : ''}`;
+};
+
+function cashChart() {
+  const now = new Date(), months = [];
+  for (let m = -5; m <= 0; m++) { const s = new Date(now.getFullYear(), now.getMonth() + m, 1), e = new Date(now.getFullYear(), now.getMonth() + m + 1, 1);
+    const inn = S.cash.filter(c => c.dir === 'in' && c.date >= s && c.date < e).reduce((a, c) => a + c.amount, 0);
+    const out = S.cash.filter(c => c.dir === 'out' && c.date >= s && c.date < e).reduce((a, c) => a + c.amount, 0);
+    months.push({l:MES[s.getMonth()], inn, out}); }
+  const max = Math.max(1, ...months.map(m => Math.max(m.inn, m.out))), H = 170, top = 22;
+  const y = v => top + H - v / max * H;
+  const bars = months.map((m, i) => { const x = i * 100;
+    return `<rect class="bin" x="${x + 24}" y="${y(m.inn)}" width="24" height="${top + H - y(m.inn)}" rx="4"><title>${m.l}: entradas ${money(m.inn)}</title></rect>
+      <rect class="bout" x="${x + 52}" y="${y(m.out)}" width="24" height="${top + H - y(m.out)}" rx="4"><title>${m.l}: saídas ${money(m.out)}</title></rect>
+      <text x="${x + 50}" y="${top + H + 20}" text-anchor="middle">${m.l}</text>
+      <text x="${x + 50}" y="${Math.min(y(m.inn), y(m.out)) - 6}" text-anchor="middle">${money(m.inn - m.out).replace(',00', '').replace('R$', '').trim()}</text>`; }).join('');
+  return `<div class="chart"><svg viewBox="0 0 600 ${top + H + 28}" role="img" aria-label="Entradas e saídas por mês"><line x1="0" x2="600" y1="${top + H}" y2="${top + H}"/>${bars}</svg></div>
+  <p class="muted" style="font-size:13px;margin-top:6px">O número em cima de cada mês é o saldo (entradas menos saídas).</p>`;
+}
+
+V.funil = () => {
+  const cols = STAGES.map(s => { const ls = S.leads.filter(l => l.stage === s.id).sort((a, b) => (a.follow || 9e15) - (b.follow || 9e15));
+    return `<section class="kcol" data-stage="${s.id}" aria-label="${s.n}"><div class="kh"><b>${s.n}</b><small>${ls.length} · ${money(ls.reduce((a, l) => a + l.value, 0)).replace(',00', '')}</small></div>
+    ${ls.map(l => `<button class="kcard" draggable="${can('edit')}" data-act="openLead" data-id="${l.id}">
+      <span class="t">${esc(l.name)}</span><span class="m"><span>${esc(l.interest)}</span></span>
+      <span class="m"><span class="chip">${SRC[l.source] || 'Outro'}</span><span class="v">${money(l.value).replace(',00', '')}</span></span>
+      ${l.follow && !s.k ? `<span class="fu ${followClass(l.follow)}">${icon('clock')}${followClass(l.follow) === 'late' ? 'Atrasado · ' : ''}${rel(l.follow)} ${ftime(l.follow)}</span>` : ''}
+      ${s.k === 'lost' && l.lost ? `<span class="fu next">${esc(l.lost)}</span>` : ''}
+    </button>`).join('') || '<p class="empty">Nenhum lead nesta etapa</p>'}</section>`; }).join('');
+  return head('Funil de vendas', can('edit') ? 'Arraste os cartões entre as colunas no computador. No celular, toque no cartão e escolha a etapa.' : 'Seu perfil vê o funil, mas não altera.', leadBtn(can('edit')))
+    + `<div class="kwrap"><div class="kanban">${cols}</div></div>`;
+};
+
+V.clientes = () => {
+  const q = (V._cq || '').toLowerCase();
+  const list = S.clients.filter(c => !q || (c.name + ' ' + c.email).toLowerCase().includes(q));
+  return head('Clientes e contatos', 'Quem já fechou com você. Cada cliente junta propostas, cobranças e histórico.', can('edit') ? `<button class="b3" data-act="newClient">${icon('plus')}Novo cliente</button>` : '')
+  + `<div class="field" style="max-width:420px"><label for="cq">Buscar cliente</label><input class="inp" id="cq" value="${esc(V._cq || '')}" placeholder="Nome ou e-mail" autocomplete="off"></div>
+  <div class="grid g2">${list.map(c => { const props = S.proposals.filter(p => p.client === c.id), ch = S.charges.filter(x => x.client === c.id);
+    const paid = ch.filter(x => x.status === 'paid').reduce((a, x) => a + x.amount, 0), open = ch.filter(x => x.status === 'pending');
+    return `<article class="card"><div class="ch"><div style="display:flex;gap:12px;align-items:center;min-width:0"><span class="logo sm" style="background:var(--panel2);color:var(--accent);box-shadow:none">${esc(initials(c.name))}</span><div style="min-width:0"><h3 style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</h3><p class="muted" style="font-size:13px">cliente desde ${fdate(c.since)}</p></div></div>${open.some(isLate) ? '<span class="chip bad"><span class="dot"></span>Atrasado</span>' : ''}</div>
+      <dl class="kv"><dt>E-mail</dt><dd>${esc(c.email || '—')}</dd><dt>Telefone</dt><dd class="sel-text">${esc(phoneShown(c.phone) || '—')}</dd>
+      <dt>Contatos</dt><dd>${c.contacts.map(k => `${esc(k.name)} <span class="muted">(${esc(k.role)})</span>`).join(', ') || '—'}</dd>
+      <dt>Propostas</dt><dd>${props.length ? props.map(p => esc(p.title)).join(', ') : '—'}</dd>
+      ${can('fin') ? `<dt>Pago</dt><dd class="num">${money(paid)}</dd><dt>Em aberto</dt><dd class="num">${money(open.reduce((a, x) => a + x.amount, 0))}</dd>` : ''}</dl></article>`; }).join('') || '<p class="empty">Nenhum cliente encontrado.</p>'}</div>`;
+};
+
+const PSTAT = {draft:['Rascunho',''], sent:['Enviada','warn'], viewed:['Vista','acc'], accepted:['Aceita','ok'], declined:['Recusada','bad']};
+V.propostas = () => head('Propostas', 'Monte a proposta em 1 minuto e mande um link. O cliente abre no celular e aceita com um toque.', can('edit') ? `<button class="b3" data-act="newProposal">${icon('plus')}Nova proposta</button>` : '')
+  + `<div class="grid g2">${S.proposals.slice().sort((a, b) => b.created - a.created).map(p => { const st = PSTAT[p.status];
+    return `<article class="card"><div class="ch"><h3>${esc(p.title)}</h3><span class="chip ${st[1]}"><span class="dot"></span>${st[0]}</span></div>
+      <dl class="kv"><dt>Para</dt><dd>${esc(clientName(p.client) || leadName(p.lead) || '—')}</dd><dt>Total</dt><dd class="num"><b>${money(propTotal(p))}</b></dd><dt>Validade</dt><dd>${fdate(p.valid)} (${rel(p.valid)})</dd></dl>
+      <div class="acts" style="margin-top:14px"><button class="b3 sm" data-act="viewProposal" data-id="${p.id}">${icon('eye')}Ver como o cliente</button>
+      <button class="b3 sm ghost" data-act="copyProposal" data-id="${p.id}">${icon('copy')}Copiar link</button></div></article>`; }).join('') || '<p class="empty">Nenhuma proposta ainda.</p>'}</div>`;
+
+V._ag = null;
+V.agenda = () => {
+  const items = agendaItems(), days = [...Array(7)].map((_, i) => d0() + i * DAY);
+  const strip = days.map(d => { const n = items.filter(x => !x.done && dayOf(x.due) === d).length;
+    return `<button class="wd" data-act="agDay" data-d="${d}" aria-pressed="${V._ag === d}"><small>${SEM[new Date(d).getDay()]}</small><b>${new Date(d).getDate()}</b><i>${'<span></span>'.repeat(Math.min(n, 3))}</i></button>`; }).join('');
+  const row = x => `<div class="row ${x.done ? 'done' : ''}"><button class="chk" role="checkbox" aria-checked="${!!x.done}" aria-label="Concluir ${esc(x.title)}" data-act="${x.type === 'task' ? 'doneTask' : 'doneFollow'}" data-id="${x.id}">${x.done ? icon('check') : ''}</button>
+    <div class="grow"><p class="t">${esc(x.title)}</p><p class="s">${x.kind === 'meeting' ? 'Reunião' : x.kind === 'follow_up' ? 'Follow-up do funil' : 'Tarefa'} · ${fdate(x.due)} ${ftime(x.due)}</p></div>
+    ${x.type === 'follow' ? `<button class="b3 sm ghost" data-act="openLead" data-id="${x.lead}">Abrir</button>` : `<span class="chip">${icon('clock', 'i')}${rel(x.due)}</span>`}</div>`;
+  let body;
+  if (V._ag != null) {
+    const list = items.filter(x => dayOf(x.due) === V._ag);
+    body = `<section class="card"><div class="ch"><h3>${SEM[new Date(V._ag).getDay()]}, ${fdate(V._ag)}</h3><button class="link" data-act="agDay" data-d="">Ver tudo</button></div><div class="rows">${list.map(row).join('') || '<p class="empty">Dia livre.</p>'}</div></section>`;
+  } else {
+    const late = items.filter(x => !x.done && dayOf(x.due) < d0()), today = items.filter(x => dayOf(x.due) === d0()), next = items.filter(x => !x.done && dayOf(x.due) > d0());
+    body = `<div class="grid g2"><section class="card"><div class="ch"><h3>Atrasadas</h3><span class="chip ${late.length ? 'bad' : ''}">${late.length}</span></div><div class="rows">${late.map(row).join('') || '<p class="empty">Nada atrasado.</p>'}</div></section>
+      <section class="card"><div class="ch"><h3>Hoje</h3><span class="chip acc">${today.filter(x => !x.done).length}</span></div><div class="rows">${today.map(row).join('') || '<p class="empty">Dia livre.</p>'}</div></section></div>
+      <section class="card"><div class="ch"><h3>Próximos dias</h3></div><div class="rows">${next.map(row).join('') || '<p class="empty">Nada agendado.</p>'}</div></section>`;
+  }
+  return head('Agenda e lembretes', 'Tarefas, reuniões e os follow-ups do funil num lugar só. O lembrete chega por WhatsApp ou e-mail na versão real.', can('edit') ? `<button class="b3" data-act="newTask">${icon('plus')}Nova tarefa</button>` : '')
+    + `<div class="week">${strip}</div>${body}`;
+};
+
+const METH = {pix:'Pix', boleto:'Boleto', card:'Cartão', transfer:'Transferência', cash:'Dinheiro'};
+V.financeiro = () => {
+  const ms = monthStart(), mIn = S.cash.filter(c => c.dir === 'in' && c.date >= ms).reduce((a, c) => a + c.amount, 0), mOut = S.cash.filter(c => c.dir === 'out' && c.date >= ms).reduce((a, c) => a + c.amount, 0);
+  const pend = S.charges.filter(c => c.status === 'pending'), late = pend.filter(isLate);
+  const ch = S.charges.slice().sort((a, b) => (a.status === 'paid') - (b.status === 'paid') || a.due - b.due);
+  return head('Financeiro', 'Cobranças, recebimentos e fluxo de caixa. Na versão real, Pix e boleto são gerados pelo gateway e a baixa é automática.',
+    `<button class="b3 ghost" data-act="newExpense">${icon('plus')}Lançar despesa</button><button class="b3" data-act="newCharge">${icon('plus')}Nova cobrança</button>`)
+  + `<div class="kpis">
+    <div class="kpi tilt"><span class="mono">Entrou no mês</span><b>${money(mIn)}</b><small>${S.cash.filter(c => c.dir === 'in' && c.date >= ms).length} lançamentos</small></div>
+    <div class="kpi tilt"><span class="mono">Saiu no mês</span><b>${money(mOut)}</b><small>despesas lançadas</small></div>
+    <div class="kpi tilt"><span class="mono">Saldo do mês</span><b style="color:${mIn - mOut >= 0 ? 'var(--ok)' : 'var(--bad)'}">${money(mIn - mOut)}</b><small>entradas menos saídas</small></div>
+    <div class="kpi tilt ${late.length ? 'alert' : ''}"><span class="mono">Atrasado</span><b style="color:${late.length ? 'var(--bad)' : 'var(--fg)'}">${money(late.reduce((a, c) => a + c.amount, 0))}</b><small>${late.length} cobrança${late.length === 1 ? '' : 's'} vencida${late.length === 1 ? '' : 's'}</small></div></div>
+  <section class="card"><div class="ch"><h3>Cobranças</h3><span class="muted" style="font-size:13px">${pend.length} em aberto</span></div>
+    <div class="rows">${ch.map(c => { const lt = isLate(c), st = c.status === 'paid' ? ['Pago', 'ok'] : lt ? ['Atrasado', 'bad'] : ['A vencer', 'warn'];
+      return `<div class="row"><span class="ico ${st[1]}">${icon('wallet')}</span><div class="grow"><p class="t">${esc(clientName(c.client) || 'Avulso')} · ${esc(c.desc)}</p><p class="s">${METH[c.method] || '—'} · ${c.status === 'paid' ? 'pago em ' + fdate(c.paid) : 'vence ' + fdate(c.due) + ' (' + rel(c.due) + ')'}</p></div>
+      <b class="num hide-m">${money(c.amount)}</b><span class="chip ${st[1]}"><span class="dot"></span>${st[0]}</span>
+      ${c.status === 'pending' ? `<button class="b3 sm ok" data-act="payCharge" data-id="${c.id}">Recebido</button>` : ''}</div>`; }).join('')}</div></section>
+  <section class="card"><div class="ch"><h3>Fluxo de caixa · 6 meses</h3><div class="legend"><span><i style="background:var(--accent)"></i>Entradas</span><span><i style="background:var(--dim)"></i>Saídas</span></div></div>${cashChart()}</section>
+  <section class="card"><div class="ch"><h3>Últimos lançamentos</h3></div><div class="rows">${S.cash.slice().sort((a, b) => b.date - a.date).slice(0, 8).map(c => `<div class="row"><span class="ico ${c.dir === 'in' ? 'ok' : ''}">${c.dir === 'in' ? '+' : '−'}</span><div class="grow"><p class="t">${esc(c.desc)}</p><p class="s">${esc(c.cat)} · ${fdate(c.date)}</p></div><b class="num" style="color:${c.dir === 'in' ? 'var(--ok)' : 'var(--fg)'}">${c.dir === 'in' ? '+' : '−'} ${money(c.amount)}</b></div>`).join('')}</div></section>`;
+};
+
+V.captacao = () => {
+  const f = S.form, link = `https://${host()}/f/contato`;
+  const waTxt = `Olá! Vim pelo site da ${brandName()} e quero saber mais.`;
+  const waNum = String(f.wa || '').replace(/\D/g, '');
+  const waUrl = `https://wa.me/${waNum ? (waNum.startsWith('55') ? waNum : '55' + waNum) : ''}?text=${encodeURIComponent(waTxt)}`;
+  const embed = `<iframe src="${link}?utm_source=site" title="${f.title}" style="width:100%;height:560px;border:0"></iframe>`;
+  return head('Captação de leads', 'Todo pedido que chega pela sua página, formulário, WhatsApp ou Instagram cai sozinho na coluna “Novo” do funil, com a origem marcada.', `<button class="b3" data-act="site">${icon('eye')}Abrir minha página</button>`)
+  + `<div class="grid g3">
+    <section class="card" style="display:flex;flex-direction:column;gap:14px"><div class="ch" style="margin:0"><h3>Formulário público</h3><span class="chip ok"><span class="dot"></span>No ar</span></div>
+      <div class="field"><label for="fTitle">Título</label><input class="inp" id="fTitle" data-form="title" value="${esc(f.title)}"></div>
+      <div class="field"><span class="flabel">Campos</span>
+        <label class="switch"><input type="checkbox" checked disabled> Nome e WhatsApp (sempre)</label>
+        <label class="switch"><input type="checkbox" data-form="email" ${f.email ? 'checked' : ''}> E-mail</label>
+        <label class="switch"><input type="checkbox" data-form="interest" ${f.interest ? 'checked' : ''}> Interesse</label>
+        <label class="switch"><input type="checkbox" data-form="msg" ${f.msg ? 'checked' : ''}> Mensagem</label></div>
+      <div class="field"><label for="fConsent">Texto de consentimento (LGPD)</label><textarea class="inp" id="fConsent" data-form="consent">${esc(f.consent)}</textarea></div>
+      <div class="field"><span class="flabel">Link do formulário</span><pre class="code">${esc(link)}</pre><div class="acts"><button class="b3 sm ghost" data-copy="${esc(link + '?utm_source=instagram')}">${icon('ig')}Copiar link para a bio</button><button class="b3 sm ghost" data-copy="${esc(embed)}">${icon('copy')}Copiar código para site</button></div></div>
+    </section>
+    <section style="display:flex;flex-direction:column;gap:10px"><span class="mono" style="text-align:center">Prévia ao vivo · teste enviando</span>${publicForm()}</section>
+  </div>
+  <div class="grid g2">
+    <section class="card"><div class="ch"><h3 style="display:flex;gap:8px;align-items:center">${icon('wa')}WhatsApp</h3><span class="chip">Clique para conversar</span></div>
+      <p class="muted" style="font-size:14px;margin-bottom:12px">Gere o link com mensagem pronta. Quem chega por ele entra no funil como origem WhatsApp. A integração oficial (API da Meta) registra as conversas automaticamente.</p>
+      <div class="field"><label for="fWa">Seu número com DDD</label><input class="inp" id="fWa" data-form="wa" inputmode="tel" placeholder="11 90000-0000" value="${esc(f.wa)}"></div>
+      <div class="acts" style="margin-top:10px"><button class="b3 sm" data-copy="${esc(waUrl)}" ${waNum.length >= 10 ? '' : 'disabled'}>${icon('copy')}Copiar link do WhatsApp</button></div></section>
+    <section class="card"><div class="ch"><h3 style="display:flex;gap:8px;align-items:center">${icon('mail')}E-mail e ${icon('ig')}Instagram</h3><span class="chip">Fase 2</span></div>
+      <dl class="kv"><dt>E-mail de entrada</dt><dd class="sel-text">leads+${esc(T.slug)}@amplitudelab.com.br</dd><dt>Instagram</dt><dd>Link na bio (acima) agora. DMs e comentários entram pela API da Meta na fase 2.</dd><dt>Anúncios</dt><dd>Leads de formulários do Meta Ads via webhook.</dd></dl></section>
+  </div>`;
+};
+function publicForm() {
+  const f = S.form, {d, l} = brandPair(), c = l;
+  return `<div class="phone"><div class="screen"><div class="ph-head" style="background:${c}"><span style="font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;opacity:.85">${esc(host())}</span><h4>${esc(f.title)}</h4><p style="font-size:13px;opacity:.9">${esc(brandName())} responde em até 1 dia útil.</p></div>
+  <form class="ph-body" id="pubForm" novalidate>
+    <div><label for="pfN">Nome</label><input class="pi" id="pfN" name="n" autocomplete="name" required></div>
+    <div><label for="pfP">WhatsApp</label><input class="pi" id="pfP" name="p" inputmode="tel" autocomplete="tel" placeholder="(11) 90000-0000" required></div>
+    ${f.email ? `<div><label for="pfE">E-mail</label><input class="pi" id="pfE" name="e" type="email" autocomplete="email"></div>` : ''}
+    ${f.interest ? `<div><label for="pfI">Interesse</label><select class="pi" id="pfI" name="i">${NICHE[T.id].int.map(x => `<option>${esc(x)}</option>`).join('')}</select></div>` : ''}
+    ${f.msg ? `<div><label for="pfM">Mensagem</label><textarea class="pi" id="pfM" name="m" rows="3"></textarea></div>` : ''}
+    <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+    <label class="ck"><input type="checkbox" name="ok" required> <span>${esc(f.consent)}</span></label>
+    <p class="err" id="pfErr" hidden></p>
+    <button class="ph-btn" type="submit" style="background:${c}">Enviar</button>
+  </form></div></div>`;
+}
+
+V.equipe = () => {
+  const perms = [['Ver funil, clientes e agenda', 'crm'], ['Criar e editar leads e propostas', 'edit'], ['Ver e lançar financeiro', 'fin'], ['Convidar pessoas e mudar permissões', 'team'], ['Excluir registros', 'del']];
+  const b = S.brand, {d} = brandPair();
+  return head('Equipe e acesso', 'Quem entra no painel, o que cada perfil pode fazer e o registro de tudo que foi alterado.')
+  + `<div class="grid g2">
+    <section class="card"><div class="ch"><h3>Pessoas</h3><button class="b3 sm" data-act="invite">${icon('plus')}Convidar</button></div>
+      <div class="rows">${S.members.map(m => `<div class="row"><span class="logo sm" style="background:var(--panel2);color:var(--accent);box-shadow:none">${esc(initials(m.n))}</span><div class="grow"><p class="t">${esc(m.n)}</p><p class="s">${esc(m.e)}</p></div><span class="chip ${m.r === 'owner' ? 'acc' : ''}">${ROLES[m.r].n}</span></div>`).join('')}</div></section>
+    <section class="card"><div class="ch"><h3>Segurança</h3><span class="chip ok"><span class="dot"></span>Protegido</span></div>
+      <div class="rows">
+        <div class="row"><span class="ico ok">${icon('shield')}</span><div class="grow"><p class="t">Dados isolados por cliente</p><p class="s">Cada consulta passa por regras no banco (RLS). Um cliente nunca vê o outro.</p></div></div>
+        <div class="row"><span class="ico ok">${icon('lock')}</span><div class="grow"><p class="t">Login sem senha + 2FA para o dono</p><p class="s">Link de uso único por e-mail; app autenticador para perfis com financeiro.</p></div></div>
+        <div class="row"><span class="ico ok">${icon('clock')}</span><div class="grow"><p class="t">Bloqueio automático</p><p class="s">Painel trava depois de 5 minutos parado.</p></div></div>
+        <div class="row"><span class="ico ok">${icon('copy')}</span><div class="grow"><p class="t">Backup diário</p><p class="s">Cópia automática do banco, com restauração para um ponto no tempo no plano Pro.</p></div></div>
+      </div></section>
+  </div>
+  <section class="card"><div class="ch"><h3>Permissões por perfil</h3><span class="muted" style="font-size:13px">Troque o perfil no topo para testar</span></div>
+    <div class="tbl"><table><thead><tr><th>Permissão</th>${Object.values(ROLES).map(r => `<th class="c">${r.n}</th>`).join('')}</tr></thead>
+    <tbody>${perms.map(p => `<tr><td>${p[0]}</td>${Object.values(ROLES).map(r => `<td class="c">${r.can.includes(p[1]) ? `<span class="yes" aria-label="sim">${icon('check')}</span>` : `<span class="no" aria-label="não">—</span>`}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <p class="muted" style="font-size:13px;margin-top:10px">No perfil Leitura os telefones aparecem mascarados.</p></section>
+  <div class="grid g2">
+    <section class="card" style="display:flex;flex-direction:column;gap:12px"><div class="ch" style="margin:0"><h3>Marca do painel</h3><span class="chip acc">${esc(T.plan)}</span></div>
+      <div class="field"><label for="bName">Nome exibido</label><input class="inp" id="bName" data-brand="name" value="${esc(b.name || T.name)}"></div>
+      <div class="fg"><div class="field"><label for="bColor">Cor principal</label><input class="inp" id="bColor" type="color" data-brand="color" value="${esc(b.color || T.d)}" style="padding:4px;height:46px"></div>
+      <div class="field"><label for="bDom">Domínio próprio</label><input class="inp" id="bDom" data-brand="domain" placeholder="crm.suaempresa.com.br" value="${esc(b.domain)}"></div></div>
+      <div class="field"><span class="flabel">Endereço do painel</span><pre class="code">https://${esc(host())}${b.domain ? '\nhttps://' + esc(b.domain) : ''}</pre></div>
+      <label class="switch"><input type="checkbox" data-brand="hide" ${b.hide ? 'checked' : ''}> Esconder “feito pela Amplitude Lab” (plano White-label)</label>
+      <div class="acts"><button class="b3 sm ghost" data-act="resetBrand">Voltar à marca original</button><button class="b3 sm danger" data-act="resetDemo">Restaurar dados de exemplo</button></div></section>
+    <section class="card"><div class="ch"><h3>Registro de alterações</h3><span class="mono">${S.audit.length} eventos</span></div>
+      <div class="rows">${S.audit.slice(0, 10).map(a => `<div class="row"><div class="grow"><p class="t" style="white-space:normal">${esc(a.a)}</p><p class="s">${esc(a.who)} · ${fdate(a.at)} ${ftime(a.at)}</p></div></div>`).join('') || '<p class="empty">Mexa em algo no painel: cada alteração aparece aqui, com quem fez e quando.</p>'}</div></section>
+  </div>`;
+};
+
+/* ============ drawer do lead ============ */
+let openId = null, lastFocus = null;
+function openLead(id) {
+  const l = S.leads.find(x => x.id === id); if (!l) return;
+  openId = id; lastFocus = document.activeElement;
+  const acts = S.acts.filter(a => a.lead === id).sort((a, b) => b.at - a.at);
+  const ed = can('edit');
+  $('#drawer').innerHTML = `<div class="dh"><div class="grow"><span class="mono">${SRC[l.source] || 'Outro'} · entrou ${fdate(l.created)}</span><h2 id="dTitle">${esc(l.name)}</h2><p class="muted">${esc(l.interest)} · <b class="num" style="color:var(--fg)">${money(l.value)}</b></p></div>
+    <button class="ib" data-act="close" aria-label="Fechar">${icon('x')}</button></div>
+  <div class="db">
+    <div class="sec"><span class="flabel">Etapa</span><div class="pills">${STAGES.map(s => `<button class="pill" data-act="stage" data-s="${s.id}" aria-pressed="${l.stage === s.id}" ${ed ? '' : 'disabled'}>${s.n}</button>`).join('')}</div></div>
+    <div class="sec"><span class="flabel">Contato</span>
+      <dl class="kv"><dt>WhatsApp</dt><dd class="sel-text">${esc(phoneShown(l.phone))}</dd><dt>E-mail</dt><dd>${esc(l.email || '—')}</dd>${l.consent ? `<dt>Consentimento</dt><dd>aceito em ${fdate(l.consent)} ${ftime(l.consent)}</dd>` : ''}</dl>
+      ${ed ? `<div class="acts"><a class="b3 sm" href="${esc(waLink(l))}" target="_blank" rel="noopener" data-act="waOpen">${icon('wa')}Abrir WhatsApp</a><button class="b3 sm ghost" data-copy="${esc(l.phone)}">${icon('copy')}Copiar número</button></div>
+      ${l.demo ? '<p class="muted" style="font-size:12px">Contato de exemplo: o WhatsApp abre sem destinatário, só com a mensagem pronta.</p>' : ''}` : ''}</div>
+    <div class="sec"><span class="flabel">Próximo follow-up</span>
+      <p>${l.follow ? `<span class="fu ${followClass(l.follow)}" style="font-size:14px">${icon('clock')}${fdate(l.follow)} às ${ftime(l.follow)} · ${rel(l.follow)}</span>` : '<span class="muted">Sem data marcada.</span>'}</p>
+      ${ed ? `<div class="pills"><button class="pill" data-act="fu" data-days="1">Amanhã</button><button class="pill" data-act="fu" data-days="3">Em 3 dias</button><button class="pill" data-act="fu" data-days="7">Em 1 semana</button>${l.follow ? '<button class="pill" data-act="fu" data-days="">Limpar</button>' : ''}</div>` : ''}</div>
+    ${ed ? `<form class="sec" id="noteForm"><label class="flabel" for="noteTxt">Registrar contato</label>
+      <div class="pills" role="radiogroup" aria-label="Tipo">${['note','whatsapp','call','email'].map((k, i) => `<label class="pill" style="display:inline-flex;align-items:center;gap:6px"><input type="radio" name="k" value="${k}" ${i === 0 ? 'checked' : ''} style="accent-color:var(--accent)">${ACT[k]}</label>`).join('')}</div>
+      <textarea class="inp" id="noteTxt" name="t" placeholder="Ex.: pediu para retornar depois do dia 10" required></textarea>
+      <div class="acts"><button class="b3 sm" type="submit">Salvar no histórico</button></div></form>` : ''}
+    <div class="sec"><span class="flabel">Histórico</span><ul class="tl">${acts.map(a => `<li><b>${ACT[a.kind] || 'Nota'}</b> · ${esc(a.body)}<small>${esc(a.by)} · ${fdate(a.at)} ${ftime(a.at)}</small></li>`).join('') || '<li>Sem registros.</li>'}</ul></div>
+    ${ed ? `<div class="sec"><span class="flabel">Ações</span><div class="acts"><button class="b3 sm ghost" data-act="newProposal" data-lead="${l.id}">${icon('file')}Criar proposta</button>
+      ${can('del') ? `<button class="b3 sm ghost" data-act="askAnon">${icon('shield')}Anonimizar (LGPD)</button>` : ''}</div><div id="anonBox"></div></div>` : ''}
+  </div>`;
+  showLayer('#drawer');
+  setTimeout(() => { const b = $('#drawer [data-act="close"]'); b && b.focus(); }, 60);
+}
+function showLayer(sel) { $('#scrim').classList.add('on'); $(sel).classList.add('on'); }
+function closeLayers() {
+  ['#drawer', '#modal', '#pal'].forEach(s => $(s).classList.remove('on')); $('#scrim').classList.remove('on');
+  openId = null; if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
+}
+
+function moveLead(id, sid, srcEl) {
+  if (!can('edit')) return toast('Seu perfil não pode alterar o funil.');
+  const l = S.leads.find(x => x.id === id); if (!l || l.stage === sid) return;
+  const from = stageOf(l.stage).n, st = stageOf(sid);
+  l.stage = sid;
+  S.acts.push({id:uid(), lead:id, kind:'stage', body:`${from} → ${st.n}`, at:Date.now(), by:ROLES[role].n});
+  audit(`Lead “${l.name}” movido de ${from} para ${st.n}`);
+  if (st.k) l.follow = null;
+  save();
+  const r = (srcEl || document.body).getBoundingClientRect();
+  if (st.k === 'won') {
+    FX.burst(r.left + r.width / 2, r.top + Math.min(r.height / 2, 120));
+    toast(`${l.name} fechou! Quer gerar a cobrança?`, can('fin') ? {label:'Gerar cobrança', run:() => modalCharge({desc:l.interest, amount:l.value, lead:l})} : null);
+  } else toast(`Movido para ${st.n}`);
+  if (openId === id) openLead(id);
+  render();
+}
+
+/* ============ modais ============ */
+function modal(title, body, onSubmit, submitLabel = 'Salvar') {
+  lastFocus = document.activeElement;
+  $('#modal').innerHTML = `<div class="mh"><h2 id="mTitle">${title}</h2><button class="ib" data-act="close" aria-label="Fechar">${icon('x')}</button></div>
+    <form class="mb" id="mForm" novalidate>${body}<p class="err" id="mErr" hidden></p><div class="mf"><button class="b3 ghost" type="button" data-act="close">Cancelar</button>${onSubmit ? `<button class="b3" type="submit">${submitLabel}</button>` : ''}</div></form>`;
+  $('#mForm').onsubmit = e => { e.preventDefault(); const fd = new FormData(e.target); const err = onSubmit && onSubmit(fd, e.target);
+    if (err) { $('#mErr').textContent = err; $('#mErr').hidden = false; return; } closeLayers(); render(); };
+  showLayer('#modal');
+  setTimeout(() => { const f = $('#modal input:not([type=hidden]), #modal select, #modal textarea'); f && f.focus(); }, 60);
+}
+const inp = (n, l, a = '') => `<div class="field ${a.includes('full') ? 'full' : ''}"><label for="m_${n}">${l}</label><input class="inp" id="m_${n}" name="${n}" ${a.replace('full', '')}></div>`;
+const sel = (n, l, opts, a = '') => `<div class="field ${a.includes('full') ? 'full' : ''}"><label for="m_${n}">${l}</label><select class="inp" id="m_${n}" name="${n}">${opts.map(o => `<option value="${esc(o[0])}" ${o[2] ? 'selected' : ''}>${esc(o[1])}</option>`).join('')}</select></div>`;
+
+function modalLead() {
+  modal('Novo lead', `<div class="fg">${inp('name', 'Nome', 'full required autocomplete="off"')}${inp('phone', 'WhatsApp', 'inputmode="tel" placeholder="(11) 90000-0000"')}${inp('email', 'E-mail', 'type="email"')}
+    ${sel('interest', 'Interesse', NICHE[T.id].int.map(x => [x, x]))}${inp('value', 'Valor estimado (R$)', 'inputmode="decimal" placeholder="0,00"')}
+    ${sel('source', 'Origem', Object.entries(SRC))}${sel('stage', 'Etapa', STAGES.filter(s => !s.k).map(s => [s.id, s.n]))}</div>`,
+  fd => {
+    const name = String(fd.get('name') || '').trim(); if (!name) return 'Escreva o nome do lead.';
+    const l = {id:uid(), name, phone:String(fd.get('phone') || '').trim(), email:String(fd.get('email') || '').trim(), interest:fd.get('interest'), source:fd.get('source'), stage:fd.get('stage'), value:cents(fd.get('value')), follow:at(1, 10), created:Date.now(), consent:null, client:null, demo:false};
+    S.leads.push(l); S.acts.push({id:uid(), lead:l.id, kind:'note', body:'Lead cadastrado manualmente.', at:Date.now(), by:ROLES[role].n});
+    audit(`Lead “${name}” criado`); save(); toast('Lead criado. Follow-up marcado para amanhã.');
+  }, 'Criar lead');
+}
+function modalTask() {
+  modal('Nova tarefa', `<div class="fg">${inp('title', 'O que fazer', 'full required autocomplete="off"')}
+    ${sel('kind', 'Tipo', [['task', 'Tarefa'], ['meeting', 'Reunião']])}${inp('date', 'Dia', `type="date" value="${ymd(Date.now())}"`)}
+    ${inp('time', 'Horário', 'type="time" value="14:00"')}${sel('remind', 'Lembrete', [['15', '15 min antes', 1], ['60', '1 hora antes'], ['1440', '1 dia antes']])}</div>`,
+  fd => {
+    const title = String(fd.get('title') || '').trim(); if (!title) return 'Escreva a tarefa.';
+    const due = fromYmd(fd.get('date'), fd.get('time') || '09:00'); if (!due) return 'Escolha o dia.';
+    S.tasks.push({id:uid(), title, kind:fd.get('kind'), due, done:null, remind:+fd.get('remind')});
+    audit(`Tarefa “${title}” criada`); save(); toast('Tarefa criada.');
+  }, 'Criar tarefa');
+}
+function modalCharge(pre = {}) {
+  const cl = S.clients.map(c => [c.id, c.name]);
+  if (pre.lead) cl.unshift(['lead:' + pre.lead.id, pre.lead.name + ' (vira cliente)', 1]);
+  modal('Nova cobrança', `<div class="fg">${sel('client', 'Cliente', cl, 'full')}${inp('desc', 'Descrição', `full required value="${esc(pre.desc || '')}"`)}
+    ${inp('amount', 'Valor (R$)', `required inputmode="decimal" value="${pre.amount ? reais(pre.amount) : ''}"`)}${inp('due', 'Vencimento', `type="date" value="${ymd(at(3))}"`)}
+    ${sel('method', 'Forma', Object.entries(METH).slice(0, 3), 'full')}</div>
+    <p class="note">Na versão real, ao salvar o sistema gera o Pix copia-e-cola ou o boleto pelo gateway e manda o link ao cliente. A baixa é automática quando o pagamento cai.</p>`,
+  fd => {
+    const amount = cents(fd.get('amount')); if (!amount) return 'Informe um valor maior que zero.';
+    let client = fd.get('client');
+    if (String(client).startsWith('lead:')) { const l = S.leads.find(x => x.id === client.slice(5)); const c = {id:uid(), name:l.name, email:l.email, phone:l.phone, doc:'', since:Date.now(), contacts:[{name:first(l.name), role:'Decisor'}]}; S.clients.push(c); l.client = c.id; client = c.id; audit(`“${l.name}” virou cliente`); }
+    S.charges.push({id:uid(), client, desc:String(fd.get('desc') || 'Cobrança'), amount, due:fromYmd(fd.get('due')) || at(3), status:'pending', paid:null, method:fd.get('method')});
+    audit(`Cobrança de ${money(amount)} criada para ${clientName(client)}`); save(); toast('Cobrança criada.');
+  }, 'Criar cobrança');
+}
+function modalExpense() {
+  modal('Lançar despesa', `<div class="fg">${inp('desc', 'Descrição', 'full required')}${sel('cat', 'Categoria', NICHE[T.id].exp.map(x => [x, x]).concat([['Outros', 'Outros']]))}
+    ${inp('amount', 'Valor (R$)', 'required inputmode="decimal"')}${inp('date', 'Data', `type="date" value="${ymd(Date.now())}"`)}</div>`,
+  fd => {
+    const amount = cents(fd.get('amount')); if (!amount) return 'Informe um valor maior que zero.';
+    const desc = String(fd.get('desc') || '').trim() || fd.get('cat');
+    S.cash.push({id:uid(), dir:'out', cat:fd.get('cat'), desc, amount, date:fromYmd(fd.get('date'), '12:00') || Date.now()});
+    audit(`Despesa “${desc}” de ${money(amount)} lançada`); save(); toast('Despesa lançada.');
+  }, 'Lançar');
+}
+function modalClient() {
+  modal('Novo cliente', `<div class="fg">${inp('name', 'Nome ou empresa', 'full required')}${inp('email', 'E-mail', 'type="email"')}${inp('phone', 'Telefone', 'inputmode="tel"')}${inp('contact', 'Contato principal', 'full')}</div>`,
+  fd => {
+    const name = String(fd.get('name') || '').trim(); if (!name) return 'Escreva o nome.';
+    S.clients.push({id:uid(), name, email:String(fd.get('email') || ''), phone:String(fd.get('phone') || ''), doc:'', since:Date.now(), contacts:fd.get('contact') ? [{name:String(fd.get('contact')), role:'Decisor'}] : []});
+    audit(`Cliente “${name}” criado`); save(); toast('Cliente criado.');
+  }, 'Criar cliente');
+}
+function itemRow(d = '', q = 1, u = '') { return `<div class="item"><input class="inp" name="d" placeholder="Descrição" value="${esc(d)}" aria-label="Descrição do item"><input class="inp" name="q" inputmode="numeric" value="${q}" aria-label="Quantidade"><input class="inp" name="u" inputmode="decimal" placeholder="R$" value="${u}" aria-label="Valor unitário"></div>`; }
+function modalProposal(leadId) {
+  const opts = openLeads().map(l => ['lead:' + l.id, l.name + ' (lead)', l.id === leadId]).concat(S.clients.map(c => ['client:' + c.id, c.name]));
+  const it = NICHE[T.id].items[0];
+  modal('Nova proposta', `<div class="fg">${sel('to', 'Para', opts, 'full')}${inp('title', 'Título', `full required value="${esc(it[0])}"`)}</div>
+    <div class="field"><span class="flabel">Itens · descrição, quantidade e valor</span><div class="items" id="mItems">${itemRow(it[0], 1, reais(it[1]))}</div><button class="link" type="button" data-act="addItem" style="align-self:flex-start">+ Adicionar item</button></div>
+    ${inp('valid', 'Válida até', `type="date" value="${ymd(at(7))}"`)}`,
+  fd => {
+    const ds = fd.getAll('d'), qs = fd.getAll('q'), us = fd.getAll('u');
+    const items = ds.map((d, i) => ({d:String(d).trim(), q:Math.max(1, parseInt(qs[i], 10) || 1), u:cents(us[i])})).filter(x => x.d && x.u);
+    if (!items.length) return 'Inclua pelo menos um item com descrição e valor.';
+    const [k, id] = String(fd.get('to')).split(':');
+    const p = {id:uid(), lead:k === 'lead' ? id : null, client:k === 'client' ? id : null, title:String(fd.get('title') || items[0].d), items, status:'sent', valid:fromYmd(fd.get('valid')) || at(7), token:uid() + uid(), created:Date.now()};
+    S.proposals.push(p);
+    if (p.lead) { const l = S.leads.find(x => x.id === p.lead); if (l && ['s1', 's2'].includes(l.stage)) l.stage = 's3'; S.acts.push({id:uid(), lead:p.lead, kind:'proposal', body:`Proposta “${p.title}” de ${money(propTotal(p))} enviada.`, at:Date.now(), by:ROLES[role].n}); }
+    audit(`Proposta “${p.title}” criada (${money(propTotal(p))})`); save();
+    toast('Proposta criada e marcada como enviada.', {label:'Ver como o cliente', run:() => viewProposal(p.id)});
+  }, 'Criar e enviar');
+}
+function viewProposal(id) {
+  const p = S.proposals.find(x => x.id === id); if (!p) return;
+  const {l} = brandPair(), done = p.status === 'accepted';
+  if (p.status === 'sent') { p.status = 'viewed'; save(); }
+  modal('Como o cliente vê', `<div class="phone"><div class="screen"><div class="ph-head" style="background:${l}"><span style="font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;opacity:.85">Proposta · ${esc(brandName())}</span><h4>${esc(p.title)}</h4><p style="font-size:13px;opacity:.9">Para ${esc(clientName(p.client) || leadName(p.lead))} · válida até ${fdate(p.valid)}</p></div>
+    <div class="ph-body"><table class="ptable"><tbody>${p.items.map(i => `<tr><td>${esc(i.d)}${i.q > 1 ? ` <span style="color:#6B7280">× ${i.q}</span>` : ''}</td><td>${money(i.q * i.u)}</td></tr>`).join('')}<tr class="tot"><td>Total</td><td>${money(propTotal(p))}</td></tr></tbody></table>
+    ${done ? `<p style="text-align:center;color:#0B7F57;font-weight:600;padding:12px 0">Proposta aceita. Obrigado!</p>` : `<button class="ph-btn" type="button" data-act="acceptProposal" data-id="${p.id}" style="background:${l}">Aceitar proposta</button><p style="font-size:12px;color:#6B7280;text-align:center">Ao aceitar, registramos data, hora e IP como comprovante.</p>`}</div></div></div>
+    <pre class="code">https://${esc(host())}/p/${esc(p.token.slice(0, 16))}</pre>`, null);
+}
+function more() {
+  modal('Mais', `<div class="rows">${NAV.filter(n => allowed(n[0])).map(n => `<button class="nv" data-go="${n[0]}" ${view === n[0] ? 'aria-current="page"' : ''}>${icon(n[2])}${n[1]}</button>`).join('')}</div>
+    <div class="field"><label for="mRole">Ver como (demonstração)</label><select class="inp" id="mRole">${Object.entries(ROLES).map(([k, r]) => `<option value="${k}" ${k === role ? 'selected' : ''}>${r.n}</option>`).join('')}</select></div>
+    <div class="acts"><button class="b3 ghost" type="button" data-act="fx">${icon('spark')}Efeitos: ${prefs.fx ? 'ligados' : 'desligados'}</button><button class="b3 ghost" type="button" data-act="theme">${icon('moon')}Trocar tema</button><button class="b3 ghost" type="button" data-act="logout">${icon('out')}Sair</button></div>`, null);
+  $('#mRole').onchange = e => { setRole(e.target.value); closeLayers(); };
+}
+
+/* ============ paleta de comandos ============ */
+let palItems = [], palIdx = 0;
+function palette() {
+  lastFocus = document.activeElement;
+  $('#palIn').value = ''; palFill(''); showLayer('#pal'); setTimeout(() => $('#palIn').focus(), 30);
+}
+function palFill(q) {
+  q = q.toLowerCase().trim();
+  const acts = [];
+  if (can('edit')) acts.push(['Novo lead', 'ação', () => modalLead()], ['Nova tarefa', 'ação', () => modalTask()], ['Nova proposta', 'ação', () => modalProposal()]);
+  if (can('fin')) acts.push(['Nova cobrança', 'ação', () => modalCharge()], ['Lançar despesa', 'ação', () => modalExpense()]);
+  NAV.filter(n => allowed(n[0])).forEach(n => acts.push(['Ir para ' + n[1], 'página', () => go(n[0])]));
+  const data = S.leads.map(l => [l.name + ' · ' + l.interest, stageOf(l.stage).n, () => { if (view !== 'funil') go('funil'); openLead(l.id); }])
+    .concat(S.clients.map(c => [c.name, 'cliente', () => { V._cq = c.name; go('clientes'); }]));
+  palItems = (q ? data.concat(acts).filter(x => x[0].toLowerCase().includes(q)) : acts).slice(0, 12);
+  palIdx = 0; palDraw();
+}
+function palDraw() {
+  $('#palList').innerHTML = palItems.map((x, i) => `<li><button type="button" role="option" data-pi="${i}" aria-selected="${i === palIdx}">${icon(x[1] === 'ação' ? 'plus' : x[1] === 'página' ? 'bolt' : 'users')}<span>${esc(x[0])}</span><span class="k">${esc(x[1])}</span></button></li>`).join('') || '<li class="empty">Nada encontrado.</li>';
+}
+function palRun(i) { const x = palItems[i]; if (!x) return; closeLayers(); setTimeout(x[2], 40); }
+
+/* ============ ações ============ */
+function setRole(r) { role = r; audit(`Perfil de visualização trocado para ${ROLES[r].n}`); renderChrome(); if (!allowed(view)) view = 'painel'; render(); toast(`Vendo como ${ROLES[r].n}`); }
+function cycleTheme() {
+  const cur = isLight() ? 'light' : 'dark'; prefs.theme = cur === 'light' ? 'dark' : 'light'; savePrefs(); applyTheme(); applyBrand();
+}
+function enter(tid) {
+  load(tid); prefs.tenant = T.id; savePrefs();
+  $('#login').hidden = true; $('#app').hidden = false; document.body.classList.add('in-app'); FX.mode('app');
+  const h = (location.hash || '').slice(1); view = allowed(h) ? h : 'painel';
+  renderChrome(); render(); armLock();
+}
+function logout() { closeLayers(); $('#app').hidden = true; $('#login').hidden = false; document.body.classList.remove('in-app'); FX.mode('login'); lgRender(); clearTimeout(lockT); }
+
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]'); if (g) { closeLayers(); go(g.dataset.go, true); return; }
+  const c = e.target.closest('[data-copy]'); if (c) { copy(c.dataset.copy, 'Copiado'); return; }
+  const pi = e.target.closest('[data-pi]'); if (pi) { palRun(+pi.dataset.pi); return; }
+  const a = e.target.closest('[data-act]'); if (!a) return;
+  const id = a.dataset.id, k = a.dataset.act;
+  if (['doneTask', 'doneFollow', 'invite', 'resetBrand', 'resetDemo'].includes(k) && !can(k.startsWith('done') ? 'edit' : 'team')) { toast('Seu perfil não pode fazer isso.'); return; }
+  switch (k) {
+    case 'close': closeLayers(); break;
+    case 'more': more(); break;
+    case 'newLead': if (can('edit')) modalLead(); break;
+    case 'newTask': modalTask(); break;
+    case 'newCharge': modalCharge(); break;
+    case 'newExpense': modalExpense(); break;
+    case 'newClient': modalClient(); break;
+    case 'newProposal': closeLayers(); setTimeout(() => modalProposal(a.dataset.lead), 30); break;
+    case 'addItem': $('#mItems').insertAdjacentHTML('beforeend', itemRow()); $('#mItems .item:last-child input').focus(); break;
+    case 'openLead': if (!a.classList.contains('kcard') || !dragMoved) openLead(id); break;
+    case 'stage': moveLead(openId, a.dataset.s, a); break;
+    case 'fu': { const l = S.leads.find(x => x.id === openId); l.follow = a.dataset.days ? at(+a.dataset.days, 10) : null; audit(`Follow-up de “${l.name}” ${l.follow ? 'marcado para ' + fdate(l.follow) : 'removido'}`); save(); openLead(openId); render(); toast(l.follow ? 'Follow-up marcado para ' + fdate(l.follow) : 'Follow-up removido'); break; }
+    case 'waOpen': { const l = S.leads.find(x => x.id === openId); S.acts.push({id:uid(), lead:l.id, kind:'whatsapp', body:'WhatsApp aberto com mensagem pronta.', at:Date.now(), by:ROLES[role].n}); if (l.stage === 's1') { l.stage = 's2'; audit(`Lead “${l.name}” movido para Contato feito`); } save(); setTimeout(() => { openLead(l.id); render(); }, 300); break; }
+    case 'askAnon': $('#anonBox').innerHTML = `<div class="confirm"><p>Apagar nome, telefone, e-mail e o texto do histórico deste lead. Os números do funil continuam. Não dá para desfazer.</p><div class="acts"><button class="b3 sm ghost" data-act="cancelAnon">Cancelar</button><button class="b3 sm danger" data-act="anon">Anonimizar agora</button></div></div>`; break;
+    case 'cancelAnon': $('#anonBox').innerHTML = ''; break;
+    case 'anon': { const l = S.leads.find(x => x.id === openId); l.name = 'Titular anonimizado'; l.phone = ''; l.email = ''; l.demo = true; S.acts.filter(x => x.lead === l.id).forEach(x => x.body = '[removido a pedido do titular]'); audit('Lead anonimizado a pedido do titular (LGPD)'); save(); openLead(l.id); render(); toast('Dados pessoais removidos.'); break; }
+    case 'doneTask': { const t = S.tasks.find(x => x.id === id); t.done = t.done ? null : Date.now(); audit(`Tarefa “${t.title}” ${t.done ? 'concluída' : 'reaberta'}`); save(); render(); if (t.done) { const r = a.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top); } break; }
+    case 'doneFollow': { const l = S.leads.find(x => x.id === id); l.follow = null; S.acts.push({id:uid(), lead:l.id, kind:'note', body:'Follow-up feito.', at:Date.now(), by:ROLES[role].n}); audit(`Follow-up com “${l.name}” feito`); save(); render(); toast('Follow-up registrado no histórico.', can('edit') ? {label:'Marcar próximo', run:() => openLead(l.id)} : null); break; }
+    case 'payCharge': { if (!can('fin')) return toast('Só o financeiro registra recebimentos.'); const c = S.charges.find(x => x.id === id); c.status = 'paid'; c.paid = Date.now(); S.cash.push({id:uid(), dir:'in', cat:'Cobranças', desc:c.desc, amount:c.amount, date:Date.now(), charge:c.id}); audit(`Recebimento de ${money(c.amount)} de ${clientName(c.client)} registrado`); save(); const r = a.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top); render(); toast(`${money(c.amount)} recebido.`); break; }
+    case 'viewProposal': viewProposal(id); break;
+    case 'copyProposal': { const p = S.proposals.find(x => x.id === id); copy(`https://${host()}/p/${p.token.slice(0, 16)}`, 'Link da proposta copiado'); break; }
+    case 'acceptProposal': { const p = S.proposals.find(x => x.id === id); p.status = 'accepted'; audit(`Proposta “${p.title}” aceita pelo cliente`); if (p.lead) { const l = S.leads.find(x => x.id === p.lead); if (l && isOpen(l)) { save(); closeLayers(); moveLead(l.id, 's5', a); return; } } save(); const r = a.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top); viewProposal(id); render(); break; }
+    case 'agDay': { const d = a.dataset.d ? +a.dataset.d : null; V._ag = d !== null && d === V._ag ? null : d; render(); break; }
+    case 'invite': modal('Convidar pessoa', `<div class="fg">${inp('n', 'Nome', 'required')}${inp('e', 'E-mail', 'type="email" required')}${sel('r', 'Perfil', Object.entries(ROLES).map(([k, r]) => [k, r.n]).slice(1), 'full')}</div><p class="note">A pessoa recebe um link de acesso por e-mail e entra só neste painel.</p>`,
+      fd => { const n = String(fd.get('n') || '').trim(), em = String(fd.get('e') || '').trim(); if (!n || !/^\S+@\S+\.\S+$/.test(em)) return 'Preencha nome e um e-mail válido.'; S.members.push({n, e:em, r:fd.get('r')}); audit(`${n} convidado(a) como ${ROLES[fd.get('r')].n}`); save(); toast('Convite registrado.'); }, 'Convidar'); break;
+    case 'resetBrand': S.brand = {name:'', color:'', hide:false, domain:''}; audit('Marca restaurada'); save(); applyBrand(); renderChrome(); render(); break;
+    case 'resetDemo': a.outerHTML = `<span class="acts"><span class="muted" style="font-size:13px;align-self:center">Apagar tudo que você mudou?</span><button class="b3 sm danger" data-act="resetDemoOk">Sim, restaurar</button></span>`; break;
+    case 'resetDemoOk': store.del('amp-crm:v1:' + T.id); load(T.id); renderChrome(); render(); toast('Dados de exemplo restaurados.'); break;
+    case 'fx': prefs.fx = !prefs.fx; savePrefs(); FX.toggle(); closeLayers(); render(); toast(prefs.fx ? 'Efeitos ligados' : 'Efeitos desligados (modo economia)'); break;
+    case 'theme': cycleTheme(); break;
+    case 'logout': logout(); break;
+    case 'site': closeLayers(); openSite(T.id); break;
+    case 'svc': SITE.svc = +a.dataset.i; siteRender(); break;
+    case 'sday': SITE.day = +a.dataset.d; SITE.slot = null; siteRender(); break;
+    case 'slot': SITE.slot = a.dataset.h; siteRender(); break;
+    case 'siteBack': SITE.done = null; siteRender(); break;
+    case 'toCrm': { const id = SITE.done; $('#site').hidden = true; enter(T.id); go('funil'); if (id) openLead(id); break; }
+  }
+});
+
+/* drag and drop do funil (PC) */
+let dragMoved = false;
+document.addEventListener('dragstart', e => { const c = e.target.closest && e.target.closest('.kcard'); if (!c || !can('edit')) return; dragMoved = true; e.dataTransfer.setData('text/plain', c.dataset.id); e.dataTransfer.effectAllowed = 'move'; c.classList.add('dragging'); });
+document.addEventListener('dragend', e => { $$('.kcard.dragging').forEach(c => c.classList.remove('dragging')); $$('.kcol.over').forEach(c => c.classList.remove('over')); setTimeout(() => dragMoved = false, 50); });
+document.addEventListener('dragover', e => { const col = e.target.closest && e.target.closest('.kcol'); if (!col) return; e.preventDefault(); $$('.kcol.over').forEach(c => c !== col && c.classList.remove('over')); col.classList.add('over'); });
+document.addEventListener('drop', e => { const col = e.target.closest && e.target.closest('.kcol'); if (!col) return; e.preventDefault(); col.classList.remove('over'); const id = e.dataTransfer.getData('text/plain'); if (id) moveLead(id, col.dataset.stage, col); });
+
+/* formulários e campos vivos */
+document.addEventListener('submit', e => {
+  if (e.target.id === 'noteForm') {
+    e.preventDefault(); const fd = new FormData(e.target), t = String(fd.get('t') || '').trim(); if (!t) { $('#noteTxt').focus(); return; }
+    const l = S.leads.find(x => x.id === openId); S.acts.push({id:uid(), lead:openId, kind:fd.get('k'), body:t, at:Date.now(), by:ROLES[role].n});
+    audit(`${ACT[fd.get('k')]} registrado(a) em “${l.name}”`); save(); openLead(openId); toast('Salvo no histórico.');
+  }
+  if (e.target.id === 'pubForm') {
+    e.preventDefault(); const fd = new FormData(e.target), err = $('#pfErr');
+    if (fd.get('website')) return;
+    const n = String(fd.get('n') || '').trim(), p = String(fd.get('p') || '').replace(/\D/g, '');
+    const fail = m => { err.textContent = m; err.hidden = false; };
+    if (n.length < 2) return fail('Escreva seu nome.');
+    if (p.length < 10 || p.length > 13) return fail('Digite o WhatsApp com DDD.');
+    if (!fd.get('ok')) return fail('Para enviar, marque a autorização de contato.');
+    const fmt = p.length >= 11 ? `(${p.slice(-11, -9)}) ${p.slice(-9, -4)}-${p.slice(-4)}` : p;
+    const l = {id:uid(), name:n, phone:fmt, email:String(fd.get('e') || ''), interest:fd.get('i') || NICHE[T.id].int[0], source:'form', stage:'s1', value:NICHE[T.id].vals[0], follow:at(0, Math.min(23, new Date().getHours() + 1)), created:Date.now(), consent:Date.now(), client:null, demo:false};
+    S.leads.push(l); S.acts.push({id:uid(), lead:l.id, kind:'form', body:`Formulário “${S.form.title}” enviado${fd.get('m') ? ': ' + fd.get('m') : ''}. Consentimento aceito.`, at:Date.now(), by:'Formulário'});
+    audit(`Novo lead “${n}” pelo formulário`); save();
+    const r = e.target.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top + r.height / 2);
+    render(); toast(`${n} entrou no funil em “Novo”.`, {label:'Ver no funil', run:() => { go('funil'); openLead(l.id); }});
+  }
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'cq') { V._cq = t.value; const pos = t.selectionStart; render(); const n = $('#cq'); n.focus(); n.setSelectionRange(pos, pos); }
+  if (t.id === 'palIn') palFill(t.value);
+  if (t.dataset.form && t.type !== 'checkbox') { S.form[t.dataset.form] = t.value; save(); clearTimeout(t._d); t._d = setTimeout(() => { const keep = t.id, pos = t.selectionStart; render(); const n = $('#' + keep); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} } }, 500); }
+  if (t.dataset.brand && t.type !== 'checkbox') { S.brand[t.dataset.brand] = t.value; save(); applyBrand(); renderChrome(); }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'roleSel') setRole(t.value);
+  if (t.dataset.form && t.type === 'checkbox') { S.form[t.dataset.form] = t.checked; save(); render(); }
+  if (t.dataset.brand === 'hide') { S.brand.hide = t.checked; audit(t.checked ? 'Marca Amplitude escondida (white-label)' : 'Marca Amplitude exibida'); save(); renderChrome(); }
+  if (t.dataset.brand === 'color' || t.dataset.brand === 'name') { audit(`Marca alterada: ${t.dataset.brand === 'color' ? 'cor ' + t.value : 'nome ' + t.value}`); save(); render(); }
+});
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k' && !$('#app').hidden) { e.preventDefault(); palette(); return; }
+  if (e.key === 'Escape' && $('#scrim').classList.contains('on')) { closeLayers(); return; }
+  if ($('#pal').classList.contains('on')) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); palIdx = Math.min(palItems.length - 1, palIdx + 1); palDraw(); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); palIdx = Math.max(0, palIdx - 1); palDraw(); }
+    if (e.key === 'Enter') { e.preventDefault(); palRun(palIdx); }
+  }
+});
+$('#scrim').onclick = closeLayers;
+$('#openPal').onclick = palette;
+$('#fxBtn').onclick = () => { prefs.fx = !prefs.fx; savePrefs(); FX.toggle(); render(); toast(prefs.fx ? 'Efeitos ligados' : 'Efeitos desligados (modo economia)'); };
+$('#themeBtn').onclick = cycleTheme;
+$('#lockBtn').onclick = () => lock();
+$('#unlock').onclick = () => { $('#lock').hidden = true; armLock(); };
+
+/* ============ página pública: o cliente final compra e vira lead ============ */
+const SITE = {svc:0, day:null, slot:null, done:null};
+const HOURS = ['09:00','10:00','11:00','13:00','14:00','15:00','16:00','17:00'];
+const siteServices = () => { const N = NICHE[T.id]; return N.items.concat(N.int.slice(0, 3).map((x, i) => [x, N.vals[i]])); };
+const taken = (d, h) => S.tasks.some(t => !t.done && Math.abs(t.due - fromYmd(ymd(d), h)) < 30 * 60 * 1000);
+function openSite(tid) {
+  load(tid); SITE.svc = 0; SITE.day = d0() + DAY; SITE.slot = null; SITE.done = null;
+  $('#login').hidden = true; $('#app').hidden = true; $('#site').hidden = false;
+  document.body.classList.remove('in-app'); FX.mode('app'); document.title = brandName(); siteRender(); window.scrollTo({top:0});
+}
+function siteRender() {
+  const sv = siteServices(), s = sv[SITE.svc], nm = brandName();
+  const days = [...Array(6)].map((_, i) => d0() + (i + 1) * DAY);
+  const bar = `<div class="st-bar"><span>Demonstração · página pública de <b>${esc(host())}</b></span><button class="link" data-act="toCrm" style="white-space:nowrap">Abrir o CRM do dono</button></div>`;
+  if (SITE.done) {
+    const l = S.leads.find(x => x.id === SITE.done) || {};
+    $('#site').innerHTML = bar + `<div class="st-hero"><div class="st-in" style="align-items:center;text-align:center"><span class="logo">${esc(initials(nm))}</span><h1>Pedido confirmado</h1>
+      <p class="muted">Obrigado, ${esc(first(l.name))}! ${esc(nm)} vai confirmar pelo WhatsApp ${esc(l.phone)}.</p>
+      <div class="card" style="width:100%;text-align:left"><dl class="kv"><dt>Serviço</dt><dd>${esc(l.interest)}</dd><dt>Valor</dt><dd class="num">${money(l.value)}</dd><dt>Quando</dt><dd>${l.follow ? fdate(l.follow) + ' às ' + ftime(l.follow) : '—'}</dd></dl></div>
+      <p class="note" style="text-align:left">Nos bastidores: este pedido já entrou no CRM da ${esc(nm)} como lead novo (origem “Página”), com o horário reservado na agenda e o consentimento registrado.</p>
+      <div class="acts" style="justify-content:center"><button class="b3" data-act="toCrm">${icon('kanban')}Ver o lead no CRM</button><button class="b3 ghost" data-act="siteBack">Fazer outro pedido</button></div></div></div>`;
+    return;
+  }
+  $('#site').innerHTML = bar + `<div class="st-hero"><div class="st-in"><div style="display:flex;gap:12px;align-items:center"><span class="logo">${esc(initials(nm))}</span><span class="mono">${esc(T.niche)} · São Paulo</span></div>
+    <h1>${esc(nm)}</h1><p class="muted" style="font-size:18px">Escolha o serviço, o dia e o horário. Confirmamos pelo WhatsApp.</p></div></div>
+  <form class="st-body" id="siteForm" novalidate><div class="st-in" style="gap:22px">
+    <div class="sec"><span class="flabel">1. Serviço</span><div class="svcs">${sv.map((x, i) => `<button type="button" class="svc" data-act="svc" data-i="${i}" aria-pressed="${i === SITE.svc}"><span>${esc(x[0])}</span><b>${money(x[1]).replace(',00', '')}</b></button>`).join('')}</div></div>
+    <div class="sec"><span class="flabel">2. Dia</span><div class="week" style="grid-template-columns:repeat(6,minmax(0,1fr))">${days.map(d => `<button type="button" class="wd" data-act="sday" data-d="${d}" aria-pressed="${d === SITE.day}"><small>${SEM[new Date(d).getDay()]}</small><b>${new Date(d).getDate()}</b></button>`).join('')}</div></div>
+    <div class="sec"><span class="flabel">3. Horário</span><div class="slots">${HOURS.map(h => `<button type="button" class="slot" data-act="slot" data-h="${h}" aria-pressed="${h === SITE.slot}" ${taken(SITE.day, h) ? 'disabled' : ''}>${h}</button>`).join('')}</div></div>
+    <div class="sec"><span class="flabel">4. Seus dados</span><div class="fg">
+      <div class="field"><label for="sN">Nome</label><input class="inp" id="sN" name="n" autocomplete="name"></div>
+      <div class="field"><label for="sP">WhatsApp</label><input class="inp" id="sP" name="p" inputmode="tel" autocomplete="tel" placeholder="(11) 90000-0000"></div></div>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+      <label class="switch"><input type="checkbox" name="ok"> <span style="font-size:13px">${esc(S.form.consent)}</span></label></div>
+    <p class="err" id="sErr" hidden></p>
+    <button class="b3" type="submit" style="min-height:54px;font-size:16px">Comprar ${esc(s[0])} · ${money(s[1]).replace(',00', '')}</button>
+    <p class="mono" style="text-align:center">Pagamento no local ou por Pix na confirmação</p>
+  </div></form>`;
+}
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'siteForm') return;
+  e.preventDefault(); const fd = new FormData(e.target), err = $('#sErr');
+  const fail = m => { err.textContent = m; err.hidden = false; };
+  if (fd.get('website')) return;
+  const n = String(fd.get('n') || '').trim(), p = String(fd.get('p') || '').replace(/\D/g, '');
+  if (!SITE.slot) return fail('Escolha um horário.');
+  if (n.length < 2) return fail('Escreva seu nome.');
+  if (p.length < 10 || p.length > 13) return fail('Digite o WhatsApp com DDD.');
+  if (!fd.get('ok')) return fail('Marque a autorização de contato para continuar.');
+  const s = siteServices()[SITE.svc], when = fromYmd(ymd(SITE.day), SITE.slot);
+  const fmt = `(${p.slice(-11, -9)}) ${p.slice(-9, -4)}-${p.slice(-4)}`;
+  const l = {id:uid(), name:n, phone:fmt, email:'', interest:s[0], source:'site', stage:'s1', value:s[1], follow:when, created:Date.now(), consent:Date.now(), client:null, demo:false};
+  S.leads.push(l);
+  S.acts.push({id:uid(), lead:l.id, kind:'form', body:`Comprou pela página: ${s[0]} (${money(s[1])}) para ${fdate(when)} às ${SITE.slot}. Consentimento aceito.`, at:Date.now(), by:'Página'});
+  S.tasks.push({id:uid(), title:`Atendimento: ${n} · ${s[0]}`, kind:'meeting', due:when, done:null, remind:60});
+  S.audit.unshift({at:Date.now(), who:'Página pública', a:`Pedido de “${n}” pela página (${s[0]})`});
+  save(); SITE.done = l.id;
+  const r = e.target.getBoundingClientRect(); FX.burst(r.left + r.width / 2, Math.min(innerHeight / 2, r.bottom - 40));
+  siteRender(); window.scrollTo({top:0});
+});
+
+/* bloqueio por inatividade */
+let lockT;
+function lock() { closeLayers(); $('#lock').hidden = false; $('#unlock').focus(); }
+function armLock() { clearTimeout(lockT); lockT = setTimeout(lock, 5 * 60 * 1000); }
+['pointerdown', 'keydown'].forEach(ev => addEventListener(ev, () => { if (!$('#app').hidden && $('#lock').hidden) armLock(); }, {passive:true}));
+
+/* ============ login ============ */
+// ?t=okada abre direto num cliente de exemplo (links da página de vendas)
+const tq = new URLSearchParams(location.search).get('t');
+let lgPick = TENANTS.some(t => t.id === tq) ? tq : prefs.tenant || 'norte';
+function lgRender() {
+  const t = TENANTS.find(x => x.id === lgPick) || TENANTS[0];
+  T = t; S = store.get('amp-crm:v1:' + t.id, null) || {brand:{}}; applyBrand();
+  const nm = (S.brand && S.brand.name) || t.name;
+  $('#lgLogo').textContent = initials(nm); $('#lgName').textContent = nm; $('#lgUrl').textContent = `${t.slug}.amplitudelab.com.br`;
+  $('#lgTenants').innerHTML = TENANTS.map(x => `<button type="button" class="tpick" data-t="${x.id}" aria-pressed="${x.id === lgPick}"><span class="logo sm" style="background:${isLight() ? x.l : x.d};color:${isLight() ? '#fff' : '#0A0F1C'};box-shadow:none">${initials(x.name)}</span><span>${esc(x.name)}</span></button>`).join('');
+}
+$('#lgTenants').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; lgPick = b.dataset.t; lgRender(); });
+$('#lgDemo').onclick = () => enter(lgPick);
+$('#lgSite').onclick = () => openSite(lgPick);
+$('#lgForm').onsubmit = e => {
+  e.preventDefault(); const em = $('#lgEmail').value.trim(), note = $('#lgNote');
+  if (!/^\S+@\S+\.\S+$/.test(em)) { note.textContent = 'Digite um e-mail válido, como voce@empresa.com.br.'; note.hidden = false; $('#lgEmail').focus(); return; }
+  note.textContent = 'Na versão real, o link chega neste e-mail e vale por 10 minutos. No protótipo nada é enviado: use “Entrar na demonstração”.'; note.hidden = false;
+};
+
+/* tema do sistema mudou ou o host trocou data-theme */
+matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { FX.color(); if (!$('#login').hidden) lgRender(); });
+new MutationObserver(() => { FX.color(); if (!$('#login').hidden) lgRender(); }).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+applyTheme(); lgRender(); FX.init();
+const h0 = (location.hash || '').slice(1);
+if (h0 === 'site') openSite(lgPick);
+else if (NAV.some(n => n[0] === h0)) enter(lgPick);
+})();
+</script>
+
+</body>
+</html>

@@ -32,6 +32,19 @@ Publicado com GitHub Pages a partir da branch `main`.
   `modelos/img/` como `<número da foto>.webp` (1200 px) e `<número>-p.webp` (600 px).
   `AL.px(id, largura)` em `kit.js` escolhe o tamanho. O hub abre a versão com fotos
   e tem um seletor para a ilustrada.
+- `crm/`: **Site + CRM**. `crm/index.html` é a página de vendas (link "Site + CRM" no
+  topo da página principal e chamada antes do orçamento), aberta em
+  `https://symbiozyy.github.io/amplitude-lab/crm/`.
+  - `crm/app/index.html`: protótipo do Amplitude CRM, arquivo único. Os dados ficam
+    no `localStorage` do navegador. `?t=norte|okada|orbita|lab` escolhe o cliente de
+    exemplo e `#funil`, `#site` etc. abrem direto numa tela.
+  - `crm/IMPLEMENTACAO.md` (e a versão `crm/guia.html`, gerada com
+    `pandoc IMPLEMENTACAO.md -s --toc`): roteiro de teste de cada função e passo a passo
+    para a versão real.
+  - `crm/supabase/`: `schema.sql` (13 tabelas com RLS), `seed.sql` (dados de exemplo),
+    `tests.sql` (29 verificações de permissão) e as Edge Functions `capture-lead`,
+    `asaas-webhook` e `lembretes`.
+  - `crm/cloudflare/worker.js`: subdomínio por cliente (`<cliente>.amplitudelab.com.br`).
 - `voxel-realms/`: jogo Voxel Realms (RPG voxel em Three.js), aberto em
   `https://symbiozyy.github.io/amplitude-lab/voxel-realms/` (detalhes em `voxel-realms/README.md`)
 
