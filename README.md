@@ -4,7 +4,9 @@ Site da Amplitude Lab: sites prontos por segmento (barbearias, estúdios de
 tatuagem, hamburguerias, lojas de roupas e de decoração), com a marca do
 cliente e pedidos direto no WhatsApp.
 
-Publicado com GitHub Pages a partir da branch `main`.
+Publicado com GitHub Pages a partir da branch `main`, em https://amplitudelab.github.io/lab/
+(repositório `amplitudelab/lab`). Contexto do projeto para retomar
+o trabalho: `CLAUDE.md`.
 
 - `index.html`: página (HTML e CSS), com segmentos, manifesto, modelos no
   celular, processo, preços, orçamento e dúvidas
@@ -19,10 +21,10 @@ Publicado com GitHub Pages a partir da branch `main`.
 - `assets/`: ícones e imagem de prévia para redes sociais
 - `demos/`: demos feitas para clientes, cada uma na sua pasta
   (`demos/<cliente>/index.html` e fotos em `img/`). A lista fica em
-  `demos/index.html`, aberta em `https://symbiozyy.github.io/amplitude-lab/demos/`.
+  `demos/index.html`, aberta em `https://amplitudelab.github.io/lab/demos/`.
   As páginas têm `noindex` para não aparecerem no Google como site do cliente.
 - `modelos/`: hub com os cinco modelos por segmento do plano de negócio, aberto em
-  `https://symbiozyy.github.io/amplitude-lab/modelos/`. Cada modelo fica em
+  `https://amplitudelab.github.io/lab/modelos/`. Cada modelo fica em
   `modelos/<segmento>/index.html` (barbearia, tatuagem, hamburgueria, moda, decoracao),
   com marca fictícia e um botão fixo no topo para voltar ao hub. `modelos/kit.css` e
   `modelos/kit.js` têm a barra do hub e a simulação do WhatsApp (as mensagens montadas
@@ -34,7 +36,7 @@ Publicado com GitHub Pages a partir da branch `main`.
   e tem um seletor para a ilustrada.
 - `crm/`: **Site + CRM**. `crm/index.html` é a página de vendas (link "Site + CRM" no
   topo da página principal e chamada antes do orçamento), aberta em
-  `https://symbiozyy.github.io/amplitude-lab/crm/`.
+  `https://amplitudelab.github.io/lab/crm/`.
   - `crm/app/index.html`: protótipo do Amplitude CRM, arquivo único. Os dados ficam
     no `localStorage` do navegador. `?t=norte|okada|orbita|lab` escolhe o cliente de
     exemplo e `#funil`, `#site` etc. abrem direto numa tela.
@@ -46,7 +48,7 @@ Publicado com GitHub Pages a partir da branch `main`.
     `asaas-webhook` e `lembretes`.
   - `crm/cloudflare/worker.js`: subdomínio por cliente (`<cliente>.amplitudelab.com.br`).
 - `voxel-realms/`: jogo Voxel Realms (RPG voxel em Three.js), aberto em
-  `https://symbiozyy.github.io/amplitude-lab/voxel-realms/` (detalhes em `voxel-realms/README.md`)
+  `https://amplitudelab.github.io/lab/voxel-realms/` (detalhes em `voxel-realms/README.md`)
 
 ## Como editar
 
