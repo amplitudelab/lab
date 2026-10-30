@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Site + CRM · Amplitude Lab</title>
+<meta name="description" content="Site que agenda e vende, ligado a um CRM com funil, propostas, agenda e financeiro. Comprou o site, ganha 3 meses do CRM Essencial. Teste a demonstração agora.">
+<meta name="theme-color" content="#05070D">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Site + CRM · Amplitude Lab">
+<meta property="og:description" content="O site traz o cliente. O CRM não deixa ele escapar. Teste a demonstração.">
+<meta property="og:url" content="https://symbiozyy.github.io/amplitude-lab/crm/">
+<meta property="og:image" content="https://symbiozyy.github.io/amplitude-lab/assets/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Página de vendas Site + CRM. Mesma bancada escura e azul cobalto da página principal. */
+:root{
+  --bg:#05070d; --bg-2:#090d18; --panel:#0d1322; --panel-2:#111a2e;
+  --line:#1a2340; --line-2:#28345a;
+  --fg:#eaf0ff; --muted:#9ba8c6; --dim:#67739a;
+  --volt:#5b8cff; --volt-hi:#a9c4ff; --volt-deep:#2450d6;
+  --live:#3fcf9b; --amber:#f5b547;
+  --volt-grad:linear-gradient(180deg,#a9c4ff 0%,#5b8cff 45%,#2450d6 100%);
+  --chrome-grad:linear-gradient(180deg,#ffffff 0%,#c5cbd9 55%,#7a8197 100%);
+  --f-display:"Unbounded","Arial Black",sans-serif;
+  --f-sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --gutter:clamp(16px,4vw,56px); --max:1240px; --r:18px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.6 var(--f-sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img,svg{display:block}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--volt-hi);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+.volt-text{background:var(--volt-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.chrome-text{background:var(--chrome-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.label{font:500 12px/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:10px}
+.label::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--volt);box-shadow:0 0 12px var(--volt)}
+.h2{font:700 clamp(30px,5.4vw,72px)/1.02 var(--f-display);letter-spacing:-.035em;margin:16px 0 0;text-wrap:balance;overflow-wrap:break-word}
+.lead{color:var(--muted);font-size:clamp(17px,1.5vw,20px);max-width:58ch;margin:18px 0 0}
+.section{position:relative;padding:clamp(80px,12vw,150px) 0}
+.head{display:grid;gap:6px;margin-bottom:clamp(36px,5vw,64px)}
+
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 24px;border-radius:999px;border:0;
+  font:600 13px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;transition:transform .15s var(--ease),filter .15s,border-color .15s,background-color .15s}
+.btn svg{width:18px;height:18px;flex:0 0 auto}
+.btn:active{transform:scale(.97)}
+.btn-volt{background:var(--volt-grad);color:#050a1c;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 40px -10px rgba(91,140,255,.7)}
+.btn-volt:hover{filter:brightness(1.08)}
+.btn-ghost{border:1px solid var(--line-2);background:rgba(255,255,255,.02)}
+.btn-ghost:hover{border-color:var(--volt-hi);background:rgba(255,255,255,.05)}
+.btn-wa{background:#25d366;color:#04140a;box-shadow:0 10px 40px -12px rgba(37,211,102,.6)}
+.btn-wa:hover{filter:brightness(1.06)}
+
+/* topo */
+.nav{position:fixed;inset:0 0 auto;z-index:50;padding-top:env(safe-area-inset-top,0px);transition:background-color .3s,border-color .3s;border-bottom:1px solid transparent}
+.nav.solid{background:rgba(5,7,13,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-color:var(--line)}
+.nav-in{display:flex;align-items:center;gap:20px;height:68px}
+.brand{display:flex;align-items:center;gap:10px;font:700 15px/1 var(--f-display);letter-spacing:-.02em;white-space:nowrap}
+.brand em{font-style:normal;color:var(--volt-hi)}
+.brand .tag{font:600 10px/1 var(--f-mono);letter-spacing:.14em;padding:5px 8px;border-radius:999px;border:1px solid var(--line-2);color:var(--volt-hi)}
+.nav-links{display:flex;gap:26px;margin-left:auto;font:500 14px/1 var(--f-sans);color:var(--muted)}
+.nav-links a:hover{color:var(--fg)}
+.nav .btn{height:42px;font-size:11px;padding:0 16px}
+@media (max-width:900px){.nav-links{display:none}.nav .btn-ghost{display:none}.nav-in{justify-content:space-between}}
+@media (max-width:420px){.brand .tag{display:none}}
+
+/* herói */
+.hero{position:relative;min-height:100svh;display:grid;align-items:center;padding:calc(110px + env(safe-area-inset-top,0px)) 0 70px;overflow:hidden;isolation:isolate}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.hero::after{content:"";position:absolute;inset:auto 0 0;height:30%;background:linear-gradient(transparent,var(--bg));z-index:-1;pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(28px,4vw,64px);align-items:center}
+.hero h1{font:800 clamp(36px,5.2vw,74px)/1 var(--f-display);letter-spacing:-.04em;margin:18px 0 0;text-wrap:balance}
+.hero .lead{margin-top:22px}
+.hero-acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.offer{display:inline-flex;max-width:100%;align-items:center;gap:10px;margin-top:26px;padding:10px 16px 10px 10px;border-radius:999px;background:rgba(63,207,155,.08);border:1px solid rgba(63,207,155,.35);font-size:14px;color:#c9f5e4}
+.offer b{display:inline-grid;place-items:center;height:28px;padding:0 10px;border-radius:999px;background:var(--live);color:#04140c;font:700 11px/1 var(--f-mono);letter-spacing:.08em}
+@media (max-width:980px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero{min-height:auto}}
+
+/* janela com o CRM rodando */
+.win{position:relative;border-radius:16px;border:1px solid var(--line-2);background:var(--panel);box-shadow:0 40px 120px -40px rgba(91,140,255,.45),0 0 0 1px rgba(255,255,255,.02) inset;overflow:hidden;transform-style:preserve-3d;transition:transform .5s var(--ease)}
+.win-bar{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;border-bottom:1px solid var(--line);background:var(--bg-2)}
+.win-bar i{width:10px;height:10px;border-radius:50%;background:var(--line-2)}
+.win-bar span{margin-left:10px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 12px/1 var(--f-mono);color:var(--dim)}
+.win-bar a{font:600 11px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--volt-hi);white-space:nowrap}
+.win-view{position:relative;aspect-ratio:16/11;overflow:hidden;background:#0a0f1c}
+.win-view iframe{position:absolute;left:0;top:0;width:1280px;height:880px;border:0;transform-origin:0 0}
+.win-tabs{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line);background:var(--bg-2);overflow-x:auto;scrollbar-width:none}
+.win-tabs button{flex:0 0 auto;height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line-2);background:transparent;font:500 13px/1 var(--f-sans);color:var(--muted)}
+.win-tabs button[aria-pressed="true"]{background:var(--volt);border-color:var(--volt);color:#050a1c;font-weight:600}
+.win-note{font:500 12px/1.4 var(--f-mono);color:var(--dim);margin:12px 4px 0;text-align:center}
+
+/* fluxo */
+.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;position:relative}
+.flow::before{content:"";position:absolute;left:6%;right:6%;top:46px;height:2px;background:linear-gradient(90deg,transparent,var(--line-2) 10%,var(--line-2) 90%,transparent)}
+.flow::after{content:"";position:absolute;left:6%;top:43px;width:8px;height:8px;border-radius:50%;background:var(--volt-hi);box-shadow:0 0 18px 4px var(--volt);animation:run 5s linear infinite}
+@keyframes run{0%{left:6%;opacity:0}8%{opacity:1}92%{opacity:1}100%{left:94%;opacity:0}}
+.step{position:relative;padding:22px;border-radius:var(--r);background:var(--panel);border:1px solid var(--line)}
+.step .n{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--bg);border:1px solid var(--line-2);font:700 16px/1 var(--f-display);color:var(--volt-hi);margin-bottom:18px;position:relative;z-index:1}
+.step h3{font:600 19px/1.25 var(--f-sans);margin:0 0 8px}
+.step p{margin:0;color:var(--muted);font-size:15px}
+.step small{display:block;margin-top:12px;font:500 11px/1.4 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+@media (max-width:900px){.flow{grid-template-columns:1fr 1fr}.flow::before,.flow::after{display:none}}
+@media (max-width:560px){.flow{grid-template-columns:1fr}}
+
+/* recursos */
+.feats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.feat{padding:22px;border-radius:var(--r);background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);transition:border-color .2s,transform .3s var(--ease)}
+.feat:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.feat svg{width:26px;height:26px;color:var(--volt-hi);margin-bottom:16px}
+.feat h3{font:600 17px/1.3 var(--f-sans);margin:0 0 6px}
+.feat p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.55}
+.feat a{display:inline-block;margin-top:12px;font:600 11px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--volt-hi)}
+@media (max-width:1000px){.feats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.feats{grid-template-columns:1fr}}
+
+/* combo */
+.combo{position:relative;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px;align-items:center;padding:clamp(26px,4vw,48px);border-radius:28px;overflow:hidden;
+  background:radial-gradient(120% 140% at 0% 0%,rgba(91,140,255,.22),transparent 60%),radial-gradient(90% 120% at 100% 100%,rgba(63,207,155,.14),transparent 60%),var(--panel);border:1px solid var(--line-2)}
+.combo h3{font:700 clamp(26px,3.6vw,44px)/1.05 var(--f-display);letter-spacing:-.03em;margin:14px 0 0}
+.combo p{color:var(--muted);margin:14px 0 0}
+.combo ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.combo li{display:flex;gap:10px;align-items:flex-start;font-size:15.5px}
+.combo li svg{width:20px;height:20px;color:var(--live);flex:0 0 auto;margin-top:2px}
+.combo .btn{margin-top:24px}
+@media (max-width:860px){.combo{grid-template-columns:1fr}}
+
+/* planos */
+.plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:clamp(28px,4vw,48px)}
+.plan{position:relative;display:flex;flex-direction:column;padding:24px;border-radius:22px;background:var(--panel);border:1px solid var(--line)}
+.plan.hot{border-color:var(--volt);box-shadow:0 30px 80px -40px rgba(91,140,255,.8)}
+.plan .badge{position:absolute;top:-12px;left:24px;height:24px;display:inline-grid;place-items:center;padding:0 10px;border-radius:999px;background:var(--volt);color:#050a1c;font:700 10px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase}
+.plan h3{font:700 18px/1.2 var(--f-display);letter-spacing:-.02em;margin:0}
+.price{margin:16px 0 4px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.price small{font:500 14px/1 var(--f-mono);color:var(--muted)}
+.price b{font:700 clamp(34px,3.6vw,46px)/1 var(--f-display);letter-spacing:-.04em}
+.price span{font:500 13px/1 var(--f-mono);color:var(--muted)}
+.plan .range{font:500 12px/1.4 var(--f-mono);color:var(--dim);margin:0}
+.plan p.for{color:var(--muted);font-size:14.5px;margin:14px 0 16px}
+.plan ul{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:9px;font-size:14.5px}
+.plan li{display:flex;gap:9px;align-items:flex-start}
+.plan li svg{width:17px;height:17px;color:var(--volt-hi);flex:0 0 auto;margin-top:3px}
+.plan .btn{margin-top:auto;width:100%;height:50px;font-size:12px}
+@media (max-width:1060px){.plans{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.plans{grid-template-columns:1fr}}
+
+/* combos sugeridos */
+.pairs{margin-top:clamp(40px,6vw,72px);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.pair{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) auto;gap:16px;align-items:center;padding:20px 24px;border-top:1px solid var(--line)}
+.pair:first-child{border-top:0}
+.pair.th{background:var(--bg-2);font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding-block:14px}
+.pair b{display:block;font:600 17px/1.3 var(--f-sans)}
+.pair small{color:var(--muted);font-size:14px}
+.pair .v{font:600 15px/1.35 var(--f-mono)}
+.pair .v em{font-style:normal;color:var(--live)}
+.pair .btn{height:42px;font-size:11px;padding:0 16px}
+@media (max-width:820px){.pair{grid-template-columns:1fr 1fr}.pair.th{display:none}.pair>div:first-child{grid-column:1/-1}.pair .btn{grid-column:1/-1;width:100%}}
+
+/* testar */
+.try{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.tenant{display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:var(--r);background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--c)}
+.tenant .logo{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--c);color:#0a0f1c;font:700 15px/1 var(--f-display)}
+.tenant h3{margin:0;font:600 17px/1.25 var(--f-sans)}
+.tenant p{margin:0;color:var(--muted);font-size:14px}
+.tenant .go{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+.tenant .go a{height:36px;display:inline-flex;align-items:center;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);font:600 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.tenant .go a:hover{border-color:var(--c);color:var(--c)}
+.roles{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;color:var(--muted);font-size:15px}
+.roles span{padding:6px 12px;border-radius:999px;background:var(--panel-2);border:1px solid var(--line);font:500 13px/1 var(--f-mono);color:var(--fg)}
+@media (max-width:1000px){.try{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.try{grid-template-columns:1fr}}
+
+/* segurança */
+.safe{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.safe div{padding:20px;border-radius:var(--r);border:1px solid var(--line);background:rgba(255,255,255,.015)}
+.safe b{display:block;font:600 16px/1.3 var(--f-sans);margin-bottom:6px}
+.safe p{margin:0;color:var(--muted);font-size:14.5px}
+@media (max-width:860px){.safe{grid-template-columns:1fr}}
+
+/* dúvidas */
+.faq{display:grid;gap:10px;max-width:880px}
+.faq details{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:0 22px}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;align-items:center;padding:20px 0;font:600 17px/1.35 var(--f-sans)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:400 24px/1 var(--f-mono);color:var(--volt-hi);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{margin:0 0 20px;color:var(--muted)}
+
+.final{text-align:center;padding:clamp(90px,12vw,160px) 0}
+.final .h2{font-size:clamp(34px,6.4vw,96px)}
+.final .lead{margin-inline:auto}
+.final .hero-acts{justify-content:center}
+footer{border-top:1px solid var(--line);padding:28px 0 calc(28px + env(safe-area-inset-bottom,0px));color:var(--dim);font:500 12px/1.6 var(--f-mono);letter-spacing:.06em}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between}
+footer a:hover{color:var(--fg)}
+
+.wa-float{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#04140a;box-shadow:0 14px 40px -10px rgba(37,211,102,.7);transition:transform .2s var(--ease)}
+.wa-float:hover{transform:scale(1.07)}
+.wa-float svg{width:28px;height:28px}
+
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rv{opacity:1;transform:none;transition:none}.flow::after{animation:none;display:none}.win{transition:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></symbol>
+  <symbol id="ck" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.2 4.2L19 7"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.5v13a1 1 0 0 0 1.5.9l10.4-6.5a1 1 0 0 0 0-1.8L9.5 4.6A1 1 0 0 0 8 5.5z"/></symbol>
+  <symbol id="f-kanban" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="9.5" y="4" width="5" height="10" rx="1.5"/><rect x="16" y="4" width="5" height="13" rx="1.5"/></g></symbol>
+  <symbol id="f-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></g></symbol>
+  <symbol id="f-file" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13l2 2 4-4"/></g></symbol>
+  <symbol id="f-cal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></g></symbol>
+  <symbol id="f-wallet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h15a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3M16 13.5h.01"/></g></symbol>
+  <symbol id="f-magnet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v8a6 6 0 0 0 12 0V3h-4v8a2 2 0 0 1-4 0V3z"/><path d="M6 7h4M14 7h4"/></g></symbol>
+  <symbol id="f-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></g></symbol>
+  <symbol id="f-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.5-3.8-9S9.5 5.5 12 3z"/></g></symbol>
+</svg>
+
+<header class="nav" data-nav>
+  <div class="wrap nav-in">
+    <a class="brand" href="../" aria-label="Amplitude Lab, voltar à página principal">Amplitude <em>Lab</em><span class="tag">SITE + CRM</span></a>
+    <nav class="nav-links" aria-label="Seções">
+      <a href="#como">Como funciona</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#planos">Planos</a>
+      <a href="#testar">Testar</a>
+      <a href="#duvidas">Dúvidas</a>
+    </nav>
+    <a class="btn btn-ghost" href="app/">Testar o CRM</a>
+    <a class="btn btn-volt" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero saber do Site + CRM." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Orçamento</a>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="inicio">
+  <canvas data-flow aria-hidden="true"></canvas>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="label">Site + CRM · Amplitude Lab</span>
+      <h1>O site traz o cliente. <span class="volt-text">O CRM não deixa ele escapar.</span></h1>
+      <p class="lead">Quem agenda ou pede orçamento no seu site cai direto num funil organizado, com WhatsApp a um toque, proposta com link, agenda e cobrança. Sem planilha e sem conversa perdida no celular.</p>
+      <div class="hero-acts">
+        <a class="btn btn-volt" href="app/?t=norte#funil"><svg aria-hidden="true"><use href="#play"/></svg>Testar a demonstração</a>
+        <a class="btn btn-wa" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero um site com CRM para o meu negócio." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Quero Site + CRM</a>
+      </div>
+      <p class="offer"><b>COMBO</b>Fechou o site? Ganha 3 meses do CRM Essencial.</p>
+    </div>
+    <div>
+      <div class="win" data-win>
+        <div class="win-bar"><i></i><i></i><i></i><span data-win-url>barbearianorte.amplitudelab.com.br/painel</span><a href="app/?t=norte#funil" data-win-open>Tela cheia ↗</a></div>
+        <div class="win-view" data-win-view>
+          <iframe title="Demonstração do Amplitude CRM" data-src="app/?t=norte#funil" loading="lazy" tabindex="-1"></iframe>
+        </div>
+        <div class="win-tabs" role="group" aria-label="Escolher tela da demonstração">
+          <button type="button" data-view="funil" aria-pressed="true">Funil</button>
+          <button type="button" data-view="painel" aria-pressed="false">Painel</button>
+          <button type="button" data-view="agenda" aria-pressed="false">Agenda</button>
+          <button type="button" data-view="financeiro" aria-pressed="false">Financeiro</button>
+          <button type="button" data-view="site" aria-pressed="false">Página do cliente</button>
+        </div>
+      </div>
+      <p class="win-note">É o CRM de verdade rodando aqui. Arraste os cards, clique em tudo.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="como">
+  <div class="wrap">
+    <div class="head">
+      <span class="label rv">01 / Como funciona</span>
+      <h2 class="h2 rv">Do clique no site <span class="volt-text">ao Pix na conta.</span></h2>
+      <p class="lead rv">O site e o CRM são feitos juntos, então cada pedido já entra no lugar certo. Você só conversa e fecha.</p>
+    </div>
+    <div class="flow">
+      <article class="step rv"><span class="n">1</span><h3>O cliente pede pelo site</h3><p>Escolhe o serviço, o dia e o horário, ou manda o formulário de orçamento, e autoriza o contato.</p><small>Página com a sua marca</small></article>
+      <article class="step rv"><span class="n">2</span><h3>Cai no funil como “Novo”</h3><p>Com origem, interesse, valor e o horário já na agenda. Você abre o WhatsApp dele com um toque.</p><small>Funil e agenda</small></article>
+      <article class="step rv"><span class="n">3</span><h3>Proposta com link</h3><p>Monte os itens, mande o link pelo WhatsApp. O cliente aceita na tela e o card vai para “Fechado”.</p><small>Propostas</small></article>
+      <article class="step rv"><span class="n">4</span><h3>Cobrança e caixa</h3><p>Gere a cobrança na hora do fechamento. Quando o pagamento entra, aparece no fluxo de caixa do mês.</p><small>Financeiro</small></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="recursos" style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <span class="label rv">02 / Recursos</span>
+      <h2 class="h2 rv">Tudo que o pequeno negócio usa. <span class="chrome-text">Nada que atrapalha.</span></h2>
+    </div>
+    <div class="feats">
+      <article class="feat rv"><svg aria-hidden="true"><use href="#f-kanban"/></svg><h3>Funil de vendas</h3><p>Arraste cada contato entre Novo, Contato feito, Proposta, Negociação e Fechado. Veja quanto tem em cada etapa.</p><a href="app/?t=norte#funil">Ver o funil →</a></article>
+      <article class="feat rv"><svg aria-hidden="true"><use href="#f-magnet"/></svg><h3>Captação automática</h3><p>Formulário do site, link da bio e link do WhatsApp. Todo pedido chega no funil com a origem marcada.</p><a href="app/?t=norte#captacao">Ver a captação →</a></article>
+      <article class="feat rv"><svg aria-hidden="true"><use href="#f-user"/></svg><h3>Ficha de cada cliente</h3><p>Histórico de conversas, próximo retorno, WhatsApp a um toque e o consentimento guardado com data.</p><a href="app/?t=okada#clientes">Ver clientes →</a></article>
+      <article class="feat rv"><svg aria-hidden="true"><use href="#f-file"/></svg><h3>Propostas com link</h3><p>Itens, quantidade e valor. O cliente abre no celular, aceita, e o funil se atualiza sozinho.</p><a href="app/?t=okada#propostas">Ver propostas →</a></article>
+      <article class="feat rv"><svg aria-hidden="true"><use href="#f-cal"/></svg><h3>Agenda e lembretes</h3><p>Horários marcados pelo site, retornos e tarefas da equipe num lugar só, com aviso antes da hora.</p><a href="app/?t=norte#agenda">Ver a agenda →</a></article>
+      <article class="feat rv"><svg aria-hidden="true"><use href="#f-wallet"/></svg><h3>Financeiro simples</h3><p>Cobranças em Pix, boleto ou cartão, o que está a receber e o fluxo de caixa dos últimos 6 meses.</p><a href="app/?t=orbita#financeiro">Ver o financeiro →</a></article>
+      <article class="feat rv"><svg aria-hidden="true"><use href="#f-shield"/></svg><h3>Equipe com permissões</h3><p>Dono, vendas, financeiro e leitura. Cada um vê só o que precisa, e toda alteração fica registrada.</p><a href="app/?t=norte#equipe">Ver permissões →</a></article>
+      <article class="feat rv"><svg aria-hidden="true"><use href="#f-globe"/></svg><h3>Com a sua marca</h3><p>Seu nome, sua cor e seu endereço (seunegocio.amplitudelab.com.br). No White-label, até o domínio é seu.</p><a href="app/?t=okada#site">Ver a página →</a></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="planos" style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <span class="label rv">03 / Planos</span>
+      <h2 class="h2 rv">Junte o site ao CRM e <span class="volt-text">comece de graça.</span></h2>
+    </div>
+
+    <div class="combo rv">
+      <div>
+        <span class="label">Combo de entrada</span>
+        <h3>Qualquer site + <span class="volt-text">3 meses de CRM Essencial</span> incluídos</h3>
+        <p>Feche a página vitrine, o site completo ou a loja virtual e o CRM já vem ligado ao formulário do site. Depois dos 3 meses, continua só se fizer sentido para você.</p>
+        <a class="btn btn-wa" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero o combo: site + 3 meses de CRM Essencial." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Quero o combo</a>
+      </div>
+      <ul>
+        <li><svg aria-hidden="true"><use href="#ck"/></svg>Formulário e agendamento do site caindo direto no funil</li>
+        <li><svg aria-hidden="true"><use href="#ck"/></svg>Funil, clientes, agenda e captação</li>
+        <li><svg aria-hidden="true"><use href="#ck"/></svg>Seu endereço: seunegocio.amplitudelab.com.br</li>
+        <li><svg aria-hidden="true"><use href="#ck"/></svg>Configuração inicial feita por nós</li>
+        <li><svg aria-hidden="true"><use href="#ck"/></svg>Sem fidelidade: cancele quando quiser</li>
+      </ul>
+    </div>
+
+    <div class="plans">
+      <article class="plan rv">
+        <h3>Essencial</h3>
+        <div class="price"><small>R$</small><b>79</b><span>/mês</span></div>
+        <p class="range">a R$ 99 conforme o tamanho da equipe</p>
+        <p class="for">Para quem atende sozinho ou em dupla e quer parar de perder contato.</p>
+        <ul>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Funil, clientes e agenda</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Formulário e captação</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>WhatsApp a um toque</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>1 a 2 pessoas</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero o CRM Essencial." target="_blank" rel="noopener">Quero o Essencial</a>
+      </article>
+      <article class="plan hot rv">
+        <span class="badge">Mais escolhido</span>
+        <h3>Pro</h3>
+        <div class="price"><small>R$</small><b>179</b><span>/mês</span></div>
+        <p class="range">a R$ 199 conforme o tamanho da equipe</p>
+        <p class="for">Para quem já tem equipe e quer vender, cobrar e acompanhar o caixa no mesmo lugar.</p>
+        <ul>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Tudo do Essencial</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Propostas com link e aceite</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Financeiro e fluxo de caixa</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Perfis de equipe e registro</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Backup com restauração</li>
+        </ul>
+        <a class="btn btn-volt" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero o CRM Pro." target="_blank" rel="noopener">Quero o Pro</a>
+      </article>
+      <article class="plan rv">
+        <h3>White-label</h3>
+        <div class="price"><small>R$</small><b>349</b><span>/mês</span></div>
+        <p class="range">a R$ 399</p>
+        <p class="for">Para quem quer o sistema com a própria cara, no próprio domínio.</p>
+        <ul>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Tudo do Pro</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Seu domínio (crm.seunegocio.com.br)</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Sem “feito pela Amplitude Lab”</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Atendimento prioritário</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero o CRM White-label." target="_blank" rel="noopener">Quero o White-label</a>
+      </article>
+      <article class="plan rv">
+        <h3>Implantação</h3>
+        <div class="price"><small>R$</small><b>490</b><span>uma vez</span></div>
+        <p class="range">a R$ 1.500 conforme o volume</p>
+        <p class="for">Para quem já tem contatos em planilha, caderno ou WhatsApp e quer começar organizado.</p>
+        <ul>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Importação dos seus contatos</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Funil e formulário do seu jeito</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Cobrança configurada</li>
+          <li><svg aria-hidden="true"><use href="#ck"/></svg>Treinamento da equipe</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero a implantação do CRM." target="_blank" rel="noopener">Quero a implantação</a>
+      </article>
+    </div>
+
+    <div class="pairs rv" aria-label="Combinações sugeridas de site e CRM">
+      <div class="pair th"><div>Combinação</div><div>Site (uma vez)</div><div>CRM (por mês)</div><div></div></div>
+      <div class="pair"><div><b>Começar</b><small>Página vitrine + CRM Essencial</small></div><div class="v">R$ 600 a 1.200</div><div class="v"><em>3 meses grátis</em>, depois R$ 79</div><a class="btn btn-ghost" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero a combinação Começar: página vitrine + CRM Essencial." target="_blank" rel="noopener">Quero esse</a></div>
+      <div class="pair"><div><b>Crescer</b><small>Site completo com agendamento + CRM Pro</small></div><div class="v">R$ 1.200 a 2.500</div><div class="v"><em>3 meses de Essencial</em>, depois R$ 179</div><a class="btn btn-volt" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero a combinação Crescer: site completo + CRM Pro." target="_blank" rel="noopener">Quero esse</a></div>
+      <div class="pair"><div><b>Escalar</b><small>Loja virtual + CRM Pro ou White-label</small></div><div class="v">R$ 2.500 a 5.000+</div><div class="v"><em>3 meses de Essencial</em>, depois R$ 179 a 399</div><a class="btn btn-ghost" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero a combinação Escalar: loja virtual + CRM." target="_blank" rel="noopener">Quero esse</a></div>
+    </div>
+    <p class="lead rv" style="font-size:15px;max-width:none">Site: 50% na aprovação e 50% na entrega. CRM: mensal, sem fidelidade. Valores de partida; a proposta final lista o que entra e o prazo.</p>
+  </div>
+</section>
+
+<section class="section" id="testar" style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <span class="label rv">04 / Teste agora</span>
+      <h2 class="h2 rv">Quatro negócios de exemplo. <span class="volt-text">Escolha um e mexa.</span></h2>
+      <p class="lead rv">Tudo o que você mudar fica só no seu navegador. Dá para restaurar os dados de exemplo em Equipe e acesso.</p>
+    </div>
+    <div class="try">
+      <article class="tenant rv" style="--c:#F5A524"><span class="logo">BN</span><h3>Barbearia Norte</h3><p>Agendamento pelo site, planos mensais e comissões. Plano Pro.</p><div class="go"><a href="app/?t=norte#funil">Funil</a><a href="app/?t=norte#site">Página</a></div></article>
+      <article class="tenant rv" style="--c:#EFA27C"><span class="logo">MO</span><h3>Marina Okada Fotografia</h3><p>Casamentos e ensaios com proposta e sinal. Plano White-label.</p><div class="go"><a href="app/?t=okada#propostas">Propostas</a><a href="app/?t=okada#site">Página</a></div></article>
+      <article class="tenant rv" style="--c:#B9A0FF"><span class="logo">FÓ</span><h3>Festival Órbita</h3><p>Patrocínio, estandes e camarotes, com financeiro forte. Plano Pro.</p><div class="go"><a href="app/?t=orbita#financeiro">Financeiro</a><a href="app/?t=orbita#site">Página</a></div></article>
+      <article class="tenant rv" style="--c:#5B8CFF"><span class="logo">AL</span><h3>Amplitude Lab</h3><p>O nosso próprio funil de vendas de sites e de CRM.</p><div class="go"><a href="app/?t=lab#painel">Painel</a><a href="app/?t=lab#funil">Funil</a></div></article>
+    </div>
+    <p class="roles rv">No topo do painel, troque o perfil para ver o que cada pessoa enxerga: <span>Dono</span><span>Vendas</span><span>Financeiro</span><span>Leitura</span></p>
+    <p class="roles rv">Quer um roteiro? O <a href="guia.html" style="color:var(--volt-hi);text-decoration:underline">guia de teste</a> mostra o que clicar em cada tela e o que deve acontecer.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <span class="label rv">05 / Segurança e LGPD</span>
+      <h2 class="h2 rv">Os dados dos seus clientes <span class="chrome-text">ficam só com você.</span></h2>
+    </div>
+    <div class="safe">
+      <div class="rv"><b>Isolado por empresa</b><p>Regras dentro do próprio banco de dados impedem que um negócio veja os dados de outro, mesmo se algo falhar na tela.</p></div>
+      <div class="rv"><b>Login sem senha</b><p>Link de acesso por e-mail e verificação em duas etapas para o dono e para quem vê o financeiro.</p></div>
+      <div class="rv"><b>Consentimento guardado</b><p>Cada contato que chega pelo site tem a data e o texto exato que autorizou. Pedido de exclusão resolvido em um clique.</p></div>
+      <div class="rv"><b>Registro de alterações</b><p>Quem mudou o quê e quando. Nada some sem deixar rastro.</p></div>
+      <div class="rv"><b>Bloqueio automático</b><p>O painel trava depois de alguns minutos parado, para o celular esquecido no balcão não virar problema.</p></div>
+      <div class="rv"><b>Backup diário</b><p>Cópia automática do banco, com restauração para um ponto no tempo no plano Pro.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="duvidas" style="padding-top:0">
+  <div class="wrap">
+    <div class="head">
+      <span class="label rv">06 / Dúvidas</span>
+      <h2 class="h2 rv">Perguntas de quem está decidindo.</h2>
+    </div>
+    <div class="faq">
+      <details class="rv"><summary>Preciso fazer o site com vocês para usar o CRM?</summary><p>Não. O CRM funciona sozinho, com formulário próprio e link para a bio. Mas junto com o site ele rende mais, porque agendamentos e pedidos já entram organizados, e por isso o combo dá 3 meses do Essencial.</p></details>
+      <details class="rv"><summary>Funciona no celular?</summary><p>Sim. O painel foi feito para o celular primeiro: funil, ficha do cliente e WhatsApp a um toque. Abra a demonstração no seu celular e confira.</p></details>
+      <details class="rv"><summary>Tenho meus contatos numa planilha. Perco tudo?</summary><p>Não. Na implantação importamos a sua planilha (ou exportação do WhatsApp e do Instagram) e já deixamos cada contato na etapa certa do funil.</p></details>
+      <details class="rv"><summary>Como funciona a cobrança?</summary><p>Você gera a cobrança em Pix, boleto ou cartão quando o negócio fecha. Quando o pagamento cai, o CRM marca como pago e lança no caixa do mês sozinho.</p></details>
+      <details class="rv"><summary>Posso cancelar?</summary><p>Pode, quando quiser, sem multa. Antes de sair, entregamos todos os seus dados numa planilha.</p></details>
+      <details class="rv"><summary>A demonstração é o sistema de verdade?</summary><p>É a mesma tela e o mesmo funcionamento. Na demonstração os dados ficam só no seu navegador; na versão contratada ficam num banco seguro, com login, backup e acesso da sua equipe.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final" id="contato">
+  <div class="wrap">
+    <span class="label rv">Próximo passo</span>
+    <h2 class="h2 rv">Vamos montar o seu <span class="volt-text">site + CRM?</span></h2>
+    <p class="lead rv">Conta pra gente o seu negócio pelo WhatsApp. Em poucos minutos você recebe a proposta com prazo e valor.</p>
+    <div class="hero-acts rv">
+      <a class="btn btn-wa" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Vim pela página do CRM e quero um site com CRM." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Chamar no WhatsApp</a>
+      <a class="btn btn-ghost" href="../#demos">Ver os modelos de site <svg aria-hidden="true"><use href="#arrow"/></svg></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© Amplitude Lab · Sites e CRM para pequenos negócios</span>
+    <span><a href="../">Página principal</a> · <a href="../modelos/">Modelos</a> · <a href="app/">Demonstração do CRM</a> · <a href="guia.html">Guia de teste</a> · <a href="https://instagram.com/amplitude_lab" target="_blank" rel="noopener">@amplitude_lab</a></span>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/5511952182016" data-wa="Oi, Amplitude Lab! Quero saber do Site + CRM." target="_blank" rel="noopener" aria-label="Falar no WhatsApp"><svg aria-hidden="true"><use href="#wa"/></svg></a>
+
+<script>
+(() => {
+  'use strict';
+  const WHATS = '5511952182016';
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  // WhatsApp com mensagem pronta
+  $$('[data-wa]').forEach((a) => { a.href = 'https://wa.me/' + WHATS + '?text=' + encodeURIComponent(a.dataset.wa); });
+
+  // topo fica sólido ao rolar
+  const nav = $('[data-nav]');
+  const onScroll = () => nav.classList.toggle('solid', scrollY > 30);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // entrada suave das seções
+  if ('IntersectionObserver' in window && !reduced) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      e.target.classList.add('in');
+    }), { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    $$('.rv').forEach((el, i) => { el.style.transitionDelay = (i % 4) * 70 + 'ms'; io.observe(el); });
+  } else $$('.rv').forEach((el) => el.classList.add('in'));
+
+  // janela com o CRM: iframe em 1280 px, escalado para caber
+  const view = $('[data-win-view]'), frame = $('iframe', view), win = $('[data-win]');
+  const fit = () => { const s = view.clientWidth / 1280; frame.style.transform = 'scale(' + s + ')'; frame.style.height = (view.clientHeight / s) + 'px'; };
+  new ResizeObserver(fit).observe(view); fit();
+  const load = (v) => {
+    const url = 'app/?t=norte#' + v;
+    // o CRM só lê o hash ao abrir: um parâmetro diferente por tela força a recarga
+    frame.src = 'app/?t=norte&tela=' + v + '#' + v;
+    $('[data-win-open]').href = url;
+    $('[data-win-url]').textContent = 'barbearianorte.amplitudelab.com.br' + (v === 'site' ? '' : '/painel');
+  };
+  const lazy = new IntersectionObserver(([e]) => { if (e.isIntersecting) { frame.src = frame.dataset.src; lazy.disconnect(); } }, { rootMargin: '200px' });
+  lazy.observe(view);
+  $$('[data-view]').forEach((b) => b.addEventListener('click', () => {
+    $$('[data-view]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    load(b.dataset.view);
+  }));
+  // leve inclinação 3D da janela seguindo o mouse
+  if (!reduced && matchMedia('(pointer: fine)').matches) {
+    win.addEventListener('pointermove', (e) => {
+      const r = win.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      win.style.transform = 'perspective(1400px) rotateY(' + (x * 5) + 'deg) rotateX(' + (-y * 4) + 'deg)';
+    });
+    win.addEventListener('pointerleave', () => { win.style.transform = ''; });
+  }
+
+  // fundo do herói: partículas saindo da esquerda (o site) e convergindo num funil à direita (o CRM)
+  const cv = $('[data-flow]'), ctx = cv.getContext('2d');
+  let W = 0, H = 0, dpr = 1, parts = [], raf = 0, running = false, mx = -1e3, my = -1e3;
+  const N = matchMedia('(max-width: 700px)').matches ? 70 : 160;
+  function size() {
+    dpr = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function spawn(p, fresh) {
+    p.x = fresh ? Math.random() * W : -20;
+    p.y0 = H * (0.1 + Math.random() * 0.8); p.y = p.y0;
+    p.v = 0.4 + Math.random() * 1.1; p.r = 0.6 + Math.random() * 1.8;
+    p.hot = Math.random() < 0.12; p.ph = Math.random() * 6.28;
+    return p;
+  }
+  function tick(t) {
+    ctx.clearRect(0, 0, W, H);
+    const fx = W * 0.78, fy = H * 0.52;   // boca do funil
+    for (const p of parts) {
+      p.x += p.v * (reduced ? 0 : 1);
+      const k = Math.min(1, Math.max(0, p.x / fx));              // 0 no site, 1 no funil
+      const ease = k * k * (3 - 2 * k);
+      p.y = p.y0 + (fy - p.y0) * ease + Math.sin(t / 900 + p.ph) * 8 * (1 - ease);
+      const dx = p.x - mx, dy = p.y - my, d2 = dx * dx + dy * dy;
+      if (d2 < 9000) { p.y += dy / Math.sqrt(d2 + 1) * 6; }
+      if (p.x > W + 20) spawn(p, false);
+      const a = p.x > fx ? Math.max(0, 1 - (p.x - fx) / (W - fx + 20)) : 0.25 + ease * 0.6;
+      ctx.beginPath();
+      ctx.fillStyle = p.hot ? 'rgba(63,207,155,' + a + ')' : 'rgba(150,180,255,' + a * 0.8 + ')';
+      ctx.arc(p.x, p.y, p.r * (1 + ease * 0.6), 0, 6.283); ctx.fill();
+    }
+    // brilho do funil
+    const g = ctx.createRadialGradient(fx, fy, 0, fx, fy, Math.min(W, H) * 0.35);
+    g.addColorStop(0, 'rgba(91,140,255,.18)'); g.addColorStop(1, 'rgba(91,140,255,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    if (running) raf = requestAnimationFrame(tick);
+  }
+  size(); parts = Array.from({ length: N }, () => spawn({}, true));
+  addEventListener('resize', () => { size(); parts.forEach((p) => spawn(p, true)); });
+  cv.parentElement.addEventListener('pointermove', (e) => { const r = cv.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+  cv.parentElement.addEventListener('pointerleave', () => { mx = my = -1e3; });
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting && !reduced) { if (!running) { running = true; raf = requestAnimationFrame(tick); } }
+    else { running = false; cancelAnimationFrame(raf); tick(performance.now()); }
+  }).observe(cv);
+})();
+</script>
+</body>
+</html>

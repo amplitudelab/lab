@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Guia do Amplitude CRM</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+  :root{--bg:#05070d;--panel:#0d1322;--panel2:#111a2e;--line:#1a2340;--line2:#28345a;--fg:#eaf0ff;--muted:#9ba8c6;--volt:#5b8cff;--hi:#a9c4ff;--ok:#3fcf9b;color-scheme:dark}
+  @media (prefers-color-scheme:light){:root{--bg:#f4f6fb;--panel:#fff;--panel2:#eef2fa;--line:#d5ddea;--line2:#c0cbe0;--fg:#0a0f1c;--muted:#46526d;--volt:#2450d6;--hi:#2450d6;--ok:#0b7f57;color-scheme:light}}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;background:var(--bg)}
+  body,p,td,th{hyphens:manual}
+  body{margin:0 auto;max-width:980px;padding:40px max(16px,4vw) 80px;background:var(--bg);color:var(--fg);font:400 16px/1.65 "IBM Plex Sans",system-ui,sans-serif;overflow-wrap:break-word}
+  header#title-block-header{display:none}
+  h1,h2,h3,h4{font-family:"Unbounded","Arial Black",sans-serif;letter-spacing:-.02em;line-height:1.15;text-wrap:balance}
+  h1{font-size:clamp(28px,5vw,44px);margin:0 0 18px}
+  h2{font-size:clamp(22px,3.4vw,30px);margin:56px 0 14px;padding-top:24px;border-top:1px solid var(--line)}
+  h3{font-size:19px;margin:36px 0 10px;color:var(--hi)}
+  h4{font-family:"IBM Plex Sans",sans-serif;font-size:17px;font-weight:600;letter-spacing:0;margin:28px 0 8px}
+  a{color:var(--hi)}
+  hr{border:0;border-top:1px solid var(--line2);margin:48px 0}
+  code{font:500 .88em/1.4 "IBM Plex Mono",ui-monospace,monospace;background:var(--panel2);padding:.12em .4em;border-radius:6px}
+  pre{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:13.5px;line-height:1.5}
+  pre code{background:none;padding:0}
+  table{width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:14.5px;display:block;overflow-x:auto}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font:500 11px/1.3 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--panel)}
+  tr:hover td{background:color-mix(in srgb,var(--panel) 60%,transparent)}
+  ul.task-list{list-style:none;padding-left:4px}
+  ul.task-list input{accent-color:var(--volt);margin-right:8px}
+  nav#TOC{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 22px;margin:0 0 32px;font-size:14.5px}
+  nav#TOC::before{content:"Índice";display:block;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  nav#TOC ul{margin:0;padding-left:18px}
+  nav#TOC a{text-decoration:none}
+  @media print{body{background:#fff;color:#000}nav#TOC{display:none}a{color:#000}}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Amplitude CRM · Guia de teste e implementação</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#amplitude-crm-guia-de-teste-e-implementação"
+id="toc-amplitude-crm-guia-de-teste-e-implementação">Amplitude CRM: guia
+de teste e implementação</a>
+<ul>
+<li><a href="#parte-1--testar-o-protótipo"
+id="toc-parte-1--testar-o-protótipo">Parte 1 · Testar o protótipo</a>
+<ul>
+<li><a href="#como-abrir" id="toc-como-abrir">Como abrir</a></li>
+<li><a href="#atalhos-de-endereço" id="toc-atalhos-de-endereço">Atalhos
+de endereço</a></li>
+<li><a href="#os-4-clientes-de-exemplo-tenants"
+id="toc-os-4-clientes-de-exemplo-tenants">Os 4 clientes de exemplo
+(tenants)</a></li>
+<li><a href="#os-4-perfis-de-acesso" id="toc-os-4-perfis-de-acesso">Os 4
+perfis de acesso</a></li>
+<li><a href="#roteiro-de-teste-função-por-função"
+id="toc-roteiro-de-teste-função-por-função">Roteiro de teste, função por
+função</a></li>
+<li><a href="#como-o-protótipo-guarda-os-dados"
+id="toc-como-o-protótipo-guarda-os-dados">Como o protótipo guarda os
+dados</a></li>
+</ul></li>
+<li><a href="#parte-2--implementar-de-verdade"
+id="toc-parte-2--implementar-de-verdade">Parte 2 · Implementar de
+verdade</a>
+<ul>
+<li><a href="#arquitetura" id="toc-arquitetura">Arquitetura</a></li>
+<li><a href="#do-protótipo-para-as-tabelas"
+id="toc-do-protótipo-para-as-tabelas">Do protótipo para as
+tabelas</a></li>
+<li><a href="#fase-0--fundação-1-semana"
+id="toc-fase-0--fundação-1-semana">Fase 0 · Fundação (1 semana)</a></li>
+<li><a href="#fase-1--mvp-4-a-6-semanas"
+id="toc-fase-1--mvp-4-a-6-semanas">Fase 1 · MVP (4 a 6 semanas)</a></li>
+<li><a href="#fase-2--cobrança-e-whatsapp"
+id="toc-fase-2--cobrança-e-whatsapp">Fase 2 · Cobrança e
+WhatsApp</a></li>
+<li><a href="#fase-3--diferenciais" id="toc-fase-3--diferenciais">Fase 3
+· Diferenciais</a></li>
+<li><a href="#segurança-e-lgpd-checklist"
+id="toc-segurança-e-lgpd-checklist">Segurança e LGPD: checklist</a></li>
+<li><a href="#checklist-antes-de-entregar-para-um-cliente"
+id="toc-checklist-antes-de-entregar-para-um-cliente">Checklist antes de
+entregar para um cliente</a></li>
+</ul></li>
+<li><a href="#como-vender-site--crm" id="toc-como-vender-site--crm">Como
+vender: Site + CRM</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="amplitude-crm-guia-de-teste-e-implementação">Amplitude CRM: guia
+de teste e implementação</h1>
+<p>Este guia tem duas partes:</p>
+<ol type="1">
+<li><strong>Testar o protótipo:</strong> como abrir o CRM e conferir
+cada função, em 15 minutos, sem instalar nada.</li>
+<li><strong>Implementar de verdade:</strong> como trocar o armazenamento
+do navegador por um banco multi-cliente (Supabase), publicar em
+subdomínios e ligar captação, cobrança e WhatsApp.</li>
+</ol>
+<p>O protótipo fica em <code>crm/app/index.html</code>. É um arquivo
+único que funciona sozinho, sem servidor. Tudo o que você muda nele fica
+salvo <strong>só no seu navegador</strong> (<code>localStorage</code>).
+Por isso dá para testar à vontade, e o botão <em>Restaurar dados de
+exemplo</em> volta tudo ao início.</p>
+<table>
+<thead>
+<tr class="header">
+<th>O que</th>
+<th>Onde</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Protótipo do CRM</td>
+<td><code>crm/app/index.html</code></td>
+</tr>
+<tr class="even">
+<td>Página de vendas Site + CRM</td>
+<td><code>crm/index.html</code></td>
+</tr>
+<tr class="odd">
+<td>Banco (tabelas, permissões, funções)</td>
+<td><code>crm/supabase/schema.sql</code></td>
+</tr>
+<tr class="even">
+<td>Dados de exemplo</td>
+<td><code>crm/supabase/seed.sql</code></td>
+</tr>
+<tr class="odd">
+<td>Teste de permissões (29 verificações)</td>
+<td><code>crm/supabase/tests.sql</code></td>
+</tr>
+<tr class="even">
+<td>Captação, webhook do Asaas, lembretes</td>
+<td><code>crm/supabase/functions/*/index.ts</code></td>
+</tr>
+<tr class="odd">
+<td>Subdomínios dos clientes</td>
+<td><code>crm/cloudflare/worker.js</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="parte-1--testar-o-protótipo">Parte 1 · Testar o protótipo</h2>
+<h3 id="como-abrir">Como abrir</h3>
+<ul>
+<li><strong>Online:</strong> <a
+href="https://symbiozyy.github.io/amplitude-lab/crm/app/">https://symbiozyy.github.io/amplitude-lab/crm/app/</a></li>
+<li><strong>No computador, pelo pacote .zip:</strong> abra
+<code>crm/app/index.html</code> com dois cliques. Funciona direto do
+arquivo. As fontes vêm do Google Fonts; sem internet, o CRM usa a fonte
+do sistema e continua funcionando.</li>
+<li><strong>No celular:</strong> use o endereço online. O layout troca a
+barra lateral por uma barra inferior.</li>
+</ul>
+<h3 id="atalhos-de-endereço">Atalhos de endereço</h3>
+<p>Coloque depois do <code>#</code> para abrir direto numa tela. Ele usa
+o último cliente escolhido no login (o padrão é a Barbearia Norte).</p>
+<table>
+<thead>
+<tr class="header">
+<th>Endereço</th>
+<th>Abre</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>crm/app/</code></td>
+<td>Tela de login com os 4 clientes de exemplo</td>
+</tr>
+<tr class="even">
+<td><code>crm/app/#site</code></td>
+<td>Página pública do cliente (onde o visitante agenda ou pede
+orçamento)</td>
+</tr>
+<tr class="odd">
+<td><code>crm/app/#painel</code></td>
+<td>Painel do dia</td>
+</tr>
+<tr class="even">
+<td><code>crm/app/#funil</code></td>
+<td>Funil de vendas (kanban)</td>
+</tr>
+<tr class="odd">
+<td><code>crm/app/#clientes</code></td>
+<td>Clientes</td>
+</tr>
+<tr class="even">
+<td><code>crm/app/#propostas</code></td>
+<td>Propostas</td>
+</tr>
+<tr class="odd">
+<td><code>crm/app/#agenda</code></td>
+<td>Agenda</td>
+</tr>
+<tr class="even">
+<td><code>crm/app/#financeiro</code></td>
+<td>Financeiro</td>
+</tr>
+<tr class="odd">
+<td><code>crm/app/#captacao</code></td>
+<td>Formulário de captação</td>
+</tr>
+<tr class="even">
+<td><code>crm/app/#equipe</code></td>
+<td>Equipe, permissões, marca e registro</td>
+</tr>
+</tbody>
+</table>
+<h3 id="os-4-clientes-de-exemplo-tenants">Os 4 clientes de exemplo
+(tenants)</h3>
+<p>Cada um tem dados próprios e cor própria. É o mesmo sistema servindo
+empresas diferentes, sem que uma veja a outra.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Cliente</th>
+<th>Endereço simulado</th>
+<th>Plano</th>
+<th>Cor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Barbearia Norte</td>
+<td><code>barbearianorte.amplitudelab.com.br</code></td>
+<td>Pro</td>
+<td>âmbar</td>
+</tr>
+<tr class="even">
+<td>Marina Okada Fotografia</td>
+<td><code>marinaokada.amplitudelab.com.br</code></td>
+<td>White-label</td>
+<td>pêssego</td>
+</tr>
+<tr class="odd">
+<td>Festival Órbita</td>
+<td><code>festivalorbita.amplitudelab.com.br</code></td>
+<td>Pro</td>
+<td>lilás</td>
+</tr>
+<tr class="even">
+<td>Amplitude Lab (uso interno)</td>
+<td><code>app.amplitudelab.com.br</code></td>
+<td>Interno</td>
+<td>azul</td>
+</tr>
+</tbody>
+</table>
+<h3 id="os-4-perfis-de-acesso">Os 4 perfis de acesso</h3>
+<p>Troque em <strong>Ver como</strong> no topo do painel (no celular:
+menu <em>Mais</em>). O menu e os botões mudam na hora.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Pode…</th>
+<th style="text-align: center;">Dono</th>
+<th style="text-align: center;">Vendas</th>
+<th style="text-align: center;">Financeiro</th>
+<th style="text-align: center;">Leitura</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ver funil, clientes e agenda</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr class="even">
+<td>Criar e editar leads e propostas</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td>Ver e lançar financeiro</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td>Convidar pessoas e mudar permissões</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td>Excluir registros e anonimizar (LGPD)</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>No perfil <strong>Leitura</strong> os telefones aparecem
+mascarados.</p>
+<h3 id="roteiro-de-teste-função-por-função">Roteiro de teste, função por
+função</h3>
+<p>Siga na ordem. Cada linha diz o que fazer e o que deve acontecer.</p>
+<h4 id="1-entrada">1. Entrada</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Abra <code>crm/app/</code>, escolha <strong>Barbearia Norte</strong>
+e clique em <em>Entrar na demonstração</em></td>
+<td>Abre o Painel com a cor âmbar e o nome da barbearia</td>
+</tr>
+<tr class="even">
+<td>Volte ao login, digite um e-mail e envie</td>
+<td>Aparece o aviso de que, na versão real, chega um link de acesso por
+e-mail (login sem senha)</td>
+</tr>
+<tr class="odd">
+<td>Escolha outro cliente e entre</td>
+<td>Dados, cor e nome trocam por completo</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2-painel">2. Painel</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Olhe os números do topo</td>
+<td>Leads em aberto, em negociação, recebido no mês, taxa de fechamento,
+a receber e tarefas de hoje</td>
+</tr>
+<tr class="even">
+<td>Veja <em>Próximos passos</em></td>
+<td>Retornos, tarefas e cobranças vencidas, os mais urgentes
+primeiro</td>
+</tr>
+<tr class="odd">
+<td>Clique em <em>Concluir</em> numa tarefa ou <em>Recebido</em> numa
+cobrança</td>
+<td>Sai da lista e entra no registro de alterações</td>
+</tr>
+</tbody>
+</table>
+<h4 id="3-funil-kanban">3. Funil (kanban)</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Arraste um card de <em>Novo</em> para <em>Contato feito</em></td>
+<td>O card muda de coluna, o total da coluna atualiza e o histórico do
+lead ganha "Etapa · Novo → Contato feito"</td>
+</tr>
+<tr class="even">
+<td>Arraste um card para <strong>Fechado</strong></td>
+<td>Partículas comemoram e aparece <em>Gerar cobrança</em> (se o perfil
+puder ver financeiro)</td>
+</tr>
+<tr class="odd">
+<td>Clique em <em>Gerar cobrança</em></td>
+<td>Abre a cobrança já preenchida com o valor e o interesse do lead</td>
+</tr>
+<tr class="even">
+<td>Arraste para <strong>Perdido</strong></td>
+<td>Sai dos leads em aberto e o retorno marcado é limpo</td>
+</tr>
+<tr class="odd">
+<td>No celular</td>
+<td>Abra o lead e toque na etapa desejada</td>
+</tr>
+<tr class="even">
+<td>Clique em <em>Novo lead</em></td>
+<td>Formulário de lead; ao salvar, entra em <em>Novo</em></td>
+</tr>
+</tbody>
+</table>
+<h4 id="4-ficha-do-lead">4. Ficha do lead</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Clique em qualquer card</td>
+<td>Abre a gaveta com etapa, contato, consentimento, próximo retorno e
+histórico</td>
+</tr>
+<tr class="even">
+<td>Clique em <em>Abrir WhatsApp</em></td>
+<td>Abre o WhatsApp com mensagem pronta (nos contatos de exemplo, sem
+destinatário)</td>
+</tr>
+<tr class="odd">
+<td>Em <em>Registrar contato</em>, escolha Nota, WhatsApp, Ligação ou
+E-mail e salve</td>
+<td>Aparece no topo do histórico com data, hora e perfil</td>
+</tr>
+<tr class="even">
+<td>Em <em>Próximo follow-up</em>, toque em <em>Amanhã</em></td>
+<td>O lead aparece na Agenda e nos próximos passos</td>
+</tr>
+<tr class="odd">
+<td><em>Criar proposta</em></td>
+<td>Abre a proposta já ligada a este lead</td>
+</tr>
+<tr class="even">
+<td>Como <strong>Dono</strong>, clique em <em>Anonimizar (LGPD)</em> e
+confirme</td>
+<td>Nome vira "Titular anonimizado", telefone e e-mail somem, o
+histórico vira "[removido a pedido do titular]". O valor continua
+contando no funil</td>
+</tr>
+<tr class="odd">
+<td>Troque para <strong>Vendas</strong> e abra outro lead</td>
+<td>O botão de anonimizar não aparece</td>
+</tr>
+</tbody>
+</table>
+<h4 id="5-propostas">5. Propostas</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>Nova proposta</em> (ou <em>Criar proposta</em> na ficha do
+lead): adicione itens com descrição, quantidade e valor</td>
+<td>O total soma sozinho</td>
+</tr>
+<tr class="even">
+<td>Salve</td>
+<td>Fica como <em>Enviada</em> e aparece <em>Ver como o
+cliente</em></td>
+</tr>
+<tr class="odd">
+<td>Clique em <em>Ver como o cliente</em></td>
+<td>Abre a proposta como o cliente veria pelo link, com a marca do
+negócio</td>
+</tr>
+<tr class="even">
+<td>Clique em <em>Aceitar proposta</em></td>
+<td>Status vira <em>Aceita</em> e o lead vai para <em>Fechado</em>
+sozinho</td>
+</tr>
+<tr class="odd">
+<td><em>Copiar link</em></td>
+<td>Na versão real é um link único e secreto (token) que o cliente abre
+sem login</td>
+</tr>
+</tbody>
+</table>
+<h4 id="6-agenda">6. Agenda</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Veja a faixa de dias</td>
+<td>Cada dia mostra quantos compromissos tem</td>
+</tr>
+<tr class="even">
+<td>Clique num dia</td>
+<td>Filtra só aquele dia; clique de novo para ver todos</td>
+</tr>
+<tr class="odd">
+<td><em>Nova tarefa</em>: tipo, dia, horário e lembrete (15 min, 1 hora
+ou 1 dia antes)</td>
+<td>Entra na lista no dia certo. Na versão real o lembrete vai por
+e-mail</td>
+</tr>
+<tr class="even">
+<td>Marque como feita</td>
+<td>Some da lista de pendentes</td>
+</tr>
+</tbody>
+</table>
+<h4 id="7-financeiro-perfil-dono-ou-financeiro">7. Financeiro (perfil
+Dono ou Financeiro)</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Veja o gráfico</td>
+<td>Entradas e saídas dos últimos 6 meses</td>
+</tr>
+<tr class="even">
+<td><em>Nova cobrança</em> (Pix, boleto, cartão ou transferência)</td>
+<td>Entra em <em>A receber</em></td>
+</tr>
+<tr class="odd">
+<td>Clique em <em>Recebido</em> numa cobrança</td>
+<td>Sai de <em>A receber</em> e vira entrada no caixa do mês</td>
+</tr>
+<tr class="even">
+<td><em>Lançar despesa</em></td>
+<td>Entra no gráfico como saída</td>
+</tr>
+<tr class="odd">
+<td>Troque para <strong>Vendas</strong></td>
+<td>O menu Financeiro some</td>
+</tr>
+</tbody>
+</table>
+<h4 id="8-captação">8. Captação</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mude o título, os campos (e-mail, interesse, mensagem) e o texto de
+consentimento</td>
+<td>A prévia no celular atualiza na hora</td>
+</tr>
+<tr class="even">
+<td>Preencha a prévia sem marcar a autorização</td>
+<td>Mostra o erro pedindo a autorização (LGPD)</td>
+</tr>
+<tr class="odd">
+<td>Preencha certo e envie</td>
+<td>Lead novo em <em>Novo</em>, com origem <em>Formulário</em> e data do
+consentimento</td>
+</tr>
+<tr class="even">
+<td><em>Copiar link para a bio</em> ou o código para o site</td>
+<td>É o que vai na bio do Instagram ou no site do cliente</td>
+</tr>
+<tr class="odd">
+<td>Digite um número em <em>WhatsApp</em> e copie o link</td>
+<td>Link <code>wa.me</code> com mensagem pronta</td>
+</tr>
+</tbody>
+</table>
+<p>O formulário tem um campo escondido (honeypot). Robôs preenchem e são
+ignorados; pessoas nem veem.</p>
+<h4 id="9-página-pública-do-cliente-site">9. Página pública do cliente
+(<code>#site</code>)</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Abra <code>crm/app/#site</code> ou <em>Ver a página pública deste
+cliente</em> no login</td>
+<td>Página do negócio com serviços e preços</td>
+</tr>
+<tr class="even">
+<td>Escolha serviço, dia e horário, preencha nome e WhatsApp e
+autorize</td>
+<td>Confirmação na tela</td>
+</tr>
+<tr class="odd">
+<td>Entre no painel</td>
+<td>O pedido virou lead em <em>Novo</em> (origem <em>Página</em>), um
+compromisso na Agenda no horário escolhido e uma linha no registro</td>
+</tr>
+<tr class="even">
+<td>Volte à página e escolha o mesmo dia</td>
+<td>O horário já reservado fica desativado</td>
+</tr>
+</tbody>
+</table>
+<p>É o ponto principal da venda <strong>Site + CRM</strong>: quem agenda
+pelo site já cai organizado no CRM.</p>
+<h4 id="10-equipe-e-acesso-perfil-dono">10. Equipe e acesso (perfil
+Dono)</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>Convidar</em> uma pessoa com um perfil</td>
+<td>Entra na lista de pessoas</td>
+</tr>
+<tr class="even">
+<td>Mude o nome exibido e a cor principal</td>
+<td>Painel inteiro muda de cor e nome na hora</td>
+</tr>
+<tr class="odd">
+<td>Preencha <em>Domínio próprio</em></td>
+<td>O endereço do painel mostra o domínio novo</td>
+</tr>
+<tr class="even">
+<td>Ligue <em>Esconder "feito pela Amplitude Lab"</em></td>
+<td>É a opção do plano White-label</td>
+</tr>
+<tr class="odd">
+<td>Veja o <em>Registro de alterações</em></td>
+<td>Cada mudança que você fez aparece com perfil, data e hora</td>
+</tr>
+<tr class="even">
+<td><em>Restaurar dados de exemplo</em> e confirme</td>
+<td>Tudo deste cliente volta ao início</td>
+</tr>
+</tbody>
+</table>
+<h4 id="11-atalhos-e-segurança">11. Atalhos e segurança</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Faça</th>
+<th>Deve acontecer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Ctrl + K</code> (ou <code>⌘ + K</code>) no painel</td>
+<td>Paleta de busca: digite um nome de lead ou uma ação ("nova
+cobrança") e dê Enter</td>
+</tr>
+<tr class="even">
+<td>Fique 5 minutos sem mexer</td>
+<td>O painel trava e pede para desbloquear</td>
+</tr>
+<tr class="odd">
+<td>Botão de tema</td>
+<td>Alterna claro, escuro e automático</td>
+</tr>
+<tr class="even">
+<td>Botão de efeitos (estrela)</td>
+<td>Liga e desliga o fundo de partículas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="como-o-protótipo-guarda-os-dados">Como o protótipo guarda os
+dados</h3>
+<p>Tudo fica em duas chaves do <code>localStorage</code>:</p>
+<ul>
+<li><code>amp-crm:prefs</code>: preferências (tema, efeitos e último
+cliente escolhido)</li>
+<li><code>amp-crm:v1:&lt;cliente&gt;</code>: um objeto por cliente
+(<code>norte</code>, <code>okada</code>, <code>orbita</code>,
+<code>lab</code>)</li>
+</ul>
+<p>Formato do objeto do cliente (valores em <strong>centavos</strong>,
+datas em milissegundos):</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">v</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">leads</span><span class="op">:</span>     [{ id<span class="op">,</span> name<span class="op">,</span> phone<span class="op">,</span> email<span class="op">,</span> interest<span class="op">,</span> source<span class="op">,</span> stage<span class="op">,</span> value<span class="op">,</span> follow<span class="op">,</span> created<span class="op">,</span> consent<span class="op">,</span> client<span class="op">,</span> lost }]<span class="op">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">acts</span><span class="op">:</span>      [{ id<span class="op">,</span> lead<span class="op">,</span> kind<span class="op">,</span> body<span class="op">,</span> at<span class="op">,</span> by }]<span class="op">,</span>          <span class="co">// histórico do lead</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">clients</span><span class="op">:</span>   [{ id<span class="op">,</span> name<span class="op">,</span> email<span class="op">,</span> phone<span class="op">,</span> doc<span class="op">,</span> since<span class="op">,</span> <span class="dt">contacts</span><span class="op">:</span> [{ name<span class="op">,</span> role }] }]<span class="op">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">proposals</span><span class="op">:</span> [{ id<span class="op">,</span> lead<span class="op">,</span> client<span class="op">,</span> title<span class="op">,</span> <span class="dt">items</span><span class="op">:</span> [{ d<span class="op">,</span> q<span class="op">,</span> u }]<span class="op">,</span> status<span class="op">,</span> valid<span class="op">,</span> token<span class="op">,</span> created }]<span class="op">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">tasks</span><span class="op">:</span>     [{ id<span class="op">,</span> title<span class="op">,</span> kind<span class="op">,</span> due<span class="op">,</span> done<span class="op">,</span> remind }]<span class="op">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">charges</span><span class="op">:</span>   [{ id<span class="op">,</span> client<span class="op">,</span> desc<span class="op">,</span> amount<span class="op">,</span> due<span class="op">,</span> status<span class="op">,</span> paid<span class="op">,</span> method }]<span class="op">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">cash</span><span class="op">:</span>      [{ id<span class="op">,</span> dir<span class="op">,</span> cat<span class="op">,</span> desc<span class="op">,</span> amount<span class="op">,</span> date<span class="op">,</span> charge }]<span class="op">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">audit</span><span class="op">:</span>     [{ at<span class="op">,</span> who<span class="op">,</span> a }]<span class="op">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">form</span><span class="op">:</span>      { title<span class="op">,</span> email<span class="op">,</span> interest<span class="op">,</span> msg<span class="op">,</span> wa<span class="op">,</span> consent }<span class="op">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">brand</span><span class="op">:</span>     { name<span class="op">,</span> color<span class="op">,</span> hide<span class="op">,</span> domain }<span class="op">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">members</span><span class="op">:</span>   [{ n<span class="op">,</span> e<span class="op">,</span> r }]</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Para apagar tudo de uma vez: no navegador, ferramentas do
+desenvolvedor → Application → Local Storage → apagar as chaves
+<code>amp-crm:*</code>.</p>
+<hr />
+<h2 id="parte-2--implementar-de-verdade">Parte 2 · Implementar de
+verdade</h2>
+<h3 id="arquitetura">Arquitetura</h3>
+<pre><code> visitante                       cliente da Amplitude Lab (dono, vendas, financeiro)
+     │                                        │
+     ▼                                        ▼
+ barbearianorte.amplitudelab.com.br     barbearianorte.amplitudelab.com.br/painel
+     │                                        │
+     └──────────── Cloudflare Worker ─────────┘   descobre o tenant pelo endereço
+                         │
+                  Cloudflare Pages                  o mesmo app para todos (crm/app)
+                         │
+        ┌────────────────┼──────────────────────────┐
+        ▼                ▼                          ▼
+  Supabase Auth     Supabase Postgres          Edge Functions
+  link por e-mail   13 tabelas + RLS           capture-lead   (Turnstile + LGPD)
+  + 2FA do dono     tenant_id em tudo          asaas-webhook  (pagamento → caixa)
+                                               lembretes      (e-mail via Resend)
+                                                    │
+                                     Asaas (Pix/boleto/cartão) · WhatsApp</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th>Peça</th>
+<th>Para quê</th>
+<th>Alternativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Supabase</strong> (Postgres, Auth, Edge Functions,
+Cron)</td>
+<td>Banco, login e código no servidor</td>
+<td>Postgres + Node próprio</td>
+</tr>
+<tr class="even">
+<td><strong>RLS</strong> (Row Level Security)</td>
+<td>O banco recusa ler ou mudar linhas de outro cliente, mesmo se o
+front tiver bug</td>
+<td>Filtro no back-end (mais frágil)</td>
+</tr>
+<tr class="odd">
+<td><strong>Cloudflare Pages + Worker</strong></td>
+<td>Hospedagem e um subdomínio por cliente</td>
+<td>Vercel com middleware</td>
+</tr>
+<tr class="even">
+<td><strong>Cloudflare Turnstile</strong></td>
+<td>Anti-robô no formulário público, sem quebra-cabeça</td>
+<td>hCaptcha</td>
+</tr>
+<tr class="odd">
+<td><strong>Resend</strong> ou <strong>Brevo</strong></td>
+<td>E-mail de login e de lembretes</td>
+<td>SMTP próprio</td>
+</tr>
+<tr class="even">
+<td><strong>Asaas</strong></td>
+<td>Cobrança Pix, boleto e cartão com webhook</td>
+<td>Mercado Pago, Pagar.me</td>
+</tr>
+<tr class="odd">
+<td><strong>WhatsApp</strong></td>
+<td>Fase 1: link <code>wa.me</code> com mensagem pronta. Fase 2: API
+oficial da Meta</td>
+<td>Z-API (não oficial: evite)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="do-protótipo-para-as-tabelas">Do protótipo para as tabelas</h3>
+<table>
+<thead>
+<tr class="header">
+<th>No protótipo (<code>S.*</code>)</th>
+<th>No banco</th>
+<th>Observação</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>TENANTS</code> (fixo no código)</td>
+<td><code>tenants</code></td>
+<td><code>slug</code> vira o subdomínio</td>
+</tr>
+<tr class="even">
+<td><code>members</code></td>
+<td><code>memberships</code></td>
+<td>Liga <code>auth.users</code> ao tenant com o perfil</td>
+</tr>
+<tr class="odd">
+<td><code>STAGES</code> (fixo)</td>
+<td><code>pipeline_stages</code></td>
+<td>Cada tenant nasce com as 6 etapas (trigger) e pode renomear</td>
+</tr>
+<tr class="even">
+<td><code>leads</code></td>
+<td><code>leads</code></td>
+<td><code>stage</code> → <code>stage_id</code>; <code>value</code> →
+<code>value_cents</code>; <code>follow</code> →
+<code>follow_up_at</code>; <code>consent</code> →
+<code>consent_at</code> + <code>consent_text</code></td>
+</tr>
+<tr class="odd">
+<td><code>acts</code></td>
+<td><code>activities</code></td>
+<td>Mudança de etapa vira atividade sozinha (trigger)</td>
+</tr>
+<tr class="even">
+<td><code>clients</code> + <code>contacts</code></td>
+<td><code>clients</code> + <code>contacts</code></td>
+<td>Contatos saem do objeto e viram tabela</td>
+</tr>
+<tr class="odd">
+<td><code>proposals</code></td>
+<td><code>proposals</code></td>
+<td><code>total_cents</code> calculado pelo banco; <code>token</code>
+gerado pelo banco</td>
+</tr>
+<tr class="even">
+<td><code>tasks</code></td>
+<td><code>tasks</code></td>
+<td>Ganha <code>reminded_at</code> e <code>assigned_to</code></td>
+</tr>
+<tr class="odd">
+<td><code>form</code></td>
+<td><code>forms</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>charges</code></td>
+<td><code>charges</code></td>
+<td>Ganha <code>asaas_id</code> e <code>payment_url</code></td>
+</tr>
+<tr class="odd">
+<td><code>cash</code></td>
+<td><code>cash_entries</code></td>
+<td>Cobrança paga cria a entrada sozinha (trigger)</td>
+</tr>
+<tr class="even">
+<td><code>audit</code></td>
+<td><code>audit_log</code></td>
+<td>Escrito só pelo banco (triggers), ninguém edita</td>
+</tr>
+<tr class="odd">
+<td><code>brand</code></td>
+<td>colunas <code>brand_*</code> em <code>tenants</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="fase-0--fundação-1-semana">Fase 0 · Fundação (1 semana)</h3>
+<ol type="1">
+<li><strong>Conta e projeto no Supabase.</strong> Crie o projeto na
+região <em>South America (São Paulo)</em>.</li>
+<li><strong>Banco.</strong> Em <em>SQL Editor</em>, rode na ordem:
+<ol type="1">
+<li><code>crm/supabase/schema.sql</code>: tipos, 13 tabelas, RLS, views,
+triggers e funções.</li>
+<li>Entre uma vez no app com seu e-mail (passo 4) e troque o e-mail no
+topo de <code>seed.sql</code>.</li>
+<li><code>crm/supabase/seed.sql</code>: cria a Barbearia Norte de
+exemplo com você como dono.</li>
+<li><code>crm/supabase/tests.sql</code>: deve terminar com <strong>TODOS
+OS TESTES PASSARAM</strong>. Ele roda dentro de uma transação e desfaz
+tudo no fim.</li>
+</ol></li>
+<li><strong>Login.</strong> <em>Authentication → Providers → Email</em>:
+ligue <em>magic link</em>. Em <em>URL Configuration</em> coloque
+<code>https://*.amplitudelab.com.br/**</code> nas URLs de retorno. Em
+<em>SMTP</em>, configure o Resend para os e-mails saírem com o seu
+domínio. Ligue o <strong>MFA (TOTP)</strong> e exija para o perfil Dono
+no front (<code>supabase.auth.mfa</code>).</li>
+<li><strong>Cloudflare.</strong> Domínio
+<code>amplitudelab.com.br</code> no Cloudflare. Publique
+<code>crm/app</code> no <strong>Pages</strong> (projeto
+<code>amplitude-crm</code>). Crie o <strong>Worker</strong> com
+<code>crm/cloudflare/worker.js</code> e a rota
+<code>*.amplitudelab.com.br/*</code>. Adicione o DNS curinga
+<code>*</code> em modo proxy (nuvem laranja).</li>
+</ol>
+<p>Testado localmente: <code>schema.sql</code>, <code>seed.sql</code> e
+<code>tests.sql</code> rodam limpos num Postgres 16 com o esquema
+<code>auth</code> simulado igual ao do Supabase, e as 29 verificações
+passam.</p>
+<h3 id="fase-1--mvp-4-a-6-semanas">Fase 1 · MVP (4 a 6 semanas)</h3>
+<p>Objetivo: o protótipo funcionando com banco real para os primeiros 3
+clientes.</p>
+<p><strong>1. Trocar o <code>store</code> do protótipo pelo
+Supabase.</strong> No protótipo, <code>load()</code> lê tudo de uma vez
+e <code>save()</code> grava tudo. Na versão real, cada ação grava só o
+que mudou:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> type=</span><span class="st">&quot;module&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> { createClient } <span class="im">from</span> <span class="st">&#39;https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm&#39;</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> sb <span class="op">=</span> <span class="fu">createClient</span>(<span class="st">&#39;https://&lt;projeto&gt;.supabase.co&#39;</span><span class="op">,</span> <span class="st">&#39;&lt;chave anon pública&gt;&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// entrar: link mágico por e-mail</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> sb<span class="op">.</span><span class="at">auth</span><span class="op">.</span><span class="fu">signInWithOtp</span>({ email<span class="op">,</span> <span class="dt">options</span><span class="op">:</span> { <span class="dt">emailRedirectTo</span><span class="op">:</span> location<span class="op">.</span><span class="at">origin</span> <span class="op">+</span> <span class="st">&#39;/painel&#39;</span> } })<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">// descobrir o tenant pelo endereço e o perfil da pessoa</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> slug <span class="op">=</span> location<span class="op">.</span><span class="at">hostname</span><span class="op">.</span><span class="fu">split</span>(<span class="st">&#39;.&#39;</span>)[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> { <span class="dt">data</span><span class="op">:</span> tenant } <span class="op">=</span> <span class="cf">await</span> sb<span class="op">.</span><span class="fu">from</span>(<span class="st">&#39;tenants&#39;</span>)<span class="op">.</span><span class="fu">select</span>(<span class="st">&#39;*&#39;</span>)<span class="op">.</span><span class="fu">eq</span>(<span class="st">&#39;slug&#39;</span><span class="op">,</span> slug)<span class="op">.</span><span class="fu">single</span>()<span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> { <span class="dt">data</span><span class="op">:</span> me } <span class="op">=</span> <span class="cf">await</span> sb<span class="op">.</span><span class="fu">from</span>(<span class="st">&#39;memberships&#39;</span>)<span class="op">.</span><span class="fu">select</span>(<span class="st">&#39;role&#39;</span>)<span class="op">.</span><span class="fu">eq</span>(<span class="st">&#39;tenant_id&#39;</span><span class="op">,</span> tenant<span class="op">.</span><span class="at">id</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">eq</span>(<span class="st">&#39;user_id&#39;</span><span class="op">,</span> (<span class="cf">await</span> sb<span class="op">.</span><span class="at">auth</span><span class="op">.</span><span class="fu">getUser</span>())<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="at">user</span><span class="op">.</span><span class="at">id</span>)<span class="op">.</span><span class="fu">single</span>()<span class="op">;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>role <span class="op">=</span> me<span class="op">.</span><span class="at">role</span><span class="op">;</span>   <span class="co">// owner | sales | finance | viewer: o mesmo ROLES do protótipo</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">// carregar (o RLS já filtra pelo tenant; o filtro abaixo é só para não misturar se a pessoa tiver 2 tenants)</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [stages<span class="op">,</span> leads<span class="op">,</span> tasks] <span class="op">=</span> <span class="cf">await</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">all</span>([</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  sb<span class="op">.</span><span class="fu">from</span>(<span class="st">&#39;pipeline_stages&#39;</span>)<span class="op">.</span><span class="fu">select</span>(<span class="st">&#39;*&#39;</span>)<span class="op">.</span><span class="fu">eq</span>(<span class="st">&#39;tenant_id&#39;</span><span class="op">,</span> tenant<span class="op">.</span><span class="at">id</span>)<span class="op">.</span><span class="fu">order</span>(<span class="st">&#39;position&#39;</span>)<span class="op">,</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  sb<span class="op">.</span><span class="fu">from</span>(role <span class="op">===</span> <span class="st">&#39;viewer&#39;</span> <span class="op">?</span> <span class="st">&#39;leads_masked&#39;</span> <span class="op">:</span> <span class="st">&#39;leads&#39;</span>)<span class="op">.</span><span class="fu">select</span>(<span class="st">&#39;*&#39;</span>)<span class="op">.</span><span class="fu">eq</span>(<span class="st">&#39;tenant_id&#39;</span><span class="op">,</span> tenant<span class="op">.</span><span class="at">id</span>)<span class="op">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  sb<span class="op">.</span><span class="fu">from</span>(<span class="st">&#39;tasks&#39;</span>)<span class="op">.</span><span class="fu">select</span>(<span class="st">&#39;*&#39;</span>)<span class="op">.</span><span class="fu">eq</span>(<span class="st">&#39;tenant_id&#39;</span><span class="op">,</span> tenant<span class="op">.</span><span class="at">id</span>)<span class="op">.</span><span class="fu">is</span>(<span class="st">&#39;done_at&#39;</span><span class="op">,</span> <span class="kw">null</span>)<span class="op">.</span><span class="fu">order</span>(<span class="st">&#39;due_at&#39;</span>)<span class="op">,</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>])<span class="op">;</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">// mover lead no funil (substitui moveLead + save)</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> sb<span class="op">.</span><span class="fu">from</span>(<span class="st">&#39;leads&#39;</span>)<span class="op">.</span><span class="fu">update</span>({ stage_id })<span class="op">.</span><span class="fu">eq</span>(<span class="st">&#39;id&#39;</span><span class="op">,</span> leadId)<span class="op">;</span>   <span class="co">// o banco grava o histórico e o registro</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">// nova proposta</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> sb<span class="op">.</span><span class="fu">from</span>(<span class="st">&#39;proposals&#39;</span>)<span class="op">.</span><span class="fu">insert</span>({ <span class="dt">tenant_id</span><span class="op">:</span> tenant<span class="op">.</span><span class="at">id</span><span class="op">,</span> lead_id<span class="op">,</span> title<span class="op">,</span> items<span class="op">,</span> <span class="dt">status</span><span class="op">:</span> <span class="st">&#39;sent&#39;</span> })<span class="op">;</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">// anonimizar (LGPD)</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> sb<span class="op">.</span><span class="fu">rpc</span>(<span class="st">&#39;anonymize_lead&#39;</span><span class="op">,</span> { <span class="dt">p_lead</span><span class="op">:</span> leadId })<span class="op">;</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">// tempo real: outra pessoa da equipe moveu um card</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>sb<span class="op">.</span><span class="fu">channel</span>(<span class="st">&#39;funil&#39;</span>)<span class="op">.</span><span class="fu">on</span>(<span class="st">&#39;postgres_changes&#39;</span><span class="op">,</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">event</span><span class="op">:</span> <span class="st">&#39;*&#39;</span><span class="op">,</span> <span class="dt">schema</span><span class="op">:</span> <span class="st">&#39;public&#39;</span><span class="op">,</span> <span class="dt">table</span><span class="op">:</span> <span class="st">&#39;leads&#39;</span><span class="op">,</span> <span class="dt">filter</span><span class="op">:</span> <span class="vs">`tenant_id=eq.</span><span class="sc">${</span>tenant<span class="op">.</span><span class="at">id</span><span class="sc">}</span><span class="vs">`</span> }<span class="op">,</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  () <span class="kw">=&gt;</span> <span class="fu">render</span>())<span class="op">.</span><span class="fu">subscribe</span>()<span class="op">;</span></span></code></pre></div>
+<p>Converta datas com <code>new Date(row.due_at).getTime()</code> para
+reaproveitar as funções de tela do protótipo (<code>fdate</code>,
+<code>rel</code>, <code>money</code>) sem mudar nada nelas.</p>
+<p><strong>2. Captação.</strong> Publique a função:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">supabase</span> functions deploy capture-lead <span class="at">--no-verify-jwt</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">supabase</span> secrets set TURNSTILE_SECRET=<span class="op">&lt;</span>chave secreta do Turnstile<span class="op">&gt;</span></span></code></pre></div>
+<p>No formulário público troque o <code>submit</code> do protótipo
+por:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> r <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetch</span>(<span class="st">&#39;https://&lt;projeto&gt;.supabase.co/functions/v1/capture-lead&#39;</span><span class="op">,</span> {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">method</span><span class="op">:</span> <span class="st">&#39;POST&#39;</span><span class="op">,</span> <span class="dt">headers</span><span class="op">:</span> { <span class="st">&#39;content-type&#39;</span><span class="op">:</span> <span class="st">&#39;application/json&#39;</span> }<span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">body</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>({ slug<span class="op">,</span> name<span class="op">,</span> phone<span class="op">,</span> email<span class="op">,</span> interest<span class="op">,</span> <span class="dt">consent</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">website</span><span class="op">:</span> form<span class="op">.</span><span class="at">website</span><span class="op">.</span><span class="at">value</span><span class="op">,</span>                        <span class="co">// honeypot</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">turnstile</span><span class="op">:</span> turnstile<span class="op">.</span><span class="fu">getResponse</span>() })<span class="op">,</span>              <span class="co">// widget do Cloudflare</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>})<span class="op">.</span><span class="fu">then</span>((r) <span class="kw">=&gt;</span> r<span class="op">.</span><span class="fu">json</span>())<span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (r<span class="op">.</span><span class="at">whatsapp</span>) location<span class="op">.</span><span class="at">href</span> <span class="op">=</span> r<span class="op">.</span><span class="at">whatsapp</span><span class="op">;</span>            <span class="co">// visitante já cai na conversa</span></span></code></pre></div>
+<p>A página pública lê nome, cor e formulário com
+<code>sb.rpc('tenant_public', { p_slug: slug })</code>, sem login e sem
+expor dados internos.</p>
+<p><strong>3. Proposta pelo link.</strong> A rota
+<code>/p/&lt;token&gt;</code> chama
+<code>sb.rpc('proposal_public', { p_token })</code> para mostrar e
+<code>sb.rpc('proposal_accept', { p_token })</code> no botão
+<em>Aceitar</em>. O lead vai para <em>Fechado</em> sozinho.</p>
+<p><strong>4. Lembretes.</strong> Publique <code>lembretes</code>,
+configure <code>RESEND_API_KEY</code>, <code>MAIL_FROM</code> e
+<code>CRON_SECRET</code>, ligue <code>pg_cron</code> e
+<code>pg_net</code> em <em>Database → Extensions</em> e agende com o SQL
+que está no topo de <code>functions/lembretes/index.ts</code>.</p>
+<p><strong>5. Bloqueio por inatividade.</strong> O protótipo já tem
+(<code>armLock</code>). Na versão real, acrescente
+<code>sb.auth.signOut()</code> depois de 30 minutos travado.</p>
+<p><strong>6. Backups.</strong> Plano Pro do Supabase tem backup diário;
+<em>Point in Time Recovery</em> é um adicional pago, para oferecer no
+plano Pro do CRM.</p>
+<h3 id="fase-2--cobrança-e-whatsapp">Fase 2 · Cobrança e WhatsApp</h3>
+<ul>
+<li><strong>Asaas:</strong> crie uma subconta por cliente (ou use a
+chave do próprio cliente). O botão <em>Gerar cobrança</em> chama a API
+<code>POST /v3/payments</code> pelo servidor (nunca pelo navegador) e
+salva <code>asaas_id</code> e <code>payment_url</code>. Publique
+<code>asaas-webhook</code>, cadastre a URL no Asaas com o token em
+<code>ASAAS_WEBHOOK_TOKEN</code>. Pagamento confirmado → cobrança paga →
+entrada no caixa → atividade no lead, tudo sozinho.</li>
+<li><strong>WhatsApp:</strong> comece com o link <code>wa.me</code> (já
+está no protótipo e na <code>capture-lead</code>). Para mensagens
+automáticas (lembrete de horário, cobrança), use a <strong>API oficial
+do WhatsApp Business (Meta Cloud API)</strong> com modelos de mensagem
+aprovados. Cada cliente precisa do próprio número verificado.</li>
+</ul>
+<h3 id="fase-3--diferenciais">Fase 3 · Diferenciais</h3>
+<ul>
+<li>Domínio próprio no White-label: <em>Cloudflare for SaaS → Custom
+Hostnames</em>; o Worker já trata o domínio inteiro como identificador
+(coluna <code>tenants.custom_domain</code>).</li>
+<li>Relatórios por origem do lead e taxa de conversão por etapa.</li>
+<li>App instalável (PWA) para o dono usar no celular.</li>
+</ul>
+<h3 id="segurança-e-lgpd-checklist">Segurança e LGPD: checklist</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />RLS ligado em <strong>todas</strong>
+as tabelas (o <code>schema.sql</code> já liga; confira em <em>Database →
+Tables</em>).</label></li>
+<li><label><input type="checkbox" /><code>tests.sql</code> passando
+depois de qualquer mudança no banco.</label></li>
+<li><label><input type="checkbox" />A chave <code>service_role</code>
+<strong>só</strong> nas Edge Functions, nunca no front, nunca no
+Git.</label></li>
+<li><label><input type="checkbox" /><code>capture_lead</code> só
+executável pela <code>service_role</code> (já está assim).</label></li>
+<li><label><input type="checkbox" />Consentimento salvo com data
+<strong>e</strong> texto exato (<code>consent_at</code>,
+<code>consent_text</code>).</label></li>
+<li><label><input type="checkbox" />Anonimização disponível para o dono
+(<code>anonymize_lead</code>) e registrada no
+<code>audit_log</code>.</label></li>
+<li><label><input type="checkbox" />2FA obrigatório para o perfil Dono e
+para quem vê o financeiro.</label></li>
+<li><label><input type="checkbox" />Turnstile e honeypot no formulário
+público.</label></li>
+<li><label><input type="checkbox" />Contrato com cada cliente dizendo
+que ele é o <strong>controlador</strong> dos dados e a Amplitude Lab é
+<strong>operadora</strong>.</label></li>
+<li><label><input type="checkbox" />Política de privacidade na página
+pública de cada cliente.</label></li>
+</ul>
+<h3 id="checklist-antes-de-entregar-para-um-cliente">Checklist antes de
+entregar para um cliente</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Tenant criado
+(<code>insert into tenants (slug, name, plan, whatsapp) …</code>): as
+etapas e o formulário nascem sozinhos.</label></li>
+<li><label><input type="checkbox" />Dono convidado
+(<code>invite_member</code>) e com 2FA ligado.</label></li>
+<li><label><input type="checkbox" />Cor, nome e logo conferidos no
+painel e na página pública.</label></li>
+<li><label><input type="checkbox" />Formulário testado de ponta a ponta:
+envio → lead em <em>Novo</em> → WhatsApp abre.</label></li>
+<li><label><input type="checkbox" />Proposta de teste aceita pelo
+link.</label></li>
+<li><label><input type="checkbox" />Cobrança de teste no Asaas (sandbox)
+virando entrada no caixa.</label></li>
+<li><label><input type="checkbox" />Lembrete de tarefa chegando por
+e-mail.</label></li>
+</ul>
+<hr />
+<h2 id="como-vender-site--crm">Como vender: Site + CRM</h2>
+<p>Faixas do plano de negócio (ajuste em
+<code>crm/index.html</code>):</p>
+<table>
+<thead>
+<tr class="header">
+<th>Plano do CRM</th>
+<th>Mensal</th>
+<th>Para quem</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Essencial</strong></td>
+<td>R$ 79 a 99</td>
+<td>Funil, clientes, agenda e captação para 1 a 2 pessoas</td>
+</tr>
+<tr class="even">
+<td><strong>Pro</strong></td>
+<td>R$ 179 a 199</td>
+<td>Tudo, mais propostas com link, financeiro, perfis de equipe e backup
+com restauração</td>
+</tr>
+<tr class="odd">
+<td><strong>White-label</strong></td>
+<td>R$ 349 a 399</td>
+<td>Pro com a marca e o domínio do cliente, sem "feito pela Amplitude
+Lab"</td>
+</tr>
+<tr class="even">
+<td><strong>Implantação</strong></td>
+<td>R$ 490 a 1.500 (uma vez)</td>
+<td>Importar contatos, configurar funil, formulário, cobrança e treinar
+a equipe</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Combo de entrada:</strong> quem fecha qualquer site (vitrine,
+completo ou loja) ganha <strong>3 meses do CRM Essencial</strong>, com o
+formulário do site já ligado ao funil. É o argumento principal: <em>o
+site traz o cliente, o CRM não deixa ele escapar.</em></p>
+<p>Contato: WhatsApp (11) 95218-2016 · Instagram @amplitude_lab</p>
+</body>
+</html>
