@@ -28,7 +28,7 @@ Tudo o que você muda nele fica salvo **só no seu navegador** (`localStorage`).
 
 ### Como abrir
 
-- **Online:** <https://symbiozyy.github.io/amplitude-lab/crm/app/>
+- **Online:** <https://amplitudelab.github.io/lab/crm/app/>
 - **No computador, pelo pacote .zip:** abra `crm/app/index.html` com dois cliques. Funciona direto do arquivo.
   As fontes vêm do Google Fonts; sem internet, o CRM usa a fonte do sistema e continua funcionando.
 - **No celular:** use o endereço online. O layout troca a barra lateral por uma barra inferior.
