@@ -9,7 +9,7 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   negócios (barbearias, estúdios de tatuagem, hamburguerias, lojas de roupas, quadros
   e decoração) e, junto, o **Amplitude CRM**.
 - Contato: WhatsApp **(11) 95218-2016** (`5511952182016`) · Instagram **@amplitude_lab**.
-- Todo botão de compra leva ao WhatsApp com mensagem pronta (`data-wa`). O site é
+- Todo botão de compra leva ao orçamento (`data-orc`, seção `#monte`); o WhatsApp só abre no envio, e o pedido entra no CRM como lead e proposta (função `site-quote`). O site é
   focado em conversão.
 - Idioma: português do Brasil em tudo (textos, comentários, commits).
 
