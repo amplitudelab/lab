@@ -72,6 +72,17 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
 - `voxel-realms/`, `voxel-realms-android/`: jogo à parte, sem relação com o negócio.
   Não vai no pacote .zip.
 
+
+## CRM real (em produção)
+
+- **Entrar:** o link "Entrar" do site abre `crm/app/?empresa=amplitudelab`, com login por e-mail e senha.
+- Mesmo arquivo nos dois modos: sem `?empresa=` é a demonstração no navegador; com `?empresa=<slug>` é o painel real no Supabase (projeto `amplitude-crm`, ref `ozregdgphaxkxumsujys`, São Paulo).
+- Página pública de compra: `crm/app/?empresa=<slug>#site`. Primeiro acesso: `?empresa=<slug>&convite=<token>` (uso único, 7 dias).
+- O que roda de verdade está em `crm/supabase/producao/` (migrations e funções `checkout`, `infinitepay-webhook`, `first-access`, `radar`). Os demais arquivos de `crm/supabase/` são o rascunho anterior com Asaas, não aplicado.
+- Pagamento: InfinitePay com a tag `norduk`, gravada em `tenants.payment_handle`. O aviso de pagamento não tem assinatura; o servidor sempre confere em `/payment_check`.
+- Radar de leads: OpenStreetMap por padrão; com o segredo `GOOGLE_PLACES_KEY`, usa o Google Maps.
+- Nunca coloque chaves secretas no repositório.
+
 ## Visual
 
 - Escuro: fundo `#05070d`, azul `#5b8cff` / `#a9c4ff`, verde `#3fcf9b`.

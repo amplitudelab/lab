@@ -345,6 +345,360 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
 </style>
 </head>
 <body>
+<title>Amplitude CRM</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: bancada de laboratório. Sidebar + palco no PC, barra inferior no celular.
+   Fundo navy com osciloscópio de partículas; cada cliente (tenant) troca o acento da marca. */
+:root{
+  --bg:#0A0F1C; --bg2:#0F1626; --panel:#131B2E; --panel2:#18223A; --line:#222C44;
+  --fg:#E9EEF7; --muted:#9AA5BB; --dim:#6B7690;
+  --ok:#3FCF9B; --warn:#F5B547; --bad:#FF7A7A; --on-accent:#0A0F1C;
+  --acc-d:#5B8CFF; --acc-l:#2450D6; --acc-d-deep:#2E4E9C; --acc-l-deep:#142E80;
+  --acc-d-soft:#5B8CFF26; --acc-l-soft:#2450D61A;
+  --accent:var(--acc-d); --accent-deep:var(--acc-d-deep); --accent-soft:var(--acc-d-soft);
+  --shadow:0 18px 40px -24px #000c;
+  --f-sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#F2F5FA; --bg2:#E8EDF5; --panel:#FFFFFF; --panel2:#F6F8FC; --line:#D5DDEA;
+  --fg:#0A0F1C; --muted:#46526D; --dim:#5D6983;
+  --ok:#0B7F57; --warn:#8F5600; --bad:#C0392B; --on-accent:#FFFFFF;
+  --accent:var(--acc-l); --accent-deep:var(--acc-l-deep); --accent-soft:var(--acc-l-soft);
+  --shadow:0 18px 36px -26px #0A0F1C55; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#F2F5FA; --bg2:#E8EDF5; --panel:#FFFFFF; --panel2:#F6F8FC; --line:#D5DDEA;
+  --fg:#0A0F1C; --muted:#46526D; --dim:#5D6983;
+  --ok:#0B7F57; --warn:#8F5600; --bad:#C0392B; --on-accent:#FFFFFF;
+  --accent:var(--acc-l); --accent-deep:var(--acc-l-deep); --accent-soft:var(--acc-l-soft);
+  --shadow:0 18px 36px -26px #0A0F1C55; color-scheme:light}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:400 15px/1.5 var(--f-sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+svg.i{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;transition:opacity .6s}
+body.in-app #fx{opacity:.45}
+
+/* ---------- botões 3D ---------- */
+.b3{--c:var(--accent);--cd:var(--accent-deep);--tc:var(--on-accent);
+  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:0 18px;border:0;border-radius:12px;cursor:pointer;
+  background:linear-gradient(180deg,#ffffff2e,#ffffff00 55%),var(--c);color:var(--tc);font-weight:600;font-size:15px;
+  box-shadow:0 4px 0 var(--cd),0 10px 18px -10px var(--cd);transform:translateY(0);
+  transition:transform .09s ease,box-shadow .09s ease,filter .2s;text-decoration:none;white-space:nowrap;user-select:none;-webkit-tap-highlight-color:transparent}
+.b3:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 5px 0 var(--cd),0 14px 22px -12px var(--cd)}
+.b3:active{transform:translateY(4px);box-shadow:0 0 0 var(--cd),0 4px 10px -8px var(--cd)}
+.b3.ghost{--c:var(--panel2);--cd:var(--line);--tc:var(--fg);background:var(--panel2);border:1px solid var(--line)}
+.b3.ok{--c:var(--ok);--cd:#0B5E40;--tc:#04140D}
+.b3.danger{--c:var(--bad);--cd:#7A1F1F;--tc:#fff}
+.b3.sm{min-height:36px;padding:0 12px;font-size:13px;border-radius:10px;box-shadow:0 3px 0 var(--cd)}
+.b3.sm:active{transform:translateY(3px);box-shadow:0 0 0 var(--cd)}
+.b3.icon{width:44px;padding:0}
+.b3.sm.icon{width:36px}
+.b3[disabled]{opacity:.45;pointer-events:none}
+.link{background:none;border:0;color:var(--accent);font-weight:600;cursor:pointer;padding:6px 2px;min-height:36px}
+
+/* ---------- login ---------- */
+#login{position:relative;z-index:1;min-height:100%;display:grid;place-items:center;
+  padding-block:32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.lg{width:min(440px,100%);display:flex;flex-direction:column;gap:22px}
+.lg-card{background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--line);border-radius:22px;padding:28px 24px;display:flex;flex-direction:column;gap:18px;box-shadow:var(--shadow);
+  transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .25s ease-out}
+.lg-brand{display:flex;align-items:center;gap:12px}
+.lg h1{font-size:clamp(26px,6vw,32px);line-height:1.1}
+.lg-sub{color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label,.flabel{font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.inp{width:100%;min-height:46px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);font-size:16px}
+.inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea.inp{min-height:84px;resize:vertical}
+.tenants{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tpick{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);cursor:pointer;text-align:left;min-width:0;min-height:52px}
+.tpick[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.tpick span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:500}
+.trust{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center}
+.trust span{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.trust svg{width:16px;height:16px;color:var(--ok)}
+.note{font-size:13px;color:var(--muted);background:var(--accent-soft);border-radius:10px;padding:10px 12px}
+
+.logo{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none;font:700 15px var(--f-sans);
+  background:var(--accent);color:var(--on-accent);box-shadow:0 3px 0 var(--accent-deep)}
+.logo.sm{width:32px;height:32px;border-radius:9px;font-size:12px}
+
+/* ---------- app shell ---------- */
+#app{position:relative;z-index:1;min-height:100%;display:grid;grid-template-columns:240px minmax(0,1fr)}
+.side{position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:18px;padding:18px 14px;border-right:1px solid var(--line);background:color-mix(in srgb,var(--bg) 92%,transparent)}
+.side .tn{display:flex;align-items:center;gap:10px;padding:4px 6px;min-width:0}
+.side .tn b{display:block;font-size:15px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.side nav{display:flex;flex-direction:column;gap:2px}
+.nv{display:flex;align-items:center;gap:12px;min-height:42px;padding:0 12px;border-radius:10px;border:0;background:none;color:var(--muted);cursor:pointer;text-align:left;font-weight:500;position:relative}
+.nv:hover{background:var(--panel);color:var(--fg)}
+.nv[aria-current="page"]{background:var(--panel);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.nv[aria-current="page"] svg{color:var(--accent)}
+.nv .badge{margin-left:auto}
+.badge{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--on-accent);font:600 11px/20px var(--f-sans);text-align:center}
+.powered{margin-top:auto;display:flex;align-items:center;gap:8px;padding:10px 8px;color:var(--dim);font-size:12px}
+.powered svg{width:18px;height:18px}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:10px;min-height:64px;
+  padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+body.in-app::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.top .ttl{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.top .ttl .mt{display:none}
+.top h1{font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.url{font:500 12px var(--f-mono);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.url b{color:var(--accent);font-weight:500}
+.srch{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;min-width:200px}
+.srch kbd{margin-left:auto;font:500 11px var(--f-mono);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.sel{min-height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);padding:0 10px;max-width:150px}
+.ib{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;cursor:pointer;color:var(--muted)}
+.ib:hover{color:var(--fg)}
+.ib{position:relative}
+.ib .badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;line-height:18px;font-size:10px;padding:0 5px;background:var(--ok);color:#04140D}
+.ib.ring svg{animation:ring .9s ease 2}
+@keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(-16deg)}40%{transform:rotate(14deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(5deg)}}
+.notes{display:flex;flex-direction:column}
+.notes .row.unread .t::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-left:8px;vertical-align:middle}
+.pixbox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px;border:1px dashed var(--line);border-radius:14px;background:var(--bg2);text-align:center}
+.pixqr{width:150px;height:150px;border-radius:10px;background:#fff;padding:10px;display:grid;grid-template-columns:repeat(15,1fr);gap:1px}
+.pixqr i{background:#0A0F1C;border-radius:1px}
+.pixqr i.o{background:transparent}
+body.real #roleSel,body.real #tUrl,body.real #lgDemoBox,body.real #genForm,body.real #lgReal{display:none!important}
+.segchips{display:flex;flex-wrap:wrap;gap:6px}
+.scan{height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:40% 100%;background-repeat:no-repeat;animation:scan 1.1s linear infinite}
+@keyframes scan{from{background-position:-40% 0}to{background-position:140% 0}}
+.gen{display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+.ib[aria-pressed="true"]{color:var(--accent);border-color:var(--accent)}
+
+#view{padding-block:22px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px;min-width:0;max-width:1400px;width:100%}
+.vh{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.vh h2{font-size:clamp(24px,3vw,30px);line-height:1.1}
+.vh p{color:var(--muted);margin-top:4px;max-width:60ch}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+
+.bnav{display:none}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
+.card h3{font-size:16px}
+.card .ch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.grid{display:grid;gap:14px;min-width:0}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0;overflow:hidden;
+  transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .2s ease-out}
+.kpi::after{content:"";position:absolute;inset:auto -20% -60% auto;width:140px;height:140px;border-radius:50%;background:radial-gradient(var(--accent-soft),transparent 70%);pointer-events:none}
+.kpi b{font-size:clamp(20px,2.4vw,26px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi small{color:var(--muted);font-size:13px}
+.kpi.alert small{color:var(--bad);font-weight:600}
+
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:600;background:var(--panel2);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
+.chip.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.chip.ok{color:var(--ok);border-color:currentColor;background:transparent}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.chip.bad{color:var(--bad);border-color:currentColor;background:transparent}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+
+.rows{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);min-width:0}
+.row:first-child{border-top:0}
+.row .grow{flex:1;min-width:0}
+.row .t{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .s{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ico{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--panel2);color:var(--accent);flex:none}
+.ico.bad{color:var(--bad)} .ico.ok{color:var(--ok)} .ico.warn{color:var(--warn)}
+.empty{padding:26px 10px;text-align:center;color:var(--muted);font-size:14px}
+
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14px}
+.bar .track{height:12px;border-radius:6px;background:var(--panel2);overflow:hidden}
+.bar .fill{height:100%;border-radius:6px;background:var(--accent);transform-origin:left;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+.bar .fill.alt{background:var(--dim)}
+@keyframes grow{from{transform:scaleX(0)}}
+.chart svg{width:100%;height:auto;display:block}
+.chart .bin{fill:var(--accent)} .chart .bout{fill:var(--dim)}
+.chart text{fill:var(--muted);font:500 12px var(--f-mono)}
+.chart line{stroke:var(--line)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* ---------- kanban ---------- */
+.kwrap{overflow-x:auto;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px));padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:12px;min-width:min-content}
+.kcol{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:240px;scroll-snap-align:start;transition:border-color .15s,background .15s}
+.kcol.over{border-color:var(--accent);background:var(--accent-soft)}
+.kh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 4px 6px}
+.kh b{font-size:14px}
+.kh small{font:500 12px var(--f-mono);color:var(--muted)}
+.kcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;cursor:pointer;text-align:left;width:100%;
+  box-shadow:0 2px 0 var(--line);transition:transform .12s,box-shadow .12s}
+.kcard:hover{transform:translateY(-2px);box-shadow:0 5px 0 var(--line)}
+.kcard.dragging{opacity:.5}
+.kcard .t{font-weight:600;font-size:15px;line-height:1.25}
+.kcard .m{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
+.kcard .v{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
+.fu{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.fu.late{color:var(--bad)} .fu.today{color:var(--warn)} .fu.next{color:var(--muted)}
+.fu svg{width:14px;height:14px}
+
+/* ---------- drawer / modal / palette ---------- */
+.scrim{position:fixed;inset:0;z-index:40;background:#050811a6;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;z-index:41;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--bg);border-left:1px solid var(--line);
+  display:flex;flex-direction:column;transform:translateX(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);box-shadow:var(--shadow)}
+.drawer.on{transform:none}
+.dh{display:flex;align-items:flex-start;gap:12px;padding:18px 18px 14px;padding-top:calc(18px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--line)}
+.dh .grow{flex:1;min-width:0}
+.dh h2{font-size:22px;line-height:1.15;overflow-wrap:anywhere}
+.db{flex:1;overflow-y:auto;padding:18px;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px}
+.sec{display:flex;flex-direction:column;gap:10px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:13px;font-weight:500}
+.pill[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;overflow-wrap:anywhere}
+.sel-text{user-select:all;font-variant-numeric:tabular-nums}
+.tl{display:flex;flex-direction:column;gap:0;list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 14px 22px;font-size:14px}
+.tl li::before{content:"";position:absolute;left:5px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.tl li::after{content:"";position:absolute;left:8.5px;top:16px;bottom:0;width:1px;background:var(--line)}
+.tl li:last-child::after{display:none}
+.tl small{display:block;color:var(--muted);font-size:12px}
+.confirm{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--bad);border-radius:12px}
+
+.modal{position:fixed;z-index:42;left:50%;top:50%;width:min(560px,calc(100% - 24px));max-height:calc(100% - 40px);overflow:auto;transform:translate(-50%,-46%) scale(.98);opacity:0;pointer-events:none;
+  background:var(--bg);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);transition:transform .22s,opacity .22s}
+.modal.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+.mh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 18px 0}
+.mh h2{font-size:20px}
+.mb{padding:18px;display:flex;flex-direction:column;gap:14px}
+.fg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fg .full{grid-column:1/-1}
+.items{display:flex;flex-direction:column;gap:8px}
+.item{display:grid;grid-template-columns:minmax(0,1fr) 64px 110px;gap:6px}
+.mf{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding-top:4px}
+.err{color:var(--bad);font-size:13px}
+
+.pal{position:fixed;z-index:43;left:50%;top:12vh;width:min(600px,calc(100% - 24px));transform:translate(-50%,-8px);opacity:0;pointer-events:none;
+  background:var(--bg);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);transition:.18s;overflow:hidden}
+.pal.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.pal .inp{border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;min-height:56px;padding:0 18px}
+.pal .inp:focus{box-shadow:none}
+.pal ul{list-style:none;margin:0;padding:6px;max-height:52vh;overflow:auto}
+.pal li button{width:100%;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;border:0;background:none;cursor:pointer;text-align:left;min-height:44px}
+.pal li button[aria-selected="true"]{background:var(--panel)}
+.pal li .k{margin-left:auto;font:500 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+
+#toast{position:fixed;z-index:60;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;pointer-events:none;transition:.22s;
+  display:flex;align-items:center;gap:12px;background:var(--fg);color:var(--bg);padding:10px 12px 10px 16px;border-radius:14px;font-weight:500;font-size:14px;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+#toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#toast button{background:var(--bg);color:var(--fg);border:0;border-radius:9px;min-height:34px;padding:0 12px;font-weight:600;cursor:pointer;white-space:nowrap}
+
+#lock{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding-inline:16px}
+#lock .card{display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;max-width:380px;padding:28px}
+
+/* público (proposta e formulário) */
+.phone{width:min(340px,100%);margin-inline:auto;border-radius:36px;padding:10px;background:var(--panel2);border:1px solid var(--line);box-shadow:var(--shadow)}
+.screen{border-radius:28px;overflow:hidden;background:#FFFFFF;color:#111827;min-height:520px;display:flex;flex-direction:column}
+.ph-head{padding:26px 20px 18px;color:#fff;display:flex;flex-direction:column;gap:6px}
+.ph-head h4{font-size:22px;letter-spacing:-.02em}
+.ph-body{padding:18px;display:flex;flex-direction:column;gap:12px}
+.ph-body label{font-size:12px;font-weight:600;color:#4B5563}
+.ph-body .pi{width:100%;min-height:44px;border:1px solid #D1D5DB;border-radius:10px;padding:8px 12px;background:#fff;color:#111827;font-size:16px}
+.ph-body .ck{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#4B5563;font-weight:400}
+.ph-body .ck input{width:18px;height:18px;margin-top:1px;flex:none}
+.ph-btn{min-height:48px;border:0;border-radius:12px;color:#fff;font-weight:600;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #0003;transition:transform .08s,box-shadow .08s}
+.ph-btn:active{transform:translateY(4px);box-shadow:0 0 0 #0003}
+.ptable{width:100%;border-collapse:collapse;font-size:14px;color:#111827}
+.ptable td{padding:8px 0;border-bottom:1px solid #E5E7EB}
+.ptable td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.ptable tr.tot td{font-weight:700;border-bottom:0;font-size:16px}
+pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);font:400 12px/1.6 var(--f-mono);white-space:pre-wrap;word-break:break-all;color:var(--fg)}
+.tbl{overflow-x:auto}
+.tbl table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.tbl th{font:500 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px;border-bottom:1px solid var(--line)}
+.tbl td.c,.tbl th.c{text-align:center}
+.yes{color:var(--ok)} .no{color:var(--dim)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.wd{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:12px;border:1px solid var(--line);background:var(--panel);cursor:pointer;min-width:0}
+.wd small{font:500 11px var(--f-mono);text-transform:uppercase;color:var(--muted)}
+.wd b{font-size:18px;font-variant-numeric:tabular-nums}
+.wd i{height:6px;display:flex;gap:3px}
+.wd i span{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.wd[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.wd[aria-pressed="true"] small{color:var(--on-accent)}
+.wd[aria-pressed="true"] i span{background:var(--on-accent)}
+.chk{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);background:none;cursor:pointer;display:grid;place-items:center;flex:none;color:var(--on-accent)}
+.chk[aria-checked="true"]{background:var(--ok);border-color:var(--ok)}
+.chk svg{width:16px;height:16px;stroke-width:3}
+.row.done .t{text-decoration:line-through;color:var(--muted)}
+.switch{display:flex;align-items:center;gap:10px;min-height:40px;font-size:14px;cursor:pointer}
+.switch input{width:20px;height:20px;accent-color:var(--accent)}
+
+/* ---------- página pública do cliente ---------- */
+#site{position:relative;z-index:1;min-height:100%;background:var(--bg)}
+.st-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--panel);border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.st-hero{padding-block:44px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:radial-gradient(120% 100% at 85% 0%,var(--accent-soft),transparent 60%)}
+.st-in{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.st-hero h1{font-size:clamp(34px,7vw,56px);line-height:1}
+.st-body{padding-block:8px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.svcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.svcs{grid-template-columns:minmax(0,1fr)}}
+.svc{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:64px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--panel);cursor:pointer;text-align:left;box-shadow:0 3px 0 var(--line);transition:transform .1s,box-shadow .1s}
+.svc:active{transform:translateY(3px);box-shadow:0 0 0 var(--line)}
+.svc[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 3px 0 var(--accent-deep),inset 0 0 0 1px var(--accent)}
+.svc b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.slot{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font:500 14px var(--f-mono)}
+.slot[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.slot:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+
+/* ---------- responsivo ---------- */
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:minmax(0,1fr)}.srch{min-width:0}.srch span,.srch kbd{display:none}.url{display:none}}
+@media (max-width:860px){
+  #app{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .top .ttl .mt{display:grid}
+  .top .sel,.hide-m{display:none}
+  .g2{grid-template-columns:minmax(0,1fr)}
+  #view{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .bnav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;z-index:6;left:0;right:0;bottom:0;
+    padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));
+    background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+  .bnav button{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:54px;border:0;background:none;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;border-radius:12px;position:relative}
+  .bnav button[aria-current="page"]{color:var(--accent)}
+  .bnav button[aria-current="page"] svg{transform:translateY(-1px)}
+  .bnav .badge{position:absolute;top:2px;right:calc(50% - 22px);min-width:16px;height:16px;font-size:10px;line-height:16px;padding:0 4px}
+  .drawer{top:auto;height:92%;width:100%;border-left:0;border-top:1px solid var(--line);border-radius:22px 22px 0 0;transform:translateY(102%)}
+  .drawer .dh{padding-top:18px}
+  .modal{top:auto;bottom:0;left:0;width:100%;max-height:92%;border-radius:22px 22px 0 0;transform:translateY(100%);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .modal.on{transform:none}
+  .kanban{grid-auto-columns:minmax(260px,82vw)}
+}
+@media (max-width:520px){.fg{grid-template-columns:minmax(0,1fr)}.bar{grid-template-columns:84px minmax(0,1fr) auto}.item{grid-template-columns:minmax(0,1fr) 54px 92px}.kpi{padding:14px}.vh .acts .b3{flex:1}}
+@media (hover:none){.kpi,.lg-card{transform:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -377,6 +731,9 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
     <symbol id="i-out" viewBox="0 0 24 24"><path d="M14 4h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-5M10 8l-4 4 4 4M6 12h10"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
     <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></symbol>
+    <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l6.4-6.4"/><circle cx="12" cy="12" r="1" /></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
   </defs>
 </svg>
@@ -388,26 +745,39 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
   <div class="lg">
     <div class="lg-card tilt" id="lgCard">
       <div class="lg-brand"><span class="logo" id="lgLogo">AL</span><div><p class="mono" id="lgUrl">app.amplitudelab.com.br</p><b id="lgName">Amplitude Lab</b></div></div>
-      <div><h1>Seu painel de clientes, vendas e caixa.</h1><p class="lg-sub" style="margin-top:8px">Entre com o seu e-mail. Mandamos um link de acesso que vale uma vez só, sem senha para decorar.</p></div>
+      <div><h1 id="lgTitle">Seu painel de clientes, vendas e caixa.</h1><p class="lg-sub" id="lgSub" style="margin-top:8px">Entre com o seu e-mail e a sua senha.</p></div>
       <form id="lgForm" class="field" novalidate>
         <label for="lgEmail">E-mail</label>
-        <input class="inp" id="lgEmail" type="email" autocomplete="email" inputmode="email" placeholder="voce@empresa.com.br">
+        <input class="inp" id="lgEmail" type="email" autocomplete="username" inputmode="email" placeholder="voce@empresa.com.br">
+        <label for="lgPass" style="margin-top:8px">Senha</label>
+        <input class="inp" id="lgPass" type="password" autocomplete="current-password" placeholder="Sua senha">
+        <div id="lgPass2Box" class="field" hidden style="margin-top:8px"><label for="lgPass2">Repita a senha</label><input class="inp" id="lgPass2" type="password" autocomplete="new-password"></div>
         <p class="note" id="lgNote" hidden></p>
-        <button class="b3" type="submit" style="margin-top:8px"><svg class="i"><use href="#i-mail"/></svg>Receber link de acesso</button>
+        <button class="b3" id="lgGo" type="submit" style="margin-top:8px"><svg class="i"><use href="#i-lock"/></svg><span id="lgGoTxt">Entrar</span></button>
+        <button class="link" id="lgForgot" type="button" style="align-self:center">Esqueci minha senha</button>
       </form>
-      <div class="field">
+      <div class="field" id="lgDemoBox">
         <span class="flabel">Demonstração: escolha um cliente</span>
         <div class="tenants" id="lgTenants"></div>
         <button class="b3 ghost" id="lgDemo" type="button">Entrar na demonstração</button>
         <button class="link" id="lgSite" type="button">Ver a página pública deste cliente</button>
       </div>
+      <form class="gen" id="genForm" novalidate>
+        <span class="flabel">Criar o CRM de uma empresa nova</span>
+        <div class="fg">
+          <div class="field"><label for="genName">Nome da empresa</label><input class="inp" id="genName" autocomplete="off" placeholder="Ex.: Studio Ink Leste"></div>
+          <div class="field"><label for="genSeg">Segmento</label><select class="inp" id="genSeg"></select></div>
+        </div>
+        <p class="err" id="genErr" hidden></p>
+        <button class="b3" type="submit"><svg class="i"><use href="#i-plus"/></svg>Gerar CRM</button>
+      </form>
     </div>
     <div class="trust">
       <span><svg class="i"><use href="#i-shield"/></svg>Dados isolados por cliente</span>
-      <span><svg class="i"><use href="#i-lock"/></svg>Login sem senha + 2FA</span>
+      <span><svg class="i"><use href="#i-lock"/></svg>Acesso com e-mail e senha</span>
       <span><svg class="i"><use href="#i-check"/></svg>Pronto para a LGPD</span>
     </div>
-    <p class="mono" style="text-align:center">Protótipo · os dados de exemplo ficam só neste navegador</p>
+    <p class="mono" id="lgReal" style="text-align:center">Demonstração · os dados de exemplo ficam só neste navegador</p>
   </div>
 </section>
 
@@ -429,6 +799,7 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
       <select class="sel" id="roleSel" title="Perfil de acesso (demonstração)"></select>
       <button class="ib hide-m" id="fxBtn" type="button" aria-label="Efeitos visuais" title="Efeitos visuais"><svg class="i"><use href="#i-spark"/></svg></button>
       <button class="ib hide-m" id="themeBtn" type="button" aria-label="Trocar tema" title="Trocar tema"><svg class="i"><use href="#i-moon"/></svg></button>
+      <button class="ib" id="bellBtn" type="button" aria-label="Notificações" title="Notificações"><svg class="i"><use href="#i-bell"/></svg></button>
       <button class="ib" id="lockBtn" type="button" aria-label="Bloquear painel" title="Bloquear painel"><svg class="i"><use href="#i-lock"/></svg></button>
     </header>
     <main id="view" tabindex="-1"></main>
@@ -461,7 +832,10 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
+const QS = new URLSearchParams(location.search);
+const EMPRESA = /^[a-z0-9-]{3,40}$/.test(QS.get('empresa') || '') ? QS.get('empresa') : null;
+const REAL = !!EMPRESA; // ?empresa=slug: painel de verdade, com login e banco. Sem isso: demonstração no navegador.
+const uid = () => REAL ? crypto.randomUUID() : Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
 const DAY = 864e5;
 const d0 = () => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); };
 const at = (days, h = 10, m = 0) => { const d = new Date(d0() + days * DAY); d.setHours(h, m, 0, 0); return d.getTime(); };
@@ -497,10 +871,11 @@ const TENANTS = [
   {id:'lab',    slug:'app',            name:'Amplitude Lab',        niche:'Estúdio',   d:'#5B8CFF', l:'#2450D6', plan:'Interno'}
 ];
 const STAGES = [{id:'s1',n:'Novo'},{id:'s2',n:'Contato feito'},{id:'s3',n:'Proposta'},{id:'s4',n:'Negociação'},{id:'s5',n:'Fechado',k:'won'},{id:'s6',n:'Perdido',k:'lost'}];
-const SRC = {site:'Página', form:'Formulário', whatsapp:'WhatsApp', instagram:'Instagram', email:'E-mail', indicacao:'Indicação', presencial:'Presencial'};
+const SRC = {site:'Página', form:'Formulário', whatsapp:'WhatsApp', instagram:'Instagram', email:'E-mail', indicacao:'Indicação', presencial:'Presencial', radar:'Radar'};
 const ACT = {note:'Nota', call:'Ligação', whatsapp:'WhatsApp', email:'E-mail', stage:'Etapa', form:'Formulário', proposal:'Proposta', payment:'Pagamento'};
 const ROLES = {
   owner:   {n:'Dono',       can:['crm','edit','fin','team','del']},
+  admin:   {n:'Admin',      can:['crm','edit','fin','team','del']},
   sales:   {n:'Vendas',     can:['crm','edit']},
   finance: {n:'Financeiro', can:['crm','fin']},
   viewer:  {n:'Leitura',    can:['crm']}
@@ -508,7 +883,7 @@ const ROLES = {
 const NAV = [
   ['painel','Painel','home',null], ['funil','Funil','kanban','crm'], ['clientes','Clientes','users','crm'],
   ['propostas','Propostas','file','crm'], ['agenda','Agenda','cal','crm'], ['financeiro','Financeiro','wallet','fin'],
-  ['captacao','Captação','magnet','edit'], ['equipe','Equipe e acesso','shield','team']
+  ['radar','Radar de leads','radar','edit'],   ['captacao','Captação','magnet','edit'], ['equipe','Equipe e acesso','shield','team']
 ];
 const NICHE = {
   norte: {people:['Rafael Lima','Diego Martins','Caio Souza','Lucas Prado','Bruno Teles','Igor Nunes','Thiago Reis','Mateus Alves','Henrique Dias','Pedro Lopes','André Kato','Vitor Hugo'],
@@ -530,8 +905,59 @@ const NICHE = {
     int:['Página de agendamento','Cartão digital','Remake visual','Display interativo','Página central','CRM Amplitude'], vals:[49000,19000,90000,65000,35000,29900],
     clients:['Barbearia Norte','Marina Okada Fotografia','Festival Órbita','Studio Ink Leste'], items:[['Página de agendamento',49000],['Remake visual completo',90000],['CRM Amplitude · plano Pro (mensal)',29900]],
     tasks:['Gravar Reel de antes e depois','Enviar demo para Café Ponto 7','Follow-up Clínica Sorriso Vivo','Configurar subdomínio da Barbearia Norte','Revisar metas da semana','Cobrar parcela do Festival Órbita'],
-    inc:['Projetos','Assinaturas do CRM','Remakes'], exp:['Ferramentas e hospedagem','Anúncios','Impostos'], base:150000, form:'Quero minha página'}
+    inc:['Projetos','Assinaturas do CRM','Remakes'], exp:['Ferramentas e hospedagem','Anúncios','Impostos'], base:150000, form:'Quero minha página',
+    plans:[['CRM Essencial',8900],['CRM Pro',18900],['CRM White-label',37900],['Implantação do CRM',49000]]}
 };
+
+/* ============ gerador: nome da empresa + segmento → CRM pronto ============ */
+const PEOPLE = ['Mariana Costa','Rafael Lima','Juliana Alves','Bruno Teles','Camila Rocha','Diego Martins','Larissa Prado','Thiago Reis','Fernanda Gil','Lucas Prado','Beatriz Lemos','Igor Nunes'];
+const SEG = (label, d, l, extra) => Object.assign({label, d, l, people:PEOPLE, clients:PEOPLE.slice(0, 4)}, extra);
+const SEGMENTS = {
+  barbearia:  Object.assign({}, NICHE.norte,  {label:'Barbearia', d:'#F5A524', l:'#8F5300'}),
+  fotografia: Object.assign({}, NICHE.okada,  {label:'Fotografia e artistas', d:'#EFA27C', l:'#9C4A22'}),
+  evento:     Object.assign({}, NICHE.orbita, {label:'Eventos e festivais', d:'#B9A0FF', l:'#5B3CC4'}),
+  estudio:    Object.assign({}, NICHE.lab,    {label:'Agência e estúdio digital', d:'#5B8CFF', l:'#2450D6'}),
+  tattoo: SEG('Estúdio de tattoo', '#FF7A93', '#A3203F', {int:['Tatuagem fechada de braço','Fine line','Cobertura','Piercing','Sessão de flash','Retoque'], vals:[180000,45000,90000,15000,30000,10000],
+    items:[['Sessão de 4 horas',90000],['Fine line pequena',45000],['Piercing com joia',15000]],
+    tasks:['Confirmar sessões de sábado','Desenhar arte da Mariana','Esterilizar e repor materiais','Postar flash day no Instagram','Responder orçamentos do direct','Lembrar cuidados pós-tattoo'],
+    inc:['Sessões','Sinais de reserva','Piercings'], exp:['Materiais','Aluguel','Repasse dos tatuadores'], base:220000, form:'Peça seu orçamento de tattoo'}),
+  clinica: SEG('Clínica e consultório', '#3FD0BB', '#0B7F74', {int:['Avaliação','Limpeza','Clareamento','Aparelho ortodôntico','Implante','Lente de contato dental'], vals:[0,25000,90000,350000,450000,600000].map(v => v || 15000),
+    items:[['Consulta de avaliação',15000],['Clareamento a laser',90000],['Manutenção mensal do aparelho',25000]],
+    tasks:['Confirmar consultas de amanhã','Ligar para retorno da Juliana','Pedir material ao fornecedor','Enviar orçamento de implante','Revisar convênios','Postar dica de saúde bucal'],
+    inc:['Consultas','Tratamentos','Planos'], exp:['Materiais','Aluguel','Laboratório'], base:380000, form:'Agende sua avaliação'}),
+  restaurante: SEG('Restaurante e delivery', '#FF9F5A', '#A24A0C', {int:['Reserva de mesa','Evento fechado','Marmitas da semana','Bolo sob encomenda','Coffee break empresa','Cardápio de festa'], vals:[20000,250000,18000,15000,120000,300000],
+    items:[['Evento fechado (30 pessoas)',250000],['Coffee break para 20',120000],['Kit marmitas semanal',18000]],
+    tasks:['Fechar compras da semana','Confirmar reservas de sexta','Responder pedidos de evento','Atualizar cardápio digital','Conferir validade do estoque','Postar prato do dia'],
+    inc:['Salão','Delivery','Eventos'], exp:['Insumos','Aluguel','Equipe'], base:450000, form:'Reserve ou peça um orçamento'}),
+  academia: SEG('Academia e estúdio fitness', '#8BE36B', '#2E7D14', {int:['Plano mensal','Plano anual','Personal trainer','Aula experimental','Pilates','Avaliação física'], vals:[12000,110000,40000,0,28000,8000].map(v => v || 5000),
+    items:[['Plano mensal',12000],['Plano anual',110000],['Pacote personal (8 aulas)',40000]],
+    tasks:['Ligar para alunos sumidos','Confirmar aulas experimentais','Revisar treinos da semana','Cobrar mensalidades atrasadas','Postar desafio do mês','Manutenção dos aparelhos'],
+    inc:['Mensalidades','Personal','Avaliações'], exp:['Aluguel','Professores','Manutenção'], base:260000, form:'Agende sua aula experimental'}),
+  salao: SEG('Salão de beleza e estética', '#F58BD0', '#9C2A75', {int:['Corte e escova','Coloração','Unhas','Design de sobrancelha','Limpeza de pele','Dia da noiva'], vals:[9000,25000,6000,5000,15000,90000],
+    items:[['Coloração completa',25000],['Dia da noiva',90000],['Pacote mensal de unhas',20000]],
+    tasks:['Confirmar horários de sábado','Repor tintas e esmaltes','Ligar para clientes sem retorno','Postar antes e depois','Revisar comissões','Mandar lembrete de retoque'],
+    inc:['Atendimentos','Pacotes','Produtos'], exp:['Produtos','Aluguel','Comissões'], base:200000, form:'Agende seu horário'}),
+  loja: SEG('Loja e varejo', '#5BC0FF', '#0B5F95', {int:['Pedido pelo WhatsApp','Compra no atacado','Encomenda personalizada','Troca','Lista de presentes','Revenda'], vals:[15000,120000,40000,0,60000,200000].map(v => v || 5000),
+    items:[['Kit presente',15000],['Pedido atacado',120000],['Encomenda personalizada',40000]],
+    tasks:['Responder pedidos do Instagram','Separar entregas de hoje','Repor estoque mais vendido','Postar novidades','Conferir trocas pendentes','Ligar para revendedores'],
+    inc:['Vendas na loja','Vendas online','Atacado'], exp:['Fornecedores','Aluguel','Frete'], base:350000, form:'Faça seu pedido'})
+};
+const SEG_OF = {norte:'barbearia', okada:'fotografia', orbita:'evento', lab:'estudio'};
+function addTenant(t) {
+  const s = SEGMENTS[t.seg] || SEGMENTS.estudio;
+  TENANTS.push({id:t.id, slug:t.slug, name:t.name, niche:s.label, d:s.d, l:s.l, plan:'Pro', custom:true});
+  NICHE[t.id] = Object.assign({}, s, {clients:s.clients || PEOPLE.slice(0, 4)});
+}
+store.get('amp-crm:tenants', []).forEach(addTenant);
+function createTenant(name, seg) {
+  const slug = slugify(name).replace(/\./g, '').slice(0, 30) || 'empresa';
+  let id = 'x_' + slug, n = 2;
+  while (TENANTS.some(t => t.id === id)) id = 'x_' + slug + n++;
+  const t = {id, slug:id.slice(2), name, seg};
+  const list = store.get('amp-crm:tenants', []); list.push(t); store.set('amp-crm:tenants', list);
+  addTenant(t);
+  return id;
+}
 
 /* ============ estado ============ */
 let T = TENANTS[0], S = null, role = 'owner', view = 'painel';
@@ -540,10 +966,11 @@ const savePrefs = () => store.set('amp-crm:prefs', prefs);
 const can = x => ROLES[role].can.includes(x);
 const stageOf = id => STAGES.find(s => s.id === id) || STAGES[0];
 const isOpen = l => !stageOf(l.stage).k;
-const save = () => store.set('amp-crm:v1:' + T.id, S);
+const save = () => REAL ? Real.sync() : store.set('amp-crm:v1:' + T.id, S);
 const audit = a => { S.audit.unshift({at:Date.now(), who:ROLES[role].n, a}); S.audit.length = Math.min(S.audit.length, 80); };
 const brandName = () => S.brand.name || T.name;
-const host = () => `${T.slug}.amplitudelab.com.br`;
+const host = () => REAL ? location.host + location.pathname.replace(/\/(index\.html)?$/, '') : `${T.slug}.amplitudelab.com.br`;
+const publicUrl = () => REAL ? `${location.origin}${location.pathname}?empresa=${T.slug}#site` : `https://${host()}/f/contato`;
 
 function seed(tid) {
   const N = NICHE[tid], r = rng([...tid].reduce((a, c) => a * 31 + c.charCodeAt(0), 7));
@@ -601,8 +1028,95 @@ function load(tid) {
   T = TENANTS.find(t => t.id === tid) || TENANTS[0];
   S = store.get('amp-crm:v1:' + T.id, null);
   if (!S || S.v !== 1) { S = seed(T.id); save(); }
+  S.notes = S.notes || []; S.pay = S.pay || {gateway:'infinitepay', tag:''};
   applyBrand();
 }
+const plansOf = () => REAL ? S.plans : NICHE[T.id].plans || NICHE[T.id].items;
+
+/* ============ pagamento: link → pago → lead pagante + notificação ============ */
+// Espelha a função confirm_payment do banco. Na versão real quem chama é o servidor,
+// depois de conferir o pagamento na InfinitePay; aqui a simulação faz o papel do aviso.
+function markPaid(chargeId, el, by = 'InfinitePay') {
+  const c = S.charges.find(x => x.id === chargeId);
+  if (!c || c.status === 'paid') return false;
+  c.status = 'paid'; c.paid = Date.now(); c.method = c.method || 'pix';
+  S.cash.push({id:uid(), dir:'in', cat:'Cobranças', desc:c.desc, amount:c.amount, date:Date.now(), charge:c.id});
+  const l = c.lead && S.leads.find(x => x.id === c.lead);
+  if (l) {
+    l.stage = 's5'; l.paidAt = Date.now(); l.follow = null;
+    S.acts.push({id:uid(), lead:l.id, kind:'payment', body:`Pagamento confirmado: ${c.desc} (${money(c.amount)})`, at:Date.now(), by});
+  }
+  const who = l ? l.name : (clientName(c.client) || 'Cliente');
+  S.notes.unshift({id:uid(), at:Date.now(), lead:l ? l.id : null, title:`${who} agora é pagante`, body:`${c.desc} · ${money(c.amount)}`, read:false});
+  S.audit.unshift({at:Date.now(), who:by, a:`Pagamento de ${money(c.amount)} confirmado (${who})`});
+  save();
+  if (el) { const r = el.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top + Math.min(r.height / 2, 60)); }
+  updateBell(true);
+  return true;
+}
+function updateBell(ring) {
+  const b = $('#bellBtn'); if (!b || !S || !S.notes) return;
+  const n = S.notes.filter(x => !x.read).length;
+  b.querySelector('.badge') && b.querySelector('.badge').remove();
+  if (n) b.insertAdjacentHTML('beforeend', `<span class="badge">${n}</span>`);
+  b.setAttribute('aria-label', n ? `Notificações, ${n} nova${n > 1 ? 's' : ''}` : 'Notificações');
+  if (ring) { b.classList.remove('ring'); void b.offsetWidth; b.classList.add('ring'); }
+}
+function payLinkUrl(c) { return `https://checkout.infinitepay.io/${encodeURIComponent(S.pay.tag || 'sua-infinitetag')}/${c.id.slice(0, 10)}`; }
+function modalPayLink(leadId) {
+  const l = S.leads.find(x => x.id === leadId); if (!l) return;
+  const pls = plansOf();
+  if (REAL) {
+    if (!pls.length) return toast('Cadastre um plano antes de gerar o link.');
+    return modal('Link de pagamento', `<div class="fg">${sel('plan', 'Plano', pls.map((p, i) => [String(i), `${p[0]} · ${money(p[1])}`]), 'full')}</div><p class="note">O link aceita Pix e cartão. Quando o cliente pagar, este lead vira pagante sozinho e o aviso chega no sino.</p>`,
+    fd => { const p = pls[+fd.get('plan')]; if (!p) return 'Escolha um plano.'; Real.payLink(l, p); }, 'Gerar link');
+  }
+  modal('Link de pagamento', `<div class="fg">${sel('plan', 'Plano ou serviço', pls.map((p, i) => [String(i), `${p[0]} · ${money(p[1])}`]), 'full')}
+    ${inp('tag', 'Sua InfiniteTag (sem o $)', `full autocomplete="off" placeholder="ex.: amplitudelab" value="${esc(S.pay.tag)}"`)}</div>
+    <p class="note">Na versão real, o link é criado no servidor pela InfinitePay e aceita Pix e cartão. Quando o cliente paga, o servidor confere o pagamento e este lead vira pagante sozinho, com aviso no sino.</p>`,
+  fd => {
+    const p = pls[+fd.get('plan')]; if (!p) return 'Escolha um plano.';
+    S.pay.tag = String(fd.get('tag') || '').trim().replace(/^\$/, '');
+    const c = {id:uid() + uid(), client:l.client, lead:l.id, desc:p[0], amount:p[1], due:Date.now(), status:'pending', paid:null, method:'pix', gateway:'infinitepay'};
+    c.url = payLinkUrl(c);
+    S.charges.push(c);
+    if (['s1', 's2'].includes(l.stage)) l.stage = 's4';
+    l.value = p[1];
+    S.acts.push({id:uid(), lead:l.id, kind:'proposal', body:`Link de pagamento gerado: ${p[0]} (${money(p[1])})`, at:Date.now(), by:ROLES[role].n});
+    audit(`Link de pagamento de ${money(p[1])} gerado para “${l.name}”`); save();
+    setTimeout(() => showPayLink(c.id), 260);
+  }, 'Gerar link');
+}
+function showPayLink(chargeId) {
+  const c = typeof chargeId === 'object' ? chargeId : S.charges.find(x => x.id === chargeId); if (!c) return;
+  const l = S.leads.find(x => x.id === c.lead) || {name:'Cliente', phone:''};
+  const msg = `Oi, ${first(l.name)}! Aqui é da ${brandName()}. Segue o link para pagar ${c.desc} (${money(c.amount)}) por Pix ou cartão: ${c.url}`;
+  const dg = String(l.phone || '').replace(/\D/g, ''), num = l.demo || dg.length < 10 ? '' : (dg.startsWith('55') ? dg : '55' + dg);
+  modal('Link pronto', `<div class="field"><span class="flabel">${esc(c.desc)} · ${money(c.amount)}</span><pre class="code">${esc(c.url)}</pre></div>
+    <div class="acts"><button class="b3 sm ghost" type="button" data-copy="${esc(c.url)}">${icon('copy')}Copiar link</button><a class="b3 sm" href="https://wa.me/${num}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${icon('wa')}Mandar no WhatsApp</a></div>
+    ${REAL ? '<p class="note">Link real da InfinitePay. Quando o cliente pagar, o aviso chega no sino sem você fazer nada.</p>' : `<p class="note">Link de exemplo: ainda não foi criado na InfinitePay. Use o botão abaixo para ver o que acontece quando o cliente paga.</p>
+    <button class="b3 ok" type="button" data-pay="sim" data-c="${c.id}">${icon('check')}Simular pagamento aprovado</button>`}`, null);
+}
+function openBell() {
+  lastFocus = document.activeElement;
+  const list = S.notes.slice(0, 30);
+  $('#modal').innerHTML = `<div class="mh"><h2 id="mTitle">Notificações</h2><button class="ib" data-act="close" aria-label="Fechar">${icon('x')}</button></div>
+    <div class="mb"><div class="rows notes">${list.map(n => `<div class="row ${n.read ? '' : 'unread'}"><span class="ico ok">${icon('card')}</span><div class="grow"><p class="t">${esc(n.title)}</p><p class="s">${esc(n.body)} · ${fdate(n.at)} ${ftime(n.at)}</p></div>${n.lead ? `<button class="b3 sm ghost" data-pay="open" data-l="${n.lead}">Ver lead</button>` : ''}</div>`).join('')
+      || '<p class="empty">Sem notificações. Quando um cliente pagar, o aviso aparece aqui na hora.</p>'}</div></div>`;
+  showLayer('#modal');
+  S.notes.forEach(n => n.read = true); save(); updateBell();
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-pay]'); if (!b) return;
+  const k = b.dataset.pay;
+  if (k === 'link') { if (!can('edit')) return toast('Seu perfil não pode gerar cobranças.'); closeLayers(); setTimeout(() => modalPayLink(b.dataset.l), 30); }
+  if (k === 'show') { closeLayers(); setTimeout(() => showPayLink(b.dataset.c), 30); }
+  if (k === 'sim') {
+    const c = S.charges.find(x => x.id === b.dataset.c);
+    if (markPaid(b.dataset.c, b)) { closeLayers(); render(); toast(`${leadName(c.lead) || 'Cliente'} agora é pagante.`, {label:'Ver lead', run:() => { go('funil'); openLead(c.lead); }}); }
+  }
+  if (k === 'open') { const id = b.dataset.l; closeLayers(); setTimeout(() => { go('funil'); openLead(id); }, 40); }
+});
 
 /* ============ tema e marca ============ */
 function isLight() {
@@ -770,6 +1284,7 @@ function render() {
   $('#view').innerHTML = V[view]();
   renderNav();
   $('#fxBtn').setAttribute('aria-pressed', prefs.fx);
+  updateBell();
 }
 function renderChrome() {
   const nm = brandName(), ini = initials(nm);
@@ -842,7 +1357,7 @@ V.funil = () => {
     return `<section class="kcol" data-stage="${s.id}" aria-label="${s.n}"><div class="kh"><b>${s.n}</b><small>${ls.length} · ${money(ls.reduce((a, l) => a + l.value, 0)).replace(',00', '')}</small></div>
     ${ls.map(l => `<button class="kcard" draggable="${can('edit')}" data-act="openLead" data-id="${l.id}">
       <span class="t">${esc(l.name)}</span><span class="m"><span>${esc(l.interest)}</span></span>
-      <span class="m"><span class="chip">${SRC[l.source] || 'Outro'}</span><span class="v">${money(l.value).replace(',00', '')}</span></span>
+      <span class="m">${l.paidAt ? `<span class="chip ok"><span class="dot"></span>Pagante</span>` : `<span class="chip">${SRC[l.source] || 'Outro'}</span>`}<span class="v">${money(l.value).replace(',00', '')}</span></span>
       ${l.follow && !s.k ? `<span class="fu ${followClass(l.follow)}">${icon('clock')}${followClass(l.follow) === 'late' ? 'Atrasado · ' : ''}${rel(l.follow)} ${ftime(l.follow)}</span>` : ''}
       ${s.k === 'lost' && l.lost ? `<span class="fu next">${esc(l.lost)}</span>` : ''}
     </button>`).join('') || '<p class="empty">Nenhum lead nesta etapa</p>'}</section>`; }).join('');
@@ -916,7 +1431,7 @@ V.financeiro = () => {
 };
 
 V.captacao = () => {
-  const f = S.form, link = `https://${host()}/f/contato`;
+  const f = S.form, link = publicUrl();
   const waTxt = `Olá! Vim pelo site da ${brandName()} e quero saber mais.`;
   const waNum = String(f.wa || '').replace(/\D/g, '');
   const waUrl = `https://wa.me/${waNum ? (waNum.startsWith('55') ? waNum : '55' + waNum) : ''}?text=${encodeURIComponent(waTxt)}`;
@@ -970,9 +1485,9 @@ V.equipe = () => {
     <section class="card"><div class="ch"><h3>Segurança</h3><span class="chip ok"><span class="dot"></span>Protegido</span></div>
       <div class="rows">
         <div class="row"><span class="ico ok">${icon('shield')}</span><div class="grow"><p class="t">Dados isolados por cliente</p><p class="s">Cada consulta passa por regras no banco (RLS). Um cliente nunca vê o outro.</p></div></div>
-        <div class="row"><span class="ico ok">${icon('lock')}</span><div class="grow"><p class="t">Login sem senha + 2FA para o dono</p><p class="s">Link de uso único por e-mail; app autenticador para perfis com financeiro.</p></div></div>
+        <div class="row"><span class="ico ok">${icon('lock')}</span><div class="grow"><p class="t">Login com e-mail e senha</p><p class="s">Cada pessoa cria a própria senha por um convite de uso único.</p></div></div>
         <div class="row"><span class="ico ok">${icon('clock')}</span><div class="grow"><p class="t">Bloqueio automático</p><p class="s">Painel trava depois de 5 minutos parado.</p></div></div>
-        <div class="row"><span class="ico ok">${icon('copy')}</span><div class="grow"><p class="t">Backup diário</p><p class="s">Cópia automática do banco, com restauração para um ponto no tempo no plano Pro.</p></div></div>
+        <div class="row"><span class="ico ok">${icon('copy')}</span><div class="grow"><p class="t">Backup diário</p><p class="s">${REAL ? 'Liga ao assinar o plano Pro do banco. No plano grátis não há backup automático.' : 'Cópia automática do banco, com restauração para um ponto no tempo no plano Pro.'}</p></div></div>
       </div></section>
   </div>
   <section class="card"><div class="ch"><h3>Permissões por perfil</h3><span class="muted" style="font-size:13px">Troque o perfil no topo para testar</span></div>
@@ -986,7 +1501,7 @@ V.equipe = () => {
       <div class="field"><label for="bDom">Domínio próprio</label><input class="inp" id="bDom" data-brand="domain" placeholder="crm.suaempresa.com.br" value="${esc(b.domain)}"></div></div>
       <div class="field"><span class="flabel">Endereço do painel</span><pre class="code">https://${esc(host())}${b.domain ? '\nhttps://' + esc(b.domain) : ''}</pre></div>
       <label class="switch"><input type="checkbox" data-brand="hide" ${b.hide ? 'checked' : ''}> Esconder “feito pela Amplitude Lab” (plano White-label)</label>
-      <div class="acts"><button class="b3 sm ghost" data-act="resetBrand">Voltar à marca original</button><button class="b3 sm danger" data-act="resetDemo">Restaurar dados de exemplo</button></div></section>
+      <div class="acts"><button class="b3 sm ghost" data-act="resetBrand">Voltar à marca original</button>${REAL ? '' : '<button class="b3 sm danger" data-act="resetDemo">Restaurar dados de exemplo</button>'}</div></section>
     <section class="card"><div class="ch"><h3>Registro de alterações</h3><span class="mono">${S.audit.length} eventos</span></div>
       <div class="rows">${S.audit.slice(0, 10).map(a => `<div class="row"><div class="grow"><p class="t" style="white-space:normal">${esc(a.a)}</p><p class="s">${esc(a.who)} · ${fdate(a.at)} ${ftime(a.at)}</p></div></div>`).join('') || '<p class="empty">Mexa em algo no painel: cada alteração aparece aqui, com quem fez e quando.</p>'}</div></section>
   </div>`;
@@ -999,7 +1514,7 @@ function openLead(id) {
   openId = id; lastFocus = document.activeElement;
   const acts = S.acts.filter(a => a.lead === id).sort((a, b) => b.at - a.at);
   const ed = can('edit');
-  $('#drawer').innerHTML = `<div class="dh"><div class="grow"><span class="mono">${SRC[l.source] || 'Outro'} · entrou ${fdate(l.created)}</span><h2 id="dTitle">${esc(l.name)}</h2><p class="muted">${esc(l.interest)} · <b class="num" style="color:var(--fg)">${money(l.value)}</b></p></div>
+  $('#drawer').innerHTML = `<div class="dh"><div class="grow"><span class="mono">${SRC[l.source] || 'Outro'} · entrou ${fdate(l.created)}</span><h2 id="dTitle">${esc(l.name)}</h2>${l.paidAt ? `<span class="chip ok" style="margin:4px 0"><span class="dot"></span>Pagante desde ${fdate(l.paidAt)}</span>` : ''}<p class="muted">${esc(l.interest)} · <b class="num" style="color:var(--fg)">${money(l.value)}</b></p></div>
     <button class="ib" data-act="close" aria-label="Fechar">${icon('x')}</button></div>
   <div class="db">
     <div class="sec"><span class="flabel">Etapa</span><div class="pills">${STAGES.map(s => `<button class="pill" data-act="stage" data-s="${s.id}" aria-pressed="${l.stage === s.id}" ${ed ? '' : 'disabled'}>${s.n}</button>`).join('')}</div></div>
@@ -1015,7 +1530,7 @@ function openLead(id) {
       <textarea class="inp" id="noteTxt" name="t" placeholder="Ex.: pediu para retornar depois do dia 10" required></textarea>
       <div class="acts"><button class="b3 sm" type="submit">Salvar no histórico</button></div></form>` : ''}
     <div class="sec"><span class="flabel">Histórico</span><ul class="tl">${acts.map(a => `<li><b>${ACT[a.kind] || 'Nota'}</b> · ${esc(a.body)}<small>${esc(a.by)} · ${fdate(a.at)} ${ftime(a.at)}</small></li>`).join('') || '<li>Sem registros.</li>'}</ul></div>
-    ${ed ? `<div class="sec"><span class="flabel">Ações</span><div class="acts"><button class="b3 sm ghost" data-act="newProposal" data-lead="${l.id}">${icon('file')}Criar proposta</button>
+    ${ed ? `<div class="sec"><span class="flabel">Ações</span><div class="acts">${(() => { const pc = S.charges.find(c => c.lead === l.id && c.status === 'pending' && c.url); return l.paidAt ? '' : pc ? `<button class="b3 sm" data-pay="show" data-c="${pc.id}">${icon('card')}Ver link de pagamento</button>` : `<button class="b3 sm" data-pay="link" data-l="${l.id}">${icon('card')}Gerar link de pagamento</button>`; })()}<button class="b3 sm ghost" data-act="newProposal" data-lead="${l.id}">${icon('file')}Criar proposta</button>
       ${can('del') ? `<button class="b3 sm ghost" data-act="askAnon">${icon('shield')}Anonimizar (LGPD)</button>` : ''}</div><div id="anonBox"></div></div>` : ''}
   </div>`;
   showLayer('#drawer');
@@ -1143,9 +1658,9 @@ function viewProposal(id) {
 }
 function more() {
   modal('Mais', `<div class="rows">${NAV.filter(n => allowed(n[0])).map(n => `<button class="nv" data-go="${n[0]}" ${view === n[0] ? 'aria-current="page"' : ''}>${icon(n[2])}${n[1]}</button>`).join('')}</div>
-    <div class="field"><label for="mRole">Ver como (demonstração)</label><select class="inp" id="mRole">${Object.entries(ROLES).map(([k, r]) => `<option value="${k}" ${k === role ? 'selected' : ''}>${r.n}</option>`).join('')}</select></div>
+    ${REAL ? '' : `<div class="field"><label for="mRole">Ver como (demonstração)</label><select class="inp" id="mRole">${Object.entries(ROLES).map(([k, r]) => `<option value="${k}" ${k === role ? 'selected' : ''}>${r.n}</option>`).join('')}</select></div>`}
     <div class="acts"><button class="b3 ghost" type="button" data-act="fx">${icon('spark')}Efeitos: ${prefs.fx ? 'ligados' : 'desligados'}</button><button class="b3 ghost" type="button" data-act="theme">${icon('moon')}Trocar tema</button><button class="b3 ghost" type="button" data-act="logout">${icon('out')}Sair</button></div>`, null);
-  $('#mRole').onchange = e => { setRole(e.target.value); closeLayers(); };
+  if ($('#mRole')) $('#mRole').onchange = e => { setRole(e.target.value); closeLayers(); };
 }
 
 /* ============ paleta de comandos ============ */
@@ -1181,7 +1696,7 @@ function enter(tid) {
   const h = (location.hash || '').slice(1); view = allowed(h) ? h : 'painel';
   renderChrome(); render(); armLock();
 }
-function logout() { closeLayers(); $('#app').hidden = true; $('#login').hidden = false; document.body.classList.remove('in-app'); FX.mode('login'); lgRender(); clearTimeout(lockT); }
+function logout() { if (REAL) return Real.logout(); closeLayers(); $('#app').hidden = true; $('#login').hidden = false; document.body.classList.remove('in-app'); FX.mode('login'); lgRender(); clearTimeout(lockT); }
 
 document.addEventListener('click', e => {
   const g = e.target.closest('[data-go]'); if (g) { closeLayers(); go(g.dataset.go, true); return; }
@@ -1209,12 +1724,15 @@ document.addEventListener('click', e => {
     case 'anon': { const l = S.leads.find(x => x.id === openId); l.name = 'Titular anonimizado'; l.phone = ''; l.email = ''; l.demo = true; S.acts.filter(x => x.lead === l.id).forEach(x => x.body = '[removido a pedido do titular]'); audit('Lead anonimizado a pedido do titular (LGPD)'); save(); openLead(l.id); render(); toast('Dados pessoais removidos.'); break; }
     case 'doneTask': { const t = S.tasks.find(x => x.id === id); t.done = t.done ? null : Date.now(); audit(`Tarefa “${t.title}” ${t.done ? 'concluída' : 'reaberta'}`); save(); render(); if (t.done) { const r = a.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top); } break; }
     case 'doneFollow': { const l = S.leads.find(x => x.id === id); l.follow = null; S.acts.push({id:uid(), lead:l.id, kind:'note', body:'Follow-up feito.', at:Date.now(), by:ROLES[role].n}); audit(`Follow-up com “${l.name}” feito`); save(); render(); toast('Follow-up registrado no histórico.', can('edit') ? {label:'Marcar próximo', run:() => openLead(l.id)} : null); break; }
-    case 'payCharge': { if (!can('fin')) return toast('Só o financeiro registra recebimentos.'); const c = S.charges.find(x => x.id === id); c.status = 'paid'; c.paid = Date.now(); S.cash.push({id:uid(), dir:'in', cat:'Cobranças', desc:c.desc, amount:c.amount, date:Date.now(), charge:c.id}); audit(`Recebimento de ${money(c.amount)} de ${clientName(c.client)} registrado`); save(); const r = a.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top); render(); toast(`${money(c.amount)} recebido.`); break; }
+    case 'payCharge': { if (!can('fin')) return toast('Só o financeiro registra recebimentos.'); const c = S.charges.find(x => x.id === id); markPaid(id, a, ROLES[role].n); render(); toast(`${money(c.amount)} recebido.`); break; }
     case 'viewProposal': viewProposal(id); break;
-    case 'copyProposal': { const p = S.proposals.find(x => x.id === id); copy(`https://${host()}/p/${p.token.slice(0, 16)}`, 'Link da proposta copiado'); break; }
+    case 'copyProposal': { const p = S.proposals.find(x => x.id === id); if (REAL) { copy(`Proposta: ${p.title}
+${p.items.map(i => `${i.q}x ${i.d}: ${money(i.q * i.u)}`).join(' / ')}
+Total: ${money(propTotal(p))}
+Válida até ${fdate(p.valid)}`, 'Proposta copiada para colar no WhatsApp'); break; } copy(`https://${host()}/p/${p.token.slice(0, 16)}`, 'Link da proposta copiado'); break; }
     case 'acceptProposal': { const p = S.proposals.find(x => x.id === id); p.status = 'accepted'; audit(`Proposta “${p.title}” aceita pelo cliente`); if (p.lead) { const l = S.leads.find(x => x.id === p.lead); if (l && isOpen(l)) { save(); closeLayers(); moveLead(l.id, 's5', a); return; } } save(); const r = a.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top); viewProposal(id); render(); break; }
     case 'agDay': { const d = a.dataset.d ? +a.dataset.d : null; V._ag = d !== null && d === V._ag ? null : d; render(); break; }
-    case 'invite': modal('Convidar pessoa', `<div class="fg">${inp('n', 'Nome', 'required')}${inp('e', 'E-mail', 'type="email" required')}${sel('r', 'Perfil', Object.entries(ROLES).map(([k, r]) => [k, r.n]).slice(1), 'full')}</div><p class="note">A pessoa recebe um link de acesso por e-mail e entra só neste painel.</p>`,
+    case 'invite': if (REAL) { Real.invite(); break; } modal('Convidar pessoa', `<div class="fg">${inp('n', 'Nome', 'required')}${inp('e', 'E-mail', 'type="email" required')}${sel('r', 'Perfil', Object.entries(ROLES).map(([k, r]) => [k, r.n]).slice(1), 'full')}</div><p class="note">A pessoa recebe um link de acesso por e-mail e entra só neste painel.</p>`,
       fd => { const n = String(fd.get('n') || '').trim(), em = String(fd.get('e') || '').trim(); if (!n || !/^\S+@\S+\.\S+$/.test(em)) return 'Preencha nome e um e-mail válido.'; S.members.push({n, e:em, r:fd.get('r')}); audit(`${n} convidado(a) como ${ROLES[fd.get('r')].n}`); save(); toast('Convite registrado.'); }, 'Convidar'); break;
     case 'resetBrand': S.brand = {name:'', color:'', hide:false, domain:''}; audit('Marca restaurada'); save(); applyBrand(); renderChrome(); render(); break;
     case 'resetDemo': a.outerHTML = `<span class="acts"><span class="muted" style="font-size:13px;align-self:center">Apagar tudo que você mudou?</span><button class="b3 sm danger" data-act="resetDemoOk">Sim, restaurar</button></span>`; break;
@@ -1222,7 +1740,7 @@ document.addEventListener('click', e => {
     case 'fx': prefs.fx = !prefs.fx; savePrefs(); FX.toggle(); closeLayers(); render(); toast(prefs.fx ? 'Efeitos ligados' : 'Efeitos desligados (modo economia)'); break;
     case 'theme': cycleTheme(); break;
     case 'logout': logout(); break;
-    case 'site': closeLayers(); openSite(T.id); break;
+    case 'site': closeLayers(); if (REAL) { window.open(publicUrl(), '_blank', 'noopener'); break; } openSite(T.id); break;
     case 'svc': SITE.svc = +a.dataset.i; siteRender(); break;
     case 'sday': SITE.day = +a.dataset.d; SITE.slot = null; siteRender(); break;
     case 'slot': SITE.slot = a.dataset.h; siteRender(); break;
@@ -1263,6 +1781,7 @@ document.addEventListener('submit', e => {
 });
 document.addEventListener('input', e => {
   const t = e.target;
+  if (t.id === 'rArea') { V._rArea = t.value; return; }
   if (t.id === 'cq') { V._cq = t.value; const pos = t.selectionStart; render(); const n = $('#cq'); n.focus(); n.setSelectionRange(pos, pos); }
   if (t.id === 'palIn') palFill(t.value);
   if (t.dataset.form && t.type !== 'checkbox') { S.form[t.dataset.form] = t.value; save(); clearTimeout(t._d); t._d = setTimeout(() => { const keep = t.id, pos = t.selectionStart; render(); const n = $('#' + keep); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} } }, 500); }
@@ -1294,7 +1813,8 @@ $('#unlock').onclick = () => { $('#lock').hidden = true; armLock(); };
 /* ============ página pública: o cliente final compra e vira lead ============ */
 const SITE = {svc:0, day:null, slot:null, done:null};
 const HOURS = ['09:00','10:00','11:00','13:00','14:00','15:00','16:00','17:00'];
-const siteServices = () => { const N = NICHE[T.id]; return N.items.concat(N.int.slice(0, 3).map((x, i) => [x, N.vals[i]])); };
+const siteServices = () => { const N = NICHE[T.id]; return N.plans || N.items.concat(N.int.slice(0, 3).map((x, i) => [x, N.vals[i]])); };
+const fakeQr = seed => { const r = rng([...seed].reduce((a, c) => a * 31 + c.charCodeAt(0), 3)); return [...Array(225)].map((_, i) => { const x = i % 15, y = (i / 15) | 0, eye = (x < 4 && y < 4) || (x > 10 && y < 4) || (x < 4 && y > 10); return `<i class="${eye ? ((x % 11 === 0 || x % 11 === 3 || y % 11 === 0 || y % 11 === 3) || (x % 11 > 0 && x % 11 < 3 && y % 11 > 0 && y % 11 < 3) ? '' : 'o') : r() > .5 ? '' : 'o'}"></i>`; }).join(''); };
 const taken = (d, h) => S.tasks.some(t => !t.done && Math.abs(t.due - fromYmd(ymd(d), h)) < 30 * 60 * 1000);
 function openSite(tid) {
   load(tid); SITE.svc = 0; SITE.day = d0() + DAY; SITE.slot = null; SITE.done = null;
@@ -1305,12 +1825,23 @@ function siteRender() {
   const sv = siteServices(), s = sv[SITE.svc], nm = brandName();
   const days = [...Array(6)].map((_, i) => d0() + (i + 1) * DAY);
   const bar = `<div class="st-bar"><span>Demonstração · página pública de <b>${esc(host())}</b></span><button class="link" data-act="toCrm" style="white-space:nowrap">Abrir o CRM do dono</button></div>`;
+  const pend = SITE.done && S.charges.find(c => c.lead === SITE.done && c.status === 'pending' && c.url && !SITE.local);
+  if (pend) {
+    const l = S.leads.find(x => x.id === SITE.done) || {};
+    $('#site').innerHTML = bar + `<div class="st-hero"><div class="st-in" style="align-items:center;text-align:center"><span class="logo">${esc(initials(nm))}</span><h1>Pague para confirmar</h1>
+      <p class="muted">${esc(first(l.name))}, seu pedido de ${esc(pend.desc)} está reservado. Pague por Pix ou cartão e a confirmação chega no seu WhatsApp.</p>
+      <div class="pixbox" style="width:100%"><span class="mono">Pix · ${money(pend.amount)}</span><div class="pixqr" aria-hidden="true">${fakeQr(pend.id)}</div>
+        <p style="font-size:13px" class="muted">QR Code de exemplo. Na versão real, esta tela é o checkout da InfinitePay.</p>
+        <button class="b3 ok" type="button" data-site="paid" data-c="${pend.id}">${icon('check')}Simular pagamento aprovado</button>
+        <button class="link" type="button" data-site="local">Prefiro pagar no local</button></div></div></div>`;
+    return;
+  }
   if (SITE.done) {
     const l = S.leads.find(x => x.id === SITE.done) || {};
-    $('#site').innerHTML = bar + `<div class="st-hero"><div class="st-in" style="align-items:center;text-align:center"><span class="logo">${esc(initials(nm))}</span><h1>Pedido confirmado</h1>
+    $('#site').innerHTML = bar + `<div class="st-hero"><div class="st-in" style="align-items:center;text-align:center"><span class="logo">${esc(initials(nm))}</span><h1>${l.paidAt ? 'Pagamento aprovado' : 'Pedido confirmado'}</h1>
       <p class="muted">Obrigado, ${esc(first(l.name))}! ${esc(nm)} vai confirmar pelo WhatsApp ${esc(l.phone)}.</p>
       <div class="card" style="width:100%;text-align:left"><dl class="kv"><dt>Serviço</dt><dd>${esc(l.interest)}</dd><dt>Valor</dt><dd class="num">${money(l.value)}</dd><dt>Quando</dt><dd>${l.follow ? fdate(l.follow) + ' às ' + ftime(l.follow) : '—'}</dd></dl></div>
-      <p class="note" style="text-align:left">Nos bastidores: este pedido já entrou no CRM da ${esc(nm)} como lead novo (origem “Página”), com o horário reservado na agenda e o consentimento registrado.</p>
+      <p class="note" style="text-align:left">${l.paidAt ? `Nos bastidores: o pagamento foi confirmado, o lead foi para “Fechado” como <b>pagante</b> e o dono da ${esc(nm)} recebeu o aviso no sino do CRM.` : `Nos bastidores: este pedido já entrou no CRM da ${esc(nm)} como lead novo (origem “Página”), com o horário reservado na agenda e o consentimento registrado.`}</p>
       <div class="acts" style="justify-content:center"><button class="b3" data-act="toCrm">${icon('kanban')}Ver o lead no CRM</button><button class="b3 ghost" data-act="siteBack">Fazer outro pedido</button></div></div></div>`;
     return;
   }
@@ -1327,7 +1858,7 @@ function siteRender() {
       <label class="switch"><input type="checkbox" name="ok"> <span style="font-size:13px">${esc(S.form.consent)}</span></label></div>
     <p class="err" id="sErr" hidden></p>
     <button class="b3" type="submit" style="min-height:54px;font-size:16px">Comprar ${esc(s[0])} · ${money(s[1]).replace(',00', '')}</button>
-    <p class="mono" style="text-align:center">Pagamento no local ou por Pix na confirmação</p>
+    <p class="mono" style="text-align:center">Pix ou cartão na próxima tela · ou pague no local</p>
   </div></form>`;
 }
 document.addEventListener('submit', e => {
@@ -1347,9 +1878,16 @@ document.addEventListener('submit', e => {
   S.acts.push({id:uid(), lead:l.id, kind:'form', body:`Comprou pela página: ${s[0]} (${money(s[1])}) para ${fdate(when)} às ${SITE.slot}. Consentimento aceito.`, at:Date.now(), by:'Página'});
   S.tasks.push({id:uid(), title:`Atendimento: ${n} · ${s[0]}`, kind:'meeting', due:when, done:null, remind:60});
   S.audit.unshift({at:Date.now(), who:'Página pública', a:`Pedido de “${n}” pela página (${s[0]})`});
-  save(); SITE.done = l.id;
-  const r = e.target.getBoundingClientRect(); FX.burst(r.left + r.width / 2, Math.min(innerHeight / 2, r.bottom - 40));
+  const c = {id:uid() + uid(), client:null, lead:l.id, desc:s[0], amount:s[1], due:Date.now(), status:'pending', paid:null, method:'pix', gateway:'infinitepay'};
+  c.url = payLinkUrl(c); S.charges.push(c);
+  S.acts.push({id:uid(), lead:l.id, kind:'proposal', body:`Link de pagamento gerado sozinho: ${s[0]} (${money(s[1])})`, at:Date.now(), by:'Página'});
+  save(); SITE.done = l.id; SITE.local = false;
   siteRender(); window.scrollTo({top:0});
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-site]'); if (!b) return;
+  if (b.dataset.site === 'paid') { markPaid(b.dataset.c, b); siteRender(); window.scrollTo({top:0}); }
+  if (b.dataset.site === 'local') { SITE.local = true; siteRender(); }
 });
 
 /* bloqueio por inatividade */
@@ -1360,9 +1898,10 @@ function armLock() { clearTimeout(lockT); lockT = setTimeout(lock, 5 * 60 * 1000
 
 /* ============ login ============ */
 // ?t=okada abre direto num cliente de exemplo (links da página de vendas)
-const tq = new URLSearchParams(location.search).get('t');
+const tq = QS.get('t');
 let lgPick = TENANTS.some(t => t.id === tq) ? tq : prefs.tenant || 'norte';
 function lgRender() {
+  if (REAL) return Real.paintLogin();
   const t = TENANTS.find(x => x.id === lgPick) || TENANTS[0];
   T = t; S = store.get('amp-crm:v1:' + t.id, null) || {brand:{}}; applyBrand();
   const nm = (S.brand && S.brand.name) || t.name;
@@ -1371,12 +1910,299 @@ function lgRender() {
 }
 $('#lgTenants').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; lgPick = b.dataset.t; lgRender(); });
 $('#lgDemo').onclick = () => enter(lgPick);
+$('#bellBtn').onclick = openBell;
+$('#genSeg').innerHTML = Object.entries(SEGMENTS).map(([k, s]) => `<option value="${k}">${esc(s.label)}</option>`).join('');
+$('#genForm').onsubmit = e => {
+  e.preventDefault(); const name = $('#genName').value.trim(), err = $('#genErr');
+  if (name.length < 2) { err.textContent = 'Escreva o nome da empresa.'; err.hidden = false; $('#genName').focus(); return; }
+  err.hidden = true;
+  const id = createTenant(name, $('#genSeg').value);
+  lgPick = id; $('#genName').value = ''; enter(id);
+  toast(`CRM da ${name} criado com o modelo de ${SEGMENTS[$('#genSeg').value].label.toLowerCase()}.`);
+};
 $('#lgSite').onclick = () => openSite(lgPick);
 $('#lgForm').onsubmit = e => {
-  e.preventDefault(); const em = $('#lgEmail').value.trim(), note = $('#lgNote');
+  e.preventDefault(); if (REAL) return Real.submitLogin(); const em = $('#lgEmail').value.trim(), note = $('#lgNote');
   if (!/^\S+@\S+\.\S+$/.test(em)) { note.textContent = 'Digite um e-mail válido, como voce@empresa.com.br.'; note.hidden = false; $('#lgEmail').focus(); return; }
-  note.textContent = 'Na versão real, o link chega neste e-mail e vale por 10 minutos. No protótipo nada é enviado: use “Entrar na demonstração”.'; note.hidden = false;
+  note.textContent = 'Esta é a demonstração: nada é verificado nem enviado. Use “Entrar na demonstração”.'; note.hidden = false;
 };
+$('#lgForgot').onclick = () => { if (REAL) return Real.forgot(); const note = $('#lgNote'); note.textContent = 'Na versão real, o link para trocar a senha chega no seu e-mail.'; note.hidden = false; };
+
+/* ============ radar de leads: negócios sem site nos segmentos escolhidos ============ */
+const RADAR_SEG = {barbearia:'Barbearia', tattoo:'Tattoo', clinica:'Clínica e dentista', restaurante:'Restaurante e café', academia:'Academia', salao:'Salão e estética', loja:'Loja de roupas', fotografia:'Fotografia', evento:'Casa de eventos', pet:'Pet shop', mecanica:'Oficina', padaria:'Padaria'};
+V._rSeg = ['barbearia']; V._rArea = 'Vila Prudente, São Paulo'; V._rOut = null;
+const fmtPhone = p => { const d = String(p || '').replace(/\D/g, ''); return d.length >= 10 ? `(${d.slice(0, 2)}) ${d.slice(2, -4)}-${d.slice(-4)}` : d; };
+V.radar = () => {
+  const o = V._rOut;
+  return head('Radar de leads', 'Escolha os segmentos e a região. O Radar procura negócios no mapa e mostra só os que não têm site.')
+  + `<section class="card" style="display:flex;flex-direction:column;gap:14px">
+    <div class="field"><span class="flabel">Segmentos</span><div class="segchips">${Object.entries(RADAR_SEG).map(([k, n]) => `<button class="pill" data-radar="seg" data-k="${k}" aria-pressed="${V._rSeg.includes(k)}">${n}</button>`).join('')}</div></div>
+    <div class="field"><label for="rArea">Bairro e cidade</label><input class="inp" id="rArea" value="${esc(V._rArea)}" placeholder="Ex.: Sapopemba, São Paulo" autocomplete="off"></div>
+    <div class="acts"><button class="b3" data-radar="go" ${o && o.loading ? 'disabled' : ''}>${icon('radar')}${o && o.loading ? 'Procurando…' : 'Procurar sem site'}</button></div>
+    ${o && o.loading ? `<div class="scan" role="status" aria-label="Procurando"></div><p class="muted" style="font-size:13px">${esc(o.step || '')}</p>` : ''}
+  </section>
+  ${o && o.error ? `<p class="err">${esc(o.error)}</p>` : ''}
+  ${o && o.items ? `<section class="card"><div class="ch"><div><h3>${o.items.length} sem site</h3><p class="muted" style="font-size:13px">${o.total} encontrados · ${o.withSite} já têm site · fonte: ${esc(o.source)}</p></div>
+      ${o.items.some(i => !i.known && i.phone) ? `<button class="b3 sm" data-radar="all">${icon('plus')}Adicionar os com telefone</button>` : ''}</div>
+    <div class="rows">${o.items.map((i, n) => `<div class="row"><span class="ico">${icon('radar')}</span><div class="grow"><p class="t">${esc(i.name)}</p><p class="s">${esc(RADAR_SEG[i.seg] || '')}${i.address ? ' · ' + esc(i.address) : ''}${i.phone ? ' · ' + esc(fmtPhone(i.phone)) : ' · sem telefone no mapa'}${i.instagram ? ' · só Instagram' : ''}</p></div>
+      ${i.map ? `<a class="b3 sm ghost hide-m" href="${esc(i.map)}" target="_blank" rel="noopener">Mapa</a>` : ''}
+      ${i.known ? '<span class="chip ok"><span class="dot"></span>No CRM</span>' : `<button class="b3 sm" data-radar="add" data-n="${n}">Pro funil</button>`}</div>`).join('') || '<p class="empty">Nenhum negócio sem site nessa busca. Tente outra região.</p>'}</div>
+    <p class="muted" style="font-size:13px;margin-top:10px">“Sem site” quer dizer sem site registrado no mapa. Confira antes de abordar, e pare de chamar quem pedir.</p></section>` : ''}`;
+};
+function radarAdd(i) {
+  if (i.known) return null;
+  const l = {id:uid(), name:i.name, phone:i.phone ? fmtPhone(i.phone) : '', email:'', interest:`Site para ${(RADAR_SEG[i.seg] || 'negócio').toLowerCase()}`, source:'radar', stage:'s1', value:0, follow:at(0, Math.min(23, new Date().getHours() + 1)), created:Date.now(), consent:null, client:null, demo:!REAL, utm:{radar:i.id, area:V._rArea}};
+  S.leads.push(l);
+  S.acts.push({id:uid(), lead:l.id, kind:'note', body:`Encontrado pelo Radar em ${V._rArea}${i.address ? ' · ' + i.address : ''}. Sem site no mapa.${i.instagram ? ' Instagram: ' + i.instagram : ''}`, at:Date.now(), by:'Radar'});
+  i.known = true;
+  return l;
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-radar]'); if (!b) return;
+  const k = b.dataset.radar, o = V._rOut;
+  if (k === 'seg') { const s = b.dataset.k; V._rSeg = V._rSeg.includes(s) ? V._rSeg.filter(x => x !== s) : V._rSeg.concat(s); render(); }
+  if (k === 'add') { const l = radarAdd(o.items[+b.dataset.n]); audit(`Radar: “${l.name}” foi para o funil`); save(); render(); toast(`${l.name} entrou em “Novo”.`, {label:'Abrir', run:() => openLead(l.id)}); }
+  if (k === 'all') { const n = o.items.filter(i => !i.known && i.phone).map(radarAdd).length; audit(`Radar: ${n} negócios foram para o funil`); save(); render(); toast(`${n} leads entraram em “Novo”.`); }
+  if (k === 'go') {
+    if (!V._rSeg.length) return toast('Escolha pelo menos um segmento.');
+    if (String(V._rArea).trim().length < 3) return toast('Digite o bairro e a cidade.');
+    const out = {loading:true, step:''}; V._rOut = out; render();
+    const res = {items:[], total:0, withSite:0, source:''}; let err = '';
+    for (const [n, seg] of V._rSeg.entries()) {
+      out.step = `Procurando ${RADAR_SEG[seg].toLowerCase()} (${n + 1} de ${V._rSeg.length})`; render();
+      if (n) await new Promise(r => setTimeout(r, 1200)); // respeita o limite do serviço de mapas
+      const r = REAL ? await Real.fn('radar', {tenant_id:Real.tenantId(), segment:seg, area:V._rArea}) : radarDemo(seg);
+      if (r.error) { err = r.error; continue; }
+      res.source = r.source; res.total += r.total; res.withSite += r.withSite;
+      r.items.forEach(i => { if (!res.items.some(x => x.id === i.id)) res.items.push(Object.assign(i, {seg})); });
+    }
+    V._rOut = res.source ? res : {error:err || 'A busca não retornou nada.'};
+    if (res.source && err) V._rOut.error = err;
+    render();
+  }
+});
+function radarDemo(seg) {
+  const n = RADAR_SEG[seg], items = [`${n} Boa Vista`, `${n} Central`, `Espaço ${n}`, `${n} da Praça`].map((name, i) => ({id:`demo:${seg}${i}`, name, phone:i === 2 ? '' : `1190000${seg.length}${i}0${i}`, address:`Rua de Exemplo, ${100 + i * 37}`, site:'', instagram:i === 1 ? 'instagram.com/exemplo' : '', map:'', known:false}));
+  return {source:'Exemplo (a busca ao vivo funciona no painel real)', total:6, withSite:2, items};
+}
+
+/* ============ painel real: login com senha e dados no Supabase ============ */
+const Real = (() => {
+  const SB = 'https://ozregdgphaxkxumsujys.supabase.co', KEY = 'sb_publishable_JzclZYD3n7EQ1GAXGhB5RQ_1Ur4_784';
+  const CONVITE = /^[0-9a-f]{64}$/.test(QS.get('convite') || '') ? QS.get('convite') : null;
+  let sb, tid = null, stageId = {}, stageKey = {}, snap = {}, timer = null, chain = Promise.resolve(), rtBound = false, brandRow = {}, mode = 'login';
+  const iso = t => t ? new Date(t).toISOString() : null, ms = v => v ? new Date(v).getTime() : null;
+  const day = t => t ? ymd(t) : null, fromDay = v => v ? fromYmd(v, '12:00') : null;
+  const MAP = {
+    clients:{table:'clients', to:c => ({id:c.id, tenant_id:tid, name:c.name, email:c.email || null, phone:c.phone || null, doc:c.doc || null, created_at:iso(c.since)}),
+      from:r => ({id:r.id, name:r.name, email:r.email || '', phone:r.phone || '', doc:r.doc || '', since:ms(r.created_at), contacts:[]})},
+    leads:{table:'leads', to:l => ({id:l.id, tenant_id:tid, stage_id:stageId[l.stage], client_id:l.client || null, name:l.name, phone:l.phone || null, email:l.email || null, interest:l.interest || null, source:SRC[l.source] ? l.source : 'outro', utm:l.utm || {}, value_cents:l.value || 0, next_follow_up:iso(l.follow), consent_at:iso(l.consent), consent_text:l.consentText || (l.consent ? S.form.consent : null), lost_reason:l.lost || null, paid_at:iso(l.paidAt), created_at:iso(l.created)}),
+      from:r => ({id:r.id, stage:stageKey[r.stage_id] || 's1', client:r.client_id, name:r.name, phone:r.phone || '', email:r.email || '', interest:r.interest || '', source:r.source, utm:r.utm || {}, value:Number(r.value_cents), follow:ms(r.next_follow_up), consent:ms(r.consent_at), consentText:r.consent_text, lost:r.lost_reason || '', paidAt:ms(r.paid_at), created:ms(r.created_at), demo:false})},
+    acts:{table:'activities', to:a => ({id:a.id, tenant_id:tid, lead_id:a.lead || null, kind:a.kind, body:a.body, meta:Object.assign({}, a.meta, {by:a.by}), created_at:iso(a.at)}),
+      from:r => ({id:r.id, lead:r.lead_id, kind:r.kind, body:r.body || '', by:(r.meta && r.meta.by) || 'Sistema', meta:r.meta || {}, at:ms(r.created_at)})},
+    proposals:{table:'proposals', to:p => ({id:p.id, tenant_id:tid, lead_id:p.lead || null, client_id:p.client || null, title:p.title, items:p.items, total_cents:propTotal(p), status:p.status, valid_until:day(p.valid), public_token:p.token.replace(/-/g, ''), created_at:iso(p.created)}),
+      from:r => ({id:r.id, lead:r.lead_id, client:r.client_id, title:r.title, items:r.items || [], status:r.status, valid:fromDay(r.valid_until) || Date.now(), token:r.public_token, created:ms(r.created_at)})},
+    tasks:{table:'tasks', to:t => ({id:t.id, tenant_id:tid, title:t.title, kind:t.kind, due_at:iso(t.due), remind_at:t.remind ? iso(t.due - t.remind * 60000) : null, done_at:iso(t.done), created_at:iso(t.created || t.due)}),
+      from:r => ({id:r.id, title:r.title, kind:r.kind, due:ms(r.due_at), done:ms(r.done_at), remind:r.remind_at ? Math.round((ms(r.due_at) - ms(r.remind_at)) / 60000) : 0, created:ms(r.created_at)})},
+    charges:{table:'charges', to:c => ({id:c.id, tenant_id:tid, client_id:c.client || null, lead_id:c.lead || null, description:c.desc, amount_cents:c.amount, due_date:day(c.due), method:c.method || null, status:c.status, paid_at:iso(c.paid)}),
+      from:r => ({id:r.id, client:r.client_id, lead:r.lead_id, desc:r.description, amount:Number(r.amount_cents), due:fromDay(r.due_date), method:r.method, status:r.status, paid:ms(r.paid_at), url:r.checkout_url, gateway:r.gateway})},
+    cash:{table:'cash_entries', to:c => ({id:c.id, tenant_id:tid, charge_id:c.charge || null, direction:c.dir, category:c.cat, description:c.desc, amount_cents:c.amount, occurred_on:day(c.date)}),
+      from:r => ({id:r.id, charge:r.charge_id, dir:r.direction, cat:r.category, desc:r.description || r.category, amount:Number(r.amount_cents), date:fromDay(r.occurred_on)})},
+    notes:{table:'notifications', to:n => ({id:n.id, tenant_id:tid, lead_id:n.lead || null, kind:'paid', title:n.title, body:n.body, read_at:n.read ? (n.readAt = n.readAt || new Date().toISOString()) : null, created_at:iso(n.at)}),
+      from:r => ({id:r.id, lead:r.lead_id, title:r.title, body:r.body || '', read:!!r.read_at, readAt:r.read_at, at:ms(r.created_at)})}
+  };
+  const remember = () => { Object.entries(MAP).forEach(([k, m]) => { snap[k] = {}; S[k].forEach(x => snap[k][x.id] = JSON.stringify(m.to(x))); }); snap.brand = JSON.stringify({b:S.brand, f:S.form}); };
+  async function flush() {
+    for (const [k, m] of Object.entries(MAP)) {
+      const rows = S[k].map(m.to), changed = rows.filter(r => snap[k][r.id] !== JSON.stringify(r));
+      if (changed.length) {
+        const {error} = await sb.from(m.table).upsert(changed);
+        if (error) throw error;
+        if (k === 'clients') for (const r of changed) {
+          const c = S.clients.find(x => x.id === r.id);
+          await sb.from('contacts').delete().eq('client_id', c.id);
+          if (c.contacts.length) await sb.from('contacts').insert(c.contacts.map(x => ({tenant_id:tid, client_id:c.id, name:x.name, role:x.role})));
+        }
+        changed.forEach(r => snap[k][r.id] = JSON.stringify(r));
+      }
+      const gone = Object.keys(snap[k]).filter(id => !rows.some(r => r.id === id));
+      if (gone.length) { const {error} = await sb.from(m.table).delete().in('id', gone); if (error) throw error; gone.forEach(id => delete snap[k][id]); }
+    }
+    const br = JSON.stringify({b:S.brand, f:S.form});
+    if (br !== snap.brand && can('team')) {
+      const {error} = await sb.from('tenants').update({brand:Object.assign({}, brandRow, {crm:{brand:S.brand, form:S.form}})}).eq('id', tid);
+      if (error) throw error; snap.brand = br;
+    }
+  }
+  function sync() {
+    clearTimeout(timer);
+    return new Promise(res => { timer = setTimeout(() => { chain = chain.then(flush).catch(e => { console.error(e); toast('Não consegui salvar a última alteração. Confira a internet e o seu perfil de acesso.'); return reload(); }).then(res); }, 250); });
+  }
+  async function reload() {
+    const {data:st} = await sb.from('pipeline_stages').select('id, position').eq('tenant_id', tid);
+    (st || []).forEach(x => { stageId['s' + x.position] = x.id; stageKey[x.id] = 's' + x.position; });
+    const q = t => sb.from(t).select('*').eq('tenant_id', tid);
+    const [cl, ct, ld, ac, pr, ta, ch, ca, no, pl, au, te] = await Promise.all([q('clients'), q('contacts'), q('leads'), q('activities'), q('proposals'), q('tasks'), q('charges'), q('cash_entries'), q('notifications').order('created_at', {ascending:false}).limit(60), q('plans').eq('active', true).order('position'), q('audit_log').order('at', {ascending:false}).limit(30), sb.rpc('team_list', {p_tenant:tid})]);
+    if (ld.error) throw ld.error;
+    const pick = (k, r) => (r.data || []).map(MAP[k].from);
+    const clients = pick('clients', cl);
+    (ct.data || []).forEach(x => { const c = clients.find(y => y.id === x.client_id); if (c) c.contacts.push({name:x.name, role:x.role || ''}); });
+    const crm = brandRow.crm || {};
+    const TBL = {leads:'Lead', activities:'Histórico', proposals:'Proposta', tasks:'Tarefa', charges:'Cobrança', cash_entries:'Caixa', clients:'Cliente', contacts:'Contato', forms:'Formulário', pipeline_stages:'Funil'}, VERB = {INSERT:'criado(a)', UPDATE:'alterado(a)', DELETE:'apagado(a)'};
+    S = {v:1, clients, leads:pick('leads', ld), acts:pick('acts', ac), proposals:pick('proposals', pr), tasks:pick('tasks', ta), charges:pick('charges', ch), cash:pick('cash', ca), notes:pick('notes', no),
+      plans:(pl.data || []).map(p => [p.name, Number(p.price_cents), p.id]),
+      audit:(au.data || []).map(a => ({at:ms(a.at), who:'Equipe', a:`${TBL[a.table_name] || a.table_name} ${VERB[a.action] || a.action}`})),
+      form:Object.assign({title:'Quero minha página', email:true, interest:true, msg:false, wa:'', consent:'Autorizo o contato por WhatsApp e e-mail sobre este pedido.'}, crm.form),
+      brand:Object.assign({name:'', color:'', hide:false, domain:''}, crm.brand), pay:{gateway:'infinitepay', tag:''},
+      members:(te.data || []).map(m => ({n:m.email.split('@')[0], e:m.email, r:ROLES[m.role] ? m.role : 'viewer'}))};
+    remember();
+  }
+  const fn = async (name, body) => {
+    const {data:{session}} = await sb.auth.getSession();
+    try {
+      const r = await fetch(`${SB}/functions/v1/${name}`, {method:'POST', headers:{'Content-Type':'application/json', apikey:KEY, Authorization:`Bearer ${session ? session.access_token : KEY}`}, body:JSON.stringify(body)});
+      const d = await r.json().catch(() => ({}));
+      return r.ok ? d : {error:d.error || 'Não deu certo. Tente de novo.'};
+    } catch (e) { return {error:'Sem conexão com o servidor. Confira a internet.'}; }
+  };
+  function setTenant(row) {
+    brandRow = row.brand || {};
+    const seg = SEGMENTS[brandRow.segment] ? brandRow.segment : 'estudio', s = SEGMENTS[seg];
+    T = {id:'real', slug:EMPRESA, name:row.name, niche:s.label, d:brandRow.primary_dark || s.d, l:brandRow.primary_light || s.l, plan:{white_label:'White-label', pro:'Pro', essencial:'Essencial'}[row.plan] || ''};
+    NICHE.real = Object.assign({}, s, {clients:[]});
+    const crm = brandRow.crm || {};
+    S = {brand:Object.assign({name:'', color:'', hide:false, domain:''}, crm.brand), form:Object.assign({consent:'Autorizo o contato por WhatsApp e e-mail sobre este pedido.'}, crm.form), tasks:[], leads:[], charges:[], notes:[]};
+    applyBrand();
+  }
+  function paintLogin() {
+    if (!T || T.id !== 'real') return;
+    const nm = brandName();
+    $('#lgLogo').textContent = initials(nm); $('#lgName').textContent = nm; $('#lgUrl').textContent = 'Acesso restrito';
+    const inv = mode === 'invite';
+    $('#lgTitle').textContent = inv ? 'Crie o seu acesso.' : mode === 'newpass' ? 'Crie uma senha nova.' : `Entrar no painel da ${nm}.`;
+    $('#lgSub').textContent = inv ? 'Escolha o e-mail e a senha que você vai usar. Este link só funciona uma vez.' : mode === 'newpass' ? 'Use pelo menos 10 caracteres.' : 'Use o seu e-mail e a sua senha.';
+    $('#lgPass2Box').hidden = !(inv || mode === 'newpass'); $('#lgForgot').hidden = mode !== 'login';
+    $('#lgEmail').closest('form').querySelector('label[for=lgEmail]').hidden = $('#lgEmail').hidden = mode === 'newpass';
+    $('#lgPass').autocomplete = inv || mode === 'newpass' ? 'new-password' : 'current-password';
+    $('#lgGoTxt').textContent = inv ? 'Criar acesso e entrar' : mode === 'newpass' ? 'Salvar senha e entrar' : 'Entrar';
+  }
+  const say = m => { const n = $('#lgNote'); n.textContent = m; n.hidden = !m; };
+  async function submitLogin() {
+    const email = $('#lgEmail').value.trim(), pass = $('#lgPass').value, pass2 = $('#lgPass2').value, go = $('#lgGo');
+    if (mode !== 'newpass' && !/^\S+@\S+\.\S+$/.test(email)) return say('Digite um e-mail válido.');
+    if (!pass) return say('Digite a sua senha.');
+    if (mode !== 'login') { if (pass.length < 10) return say('Use uma senha com pelo menos 10 caracteres.'); if (pass !== pass2) return say('As duas senhas estão diferentes.'); }
+    go.disabled = true; say('');
+    try {
+      if (mode === 'invite') {
+        const r = await fn('first-access', {token:CONVITE, email, password:pass});
+        if (r.error) return say(r.error);
+        history.replaceState(null, '', location.pathname + '?empresa=' + EMPRESA);
+      }
+      if (mode === 'newpass') {
+        const {error} = await sb.auth.updateUser({password:pass});
+        if (error) return say('Não deu para trocar a senha. Peça um novo link.');
+        mode = 'login'; $('#lgPass').value = $('#lgPass2').value = ''; return openApp();
+      }
+      const {error} = await sb.auth.signInWithPassword({email, password:pass});
+      if (error) return say('E-mail ou senha incorretos.');
+      $('#lgPass').value = $('#lgPass2').value = '';
+      await openApp();
+    } finally { go.disabled = false; }
+  }
+  async function forgot() {
+    const email = $('#lgEmail').value.trim();
+    if (!/^\S+@\S+\.\S+$/.test(email)) { $('#lgEmail').focus(); return say('Digite o seu e-mail acima e clique de novo.'); }
+    await sb.auth.resetPasswordForEmail(email, {redirectTo:`${location.origin}${location.pathname}?empresa=${EMPRESA}`});
+    say('Se esse e-mail tiver acesso, o link para trocar a senha chega em instantes. Olhe também o spam.');
+  }
+  async function openApp() {
+    const {data:{session}} = await sb.auth.getSession();
+    if (!session) return paintLogin();
+    const {data:row} = await sb.from('tenants').select('id, name, plan, brand').eq('slug', EMPRESA).maybeSingle();
+    const {data:me} = row ? await sb.from('memberships').select('role').eq('tenant_id', row.id).eq('user_id', session.user.id).maybeSingle() : {data:null};
+    if (!row || !me) { await sb.auth.signOut(); mode = 'login'; paintLogin(); return say('Esta conta não tem acesso a este painel.'); }
+    tid = row.id; role = ROLES[me.role] ? me.role : 'viewer'; setTenant(row); await reload();
+    $('#login').hidden = true; $('#site').hidden = true; $('#app').hidden = false; document.body.classList.add('in-app'); FX.mode('app');
+    const h = (location.hash || '').slice(1); view = allowed(h) ? h : 'painel';
+    renderChrome(); render(); armLock(); listen();
+  }
+  function listen() {
+    if (rtBound) return; rtBound = true;
+    sb.channel('avisos').on('postgres_changes', {event:'INSERT', schema:'public', table:'notifications', filter:`tenant_id=eq.${tid}`}, async p => {
+      if (S.notes.some(n => n.id === p.new.id)) return;
+      await chain; await reload(); render(); updateBell(true);
+      toast(p.new.title, p.new.lead_id ? {label:'Ver lead', run:() => { go('funil'); openLead(p.new.lead_id); }} : null);
+      const b = $('#bellBtn').getBoundingClientRect(); FX.burst(b.left, b.bottom);
+    }).subscribe();
+    setInterval(() => { if (!document.hidden && !$('#scrim').classList.contains('on')) refresh(); }, 60000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('#scrim').classList.contains('on')) refresh(); });
+  }
+  async function refresh() { await chain; const before = S.notes.filter(n => !n.read).length; try { await reload(); render(); updateBell(S.notes.filter(n => !n.read).length > before); } catch (e) {} }
+  async function logout() { closeLayers(); clearTimeout(lockT); await sync(); await sb.auth.signOut(); location.reload(); }
+  async function payLink(l, p) {
+    toast('Gerando o link na InfinitePay…');
+    const r = await fn('checkout', {lead_id:l.id, plan_id:p[2]});
+    if (r.error) return toast(r.error);
+    if (['s1', 's2'].includes(l.stage)) l.stage = 's4';
+    l.value = p[1]; await sync(); await chain; await reload(); render();
+    showPayLink(S.charges.find(c => c.id === r.charge_id) || {id:r.charge_id, lead:l.id, desc:p[0], amount:p[1], url:r.url});
+  }
+  function invite() {
+    modal('Convidar pessoa', `<div class="fg">${inp('n', 'Nome', 'required')}${sel('r', 'Perfil', ['sales', 'finance', 'viewer', 'admin'].map(k => [k, ROLES[k].n]))}</div><p class="note">Você recebe um link de uso único, válido por 7 dias. A pessoa escolhe o próprio e-mail e a própria senha.</p>`,
+    fd => { const n = String(fd.get('n') || '').trim(); if (!n) return 'Escreva o nome.';
+      sb.from('invites').insert({tenant_id:tid, name:n, role:fd.get('r')}).select('token').single().then(({data, error}) => {
+        if (error) return toast('Só o dono pode convidar pessoas.');
+        const url = `${location.origin}${location.pathname}?empresa=${EMPRESA}&convite=${data.token}`;
+        setTimeout(() => modal('Convite pronto', `<p>Mande este link para ${esc(n)}:</p><pre class="code">${esc(url)}</pre><div class="acts"><button class="b3 sm" type="button" data-copy="${esc(url)}">${icon('copy')}Copiar link</button></div>`, null), 260);
+      }); }, 'Gerar convite');
+  }
+  async function publicSite() {
+    const {data:plans} = await sb.rpc('plans_public', {p_slug:EMPRESA});
+    const P = {i:0}, nm = brandName(), price = v => money(v).replace(',00', '');
+    const thanks = (location.hash || '') === '#obrigado';
+    $('#login').hidden = true; $('#app').hidden = true; $('#site').hidden = false; FX.mode('app'); document.title = nm;
+    const draw = () => { $('#site').innerHTML = `<div class="st-hero"><div class="st-in"><div style="display:flex;gap:12px;align-items:center"><span class="logo">${esc(initials(nm))}</span><span class="mono">${esc(T.niche)}</span></div><h1>${esc(nm)}</h1><p class="muted" style="font-size:18px">${thanks ? 'Recebemos o seu pedido. Assim que o pagamento for confirmado, falamos com você pelo WhatsApp.' : 'Escolha o plano e pague por Pix ou cartão.'}</p></div></div>
+      ${thanks ? '' : `<form class="st-body" id="pubPlan" novalidate><div class="st-in" style="gap:22px"><div class="sec"><span class="flabel">1. Plano</span><div class="svcs">${(plans || []).map((p, i) => `<button type="button" class="svc" data-pp="${i}" aria-pressed="${i === P.i}"><span>${esc(p.name)}<small style="display:block;font-weight:400;font-size:12px;opacity:.75">${esc(p.description || '')}</small></span><b>${price(Number(p.price_cents))}${p.interval === 'month' ? '/mês' : ''}</b></button>`).join('')}</div></div>
+      <div class="sec"><span class="flabel">2. Seus dados</span><div class="fg"><div class="field"><label for="ppN">Nome</label><input class="inp" id="ppN" name="n" autocomplete="name" value="${esc(P.n || '')}"></div><div class="field"><label for="ppP">WhatsApp</label><input class="inp" id="ppP" name="p" inputmode="tel" autocomplete="tel" placeholder="(11) 90000-0000" value="${esc(P.p || '')}"></div></div>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true"><label class="switch"><input type="checkbox" name="ok" ${P.ok ? 'checked' : ''}> <span style="font-size:13px">${esc(S.form.consent)}</span></label></div>
+      <p class="err" id="ppErr" hidden></p><button class="b3" id="ppGo" type="submit" style="min-height:54px;font-size:16px">Ir para o pagamento</button></div></form>`}`; };
+    draw();
+    document.addEventListener('click', e => { const b = e.target.closest('[data-pp]'); if (!b) return; const f = $('#pubPlan'); P.n = f.n.value; P.p = f.p.value; P.ok = f.ok.checked; P.i = +b.dataset.pp; draw(); });
+    document.addEventListener('submit', async e => {
+      if (e.target.id !== 'pubPlan') return; e.preventDefault();
+      const f = e.target, err = $('#ppErr'), fail = m => { err.textContent = m; err.hidden = false; };
+      if (!plans || !plans[P.i]) return fail('Escolha um plano.');
+      if (!f.ok.checked) return fail('Marque a autorização de contato para continuar.');
+      $('#ppGo').disabled = true;
+      const r = await fn('checkout', {slug:EMPRESA, plan_id:plans[P.i].id, name:f.n.value, phone:f.p.value, consent:true, consent_text:S.form.consent, website:f.website.value, redirect_url:`${location.origin}${location.pathname}?empresa=${EMPRESA}#obrigado`});
+      $('#ppGo').disabled = false;
+      if (r.error) return fail(r.error);
+      if (r.url) location.href = r.url;
+    });
+  }
+  async function boot() {
+    document.body.classList.add('real');
+    $('#lgTitle').textContent = 'Entrar no painel.'; $('#lgUrl').textContent = 'Acesso restrito'; $('#lgLogo').textContent = ''; $('#lgName').textContent = 'Carregando…';
+    const page = (location.hash || '').slice(1);
+    await new Promise((res, rej) => { const s = document.createElement('script'); s.src = '../../vendor/supabase.js'; s.onload = res; s.onerror = rej; document.head.append(s); });
+    sb = window.supabase.createClient(SB, KEY, {auth:{persistSession:true, storageKey:'amp-crm-auth-' + EMPRESA, detectSessionInUrl:true}});
+    const {data:pub} = await sb.rpc('tenant_public', {p_slug:EMPRESA});
+    if (!pub || !pub[0]) { $('#lgTitle').textContent = 'Painel não encontrado.'; $('#lgForm').hidden = true; return; }
+    setTenant({name:pub[0].name, brand:pub[0].brand, plan:pub[0].plan});
+    if (page === 'site' || page === 'obrigado') return publicSite();
+    sb.auth.onAuthStateChange(ev => { if (ev === 'PASSWORD_RECOVERY') { mode = 'newpass'; $('#app').hidden = true; $('#login').hidden = false; paintLogin(); } });
+    if (CONVITE) {
+      const c = await fn('first-access', {token:CONVITE, check:true});
+      if (c.error) { paintLogin(); return say(c.error); }
+      mode = 'invite'; return paintLogin();
+    }
+    paintLogin();
+    const {data:{session}} = await sb.auth.getSession();
+    if (session && (location.hash || '').indexOf('type=recovery') < 0) await openApp();
+  }
+  return {boot, sync, fn, reload, logout, payLink, invite, paintLogin, submitLogin, forgot, tenantId:() => tid};
+})();
 
 /* tema do sistema mudou ou o host trocou data-theme */
 matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { FX.color(); if (!$('#login').hidden) lgRender(); });
@@ -1384,7 +2210,8 @@ new MutationObserver(() => { FX.color(); if (!$('#login').hidden) lgRender(); })
 
 applyTheme(); lgRender(); FX.init();
 const h0 = (location.hash || '').slice(1);
-if (h0 === 'site') openSite(lgPick);
+if (REAL) Real.boot().catch(e => { console.error(e); $('#lgTitle').textContent = 'Não consegui carregar o painel.'; $('#lgSub').textContent = 'Confira a internet e recarregue a página.'; });
+else if (h0 === 'site') openSite(lgPick);
 else if (NAV.some(n => n[0] === h0)) enter(lgPick);
 })();
 </script>
