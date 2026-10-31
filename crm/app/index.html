@@ -145,6 +145,24 @@ body.in-app::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-are
 .pixqr i{background:#0A0F1C;border-radius:1px}
 .pixqr i.o{background:transparent}
 body.real #roleSel,body.real #tUrl,body.real #lgDemoBox,body.real #genForm,body.real #lgReal{display:none!important}
+.tbl.ptb table{min-width:0}
+.ptb th,.ptb td{padding:10px 6px}
+.ptb td:first-child{padding-left:0}
+.ptb th.c{letter-spacing:0;font-size:11px;text-transform:none}
+.ptb svg.i{width:18px;height:18px}
+.rtrack{display:flex;gap:2px;background:none}
+.rtrack .fill{border-radius:0;animation:none}
+.rtrack .fill:first-child{border-radius:6px 0 0 6px}
+.rtrack .fill:last-child{border-radius:0 6px 6px 0}
+.rbars{display:flex;flex-direction:column;gap:10px}
+.rbars .bar{grid-template-columns:150px minmax(0,1fr) auto}
+.row.rrow{flex-wrap:wrap}
+.row.rrow .grow{min-width:min(220px,70%);flex-basis:60%}
+.row.rrow .t,.row.rrow .s{white-space:normal;overflow:visible}
+.card .ch{flex-wrap:wrap}
+.legend span{white-space:nowrap}
+.plrow{grid-template-columns:minmax(0,1fr) 64px 110px}
+.kcard .chip{height:22px;font-size:11px;padding:0 8px}
 .segchips{display:flex;flex-wrap:wrap;gap:6px}
 .scan{height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:40% 100%;background-repeat:no-repeat;animation:scan 1.1s linear infinite}
 @keyframes scan{from{background-position:-40% 0}to{background-position:140% 0}}
@@ -394,6 +412,7 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
     <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
     <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></symbol>
     <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l6.4-6.4"/><circle cx="12" cy="12" r="1" /></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></symbol>
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
     <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
@@ -534,7 +553,7 @@ const TENANTS = [
 ];
 const STAGES = [{id:'s1',n:'Novo'},{id:'s2',n:'Contato feito'},{id:'s3',n:'Proposta'},{id:'s4',n:'Negociação'},{id:'s5',n:'Fechado',k:'won'},{id:'s6',n:'Perdido',k:'lost'}];
 const SRC = {site:'Página', form:'Formulário', whatsapp:'WhatsApp', instagram:'Instagram', email:'E-mail', indicacao:'Indicação', presencial:'Presencial', radar:'Radar'};
-const ACT = {note:'Nota', call:'Ligação', whatsapp:'WhatsApp', email:'E-mail', stage:'Etapa', form:'Formulário', proposal:'Proposta', payment:'Pagamento'};
+const ACT = {delete:'Exclusão', note:'Nota', call:'Ligação', whatsapp:'WhatsApp', email:'E-mail', stage:'Etapa', form:'Formulário', proposal:'Proposta', payment:'Pagamento'};
 const ROLES = {
   owner:   {n:'Dono',       can:['crm','edit','fin','team','del']},
   admin:   {n:'Admin',      can:['crm','edit','fin','team','del']},
@@ -545,7 +564,7 @@ const ROLES = {
 const NAV = [
   ['painel','Painel','home',null], ['funil','Funil','kanban','crm'], ['clientes','Clientes','users','crm'],
   ['propostas','Propostas','file','crm'], ['agenda','Agenda','cal','crm'], ['financeiro','Financeiro','wallet','fin'],
-  ['radar','Radar de leads','radar','edit'],   ['captacao','Captação','magnet','edit'], ['equipe','Equipe e acesso','shield','team']
+  ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['equipe','Equipe e acesso','shield','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
 ];
 const NICHE = {
   norte: {people:['Rafael Lima','Diego Martins','Caio Souza','Lucas Prado','Bruno Teles','Igor Nunes','Thiago Reis','Mateus Alves','Henrique Dias','Pedro Lopes','André Kato','Vitor Hugo'],
@@ -625,7 +644,7 @@ function createTenant(name, seg) {
 let T = TENANTS[0], S = null, role = 'owner', view = 'painel';
 const prefs = store.get('amp-crm:prefs', {fx:true, theme:null, tenant:'norte'});
 const savePrefs = () => store.set('amp-crm:prefs', prefs);
-const can = x => ROLES[role].can.includes(x);
+const can = x => ROLES[role].can.includes(x) && (x !== 'fin' || has('financeiro'));
 const stageOf = id => STAGES.find(s => s.id === id) || STAGES[0];
 const isOpen = l => !stageOf(l.stage).k;
 const save = () => REAL ? Real.sync() : store.set('amp-crm:v1:' + T.id, S);
@@ -906,7 +925,7 @@ const propTotal = p => p.items.reduce((a, i) => a + i.q * i.u, 0);
 const phoneShown = p => can('edit') || can('fin') ? p : String(p || '').replace(/\d(?=(?:\D*\d){2})/g, '•');
 function followClass(t) { if (!t) return ''; const n = dayOf(t) - d0(); return n < 0 ? 'late' : n === 0 ? 'today' : 'next'; }
 function waLink(l) {
-  const txt = `Oi, ${first(l.name)}! Aqui é da ${brandName()}. Vi seu interesse em ${l.interest || 'nossos serviços'}. Posso te ajudar?`;
+  const txt = l.source === 'radar' ? fillTpl(templates()[0][1], l) : `Oi, ${first(l.name)}! Aqui é da ${brandName()}. Vi seu interesse em ${l.interest || 'nossos serviços'}. Posso te ajudar?`;
   const dg = String(l.phone || '').replace(/\D/g, '');
   const num = l.demo || dg.length < 10 ? '' : (dg.startsWith('55') ? dg : '55' + dg);
   return `https://wa.me/${num}?text=${encodeURIComponent(txt)}`;
@@ -925,7 +944,7 @@ function nextSteps() {
 }
 
 /* ============ navegação ============ */
-const allowed = v => { const n = NAV.find(x => x[0] === v); return n && (!n[3] || can(n[3])); };
+const allowed = v => { const n = NAV.find(x => x[0] === v); if (v === 'empresas' && !(REAL && T.slug === 'amplitudelab' && role === 'owner')) return false; return n && (!n[3] || can(n[3])); };
 function badgeFor(v) { if (v === 'funil') { const n = S.leads.filter(l => l.stage === 's1').length; return n || ''; } if (v === 'agenda') { const n = nextSteps().filter(x => x.k !== 'charge').length; return n || ''; } return ''; }
 function renderNav() {
   $('#sNav').innerHTML = NAV.filter(n => allowed(n[0])).map(n => `<button class="nv" data-go="${n[0]}" ${view === n[0] ? 'aria-current="page"' : ''}>${icon(n[2])}${n[1]}${badgeFor(n[0]) ? `<span class="badge">${badgeFor(n[0])}</span>` : ''}</button>`).join('');
@@ -994,6 +1013,7 @@ V.painel = () => {
     <section class="card"><div class="ch"><h3>Funil agora</h3><button class="link" data-go="funil">Abrir funil</button></div><div class="bars">${funnel}</div>
       <div class="ch" style="margin:20px 0 12px"><h3>De onde vêm os leads</h3></div><div class="bars">${srcs}</div></section>
   </div>
+  ${has('reativar') && staleLeads().length ? `<section class="card"><div class="ch"><h3>Para reativar</h3><span class="chip warn">${staleLeads().length} parados há 7 dias ou mais</span></div><div class="rows">${staleLeads().slice(0, 5).map(x => `<div class="row"><span class="ico warn">${icon('clock')}</span><div class="grow"><p class="t">${esc(x.l.name)}</p><p class="s">${esc(x.l.interest)} · último contato ${rel(x.last)}</p></div><button class="b3 sm ghost" data-act="openLead" data-id="${x.l.id}">Abrir</button></div>`).join('')}</div></section>` : ''}
   ${can('fin') ? `<section class="card"><div class="ch"><h3>Fluxo de caixa · 6 meses</h3><div class="legend"><span><i style="background:var(--accent)"></i>Entradas</span><span><i style="background:var(--dim)"></i>Saídas</span></div></div>${cashChart()}</section>` : ''}`;
 };
 
@@ -1019,7 +1039,7 @@ V.funil = () => {
     return `<section class="kcol" data-stage="${s.id}" aria-label="${s.n}"><div class="kh"><b>${s.n}</b><small>${ls.length} · ${money(ls.reduce((a, l) => a + l.value, 0)).replace(',00', '')}</small></div>
     ${ls.map(l => `<button class="kcard" draggable="${can('edit')}" data-act="openLead" data-id="${l.id}">
       <span class="t">${esc(l.name)}</span><span class="m"><span>${esc(l.interest)}</span></span>
-      <span class="m">${l.paidAt ? `<span class="chip ok"><span class="dot"></span>Pagante</span>` : `<span class="chip">${SRC[l.source] || 'Outro'}</span>`}<span class="v">${money(l.value).replace(',00', '')}</span></span>
+      <span class="m">${l.paidAt ? `<span class="chip ok"><span class="dot"></span>Pagante</span>` : `<span class="chip">${SRC[l.source] || 'Outro'}</span>`}${scoreChip(l)}<span class="v">${money(l.value).replace(',00', '')}</span></span>
       ${l.follow && !s.k ? `<span class="fu ${followClass(l.follow)}">${icon('clock')}${followClass(l.follow) === 'late' ? 'Atrasado · ' : ''}${rel(l.follow)} ${ftime(l.follow)}</span>` : ''}
       ${s.k === 'lost' && l.lost ? `<span class="fu next">${esc(l.lost)}</span>` : ''}
     </button>`).join('') || '<p class="empty">Nenhum lead nesta etapa</p>'}</section>`; }).join('');
@@ -1068,7 +1088,7 @@ V.agenda = () => {
       <section class="card"><div class="ch"><h3>Hoje</h3><span class="chip acc">${today.filter(x => !x.done).length}</span></div><div class="rows">${today.map(row).join('') || '<p class="empty">Dia livre.</p>'}</div></section></div>
       <section class="card"><div class="ch"><h3>Próximos dias</h3></div><div class="rows">${next.map(row).join('') || '<p class="empty">Nada agendado.</p>'}</div></section>`;
   }
-  return head('Agenda e lembretes', 'Tarefas, reuniões e os follow-ups do funil num lugar só. O lembrete chega por WhatsApp ou e-mail na versão real.', can('edit') ? `<button class="b3" data-act="newTask">${icon('plus')}Nova tarefa</button>` : '')
+  return head('Agenda e lembretes', 'Tarefas, reuniões e os follow-ups do funil num lugar só.', can('edit') ? `<button class="b3" data-act="newTask">${icon('plus')}Nova tarefa</button>` : '')
     + `<div class="week">${strip}</div>${body}`;
 };
 
@@ -1077,20 +1097,20 @@ V.financeiro = () => {
   const ms = monthStart(), mIn = S.cash.filter(c => c.dir === 'in' && c.date >= ms).reduce((a, c) => a + c.amount, 0), mOut = S.cash.filter(c => c.dir === 'out' && c.date >= ms).reduce((a, c) => a + c.amount, 0);
   const pend = S.charges.filter(c => c.status === 'pending'), late = pend.filter(isLate);
   const ch = S.charges.slice().sort((a, b) => (a.status === 'paid') - (b.status === 'paid') || a.due - b.due);
-  return head('Financeiro', 'Cobranças, recebimentos e fluxo de caixa. Na versão real, Pix e boleto são gerados pelo gateway e a baixa é automática.',
+  return head('Financeiro', 'Cobranças, recebimentos e fluxo de caixa. Pagamentos pelo link dão baixa sozinhos.',
     `<button class="b3 ghost" data-act="newExpense">${icon('plus')}Lançar despesa</button><button class="b3" data-act="newCharge">${icon('plus')}Nova cobrança</button>`)
   + `<div class="kpis">
-    <div class="kpi tilt"><span class="mono">Entrou no mês</span><b>${money(mIn)}</b><small>${S.cash.filter(c => c.dir === 'in' && c.date >= ms).length} lançamentos</small></div>
+    <div class="kpi tilt"><span class="mono">Entrou no mês</span><b>${money(mIn)}</b><small>${S.cash.filter(c => c.dir === 'in' && c.date >= ms).length} lançamento${S.cash.filter(c => c.dir === 'in' && c.date >= ms).length === 1 ? '' : 's'}</small></div>
     <div class="kpi tilt"><span class="mono">Saiu no mês</span><b>${money(mOut)}</b><small>despesas lançadas</small></div>
     <div class="kpi tilt"><span class="mono">Saldo do mês</span><b style="color:${mIn - mOut >= 0 ? 'var(--ok)' : 'var(--bad)'}">${money(mIn - mOut)}</b><small>entradas menos saídas</small></div>
     <div class="kpi tilt ${late.length ? 'alert' : ''}"><span class="mono">Atrasado</span><b style="color:${late.length ? 'var(--bad)' : 'var(--fg)'}">${money(late.reduce((a, c) => a + c.amount, 0))}</b><small>${late.length} cobrança${late.length === 1 ? '' : 's'} vencida${late.length === 1 ? '' : 's'}</small></div></div>
   <section class="card"><div class="ch"><h3>Cobranças</h3><span class="muted" style="font-size:13px">${pend.length} em aberto</span></div>
     <div class="rows">${ch.map(c => { const lt = isLate(c), st = c.status === 'paid' ? ['Pago', 'ok'] : lt ? ['Atrasado', 'bad'] : ['A vencer', 'warn'];
-      return `<div class="row"><span class="ico ${st[1]}">${icon('wallet')}</span><div class="grow"><p class="t">${esc(clientName(c.client) || 'Avulso')} · ${esc(c.desc)}</p><p class="s">${METH[c.method] || '—'} · ${c.status === 'paid' ? 'pago em ' + fdate(c.paid) : 'vence ' + fdate(c.due) + ' (' + rel(c.due) + ')'}</p></div>
+      return `<div class="row rrow"><span class="ico ${st[1]}">${icon('wallet')}</span><div class="grow"><p class="t">${esc(clientName(c.client) || 'Avulso')} · ${esc(c.desc)}</p><p class="s">${METH[c.method] || '—'} · ${c.status === 'paid' ? 'pago em ' + fdate(c.paid) : 'vence ' + fdate(c.due) + ' (' + rel(c.due) + ')'}</p></div>
       <b class="num hide-m">${money(c.amount)}</b><span class="chip ${st[1]}"><span class="dot"></span>${st[0]}</span>
-      ${c.status === 'pending' ? `<button class="b3 sm ok" data-act="payCharge" data-id="${c.id}">Recebido</button>` : ''}</div>`; }).join('')}</div></section>
+      ${c.status === 'pending' ? `<button class="b3 sm ok" data-act="payCharge" data-id="${c.id}">Recebido</button>` : ''}<button class="b3 sm ghost" data-del="sale:${c.id}">Apagar</button></div>`; }).join('') || '<p class="empty">Nenhuma cobrança ainda. Gere um link em Propostas.</p>'}</div></section>
   <section class="card"><div class="ch"><h3>Fluxo de caixa · 6 meses</h3><div class="legend"><span><i style="background:var(--accent)"></i>Entradas</span><span><i style="background:var(--dim)"></i>Saídas</span></div></div>${cashChart()}</section>
-  <section class="card"><div class="ch"><h3>Últimos lançamentos</h3></div><div class="rows">${S.cash.slice().sort((a, b) => b.date - a.date).slice(0, 8).map(c => `<div class="row"><span class="ico ${c.dir === 'in' ? 'ok' : ''}">${c.dir === 'in' ? '+' : '−'}</span><div class="grow"><p class="t">${esc(c.desc)}</p><p class="s">${esc(c.cat)} · ${fdate(c.date)}</p></div><b class="num" style="color:${c.dir === 'in' ? 'var(--ok)' : 'var(--fg)'}">${c.dir === 'in' ? '+' : '−'} ${money(c.amount)}</b></div>`).join('')}</div></section>`;
+  <section class="card"><div class="ch"><h3>Últimos lançamentos</h3></div><div class="rows">${S.cash.slice().sort((a, b) => b.date - a.date).slice(0, 8).map(c => `<div class="row rrow"><span class="ico ${c.dir === 'in' ? 'ok' : ''}">${c.dir === 'in' ? '+' : '−'}</span><div class="grow"><p class="t">${esc(c.desc)}</p><p class="s">${esc(c.cat)} · ${fdate(c.date)}</p></div><b class="num" style="color:${c.dir === 'in' ? 'var(--ok)' : 'var(--fg)'}">${c.dir === 'in' ? '+' : '−'} ${money(c.amount)}</b>${c.charge ? '' : `<button class="b3 sm ghost" data-del="cash:${c.id}">Apagar</button>`}</div>`).join('') || '<p class="empty">Nenhum lançamento ainda.</p>'}</div></section>${deletionsCard()}`;
 };
 
 V.captacao = () => {
@@ -1115,11 +1135,11 @@ V.captacao = () => {
   </div>
   <div class="grid g2">
     <section class="card"><div class="ch"><h3 style="display:flex;gap:8px;align-items:center">${icon('wa')}WhatsApp</h3><span class="chip">Clique para conversar</span></div>
-      <p class="muted" style="font-size:14px;margin-bottom:12px">Gere o link com mensagem pronta. Quem chega por ele entra no funil como origem WhatsApp. A integração oficial (API da Meta) registra as conversas automaticamente.</p>
+      <p class="muted" style="font-size:14px;margin-bottom:12px">Gere o link com mensagem pronta. Quem chega por ele entra no funil como origem WhatsApp.</p>
       <div class="field"><label for="fWa">Seu número com DDD</label><input class="inp" id="fWa" data-form="wa" inputmode="tel" placeholder="11 90000-0000" value="${esc(f.wa)}"></div>
       <div class="acts" style="margin-top:10px"><button class="b3 sm" data-copy="${esc(waUrl)}" ${waNum.length >= 10 ? '' : 'disabled'}>${icon('copy')}Copiar link do WhatsApp</button></div></section>
-    <section class="card"><div class="ch"><h3 style="display:flex;gap:8px;align-items:center">${icon('mail')}E-mail e ${icon('ig')}Instagram</h3><span class="chip">Fase 2</span></div>
-      <dl class="kv"><dt>E-mail de entrada</dt><dd class="sel-text">leads+${esc(T.slug)}@amplitudelab.com.br</dd><dt>Instagram</dt><dd>Link na bio (acima) agora. DMs e comentários entram pela API da Meta na fase 2.</dd><dt>Anúncios</dt><dd>Leads de formulários do Meta Ads via webhook.</dd></dl></section>
+    <section class="card" style="display:flex;flex-direction:column;gap:10px"><div class="ch" style="margin:0"><h3>Modelos de mensagem</h3>${has('modelos') ? '' : '<span class="chip acc">Plano Pro</span>'}</div>
+      ${has('modelos') ? `<p class="muted" style="font-size:14px">Use {nome}, {empresa} e {interesse}. Aparecem como botões na ficha do lead.</p>${templates().map((m, i) => `<div class="field"><label for="tpl${i}">${esc(m[0])}</label><textarea class="inp" id="tpl${i}" data-tpl="${i}">${esc(m[1])}</textarea></div>`).join('')}` : '<p class="muted" style="font-size:14px">Tenha mensagens prontas de primeiro contato, follow-up e proposta com um toque.</p>'}</section>
   </div>`;
 };
 function publicForm() {
@@ -1163,11 +1183,13 @@ V.equipe = () => {
       <div class="fg"><div class="field"><label for="bColor">Cor principal</label><input class="inp" id="bColor" type="color" data-brand="color" value="${esc(b.color || T.d)}" style="padding:4px;height:46px"></div>
       <div class="field"><label for="bDom">Domínio próprio</label><input class="inp" id="bDom" data-brand="domain" placeholder="crm.suaempresa.com.br" value="${esc(b.domain)}"></div></div>
       <div class="field"><span class="flabel">Endereço do painel</span><pre class="code">https://${esc(host())}${b.domain ? '\nhttps://' + esc(b.domain) : ''}</pre></div>
-      <label class="switch"><input type="checkbox" data-brand="hide" ${b.hide ? 'checked' : ''}> Esconder “feito pela Amplitude Lab” (plano White-label)</label>
+      ${has('whitelabel') ? `<label class="switch"><input type="checkbox" data-brand="hide" ${b.hide ? 'checked' : ''}> Esconder “feito pela Amplitude Lab”</label>` : '<p class="muted" style="font-size:13px">Esconder a marca Amplitude faz parte do plano White-label.</p>'}
       <div class="acts"><button class="b3 sm ghost" data-act="resetBrand">Voltar à marca original</button>${REAL ? '' : '<button class="b3 sm danger" data-act="resetDemo">Restaurar dados de exemplo</button>'}</div></section>
+    ${salesCard()}
     <section class="card"><div class="ch"><h3>Registro de alterações</h3><span class="mono">${S.audit.length} eventos</span></div>
       <div class="rows">${S.audit.slice(0, 10).map(a => `<div class="row"><div class="grow"><p class="t" style="white-space:normal">${esc(a.a)}</p><p class="s">${esc(a.who)} · ${fdate(a.at)} ${ftime(a.at)}</p></div></div>`).join('') || '<p class="empty">Mexa em algo no painel: cada alteração aparece aqui, com quem fez e quando.</p>'}</div></section>
-  </div>`;
+  </div>
+  ${deletionsCard(15)}`;
 };
 
 /* ============ drawer do lead ============ */
@@ -1182,19 +1204,20 @@ function openLead(id) {
   <div class="db">
     <div class="sec"><span class="flabel">Etapa</span><div class="pills">${STAGES.map(s => `<button class="pill" data-act="stage" data-s="${s.id}" aria-pressed="${l.stage === s.id}" ${ed ? '' : 'disabled'}>${s.n}</button>`).join('')}</div></div>
     <div class="sec"><span class="flabel">Contato</span>
-      <dl class="kv"><dt>WhatsApp</dt><dd class="sel-text">${esc(phoneShown(l.phone))}</dd><dt>E-mail</dt><dd>${esc(l.email || '—')}</dd>${l.consent ? `<dt>Consentimento</dt><dd>aceito em ${fdate(l.consent)} ${ftime(l.consent)}</dd>` : ''}</dl>
-      ${ed ? `<div class="acts"><a class="b3 sm" href="${esc(waLink(l))}" target="_blank" rel="noopener" data-act="waOpen">${icon('wa')}Abrir WhatsApp</a><button class="b3 sm ghost" data-copy="${esc(l.phone)}">${icon('copy')}Copiar número</button></div>
+      <dl class="kv"><dt>WhatsApp</dt><dd class="sel-text">${esc(phoneShown(l.phone)) || '—'}</dd><dt>E-mail</dt><dd>${esc(l.email || '—')}</dd>${l.consent ? `<dt>Consentimento</dt><dd>aceito em ${fdate(l.consent)} ${ftime(l.consent)}</dd>` : ''}</dl>
+      ${ed && (l.phone || l.demo) ? `<div class="acts"><a class="b3 sm" href="${esc(waLink(l))}" target="_blank" rel="noopener" data-act="waOpen">${icon('wa')}Abrir WhatsApp</a><button class="b3 sm ghost" data-copy="${esc(l.phone)}">${icon('copy')}Copiar número</button></div>
       ${l.demo ? '<p class="muted" style="font-size:12px">Contato de exemplo: o WhatsApp abre sem destinatário, só com a mensagem pronta.</p>' : ''}` : ''}</div>
     <div class="sec"><span class="flabel">Próximo follow-up</span>
       <p>${l.follow ? `<span class="fu ${followClass(l.follow)}" style="font-size:14px">${icon('clock')}${fdate(l.follow)} às ${ftime(l.follow)} · ${rel(l.follow)}</span>` : '<span class="muted">Sem data marcada.</span>'}</p>
       ${ed ? `<div class="pills"><button class="pill" data-act="fu" data-days="1">Amanhã</button><button class="pill" data-act="fu" data-days="3">Em 3 dias</button><button class="pill" data-act="fu" data-days="7">Em 1 semana</button>${l.follow ? '<button class="pill" data-act="fu" data-days="">Limpar</button>' : ''}</div>` : ''}</div>
+    ${ed && has('modelos') && l.phone ? tplLinks(l) : ''}
     ${ed ? `<form class="sec" id="noteForm"><label class="flabel" for="noteTxt">Registrar contato</label>
       <div class="pills" role="radiogroup" aria-label="Tipo">${['note','whatsapp','call','email'].map((k, i) => `<label class="pill" style="display:inline-flex;align-items:center;gap:6px"><input type="radio" name="k" value="${k}" ${i === 0 ? 'checked' : ''} style="accent-color:var(--accent)">${ACT[k]}</label>`).join('')}</div>
       <textarea class="inp" id="noteTxt" name="t" placeholder="Ex.: pediu para retornar depois do dia 10" required></textarea>
       <div class="acts"><button class="b3 sm" type="submit">Salvar no histórico</button></div></form>` : ''}
     <div class="sec"><span class="flabel">Histórico</span><ul class="tl">${acts.map(a => `<li><b>${ACT[a.kind] || 'Nota'}</b> · ${esc(a.body)}<small>${esc(a.by)} · ${fdate(a.at)} ${ftime(a.at)}</small></li>`).join('') || '<li>Sem registros.</li>'}</ul></div>
-    ${ed ? `<div class="sec"><span class="flabel">Ações</span><div class="acts">${(() => { const pp = REAL && S.proposals.slice().reverse().find(x => x.lead === l.id && x.status !== 'accepted'); return pp ? (pp.url ? `<a class="b3 sm" href="${esc(pp.url)}" target="_blank" rel="noopener">${icon('card')}Abrir pagamento</a>` : `<button class="b3 sm" data-prop="link" data-id="${pp.id}">${icon('card')}Link da proposta · ${money(propTotal(pp))}</button>`) : ''; })()}${(() => { if (REAL && S.proposals.some(x => x.lead === l.id && x.status !== 'accepted')) return ''; const pc = S.charges.find(c => c.lead === l.id && c.status === 'pending' && c.url); return l.paidAt ? '' : pc ? `<button class="b3 sm" data-pay="show" data-c="${pc.id}">${icon('card')}Ver link de pagamento</button>` : `<button class="b3 sm" data-pay="link" data-l="${l.id}">${icon('card')}Gerar link de pagamento</button>`; })()}<button class="b3 sm ghost" data-act="newProposal" data-lead="${l.id}">${icon('file')}Criar proposta</button>
-      ${can('del') ? `<button class="b3 sm ghost" data-act="askAnon">${icon('shield')}Anonimizar (LGPD)</button>` : ''}</div><div id="anonBox"></div></div>` : ''}
+    ${ed ? `<div class="sec"><span class="flabel">Ações</span><div class="acts">${(() => { const pp = REAL && has('pagamento') && S.proposals.slice().reverse().find(x => x.lead === l.id && x.status !== 'accepted'); return pp ? (pp.url ? `<a class="b3 sm" href="${esc(pp.url)}" target="_blank" rel="noopener">${icon('card')}Abrir pagamento</a>` : `<button class="b3 sm" data-prop="link" data-id="${pp.id}">${icon('card')}Link da proposta · ${money(propTotal(pp))}</button>`) : ''; })()}${(() => { if (!has('pagamento') || (REAL && S.proposals.some(x => x.lead === l.id && x.status !== 'accepted'))) return ''; const pc = S.charges.find(c => c.lead === l.id && c.status === 'pending' && c.url); return l.paidAt ? '' : pc ? `<button class="b3 sm" data-pay="show" data-c="${pc.id}">${icon('card')}Ver link de pagamento</button>` : `<button class="b3 sm" data-pay="link" data-l="${l.id}">${icon('card')}Gerar link de pagamento</button>`; })()}<button class="b3 sm ghost" data-act="newProposal" data-lead="${l.id}">${icon('file')}Criar proposta</button>
+      ${can('del') ? `<button class="b3 sm ghost" data-act="askAnon">${icon('shield')}Anonimizar (LGPD)</button><button class="b3 sm ghost" data-del="lead:${l.id}">Apagar lead</button>` : ''}</div><div id="anonBox"></div></div>` : ''}
   </div>`;
   showLayer('#drawer');
   setTimeout(() => { const b = $('#drawer [data-act="close"]'); b && b.focus(); }, 60);
@@ -1264,7 +1287,7 @@ function modalCharge(pre = {}) {
   modal('Nova cobrança', `<div class="fg">${sel('client', 'Cliente', cl, 'full')}${inp('desc', 'Descrição', `full required value="${esc(pre.desc || '')}"`)}
     ${inp('amount', 'Valor (R$)', `required inputmode="decimal" value="${pre.amount ? reais(pre.amount) : ''}"`)}${inp('due', 'Vencimento', `type="date" value="${ymd(at(3))}"`)}
     ${sel('method', 'Forma', Object.entries(METH).slice(0, 3), 'full')}</div>
-    <p class="note">Na versão real, ao salvar o sistema gera o Pix copia-e-cola ou o boleto pelo gateway e manda o link ao cliente. A baixa é automática quando o pagamento cai.</p>`,
+    <p class="note">Esta cobrança é um registro manual: marque como Recebido quando o dinheiro cair. Para receber online, gere o link em Propostas.</p>`,
   fd => {
     const amount = cents(fd.get('amount')); if (!amount) return 'Informe um valor maior que zero.';
     let client = fd.get('client');
@@ -1293,10 +1316,10 @@ function modalClient() {
 }
 function itemRow(d = '', q = 1, u = '') { return `<div class="item"><input class="inp" name="d" placeholder="Descrição" value="${esc(d)}" aria-label="Descrição do item"><input class="inp" name="q" inputmode="numeric" value="${q}" aria-label="Quantidade"><input class="inp" name="u" inputmode="decimal" placeholder="R$" value="${u}" aria-label="Valor unitário"></div>`; }
 function propActions(p) {
-  if (!can('edit') || p.status === 'accepted') return can('del') ? `<div class="acts" style="margin-top:14px"><button class="b3 sm ghost" data-prop="del" data-id="${p.id}">Excluir</button></div>` : '';
-  const pago = p.url ? `<a class="b3 sm" href="${esc(p.url)}" target="_blank" rel="noopener">${icon('card')}Abrir pagamento</a><button class="b3 sm ghost" data-copy="${esc(p.url)}">${icon('copy')}Copiar link</button><button class="b3 sm ghost" data-prop="show" data-id="${p.id}">${icon('wa')}WhatsApp</button><button class="b3 sm ghost" data-prop="link" data-id="${p.id}">Novo link</button>`
+  if (!can('edit') || p.status === 'accepted') return can('del') ? `<div class="acts" style="margin-top:14px"><button class="b3 sm ghost" data-del="proposal:${p.id}">Apagar</button></div>` : '';
+  const pago = !has('pagamento') ? `<button class="b3 sm ghost" data-go="planos">${icon('lock')}Link de pagamento no Pro</button>` : p.url ? `<a class="b3 sm" href="${esc(p.url)}" target="_blank" rel="noopener">${icon('card')}Abrir pagamento</a><button class="b3 sm ghost" data-copy="${esc(p.url)}">${icon('copy')}Copiar link</button><button class="b3 sm ghost" data-prop="show" data-id="${p.id}">${icon('wa')}WhatsApp</button><button class="b3 sm ghost" data-prop="link" data-id="${p.id}">Novo link</button>`
     : `<button class="b3 sm" data-prop="link" data-id="${p.id}">${icon('card')}Gerar link de pagamento</button>`;
-  return `<div class="acts" style="margin-top:14px">${pago}<button class="b3 sm ghost" data-prop="edit" data-id="${p.id}">Editar</button>${can('del') ? `<button class="b3 sm ghost" data-prop="del" data-id="${p.id}">Excluir</button>` : ''}</div>`;
+  return `<div class="acts" style="margin-top:14px">${pago}<button class="b3 sm ghost" data-prop="edit" data-id="${p.id}">Editar</button><button class="b3 sm ghost" data-del="proposal:${p.id}">Apagar</button></div>`;
 }
 function propContact(p) { return S.leads.find(x => x.id === p.lead) || S.clients.find(x => x.id === p.client) || {name:'', phone:''}; }
 function payFields(total) {
@@ -1326,16 +1349,17 @@ function modalProposalReal(leadId, editId) {
     ${ed ? '' : `<div class="field full" id="mNewBox" ${leadId ? 'hidden' : ''}><div class="fg">${inp('nName', 'Nome do cliente', 'autocomplete="off"')}${inp('nPhone', 'WhatsApp', 'inputmode="tel" placeholder="(11) 90000-0000"')}</div></div>`}
     ${inp('title', 'Título', `full required value="${esc(ed ? ed.title : it[0])}"`)}</div>
     <div class="field"><span class="flabel">Itens · descrição, quantidade e valor</span><div class="items" id="mItems">${rows}</div><button class="link" type="button" data-act="addItem" style="align-self:flex-start">+ Adicionar item</button></div>
-    ${payFields(0)}${inp('valid', 'Válida até', `type="date" value="${ymd(ed ? ed.valid : at(7))}"`)}
-    <p class="note">Ao salvar, o link da InfinitePay é gerado com este valor. Nada abre em forma de site.</p>`,
+    ${has('pagamento') ? payFields(0) : ''}${inp('valid', 'Válida até', `type="date" value="${ymd(ed ? ed.valid : at(7))}"`)}
+    ${has('pagamento') ? '<p class="note">Ao salvar, o link da InfinitePay é gerado com este valor. Nada abre em forma de site.</p>' : ''}`,
   fd => {
     const ds = fd.getAll('d'), qs = fd.getAll('q'), us = fd.getAll('u');
     const items = ds.map((d, i) => ({d:String(d).trim(), q:Math.max(1, parseInt(qs[i], 10) || 1), u:cents(us[i])})).filter(x => x.d);
     const total = items.reduce((a, x) => a + x.q * x.u, 0);
     if (total < 100) return 'Coloque pelo menos um item com valor.';
-    const r = payAmount(fd, total); if (r.error) return r.error;
+    const r = has('pagamento') ? payAmount(fd, total) : {}; if (r.error) return r.error;
+    const finish = id => { if (has('pagamento')) Real.proposalLink(id, r.amount); else toast('Orçamento salvo.'); };
     const title = String(fd.get('title') || items[0].d).trim(), valid = fromYmd(fd.get('valid')) || at(7);
-    if (ed) { Object.assign(ed, {title, items, valid}); const l = S.leads.find(x => x.id === ed.lead); if (l) l.value = total; audit(`Orçamento “${title}” editado`); save(); Real.proposalLink(ed.id, r.amount); return; }
+    if (ed) { Object.assign(ed, {title, items, valid}); const l = S.leads.find(x => x.id === ed.lead); if (l) l.value = total; audit(`Orçamento “${title}” editado`); save(); finish(ed.id); return; }
     let lead = null, client = null; const to = String(fd.get('to') || 'new');
     if (to === 'new') {
       const name = String(fd.get('nName') || '').trim(), ph = String(fd.get('nPhone') || '').replace(/\D/g, '');
@@ -1348,8 +1372,8 @@ function modalProposalReal(leadId, editId) {
     S.proposals.push(p);
     if (lead) { const l = S.leads.find(x => x.id === lead); if (['s1', 's2'].includes(l.stage)) l.stage = 's3'; l.value = total; S.acts.push({id:uid(), lead, kind:'proposal', body:`Orçamento “${title}” de ${money(total)} criado.`, at:Date.now(), by:ROLES[role].n}); }
     audit(`Orçamento “${title}” criado (${money(total)})`); save();
-    Real.proposalLink(p.id, r.amount);
-  }, 'Salvar e gerar link');
+    finish(p.id);
+  }, has('pagamento') ? 'Salvar e gerar link' : 'Salvar');
   bindPayFields();
   const s = $('#m_to'); if (s) s.onchange = () => { $('#mNewBox').hidden = s.value !== 'new'; };
 }
@@ -1366,10 +1390,7 @@ document.addEventListener('click', e => {
   if (k === 'link') { closeLayers(); setTimeout(() => modalPropLink(id), 30); }
   if (k === 'edit') modalProposalReal(null, id);
   if (k === 'show' && p) showPropLink(p);
-  if (k === 'del') {
-    if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Confirmar exclusão'; return; }
-    S.proposals = S.proposals.filter(x => x.id !== id); audit(`Orçamento “${p ? p.title : ''}” excluído`); save(); render(); toast('Orçamento excluído.');
-  }
+
 });
 function modalProposal(leadId) {
   if (REAL) return modalProposalReal(leadId);
@@ -1524,7 +1545,7 @@ document.addEventListener('submit', e => {
 });
 document.addEventListener('input', e => {
   const t = e.target;
-  if (t.id === 'rArea') { V._rArea = t.value; return; }
+  if (t.dataset.tpl != null) { const list = templates().map(x => x.slice()); list[+t.dataset.tpl][1] = t.value; S.form.templates = list; save(); return; }
   if (t.id === 'cq') { V._cq = t.value; const pos = t.selectionStart; render(); const n = $('#cq'); n.focus(); n.setSelectionRange(pos, pos); }
   if (t.id === 'palIn') palFill(t.value);
   if (t.dataset.form && t.type !== 'checkbox') { S.form[t.dataset.form] = t.value; save(); clearTimeout(t._d); t._d = setTimeout(() => { const keep = t.id, pos = t.selectionStart; render(); const n = $('#' + keep); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} } }, 500); }
@@ -1671,63 +1692,348 @@ $('#lgForm').onsubmit = e => {
 };
 $('#lgForgot').onclick = () => { if (REAL) return Real.forgot(); const note = $('#lgNote'); note.textContent = 'Na versão real, o link para trocar a senha chega no seu e-mail.'; note.hidden = false; };
 
-/* ============ radar de leads: negócios sem site nos segmentos escolhidos ============ */
-const RADAR_SEG = {barbearia:'Barbearia', tattoo:'Tattoo', clinica:'Clínica e dentista', restaurante:'Restaurante e café', academia:'Academia', salao:'Salão e estética', loja:'Loja de roupas', fotografia:'Fotografia', evento:'Casa de eventos', pet:'Pet shop', mecanica:'Oficina', padaria:'Padaria'};
-V._rSeg = ['barbearia']; V._rArea = 'Vila Prudente, São Paulo'; V._rOut = null;
+/* ============ radar de leads: negócios sem site, por nicho, local e raio ============ */
+const RADAR_SEG = {barbearia:'Barbearia', tattoo:'Tattoo', salao:'Salão e estética', clinica:'Clínica e dentista', restaurante:'Restaurante e café', loja:'Loja', academia:'Academia', pet:'Pet shop', padaria:'Padaria e doceria', mecanica:'Oficina', fotografia:'Fotografia', evento:'Eventos e casas', contabil:'Escritórios', escola:'Escolas e cursos'};
+const RADAR_PRESET = ['barbearia', 'tattoo', 'salao', 'clinica', 'restaurante', 'loja', 'academia', 'pet'];
+// Termos que o Nominatim entende como categoria do mapa. Inglês rende mais que português.
+const RADAR_TERMS = {barbearia:['hairdresser', 'barbearia'], tattoo:['tattoo', 'tatuagem'], salao:['beauty salon', 'salão de beleza'], clinica:['dentist', 'clinic', 'doctors'], restaurante:['restaurant', 'fast food', 'cafe'], loja:['clothes shop', 'shoe shop', 'gift shop'], academia:['fitness centre', 'academia'], pet:['pet shop', 'veterinary'], padaria:['bakery', 'padaria'], mecanica:['car repair', 'tyres'], fotografia:['photographer', 'photo shop'], evento:['events venue', 'nightclub'], contabil:['accountant', 'lawyer', 'estate agent'], escola:['language school', 'driving school', 'music school']};
+const RADAR_OSM = {barbearia:['["shop"="hairdresser"]', '["shop"="barber"]'], tattoo:['["shop"="tattoo"]'], salao:['["shop"="beauty"]', '["shop"="hairdresser"]', '["shop"="massage"]'], clinica:['["amenity"="dentist"]', '["amenity"="clinic"]', '["amenity"="doctors"]'], restaurante:['["amenity"="restaurant"]', '["amenity"="fast_food"]', '["amenity"="cafe"]'], loja:['["shop"="clothes"]', '["shop"="shoes"]', '["shop"="gift"]', '["shop"="furniture"]'], academia:['["leisure"="fitness_centre"]'], pet:['["shop"="pet"]', '["amenity"="veterinary"]'], padaria:['["shop"="bakery"]', '["shop"="pastry"]'], mecanica:['["shop"="car_repair"]', '["shop"="tyres"]'], fotografia:['["craft"="photographer"]', '["shop"="photo"]'], evento:['["amenity"="events_venue"]', '["amenity"="nightclub"]'], contabil:['["office"="accountant"]', '["office"="lawyer"]', '["office"="estate_agent"]'], escola:['["amenity"="language_school"]', '["amenity"="driving_school"]', '["amenity"="music_school"]']};
+const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+const SOCIAL_RE = /instagram\.com|facebook\.com|fb\.com|wa\.me|whatsapp\.com|linktr\.ee|tiktok\.com/i;
+V._r = {seg:RADAR_PRESET.slice(0, 3), area:'Vila Prudente, São Paulo', km:5, conv:1, filter:'phone', shown:60};
+V._rOut = null; let radarRun = 0;
+const rDigits = s => String(s || '').split(';')[0].replace(/\D/g, '').replace(/^55(?=\d{10,11}$)/, '');
 const fmtPhone = p => { const d = String(p || '').replace(/\D/g, ''); return d.length >= 10 ? `(${d.slice(0, 2)}) ${d.slice(2, -4)}-${d.slice(-4)}` : d; };
+const isMobile = p => { const d = rDigits(p); return d.length === 11 && d[2] === '9'; };
+const distKm = (a, b, c, d) => { const R = 6371, x = (c - a) * Math.PI / 180, y = (d - b) * Math.PI / 180, h = Math.sin(x / 2) ** 2 + Math.cos(a * Math.PI / 180) * Math.cos(c * Math.PI / 180) * Math.sin(y / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
+const wait = ms => new Promise(r => setTimeout(r, ms));
+async function getJson(url, init, ms) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(url, Object.assign({}, init, {signal:c.signal})); if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json(); } finally { clearTimeout(t); } }
+function osmItem(tags, id, lat, lon, map) {
+  const t = tags || {}, site = t.website || t['contact:website'] || t.url || '';
+  return {id, name:t.name || '', phone:rDigits(t['contact:whatsapp'] || t['contact:mobile'] || t.phone || t['contact:phone']), email:t.email || t['contact:email'] || '', address:[t['addr:street'], t['addr:housenumber']].filter(Boolean).join(', '), suburb:t['addr:suburb'] || t['addr:neighbourhood'] || '', site:SOCIAL_RE.test(site) ? '' : site, instagram:t['contact:instagram'] || (/instagram\.com/i.test(site) ? site : ''), lat:+lat, lon:+lon, map};
+}
+async function viaOverpass(seg, g) {
+  const q = `[out:json][timeout:20];(${RADAR_OSM[seg].map(t => `nwr${t}["name"](around:${g.km * 1000},${g.lat},${g.lon});`).join('')});out center tags 500;`;
+  const data = await Promise.any(OVERPASS.map(u => getJson(u + '?data=' + encodeURIComponent(q), {}, 9000)));
+  return (data.elements || []).map(e => osmItem(e.tags, `osm:${e.type}/${e.id}`, e.lat ?? (e.center && e.center.lat), e.lon ?? (e.center && e.center.lon), `https://www.openstreetmap.org/${e.type}/${e.id}`));
+}
+async function viaNominatim(seg, g, stop, step) {
+  const n = g.km <= 2 ? 1 : g.km <= 6 ? 2 : g.km <= 12 ? 3 : 4, dLat = g.km / 111, dLon = g.km / (111 * Math.cos(g.lat * Math.PI / 180)), out = new Map();
+  const terms = RADAR_TERMS[seg], total = n * n * terms.length; let done = 0, ok = 0;
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) for (const term of terms) {
+    if (stop()) return [...out.values()];
+    const w = g.lon - dLon + 2 * dLon * j / n, e = g.lon - dLon + 2 * dLon * (j + 1) / n, nn = g.lat + dLat - 2 * dLat * i / n, s = g.lat + dLat - 2 * dLat * (i + 1) / n;
+    step(`${RADAR_SEG[seg]}: área ${++done} de ${total}`);
+    try {
+      const arr = await getJson(`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(term)}&viewbox=${w},${nn},${e},${s}&bounded=1&limit=40&extratags=1&addressdetails=1&accept-language=pt-BR&countrycodes=br`, {}, 12000);
+      ok++;
+      arr.forEach(x => { const id = `osm:${x.osm_type}/${x.osm_id}`; if (out.has(id) || !x.name) return; const it = osmItem(Object.assign({name:x.name}, x.extratags), id, x.lat, x.lon, `https://www.openstreetmap.org/${x.osm_type}/${x.osm_id}`), a = x.address || {}; if (!it.address) it.address = [a.road, a.house_number].filter(Boolean).join(', '); if (!it.suburb) it.suburb = a.suburb || a.neighbourhood || a.city_district || ''; out.set(id, it); });
+    } catch (err) {}
+    await wait(1100); // limite de uso do serviço: 1 pedido por segundo
+  }
+  if (!ok) throw new Error('sem resposta');
+  return [...out.values()];
+}
+async function geocode(area) {
+  const a = await getJson(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=br&addressdetails=1&accept-language=pt-BR&q=${encodeURIComponent(area)}`, {}, 12000);
+  if (!a[0]) return null;
+  const d = a[0].address || {};
+  return {lat:+a[0].lat, lon:+a[0].lon, label:a[0].display_name, city:d.city || d.town || d.municipality || d.village || '', uf:(d['ISO3166-2-lvl4'] || '').replace('BR-', '')};
+}
+async function ibgeContext(city, uf) {
+  if (!city || !uf) return null;
+  const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  try {
+    const list = await getJson(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`, {}, 10000);
+    const m = list.find(x => norm(x.nome) === norm(city)); if (!m) return null;
+    const d = await getJson(`https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/-1/variaveis/9324?localidades=N6[${m.id}]`, {}, 10000);
+    const serie = d[0].resultados[0].series[0].serie, ano = Object.keys(serie).pop();
+    return {nome:m.nome, uf, pop:+serie[ano], ano};
+  } catch (e) { return null; }
+}
+const leadPoints = i => (i.phone ? 35 : 0) + (isMobile(i.phone) ? 20 : 0) + (i.address ? 10 : 0) + (i.email ? 10 : 0) + (i.instagram ? 10 : 0) + Math.max(0, 15 - Math.round(i.dist || 0));
+function radarDemo(seg) {
+  const n = RADAR_SEG[seg];
+  return [`${n} Boa Vista`, `${n} Central`, `Espaço ${n}`, `${n} da Praça`, `${n} Nova Era`].map((name, i) => ({id:`demo:${seg}${i}`, name, phone:i === 2 ? '' : `119000${String(seg.length).padStart(2, '0')}${i}0${i}`, email:'', address:`Rua de Exemplo, ${100 + i * 37}`, suburb:'Bairro de exemplo', site:i === 4 ? 'https://exemplo.com.br' : '', instagram:i === 1 ? 'instagram.com/exemplo' : '', lat:-23.58 + i * .004, lon:-46.58 + i * .004, map:''}));
+}
+const rShown = o => o.items.filter(i => !i.site && (V._r.filter === 'all' || (V._r.filter === 'phone' && i.phone) || (V._r.filter === 'mobile' && isMobile(i.phone)) || (V._r.filter === 'new' && !i.known)));
+function radarChart(o) {
+  const rows = Object.keys(o.bySeg).map(k => ({k, ...o.bySeg[k]})).sort((a, b) => b.semSite - a.semSite), max = Math.max(1, ...rows.map(r => r.total));
+  return `<div class="legend" style="margin-bottom:10px"><span><i style="background:var(--accent)"></i>Sem site</span><span><i style="background:var(--dim)"></i>Com site</span></div><div class="rbars">${rows.map(r => `<div class="bar" title="${esc(RADAR_SEG[r.k])}: ${r.semSite} sem site, ${r.total - r.semSite} com site"><span>${esc(RADAR_SEG[r.k])}</span><div class="track rtrack"><div class="fill" style="width:${r.semSite / max * 100}%"></div><div class="fill alt" style="width:${(r.total - r.semSite) / max * 100}%"></div></div><span class="num muted">${r.semSite} de ${r.total}</span></div>`).join('')}</div>`;
+}
+function radarStudy(o) {
+  const free = o.items.filter(i => !i.site), phones = free.filter(i => i.phone), mobiles = free.filter(i => isMobile(i.phone)), pct = o.items.length ? Math.round(free.length / o.items.length * 100) : 0;
+  const conv = V._r.conv / 100, closes = free.length ? Math.max(1, Math.round(free.length * conv)) : 0, ticket = 60000, mrr = 8900;
+  const hoods = {}; free.forEach(i => { if (i.suburb) hoods[i.suburb] = (hoods[i.suburb] || 0) + 1; });
+  const top = Object.entries(hoods).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const bestSeg = Object.keys(o.bySeg).sort((a, b) => o.bySeg[b].semSite - o.bySeg[a].semSite)[0];
+  const route = free.filter(i => i.lat).slice().sort((a, b) => a.dist - b.dist).slice(0, 10), rUrl = route.length > 1 ? `https://www.google.com/maps/dir/?api=1&origin=${o.geo.lat},${o.geo.lon}&destination=${route[route.length - 1].lat},${route[route.length - 1].lon}&waypoints=${route.slice(0, -1).map(i => `${i.lat},${i.lon}`).join('%7C')}` : '';
+  return `<div class="kpis">
+    <div class="kpi"><span class="mono">Encontrados</span><b>${o.items.length}</b><small>em ${o.km} km de ${esc(o.area)}</small></div>
+    <div class="kpi"><span class="mono">Sem site no mapa</span><b>${free.length}</b><small>${pct}% do total</small></div>
+    <div class="kpi"><span class="mono">Com telefone</span><b>${phones.length}</b><small>${mobiles.length} parecem celular</small></div>
+    <div class="kpi"><span class="mono">Se fechar ${closes} cliente${closes === 1 ? '' : 's'}</span><b>${money(closes * ticket).replace(',00', '')}</b><small>e ${money(closes * mrr).replace(',00', '')}/mês de CRM</small></div></div>
+  <div class="grid g3"><section class="card"><div class="ch"><h3>Oportunidade por nicho</h3></div>${radarChart(o)}</section>
+    <section class="card" style="display:flex;flex-direction:column;gap:12px"><div class="ch" style="margin:0"><h3>Leitura do mercado</h3></div>
+      <p>${bestSeg ? `O nicho com mais espaço é <b>${esc(RADAR_SEG[bestSeg])}</b>, com ${o.bySeg[bestSeg].semSite} negócios sem site.` : 'Sem dados suficientes para comparar nichos.'}</p>
+      ${o.ibge ? `<p class="muted" style="font-size:14px">${esc(o.ibge.nome)}/${esc(o.ibge.uf)} tem ${Number(o.ibge.pop).toLocaleString('pt-BR')} habitantes (IBGE, ${esc(o.ibge.ano)}).</p>` : ''}
+      ${top.length ? `<p class="muted" style="font-size:14px">Mais concentrados em: ${top.map(([n, c]) => `${esc(n)} (${c})`).join(', ')}.</p>` : ''}
+      <div class="field"><label for="rConv">Taxa de fechamento da estimativa</label><select class="inp" id="rConv">${[1, 3, 5, 10].map(v => `<option value="${v}" ${v === V._r.conv ? 'selected' : ''}>${v}% dos negócios sem site</option>`).join('')}</select></div>
+      <p class="muted" style="font-size:13px">Estimativa: página vitrine a R$ 600 e CRM Essencial a R$ 89. Não é previsão de venda.</p>
+      ${rUrl ? `<a class="b3 sm ghost" href="${esc(rUrl)}" target="_blank" rel="noopener">${icon('radar')}Rota de campo: ${route.length} mais próximos</a>` : ''}</section></div>`;
+}
 V.radar = () => {
-  const o = V._rOut;
-  return head('Radar de leads', 'Escolha os segmentos e a região. O Radar procura negócios no mapa e mostra só os que não têm site.')
-  + `<section class="card" style="display:flex;flex-direction:column;gap:14px">
-    <div class="field"><span class="flabel">Segmentos</span><div class="segchips">${Object.entries(RADAR_SEG).map(([k, n]) => `<button class="pill" data-radar="seg" data-k="${k}" aria-pressed="${V._rSeg.includes(k)}">${n}</button>`).join('')}</div></div>
-    <div class="field"><label for="rArea">Bairro e cidade</label><input class="inp" id="rArea" value="${esc(V._rArea)}" placeholder="Ex.: Sapopemba, São Paulo" autocomplete="off"></div>
-    <div class="acts"><button class="b3" data-radar="go" ${o && o.loading ? 'disabled' : ''}>${icon('radar')}${o && o.loading ? 'Procurando…' : 'Procurar sem site'}</button></div>
-    ${o && o.loading ? `<div class="scan" role="status" aria-label="Procurando"></div><p class="muted" style="font-size:13px">${esc(o.step || '')}</p>` : ''}
+  const o = V._rOut, R = V._r, list = o && o.items ? rShown(o) : [], addable = list.filter(i => !i.known);
+  return head('Radar de leads', 'Escolha os nichos, o local e o raio. O Radar procura no mapa, separa quem não tem site e monta o estudo da região.')
+  + `<section class="card" style="display:flex;flex-direction:column;gap:16px">
+    <div class="field"><div class="ch" style="margin:0"><span class="flabel">Nichos</span><span class="acts"><button class="link" data-radar="preset">Nichos da Amplitude</button><button class="link" data-radar="none">Limpar</button></span></div><div class="segchips">${Object.entries(RADAR_SEG).map(([k, n]) => `<button class="pill" data-radar="seg" data-k="${k}" aria-pressed="${R.seg.includes(k)}">${n}</button>`).join('')}</div></div>
+    <div class="fg"><div class="field"><label for="rArea">Local</label><input class="inp" id="rArea" value="${esc(R.area)}" placeholder="Ex.: Sapopemba, São Paulo" autocomplete="off"></div>
+      <div class="field"><label for="rKm">Raio de busca: <b id="rKmOut">${R.km} km</b></label><input id="rKm" type="range" min="1" max="30" step="1" value="${R.km}" style="width:100%;height:46px;accent-color:var(--accent)"></div></div>
+    <div class="acts"><button class="b3" data-radar="go" ${o && o.loading ? 'disabled' : ''}>${icon('radar')}${o && o.loading ? 'Procurando…' : 'Procurar leads'}</button><button class="b3 ghost" data-radar="here" ${o && o.loading ? 'disabled' : ''}>Usar minha localização</button>${o && o.loading ? '<button class="b3 ghost" data-radar="stop">Parar</button>' : ''}</div>
+    ${o && o.loading ? `<div class="scan" role="status" aria-label="Procurando"></div><p class="muted" style="font-size:14px">${esc(o.step || '')}${o.items.length ? ` · ${o.items.length} encontrados até agora` : ''}</p>` : ''}
+    ${o && o.error ? `<p class="err">${esc(o.error)}</p>` : ''}
   </section>
-  ${o && o.error ? `<p class="err">${esc(o.error)}</p>` : ''}
-  ${o && o.items ? `<section class="card"><div class="ch"><div><h3>${o.items.length} sem site</h3><p class="muted" style="font-size:13px">${o.total} encontrados · ${o.withSite} já têm site · fonte: ${esc(o.source)}</p></div>
-      ${o.items.some(i => !i.known && i.phone) ? `<button class="b3 sm" data-radar="all">${icon('plus')}Adicionar os com telefone</button>` : ''}</div>
-    <div class="rows">${o.items.map((i, n) => `<div class="row"><span class="ico">${icon('radar')}</span><div class="grow"><p class="t">${esc(i.name)}</p><p class="s">${esc(RADAR_SEG[i.seg] || '')}${i.address ? ' · ' + esc(i.address) : ''}${i.phone ? ' · ' + esc(fmtPhone(i.phone)) : ' · sem telefone no mapa'}${i.instagram ? ' · só Instagram' : ''}</p></div>
-      ${i.map ? `<a class="b3 sm ghost hide-m" href="${esc(i.map)}" target="_blank" rel="noopener">Mapa</a>` : ''}
-      ${i.known ? '<span class="chip ok"><span class="dot"></span>No CRM</span>' : `<button class="b3 sm" data-radar="add" data-n="${n}">Pro funil</button>`}</div>`).join('') || '<p class="empty">Nenhum negócio sem site nessa busca. Tente outra região.</p>'}</div>
-    <p class="muted" style="font-size:13px;margin-top:10px">“Sem site” quer dizer sem site registrado no mapa. Confira antes de abordar, e pare de chamar quem pedir.</p></section>` : ''}`;
+  ${o && o.items && !o.loading ? radarStudy(o) + `<section class="card"><div class="ch"><div><h3>${list.length} leads nesta lista</h3><p class="muted" style="font-size:13px">Fonte: ${esc(o.source)}</p></div><div class="acts">
+      <button class="b3 sm ghost" data-radar="csv">${icon('copy')}Baixar CSV</button>${addable.length ? `<button class="b3 sm" data-radar="all">${icon('plus')}Adicionar ${addable.length} ao funil</button>` : ''}</div></div>
+    <div class="pills" style="margin-bottom:10px">${[['phone', 'Com telefone'], ['mobile', 'Parece celular'], ['new', 'Fora do CRM'], ['all', 'Todos sem site']].map(([k, l]) => `<button class="pill" data-radar="filter" data-k="${k}" aria-pressed="${R.filter === k}">${l}</button>`).join('')}</div>
+    <div class="rows">${list.slice(0, R.shown).map(i => `<div class="row rrow"><span class="ico" title="Pontuação do lead">${leadPoints(i)}</span><div class="grow"><p class="t">${esc(i.name)}</p><p class="s">${esc(RADAR_SEG[i.seg] || '')}${i.dist != null ? ` · ${i.dist.toFixed(1).replace('.', ',')} km` : ''}${i.suburb ? ' · ' + esc(i.suburb) : ''}${i.address ? ' · ' + esc(i.address) : ''}</p><p class="s">${i.phone ? esc(fmtPhone(i.phone)) + (isMobile(i.phone) ? ' · celular' : ' · fixo') : 'Sem telefone no mapa'}${i.instagram ? ' · tem Instagram' : ''}</p></div>
+      <div class="acts"><a class="b3 sm ghost" href="https://www.google.com/search?q=${encodeURIComponent(i.name + ' ' + (o.geo.city || o.area))}" target="_blank" rel="noopener" title="Confira se tem site antes de abordar">Conferir</a>${i.known ? '<span class="chip ok"><span class="dot"></span>No CRM</span>' : `<button class="b3 sm" data-radar="add" data-id="${esc(i.id)}">Pro funil</button>`}</div></div>`).join('') || '<p class="empty">Nenhum lead com esse filtro. Tente “Todos sem site” ou aumente o raio.</p>'}</div>
+    ${list.length > R.shown ? `<div class="acts" style="margin-top:12px;justify-content:center"><button class="b3 sm ghost" data-radar="more">Mostrar mais ${Math.min(60, list.length - R.shown)}</button></div>` : ''}
+    <p class="muted" style="font-size:13px;margin-top:12px">“Sem site” quer dizer sem site registrado no mapa: use Conferir antes de abordar, e pare de chamar quem pedir. Dados: © colaboradores do OpenStreetMap.</p></section>` : ''}`;
 };
 function radarAdd(i) {
   if (i.known) return null;
-  const l = {id:uid(), name:i.name, phone:i.phone ? fmtPhone(i.phone) : '', email:'', interest:`Site para ${(RADAR_SEG[i.seg] || 'negócio').toLowerCase()}`, source:'radar', stage:'s1', value:0, follow:at(0, Math.min(23, new Date().getHours() + 1)), created:Date.now(), consent:null, client:null, demo:!REAL, utm:{radar:i.id, area:V._rArea}};
+  const seg = (RADAR_SEG[i.seg] || 'negócio').toLowerCase();
+  const l = {id:uid(), name:i.name, phone:i.phone ? fmtPhone(i.phone) : '', email:i.email || '', interest:`Site e CRM para ${seg}`, source:'radar', stage:'s1', value:0, follow:at(0, Math.min(23, new Date().getHours() + 1)), created:Date.now(), consent:null, client:null, demo:!REAL, utm:{radar:i.id, area:V._r.area, km:V._r.km, segmento:i.seg, instagram:i.instagram || '', endereco:i.address || ''}};
   S.leads.push(l);
-  S.acts.push({id:uid(), lead:l.id, kind:'note', body:`Encontrado pelo Radar em ${V._rArea}${i.address ? ' · ' + i.address : ''}. Sem site no mapa.${i.instagram ? ' Instagram: ' + i.instagram : ''}`, at:Date.now(), by:'Radar'});
+  S.acts.push({id:uid(), lead:l.id, kind:'note', body:`Encontrado pelo Radar a ${i.dist != null ? i.dist.toFixed(1).replace('.', ',') + ' km de ' : ''}${V._r.area}${i.address ? ' · ' + i.address : ''}. Sem site no mapa.${i.instagram ? ' Instagram: ' + i.instagram : ''}`, at:Date.now(), by:'Radar'});
   i.known = true;
   return l;
 }
-document.addEventListener('click', async e => {
+function markKnown(items) {
+  const phones = new Set(S.leads.map(l => rDigits(l.phone)).filter(Boolean)), names = new Set(S.leads.map(l => String(l.name).toLowerCase()));
+  items.forEach(i => { i.known = (i.phone && phones.has(i.phone)) || names.has(String(i.name).toLowerCase()) || S.leads.some(l => l.utm && l.utm.radar === i.id); });
+}
+async function radarSearch(geo) {
+  const R = V._r, run = ++radarRun, stop = () => run !== radarRun, res = {loading:true, step:'Localizando a região…', items:[], bySeg:{}, km:R.km, area:R.area, source:''};
+  V._rOut = res; render();
+  const step = s => { res.step = s; if (view === 'radar') { const n = $('#view .card p.muted'); if (n) n.textContent = s + (res.items.length ? ` · ${res.items.length} encontrados até agora` : ''); } };
+  try {
+    res.geo = geo || await geocode(R.area);
+  } catch (e) { res.loading = false; res.error = 'O serviço de endereços não respondeu. Tente de novo em 1 minuto.'; return render(); }
+  if (!res.geo) { res.loading = false; res.error = 'Não encontrei esse local. Escreva bairro e cidade, como Sapopemba, São Paulo.'; return render(); }
+  const g = {lat:res.geo.lat, lon:res.geo.lon, km:R.km}, sources = new Set(), falhas = [];
+  let overpassOk = true;
+  for (const seg of R.seg) {
+    if (stop()) return;
+    step(`Procurando ${RADAR_SEG[seg].toLowerCase()}…`);
+    let items = null;
+    if (REAL) { const r = await Real.fn('radar', {tenant_id:Real.tenantId(), segment:seg, lat:g.lat, lon:g.lon, km:g.km}); if (r.upgrade) { res.loading = false; res.error = r.error; return render(); } if (r.items) { items = r.items; sources.add(r.source); } }
+    if (!items && overpassOk) { try { items = await viaOverpass(seg, g); sources.add('OpenStreetMap'); } catch (e) { overpassOk = false; } }
+    if (!items) { try { items = await viaNominatim(seg, g, stop, step); sources.add('OpenStreetMap (Nominatim)'); } catch (e) { falhas.push(RADAR_SEG[seg]); items = location.protocol === 'https:' && location.hostname.includes('claude') ? radarDemo(seg) : []; } }
+    if (stop()) return;
+    const seen = new Set(res.items.map(i => i.id));
+    const fresh = items.filter(i => i.name && !seen.has(i.id)).map(i => Object.assign(i, {seg, dist:i.lat ? distKm(g.lat, g.lon, i.lat, i.lon) : null})).filter(i => i.dist == null || i.dist <= g.km * 1.05);
+    res.items.push(...fresh);
+    res.bySeg[seg] = {total:fresh.length, semSite:fresh.filter(i => !i.site).length};
+  }
+  markKnown(res.items);
+  res.items.sort((a, b) => leadPoints(b) - leadPoints(a));
+  res.ibge = await ibgeContext(res.geo.city, res.geo.uf);
+  res.source = [...sources].join(' + ') || 'sem fonte';
+  res.loading = false; R.shown = 60;
+  if (falhas.length) res.error = `Os mapas não responderam para: ${falhas.join(', ')}. Tente de novo em alguns minutos.`;
+  if (!res.items.length && !falhas.length) res.error = 'Nada encontrado nesse raio. Aumente os quilômetros ou troque o local.';
+  audit(`Radar: ${res.items.length} negócios em ${R.km} km de ${R.area}`);
+  render();
+}
+document.addEventListener('input', e => { const t = e.target; if (t.id === 'rKm') { V._r.km = +t.value; const o = $('#rKmOut'); if (o) o.textContent = t.value + ' km'; } if (t.id === 'rArea') V._r.area = t.value; });
+document.addEventListener('change', e => { if (e.target.id === 'rConv') { V._r.conv = +e.target.value; render(); } });
+document.addEventListener('click', e => {
   const b = e.target.closest('[data-radar]'); if (!b) return;
-  const k = b.dataset.radar, o = V._rOut;
-  if (k === 'seg') { const s = b.dataset.k; V._rSeg = V._rSeg.includes(s) ? V._rSeg.filter(x => x !== s) : V._rSeg.concat(s); render(); }
-  if (k === 'add') { const l = radarAdd(o.items[+b.dataset.n]); audit(`Radar: “${l.name}” foi para o funil`); save(); render(); toast(`${l.name} entrou em “Novo”.`, {label:'Abrir', run:() => openLead(l.id)}); }
-  if (k === 'all') { const n = o.items.filter(i => !i.known && i.phone).map(radarAdd).length; audit(`Radar: ${n} negócios foram para o funil`); save(); render(); toast(`${n} leads entraram em “Novo”.`); }
-  if (k === 'go') {
-    if (!V._rSeg.length) return toast('Escolha pelo menos um segmento.');
-    if (String(V._rArea).trim().length < 3) return toast('Digite o bairro e a cidade.');
-    const out = {loading:true, step:''}; V._rOut = out; render();
-    const res = {items:[], total:0, withSite:0, source:''}; let err = '';
-    for (const [n, seg] of V._rSeg.entries()) {
-      out.step = `Procurando ${RADAR_SEG[seg].toLowerCase()} (${n + 1} de ${V._rSeg.length})`; render();
-      if (n) await new Promise(r => setTimeout(r, 1200)); // respeita o limite do serviço de mapas
-      const r = REAL ? await Real.fn('radar', {tenant_id:Real.tenantId(), segment:seg, area:V._rArea}) : radarDemo(seg);
-      if (r.error) { err = r.error; continue; }
-      res.source = r.source; res.total += r.total; res.withSite += r.withSite;
-      r.items.forEach(i => { if (!res.items.some(x => x.id === i.id)) res.items.push(Object.assign(i, {seg})); });
-    }
-    V._rOut = res.source ? res : {error:err || 'A busca não retornou nada.'};
-    if (res.source && err) V._rOut.error = err;
-    render();
+  const k = b.dataset.radar, o = V._rOut, R = V._r;
+  if (k === 'seg') { const s = b.dataset.k; R.seg = R.seg.includes(s) ? R.seg.filter(x => x !== s) : R.seg.concat(s); render(); }
+  if (k === 'preset') { R.seg = RADAR_PRESET.slice(); render(); }
+  if (k === 'none') { R.seg = []; render(); }
+  if (k === 'filter') { R.filter = b.dataset.k; R.shown = 60; render(); }
+  if (k === 'more') { R.shown += 60; render(); }
+  if (k === 'stop') { radarRun++; o.loading = false; o.source = o.source || 'busca interrompida'; markKnown(o.items); render(); }
+  if (k === 'add') { const it = o.items.find(x => x.id === b.dataset.id), l = it && radarAdd(it); if (l) { audit(`Radar: “${l.name}” foi para o funil`); save(); render(); toast(`${l.name} entrou em “Novo”.`, {label:'Abrir', run:() => openLead(l.id)}); } }
+  if (k === 'all') { const n = rShown(o).filter(i => !i.known).map(radarAdd).length; audit(`Radar: ${n} negócios foram para o funil`); save(); render(); toast(`${n} leads entraram em “Novo”.`); }
+  if (k === 'csv') {
+    const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`, rows = rShown(o);
+    downloadText(`radar-${slugify(R.area)}-${R.km}km.csv`, '﻿' + ['Nome;Nicho;Telefone;Celular;E-mail;Endereço;Bairro;Distância km;Instagram;Pontos;No CRM'].concat(rows.map(i => [i.name, RADAR_SEG[i.seg], fmtPhone(i.phone), isMobile(i.phone) ? 'sim' : 'não', i.email, i.address, i.suburb, i.dist != null ? i.dist.toFixed(1) : '', i.instagram, leadPoints(i), i.known ? 'sim' : 'não'].map(q).join(';'))).join('\n'));
+    toast(`${rows.length} leads no CSV.`);
+  }
+  if (k === 'go' || k === 'here') {
+    if (!R.seg.length) return toast('Escolha pelo menos um nicho.');
+    if (k === 'go') { if (String(R.area).trim().length < 3) return toast('Digite o bairro e a cidade.'); return radarSearch(); }
+    if (!navigator.geolocation) return toast('Este aparelho não informa a localização.');
+    toast('Pegando a sua localização…');
+    navigator.geolocation.getCurrentPosition(p => { R.area = 'Minha localização'; radarSearch({lat:p.coords.latitude, lon:p.coords.longitude, city:'', uf:'', label:'Minha localização'}); }, () => toast('Não consegui a localização. Digite o local.'), {timeout:10000});
   }
 });
-function radarDemo(seg) {
-  const n = RADAR_SEG[seg], items = [`${n} Boa Vista`, `${n} Central`, `Espaço ${n}`, `${n} da Praça`].map((name, i) => ({id:`demo:${seg}${i}`, name, phone:i === 2 ? '' : `1190000${seg.length}${i}0${i}`, address:`Rua de Exemplo, ${100 + i * 37}`, site:'', instagram:i === 1 ? 'instagram.com/exemplo' : '', map:'', known:false}));
-  return {source:'Exemplo (a busca ao vivo funciona no painel real)', total:6, withSite:2, items};
+function downloadText(name, text) { const u = URL.createObjectURL(new Blob([text], {type:'text/csv;charset=utf-8'})), a = document.createElement('a'); a.href = u; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); }
+
+/* ============ planos: o que cada um libera ============ */
+const PLAN_RANK = {essencial:1, pro:2, white_label:3};
+const PLAN_NAME = {essencial:'Essencial', pro:'Pro', white_label:'White-label'};
+const FEAT_PLAN = {radar:'pro', relatorios:'pro', score:'pro', reativar:'pro', modelos:'pro', pagamento:'pro', financeiro:'pro', whitelabel:'white_label'};
+const planKey = () => T.planKey || {'White-label':'white_label', Interno:'white_label', Pro:'pro', Essencial:'essencial'}[T.plan] || 'pro';
+const has = f => PLAN_RANK[planKey()] >= PLAN_RANK[FEAT_PLAN[f] || 'essencial'];
+const PLAN_TABLE = [
+  ['Funil de vendas, clientes e agenda', 1, 1, 1], ['Orçamento do site entrando sozinho no funil', 1, 1, 1], ['Propostas e WhatsApp a um toque', 1, 1, 1], ['Histórico de exclusões e alterações', 1, 1, 1],
+  ['Link de pagamento (Pix e cartão) e aviso de pagante', 0, 1, 1], ['Financeiro e fluxo de caixa', 0, 1, 1], ['Radar de leads e estudo de mercado', 0, 1, 1], ['Pontuação de leads (quente, morno, frio)', 0, 1, 1], ['Lista de reativação de leads parados', 0, 1, 1], ['Modelos de mensagem para WhatsApp', 0, 1, 1], ['Relatórios, meta do mês e exportação CSV', 0, 1, 1],
+  ['Painel sem a marca Amplitude', 0, 0, 1], ['Domínio próprio, configurado com você', 0, 0, 1],
+];
+const SEATS = {essencial:'2 pessoas', pro:'5 pessoas', white_label:'Sem limite'};
+function upgradeUrl(p) { return `https://wa.me/5511952182016?text=${encodeURIComponent(`Oi, Amplitude Lab! Quero mudar o CRM da ${brandName()} para o plano ${p}.`)}`; }
+V.planos = () => {
+  const cur = planKey();
+  return head('Planos', `Sua empresa está no plano ${PLAN_NAME[cur]}.`)
+  + `<section class="card"><div class="tbl ptb"><table><thead><tr><th>Recurso</th>${Object.entries(PLAN_NAME).map(([k, n]) => `<th class="c" ${k === cur ? 'style="color:var(--accent)"' : ''}>${n}</th>`).join('')}</tr></thead><tbody>
+    ${PLAN_TABLE.map(r => `<tr><td>${r[0]}</td>${[1, 2, 3].map(i => `<td class="c">${r[i] ? `<span class="yes" aria-label="incluso">${icon('check')}</span>` : '<span class="no" aria-label="não incluso">—</span>'}</td>`).join('')}</tr>`).join('')}
+    <tr><td>Pessoas na conta</td>${Object.keys(PLAN_NAME).map(k => `<td class="c">${SEATS[k]}</td>`).join('')}</tr>
+    <tr><td><b>Valor por mês</b></td><td class="c num"><b>R$ 89</b></td><td class="c num"><b>R$ 189</b></td><td class="c num"><b>R$ 379</b></td></tr></tbody></table></div>
+    ${cur !== 'white_label' ? `<div class="acts" style="margin-top:14px">${cur === 'essencial' ? `<a class="b3" href="${esc(upgradeUrl('Pro'))}" target="_blank" rel="noopener">Quero o Pro</a>` : ''}<a class="b3 ${cur === 'essencial' ? 'ghost' : ''}" href="${esc(upgradeUrl('White-label'))}" target="_blank" rel="noopener">Quero o White-label</a></div>` : ''}</section>`;
+};
+function lockedView(f, title, why) {
+  return head(title, why) + `<section class="card" style="display:flex;flex-direction:column;gap:14px;align-items:flex-start"><span class="chip acc">${icon('lock')}Plano ${PLAN_NAME[FEAT_PLAN[f]]}</span><p style="max-width:60ch">${why}</p><div class="acts"><a class="b3" href="${esc(upgradeUrl(PLAN_NAME[FEAT_PLAN[f]]))}" target="_blank" rel="noopener">Falar sobre o plano ${PLAN_NAME[FEAT_PLAN[f]]}</a><button class="b3 ghost" data-go="planos">Comparar planos</button></div></section>`;
 }
+['radar', 'relatorios'].forEach(k => { const fn = V[k]; V[k] = () => has(k) ? fn() : lockedView(k, k === 'radar' ? 'Radar de leads' : 'Relatórios', k === 'radar' ? 'Encontre negócios sem site por nicho, local e raio, com estudo de mercado e rota de visitas.' : 'Veja conversão por origem, ticket médio, meta do mês e exporte seus dados.'); });
+
+/* ============ pontuação, reativação e modelos de mensagem ============ */
+function leadScore(l) {
+  const acts = S.acts.filter(a => a.lead === l.id), last = Math.max(l.created || 0, ...acts.map(a => a.at || 0)), days = (Date.now() - last) / DAY;
+  let s = 0; if (l.phone) s += 20; if (l.email) s += 5; if (l.value > 0) s += 10;
+  s += {s1:5, s2:15, s3:30, s4:40}[l.stage] || 0;
+  s += days < 2 ? 25 : days < 7 ? 15 : days < 15 ? 5 : 0;
+  if (S.proposals.some(p => p.lead === l.id && p.url)) s += 10;
+  return Math.min(100, s);
+}
+const scoreChip = l => { if (!has('score') || !isOpen(l)) return ''; const s = leadScore(l), [t, c] = s >= 65 ? ['Quente', 'bad'] : s >= 35 ? ['Morno', 'warn'] : ['Frio', '']; return `<span class="chip ${c}" title="Pontuação ${s} de 100">${t}</span>`; };
+function staleLeads() { return openLeads().map(l => ({l, last:Math.max(l.created || 0, ...S.acts.filter(a => a.lead === l.id).map(a => a.at || 0))})).filter(x => Date.now() - x.last >= 7 * DAY).sort((a, b) => a.last - b.last); }
+const DEF_TPL = [['Primeiro contato', 'Oi, {nome}! Aqui é da {empresa}. Vi o seu negócio e tenho uma ideia de página para trazer mais clientes pelo WhatsApp. Posso te mostrar uma demonstração rápida? Se não fizer sentido, é só avisar que não mando mais mensagem.'], ['Follow-up', 'Oi, {nome}! Passando para saber se você viu a minha mensagem sobre {interesse}. Se quiser, te mando a demonstração agora. Se não for o momento, sem problema.'], ['Proposta enviada', 'Oi, {nome}! Conseguiu ver a proposta de {interesse}? Se tiver alguma dúvida ou quiser ajustar algo, me fala por aqui.']];
+const templates = () => (S.form.templates && S.form.templates.length ? S.form.templates : DEF_TPL);
+const fillTpl = (t, l) => t.replace(/\{nome\}/g, first(l.name)).replace(/\{empresa\}/g, brandName()).replace(/\{interesse\}/g, l.interest || 'nossos serviços');
+function tplLinks(l) {
+  const dg = rDigits(l.phone), num = l.demo || dg.length < 10 ? '' : '55' + dg;
+  return `<div class="sec"><span class="flabel">Mensagens prontas</span><div class="acts">${templates().map(t => `<a class="b3 sm ghost" href="https://wa.me/${num}?text=${encodeURIComponent(fillTpl(t[1], l))}" target="_blank" rel="noopener">${esc(t[0])}</a>`).join('')}</div></div>`;
+}
+
+/* ============ relatórios ============ */
+V.relatorios = () => {
+  const paid = S.charges.filter(c => c.status === 'paid'), ms = monthStart(), month = paid.filter(c => c.paid >= ms), sum = a => a.reduce((x, c) => x + c.amount, 0);
+  const won = S.leads.filter(l => stageOf(l.stage).k === 'won'), closed = S.leads.filter(l => !isOpen(l)), goal = S.form.goal || 0, done = sum(month);
+  const cycle = won.filter(l => l.paidAt && l.created).map(l => (l.paidAt - l.created) / DAY), avgDays = cycle.length ? cycle.reduce((a, b) => a + b, 0) / cycle.length : null;
+  const rows = Object.keys(SRC).map(k => { const all = S.leads.filter(l => l.source === k), w = all.filter(l => stageOf(l.stage).k === 'won'); return {k, n:all.length, w:w.length, v:w.reduce((a, l) => a + (l.value || 0), 0)}; }).filter(r => r.n).sort((a, b) => b.w - a.w || b.n - a.n);
+  return head('Relatórios', 'O que está vendendo, de onde vem e quanto falta para a meta.', `<button class="b3 ghost" data-rep="leads">${icon('copy')}Leads em CSV</button>${can('fin') ? `<button class="b3 ghost" data-rep="sales">${icon('copy')}Vendas em CSV</button>` : ''}`)
+  + `<div class="kpis">
+    ${can('fin') ? `<div class="kpi"><span class="mono">Vendas no mês</span><b>${money(done)}</b><small>${month.length} pagamento${month.length === 1 ? '' : 's'}</small></div>
+    <div class="kpi"><span class="mono">Ticket médio</span><b>${money(paid.length ? Math.round(sum(paid) / paid.length) : 0)}</b><small>${paid.length} vendas no total</small></div>` : ''}
+    <div class="kpi"><span class="mono">Fechamento</span><b>${closed.length ? Math.round(won.length / closed.length * 100) : 0}%</b><small>${won.length} de ${closed.length} decididos</small></div>
+    <div class="kpi"><span class="mono">Tempo até pagar</span><b>${avgDays == null ? '—' : Math.round(avgDays) + ' dias'}</b><small>${cycle.length ? 'média das vendas' : 'sem vendas ainda'}</small></div></div>
+  ${can('fin') ? `<section class="card"><div class="ch"><h3>Meta do mês</h3><span class="num muted">${money(done)} de ${money(goal)}</span></div>
+    <div class="track" style="height:14px;border-radius:7px;background:var(--panel2);overflow:hidden"><div style="height:100%;width:${goal ? Math.min(100, done / goal * 100) : 0}%;background:var(--accent);border-radius:7px"></div></div>
+    <div class="field" style="margin-top:12px;max-width:260px"><label for="rGoal">Definir meta (R$)</label><input class="inp" id="rGoal" inputmode="decimal" value="${goal ? reais(goal) : ''}" placeholder="0,00"></div></section>` : ''}
+  <section class="card"><div class="ch"><h3>Resultado por origem</h3></div><div class="tbl"><table><thead><tr><th>Origem</th><th class="c">Leads</th><th class="c">Fechados</th><th class="c">Taxa</th><th class="c">Valor</th></tr></thead><tbody>${rows.map(r => `<tr><td>${SRC[r.k]}</td><td class="c num">${r.n}</td><td class="c num">${r.w}</td><td class="c num">${Math.round(r.w / r.n * 100)}%</td><td class="c num">${money(r.v)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">Sem leads ainda.</td></tr>'}</tbody></table></div></section>
+  ${can('fin') ? `<section class="card"><div class="ch"><h3>Fluxo de caixa · 6 meses</h3><div class="legend"><span><i style="background:var(--accent)"></i>Entradas</span><span><i style="background:var(--dim)"></i>Saídas</span></div></div>${cashChart()}</section>` : ''}`;
+};
+{ const fn = V.relatorios; V.relatorios = () => has('relatorios') ? fn() : lockedView('relatorios', 'Relatórios', 'Veja conversão por origem, ticket médio, meta do mês e exporte seus dados.'); }
+document.addEventListener('change', e => { if (e.target.id === 'rGoal') { S.form.goal = cents(e.target.value); audit(`Meta do mês: ${money(S.form.goal)}`); save(); render(); } });
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-rep]'); if (!b) return;
+  const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  if (b.dataset.rep === 'leads') downloadText('leads.csv', '﻿' + ['Nome;Telefone;E-mail;Interesse;Origem;Etapa;Valor;Entrou;Pagante'].concat(S.leads.map(l => [l.name, l.phone, l.email, l.interest, SRC[l.source] || l.source, stageOf(l.stage).n, reais(l.value || 0), ymd(l.created), l.paidAt ? 'sim' : 'não'].map(q).join(';'))).join('\n'));
+  else downloadText('vendas.csv', '﻿' + ['Descrição;Cliente;Valor;Forma;Pago em'].concat(S.charges.filter(c => c.status === 'paid').map(c => [c.desc, clientName(c.client) || leadName(c.lead), reais(c.amount), METH[c.method] || '', ymd(c.paid)].map(q).join(';'))).join('\n'));
+});
+
+/* ============ apagar com motivo e autor ============ */
+const DEL_NAME = {proposal:'proposta', sale:'venda', cash:'lançamento', lead:'lead'};
+const REASONS = ['Cliente desistiu', 'Pagamento devolvido', 'Lançado errado', 'Registro duplicado', 'Teste', 'Outro motivo'];
+function modalDelete(kind, id, title, amount) {
+  modal(`Apagar ${DEL_NAME[kind]}`, `<p><b>${esc(title)}</b>${amount ? ` · <span class="num">${money(amount)}</span>` : ''}</p>
+    <div class="fg">${sel('why', 'Motivo', REASONS.map(r => [r, r]), 'full')}${inp('detail', 'Detalhes', 'full autocomplete="off" placeholder="Explique em poucas palavras"')}${inp('asked', 'Quem pediu', 'full autocomplete="off" placeholder="Nome de quem pediu, se foi outra pessoa"')}</div>
+    <p class="note">${kind === 'sale' ? 'O valor sai do caixa e dos relatórios, e o lead volta para Negociação. Isto não devolve o dinheiro: o estorno é feito no app da InfinitePay. ' : ''}Fica registrado no histórico quem apagou, quando e por quê.</p>`,
+  fd => {
+    const why = String(fd.get('why')), det = String(fd.get('detail') || '').trim(), asked = String(fd.get('asked') || '').trim();
+    if (why === 'Outro motivo' && det.length < 5) return 'Explique o motivo em pelo menos 5 letras.';
+    const reason = why === 'Outro motivo' ? det : why + (det ? `: ${det}` : '');
+    if (REAL) { Real.deleteRecord(kind, id, reason, asked, title); return; }
+    localDelete(kind, id, reason, asked, title, amount); render(); toast(`${DEL_NAME[kind][0].toUpperCase() + DEL_NAME[kind].slice(1)} apagado(a). Motivo registrado.`);
+  }, `Apagar ${DEL_NAME[kind]}`);
+}
+function localDelete(kind, id, reason, asked, title, amount) {
+  let lead = null;
+  if (kind === 'sale') { const c = S.charges.find(x => x.id === id); lead = c.lead; S.charges = S.charges.filter(x => x.id !== id); S.cash = S.cash.filter(x => x.charge !== id); const l = lead && S.leads.find(x => x.id === lead); if (l && c.status === 'paid' && !S.charges.some(x => x.lead === l.id && x.status === 'paid')) { l.paidAt = null; l.stage = 's4'; } }
+  if (kind === 'cash') S.cash = S.cash.filter(x => x.id !== id);
+  if (kind === 'proposal') { const p = S.proposals.find(x => x.id === id); lead = p && p.lead; S.proposals = S.proposals.filter(x => x.id !== id); }
+  if (kind === 'lead') { S.leads = S.leads.filter(x => x.id !== id); S.proposals = S.proposals.filter(x => x.lead !== id); }
+  const who = ROLES[role].n;
+  (S.deletions = S.deletions || []).unshift({id:uid(), kind, title, amount:amount || 0, reason, asked, who, at:Date.now()});
+  if (lead) S.acts.push({id:uid(), lead, kind:'delete', body:`${DEL_NAME[kind]} apagada: ${title}. Motivo: ${reason}.`, at:Date.now(), by:who});
+  audit(`${DEL_NAME[kind]} apagada: ${title}. Motivo: ${reason}`); save();
+}
+function deletionsCard(limit = 8) {
+  const list = (S.deletions || []).slice(0, limit);
+  return `<section class="card"><div class="ch"><h3>Histórico de exclusões</h3><span class="mono">${(S.deletions || []).length} ${(S.deletions || []).length === 1 ? 'registro' : 'registros'}</span></div><div class="rows">${list.map(d => `<div class="row"><span class="ico bad">${icon('x')}</span><div class="grow"><p class="t" style="white-space:normal">${esc(DEL_NAME[d.kind][0].toUpperCase() + DEL_NAME[d.kind].slice(1))}: ${esc(d.title)}${d.amount ? ` · <span class="num">${money(d.amount)}</span>` : ''}</p><p class="s" style="white-space:normal">Motivo: ${esc(d.reason)}${d.asked ? ` · Pedido por ${esc(d.asked)}` : ''}</p><p class="s">Apagado por ${esc(d.who)} · ${fdate(d.at)} ${ftime(d.at)}</p></div></div>`).join('') || '<p class="empty">Nada foi apagado. Quando alguém apagar uma venda ou proposta, o motivo aparece aqui.</p>'}</div></section>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-del]'); if (!b) return;
+  const [kind, id] = b.dataset.del.split(':');
+  if (kind === 'sale') { const c = S.charges.find(x => x.id === id); if (c) { closeLayers(); setTimeout(() => modalDelete(kind, id, c.desc, c.amount), 30); } }
+  if (kind === 'cash') { const c = S.cash.find(x => x.id === id); if (c) modalDelete(kind, id, c.desc, c.amount); }
+  if (kind === 'proposal') { const p = S.proposals.find(x => x.id === id); if (p) modalDelete(kind, id, p.title, propTotal(p)); }
+  if (kind === 'lead') { const l = S.leads.find(x => x.id === id); if (l) { closeLayers(); setTimeout(() => modalDelete(kind, id, l.name, l.value), 30); } }
+});
+
+/* ============ empresas clientes (só a conta da Amplitude Lab) ============ */
+V._emp = null;
+V.empresas = () => {
+  const list = V._emp;
+  if (!list) { Real.fn('provision-tenant', {action:'list'}).then(r => { V._emp = r.tenants || []; if (r.error) toast(r.error); if (view === 'empresas') render(); }); }
+  return head('Empresas', 'Crie o CRM de um cliente em segundos. Ele recebe um link para definir o próprio e-mail e senha.')
+  + `<form class="card" id="empForm" style="display:flex;flex-direction:column;gap:14px" novalidate><h3>Nova empresa</h3>
+    <div class="fg"><div class="field"><label for="empName">Nome da empresa</label><input class="inp" id="empName" name="name" autocomplete="off"></div>
+    <div class="field"><label for="empSeg">Segmento</label><select class="inp" id="empSeg" name="segment">${Object.entries(SEGMENTS).map(([k, s]) => `<option value="${k}">${esc(s.label)}</option>`).join('')}</select></div>
+    <div class="field"><label for="empPlan">Plano</label><select class="inp" id="empPlan" name="plan">${Object.entries(PLAN_NAME).map(([k, n]) => `<option value="${k}" ${k === 'pro' ? 'selected' : ''}>${n}</option>`).join('')}</select></div>
+    <div class="field"><label for="empTag">InfiniteTag do cliente (opcional)</label><input class="inp" id="empTag" name="handle" autocomplete="off" placeholder="sem o $"></div></div>
+    <p class="err" id="empErr" hidden></p><div class="acts"><button class="b3" type="submit">${icon('plus')}Criar CRM e gerar convite</button></div></form>
+  <section class="card"><div class="ch"><h3>Clientes do CRM</h3><span class="chip acc">${list ? list.length : '…'}</span></div><div class="rows">${list ? (list.map(t => `<div class="row rrow"><span class="logo sm" style="background:var(--panel2);color:var(--accent);box-shadow:none">${esc(initials(t.name))}</span><div class="grow"><p class="t">${esc(t.name)}</p><p class="s">${t.leads} leads · ${t.membros} pessoa${t.membros === 1 ? '' : 's'} · ${t.payment_handle ? 'pagamento ligado' : 'sem pagamento'}</p></div>
+      <div class="acts"><label class="sr" for="pl-${t.id}">Plano de ${esc(t.name)}</label><select class="sel" id="pl-${t.id}" data-emp-plan="${t.id}">${Object.entries(PLAN_NAME).map(([k, n]) => `<option value="${k}" ${k === t.plan ? 'selected' : ''}>${n}</option>`).join('')}</select><a class="b3 sm ghost" href="${location.pathname}?empresa=${esc(t.slug)}" target="_blank" rel="noopener">Abrir</a>${t.membros ? '' : `<button class="b3 sm ghost" data-emp-inv="${t.id}" data-slug="${esc(t.slug)}">Novo convite</button>`}</div></div>`).join('') || '<p class="empty">Nenhum cliente ainda. Crie o primeiro acima.</p>') : '<p class="empty">Carregando…</p>'}</div></section>`;
+};
+function showInvite(slug, token, name) {
+  const url = `${location.origin}${location.pathname}?empresa=${slug}&convite=${token}`;
+  modal('CRM pronto', `<p>Mande este link para ${esc(name)}. Funciona uma vez, por 7 dias.</p><pre class="code">${esc(url)}</pre><div class="acts"><button class="b3 sm" type="button" data-copy="${esc(url)}">${icon('copy')}Copiar link</button></div>`, null);
+}
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'empForm') return; e.preventDefault();
+  const fd = new FormData(e.target), err = $('#empErr'), name = String(fd.get('name') || '').trim();
+  if (name.length < 2) { err.textContent = 'Escreva o nome da empresa.'; err.hidden = false; return; }
+  const r = await Real.fn('provision-tenant', {name, segment:fd.get('segment'), plan:fd.get('plan'), handle:fd.get('handle')});
+  if (r.error) { err.textContent = r.error; err.hidden = false; return; }
+  V._emp = null; render(); showInvite(r.slug, r.token, name);
+});
+document.addEventListener('change', async e => { const id = e.target.dataset && e.target.dataset.empPlan; if (!id) return; const r = await Real.fn('provision-tenant', {action:'plan', tenant_id:id, plan:e.target.value}); toast(r.error || 'Plano atualizado.'); });
+document.addEventListener('click', async e => { const b = e.target.closest('[data-emp-inv]'); if (!b) return; const r = await Real.fn('provision-tenant', {action:'invite', tenant_id:b.dataset.empInv}); if (r.error) return toast(r.error); showInvite(b.dataset.slug, r.token, 'o cliente'); });
+
+/* ============ configurações de venda da empresa ============ */
+function salesCard() {
+  if (!REAL || !can('team')) return '';
+  return `<section class="card" style="display:flex;flex-direction:column;gap:12px"><div class="ch" style="margin:0"><h3>Pagamento e planos à venda</h3></div>
+    <div class="field"><label for="payTag">Sua InfiniteTag (sem o $)</label><input class="inp" id="payTag" value="${esc(S.pay.tag)}" autocomplete="off"></div>
+    <span class="flabel">Planos e serviços que aparecem na sua página</span>
+    <div class="items" id="plRows">${(S.plans || []).map(p => `<div class="item plrow" data-id="${p[2]}"><input class="inp" aria-label="Nome" value="${esc(p[0])}"><input class="inp" aria-label="Valor" inputmode="decimal" value="${reais(p[1])}" style="grid-column:span 2"></div>`).join('')}</div>
+    <div class="acts"><button class="link" type="button" data-pl="add">+ Adicionar plano</button></div>
+    <div class="acts"><button class="b3 sm" type="button" data-pl="save">Salvar</button></div></section>`;
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-pl]'); if (!b) return;
+  if (b.dataset.pl === 'add') { $('#plRows').insertAdjacentHTML('beforeend', '<div class="item plrow"><input class="inp" aria-label="Nome" placeholder="Nome do plano"><input class="inp" aria-label="Valor" inputmode="decimal" placeholder="R$" style="grid-column:span 2"></div>'); return; }
+  const rows = $$('#plRows .plrow').map((r, i) => { const [n, v] = $$('input', r); return {id:r.dataset.id, name:n.value.trim(), price_cents:cents(v.value), position:i + 1}; }).filter(r => r.name && r.price_cents >= 100);
+  const r = await Real.savePay($('#payTag').value.trim().replace(/^\$/, ''), rows);
+  toast(r || 'Pagamento e planos salvos.'); render();
+});
 
 /* ============ painel real: login com senha e dados no Supabase ============ */
 const Real = (() => {
@@ -1784,8 +2090,9 @@ const Real = (() => {
   async function reload() {
     const {data:st} = await sb.from('pipeline_stages').select('id, position').eq('tenant_id', tid);
     (st || []).forEach(x => { stageId['s' + x.position] = x.id; stageKey[x.id] = 's' + x.position; });
-    const q = t => sb.from(t).select('*').eq('tenant_id', tid);
-    const [cl, ct, ld, ac, pr, ta, ch, ca, no, pl, au, te] = await Promise.all([q('clients'), q('contacts'), q('leads'), q('activities'), q('proposals'), q('tasks'), q('charges'), q('cash_entries'), q('notifications').order('created_at', {ascending:false}).limit(60), q('plans').eq('active', true).order('position'), q('audit_log').order('at', {ascending:false}).limit(30), sb.rpc('team_list', {p_tenant:tid})]);
+    const q = t => sb.from(t).select('*').eq('tenant_id', tid), live = t => q(t).is('deleted_at', null);
+    const [cl, ct, ld, ac, pr, ta, ch, ca, no, pl, au, te, de, ten] = await Promise.all([q('clients'), q('contacts'), live('leads'), q('activities'), live('proposals'), q('tasks'), live('charges').in('status', ['pending', 'paid']), live('cash_entries'), q('notifications').order('created_at', {ascending:false}).limit(60), q('plans').eq('active', true).order('position'), q('audit_log').order('at', {ascending:false}).limit(30), sb.rpc('team_list', {p_tenant:tid}), q('deletions').order('created_at', {ascending:false}).limit(100), sb.from('tenants').select('payment_handle, plan').eq('id', tid).maybeSingle()]);
+    const people = {}; (te.data || []).forEach(m => { people[m.user_id] = m.email; });
     if (ld.error) throw ld.error;
     const pick = (k, r) => (r.data || []).map(MAP[k].from);
     const clients = pick('clients', cl);
@@ -1794,10 +2101,11 @@ const Real = (() => {
     const TBL = {leads:'Lead', activities:'Histórico', proposals:'Proposta', tasks:'Tarefa', charges:'Cobrança', cash_entries:'Caixa', clients:'Cliente', contacts:'Contato', forms:'Formulário', pipeline_stages:'Funil'}, VERB = {INSERT:'criado(a)', UPDATE:'alterado(a)', DELETE:'apagado(a)'};
     S = {v:1, clients, leads:pick('leads', ld), acts:pick('acts', ac), proposals:pick('proposals', pr), tasks:pick('tasks', ta), charges:pick('charges', ch), cash:pick('cash', ca), notes:pick('notes', no),
       plans:(pl.data || []).map(p => [p.name, Number(p.price_cents), p.id]),
-      audit:(au.data || []).map(a => ({at:ms(a.at), who:'Equipe', a:`${TBL[a.table_name] || a.table_name} ${VERB[a.action] || a.action}`})),
+      audit:(au.data || []).map(a => ({at:ms(a.at), who:people[a.actor_id] || (a.actor_id ? 'Equipe' : 'Sistema'), a:`${TBL[a.table_name] || a.table_name} ${VERB[a.action] || a.action}`})),
       form:Object.assign({title:'Quero minha página', email:true, interest:true, msg:false, wa:'', consent:'Autorizo o contato por WhatsApp e e-mail sobre este pedido.'}, crm.form),
-      brand:Object.assign({name:'', color:'', hide:false, domain:''}, crm.brand), pay:{gateway:'infinitepay', tag:''},
+      brand:Object.assign({name:'', color:'', hide:false, domain:''}, crm.brand), pay:{gateway:'infinitepay', tag:(ten.data && ten.data.payment_handle) || ''}, deletions:(de.data || []).map(d => ({id:d.id, kind:d.kind, title:d.title, amount:Number(d.amount_cents), reason:d.reason, asked:d.requested_by, who:d.actor_email || 'Equipe', at:ms(d.created_at)})),
       members:(te.data || []).map(m => ({n:m.email.split('@')[0], e:m.email, r:ROLES[m.role] ? m.role : 'viewer'}))};
+    if (ten.data && ten.data.plan) T.planKey = ten.data.plan;
     remember();
   }
   const fn = async (name, body) => {
@@ -1811,7 +2119,7 @@ const Real = (() => {
   function setTenant(row) {
     brandRow = row.brand || {};
     const seg = SEGMENTS[brandRow.segment] ? brandRow.segment : 'estudio', s = SEGMENTS[seg];
-    T = {id:'real', slug:EMPRESA, name:row.name, niche:s.label, d:brandRow.primary_dark || s.d, l:brandRow.primary_light || s.l, plan:{white_label:'White-label', pro:'Pro', essencial:'Essencial'}[row.plan] || ''};
+    T = {id:'real', slug:EMPRESA, planKey:row.plan || 'essencial', name:row.name, niche:s.label, d:brandRow.primary_dark || s.d, l:brandRow.primary_light || s.l, plan:{white_label:'White-label', pro:'Pro', essencial:'Essencial'}[row.plan] || ''};
     NICHE.real = Object.assign({}, s, {clients:[]});
     const crm = brandRow.crm || {};
     S = {brand:Object.assign({name:'', color:'', hide:false, domain:''}, crm.brand), form:Object.assign({consent:'Autorizo o contato por WhatsApp e e-mail sobre este pedido.'}, crm.form), tasks:[], leads:[], charges:[], notes:[]};
@@ -1891,6 +2199,20 @@ const Real = (() => {
     l.value = p[1]; await sync(); await chain; await reload(); render();
     showPayLink(S.charges.find(c => c.id === r.charge_id) || {id:r.charge_id, lead:l.id, desc:p[0], amount:p[1], url:r.url});
   }
+  async function deleteRecord(kind, id, reason, asked, title) {
+    await sync(); await chain;
+    const {error} = await sb.rpc('delete_record', {p_kind:kind, p_id:id, p_reason:reason, p_requested_by:asked || null});
+    if (error) return toast(error.message || 'Não deu para apagar.');
+    await reload(); render(); toast(`“${title}” apagado. Motivo registrado no histórico.`);
+  }
+  async function savePay(tag, rows) {
+    const {error:e1} = await sb.from('tenants').update({payment_handle:tag || null}).eq('id', tid);
+    if (e1) return 'Só o dono ou admin muda o pagamento.';
+    const keep = rows.filter(r => r.id).map(r => r.id), gone = S.plans.map(p => p[2]).filter(id => !keep.includes(id));
+    for (const r of rows) { const {error} = r.id ? await sb.from('plans').update({name:r.name, price_cents:r.price_cents, position:r.position}).eq('id', r.id) : await sb.from('plans').insert({tenant_id:tid, name:r.name, price_cents:r.price_cents, position:r.position, interval:'once'}); if (error) return 'Não deu para salvar os planos.'; }
+    if (gone.length) await sb.from('plans').update({active:false}).in('id', gone);
+    await reload(); return '';
+  }
   async function proposalLink(id, amount) {
     toast('Gerando o link na InfinitePay…');
     await sync(); await chain;
@@ -1953,7 +2275,7 @@ const Real = (() => {
     const {data:{session}} = await sb.auth.getSession();
     if (session && (location.hash || '').indexOf('type=recovery') < 0) await openApp();
   }
-  return {boot, sync, fn, reload, logout, payLink, proposalLink, invite, paintLogin, submitLogin, forgot, tenantId:() => tid};
+  return {boot, sync, fn, reload, logout, payLink, proposalLink, deleteRecord, savePay, invite, paintLogin, submitLogin, forgot, tenantId:() => tid};
 })();
 
 /* tema do sistema mudou ou o host trocou data-theme */

@@ -80,7 +80,9 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
 - Página pública de compra: `crm/app/?empresa=<slug>#site`. Primeiro acesso: `?empresa=<slug>&convite=<token>` (uso único, 7 dias).
 - O que roda de verdade está em `crm/supabase/producao/` (migrations e funções `checkout`, `infinitepay-webhook`, `first-access`, `radar`). Os demais arquivos de `crm/supabase/` são o rascunho anterior com Asaas, não aplicado.
 - Pagamento: InfinitePay com a tag `norduk`, gravada em `tenants.payment_handle`. O aviso de pagamento não tem assinatura; o servidor sempre confere em `/payment_check`.
-- Radar de leads: OpenStreetMap por padrão; com o segredo `GOOGLE_PLACES_KEY`, usa o Google Maps.
+- Radar de leads: roda no navegador com Overpass e, em reserva, Nominatim por quadrantes; com `GEOAPIFY_KEY` ou `GOOGLE_PLACES_KEY` usa o servidor primeiro.
+- Apagar venda, proposta, lead ou lançamento só por `delete_record`, com motivo e autor. Nada é removido do banco.
+- Vender para outras empresas: veja `crm/VENDER-O-CRM.md`. O plano só muda pelo servidor.
 - Nunca coloque chaves secretas no repositório.
 
 ## Visual
