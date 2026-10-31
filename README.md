@@ -47,8 +47,6 @@ o trabalho: `CLAUDE.md`.
     `tests.sql` (29 verificações de permissão) e as Edge Functions `capture-lead`,
     `asaas-webhook` e `lembretes`.
   - `crm/cloudflare/worker.js`: subdomínio por cliente (`<cliente>.amplitudelab.com.br`).
-- `voxel-realms/`: jogo Voxel Realms (RPG voxel em Three.js), aberto em
-  `https://amplitudelab.github.io/lab/voxel-realms/` (detalhes em `voxel-realms/README.md`)
 
 ## Como editar
 
