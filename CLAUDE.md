@@ -69,8 +69,8 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   (29 verificações, testadas num Postgres 16 local) e Edge Functions `capture-lead`,
   `asaas-webhook` e `lembretes` (ainda não testadas com contas reais).
 - `crm/cloudflare/worker.js`: subdomínio por cliente.
-- `voxel-realms/`, `voxel-realms-android/`: jogo à parte, sem relação com o negócio.
-  Não vai no pacote .zip.
+- O jogo Voxel Realms saiu daqui: agora fica no repositório próprio `symbiozyy/voxelrealms`
+  (https://symbiozyy.github.io/voxelrealms/). Não tem relação com o negócio.
 
 
 ## CRM real (em produção)
@@ -101,7 +101,7 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   antes (as animações de entrada dependem do scroll).
 - Links internos usam `index.html` explícito quando a página precisa abrir também do
   disco (pacote .zip).
-- Pacote para enviar: `git archive` do `main` sem `voxel-realms*`, mais uma página
+- Pacote para enviar: `git archive` do `main`, mais uma página
   `COMECE-AQUI.html` na raiz, zipado como `amplitude-lab-completo.zip`.
 - Pull requests só quando pedido. O dono costuma pedir PR + merge no fim.
 
