@@ -440,13 +440,13 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
         <input class="inp" id="lgEmail" type="email" autocomplete="username" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="voce@empresa.com.br">
         <label for="lgPass" style="margin-top:8px">Senha</label>
         <input class="inp" id="lgPass" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Sua senha">
-        <button class="link" id="lgShow" type="button" style="align-self:flex-start">Mostrar senha</button>
-        <div id="lgCodeBox" class="field" hidden><label for="lgCode">Link ou código de acesso</label><input class="inp" id="lgCode" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Cole aqui"></div>
+        <div id="lgCodeBox" class="field" hidden><label for="lgCode">Código de acesso</label><input class="inp" id="lgCode" type="password" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Digite o código"></div>
+        <button class="link" id="lgShow" type="button" style="align-self:flex-start">Mostrar</button>
         <div id="lgPass2Box" class="field" hidden style="margin-top:8px"><label for="lgPass2">Repita a senha</label><input class="inp" id="lgPass2" type="password" autocomplete="new-password"></div>
         <p class="note" id="lgNote" hidden></p>
         <button class="b3" id="lgGo" type="submit" style="margin-top:8px"><svg class="i"><use href="#i-lock"/></svg><span id="lgGoTxt">Entrar</span></button>
         <button class="link" id="lgForgot" type="button" style="align-self:center">Esqueci minha senha</button>
-        <button class="link" id="lgUseCode" type="button" style="align-self:center" hidden>Entrar com link de acesso</button>
+        <button class="link" id="lgUseCode" type="button" style="align-self:center" hidden>Entrar com código de acesso</button>
         <button class="link" id="lgInstall" type="button" style="align-self:center" hidden>Instalar como app</button>
       </form>
       <div class="field" id="lgDemoBox">
@@ -1181,7 +1181,7 @@ V.equipe = () => {
       <div class="rows">
         <div class="row"><span class="ico ok">${icon('shield')}</span><div class="grow"><p class="t">Dados isolados por cliente</p><p class="s">Cada consulta passa por regras no banco (RLS). Um cliente nunca vê o outro.</p></div></div>
         <div class="row"><span class="ico ok">${icon('lock')}</span><div class="grow"><p class="t">Login com e-mail e senha</p><p class="s">Cada pessoa cria a própria senha por um convite de uso único.</p></div></div>
-        ${REAL ? `<div class="row"><span class="ico ok">${icon('bolt')}</span><div class="grow"><p class="t">Acessar no celular</p><p class="s">Gere um link de uso único e instale o painel como app.</p></div><button class="b3 sm ghost" data-act="deviceLink">Gerar link</button></div>
+        ${REAL ? `${role === 'owner' ? `<div class="row" style="flex-wrap:wrap"><span class="ico ok">${icon('bolt')}</span><div class="grow" style="flex:1 1 60%"><p class="t">Código de acesso</p><p class="s">Entra sem e-mail e senha. Cada entrada gera um aviso.</p></div><div class="acts" style="margin-left:auto"><button class="b3 sm ghost" data-act="accessCode">Trocar</button><button class="b3 sm ghost" data-act="accessCodeOff">Desativar</button></div></div>` : ''}
         <div class="row"><span class="ico ok">${icon('lock')}</span><div class="grow"><p class="t">Minha senha</p><p class="s">Troque aqui, sem depender do e-mail.</p></div><button class="b3 sm ghost" data-act="changePass">Trocar</button></div>` : ''}
         <div class="row"><span class="ico ok">${icon('clock')}</span><div class="grow"><p class="t">Bloqueio automático</p><p class="s">Painel trava depois de 5 minutos parado.</p></div></div>
         <div class="row"><span class="ico ok">${icon('copy')}</span><div class="grow"><p class="t">Backup diário</p><p class="s">${REAL ? 'Liga ao assinar o plano Pro do banco. No plano grátis não há backup automático.' : 'Cópia automática do banco, com restauração para um ponto no tempo no plano Pro.'}</p></div></div>
@@ -1510,7 +1510,8 @@ Total: ${money(propTotal(p))}
 Válida até ${fdate(p.valid)}`, 'Proposta copiada para colar no WhatsApp'); break; } copy(`https://${host()}/p/${p.token.slice(0, 16)}`, 'Link da proposta copiado'); break; }
     case 'acceptProposal': { const p = S.proposals.find(x => x.id === id); p.status = 'accepted'; audit(`Proposta “${p.title}” aceita pelo cliente`); if (p.lead) { const l = S.leads.find(x => x.id === p.lead); if (l && isOpen(l)) { save(); closeLayers(); moveLead(l.id, 's5', a); return; } } save(); const r = a.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top); viewProposal(id); render(); break; }
     case 'agDay': { const d = a.dataset.d ? +a.dataset.d : null; V._ag = d !== null && d === V._ag ? null : d; render(); break; }
-    case 'deviceLink': Real.deviceLink(); break;
+    case 'accessCode': Real.accessCode(); break;
+    case 'accessCodeOff': Real.accessCodeOff(); break;
     case 'changePass': Real.changePass(); break;
     case 'invite': if (REAL) { Real.invite(); break; } modal('Convidar pessoa', `<div class="fg">${inp('n', 'Nome', 'required')}${inp('e', 'E-mail', 'type="email" required')}${sel('r', 'Perfil', Object.entries(ROLES).map(([k, r]) => [k, r.n]).slice(1), 'full')}</div><p class="note">A pessoa recebe um link de acesso por e-mail e entra só neste painel.</p>`,
       fd => { const n = String(fd.get('n') || '').trim(), em = String(fd.get('e') || '').trim(); if (!n || !/^\S+@\S+\.\S+$/.test(em)) return 'Preencha nome e um e-mail válido.'; S.members.push({n, e:em, r:fd.get('r')}); audit(`${n} convidado(a) como ${ROLES[fd.get('r')].n}`); save(); toast('Convite registrado.'); }, 'Convidar'); break;
@@ -1717,7 +1718,7 @@ $('#lgInstall').onclick = async () => {
   note.textContent = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'No iPhone: toque em Compartilhar e depois em Adicionar à Tela de Início. Depois abra o novo ícone e entre.' : 'No menu do navegador, escolha Instalar app ou Adicionar à tela inicial.';
   note.hidden = false;
 };
-$('#lgShow').onclick = () => { const p = $('#lgPass'), show = p.type === 'password'; p.type = show ? 'text' : 'password'; $('#lgShow').textContent = show ? 'Esconder senha' : 'Mostrar senha'; };
+$('#lgShow').onclick = () => { const show = $('#lgPass').type === 'password'; $('#lgPass').type = $('#lgCode').type = show ? 'text' : 'password'; $('#lgShow').textContent = show ? 'Esconder' : 'Mostrar'; };
 $('#lgUseCode').onclick = () => Real.toggleCode();
 $('#lgForgot').onclick = () => { if (REAL) return Real.forgot(); const note = $('#lgNote'); note.textContent = 'Na versão real, o link para trocar a senha chega no seu e-mail.'; note.hidden = false; };
 
@@ -2177,13 +2178,13 @@ const Real = (() => {
     const nm = brandName();
     $('#lgLogo').textContent = initials(nm); $('#lgName').textContent = nm; $('#lgUrl').textContent = 'Acesso restrito';
     const inv = mode === 'invite', code = mode === 'code';
-    $('#lgTitle').textContent = inv ? 'Crie o seu acesso.' : code ? 'Entrar com link de acesso.' : mode === 'newpass' ? 'Crie uma senha nova.' : `Entrar no painel da ${nm}.`;
-    $('#lgSub').textContent = inv ? 'Escolha o e-mail e a senha que você vai usar. Este link só funciona uma vez.' : code ? 'Cole o link gerado em Equipe e acesso. Ele funciona uma vez.' : mode === 'newpass' ? 'Use pelo menos 10 caracteres.' : 'Use o seu e-mail e a sua senha.';
+    $('#lgTitle').textContent = inv ? 'Crie o seu acesso.' : code ? 'Entrar com código de acesso.' : mode === 'newpass' ? 'Crie uma senha nova.' : `Entrar no painel da ${nm}.`;
+    $('#lgSub').textContent = inv ? 'Escolha o e-mail e a senha que você vai usar. Este link só funciona uma vez.' : code ? 'Digite o código de acesso da empresa.' : mode === 'newpass' ? 'Use pelo menos 10 caracteres.' : 'Use o seu e-mail e a sua senha.';
     $('#lgPass2Box').hidden = !(inv || mode === 'newpass'); $('#lgForgot').hidden = mode !== 'login';
     $('#lgEmail').closest('form').querySelector('label[for=lgEmail]').hidden = $('#lgEmail').hidden = mode === 'newpass' || code;
-    $('#lgEmail').closest('form').querySelector('label[for=lgPass]').hidden = $('#lgPass').hidden = $('#lgShow').hidden = code;
+    $('#lgEmail').closest('form').querySelector('label[for=lgPass]').hidden = $('#lgPass').hidden = code;
     $('#lgCodeBox').hidden = !code;
-    $('#lgUseCode').hidden = mode !== 'login' && !code; $('#lgUseCode').textContent = code ? 'Voltar para e-mail e senha' : 'Entrar com link de acesso';
+    $('#lgUseCode').hidden = mode !== 'login' && !code; $('#lgUseCode').textContent = code ? 'Voltar para e-mail e senha' : 'Entrar com código de acesso';
     $('#lgInstall').hidden = mode !== 'login' || !canInstall();
     $('#lgPass').autocomplete = inv || mode === 'newpass' ? 'new-password' : 'current-password';
     $('#lgGoTxt').textContent = inv ? 'Criar acesso e entrar' : code ? 'Entrar' : mode === 'newpass' ? 'Salvar senha e entrar' : 'Entrar';
@@ -2226,20 +2227,22 @@ const Real = (() => {
   }
   function toggleCode() { mode = mode === 'code' ? 'login' : 'code'; say(''); paintLogin(); if (mode === 'code') $('#lgCode').focus(); }
   async function useCode(raw) {
-    const m = String(raw || '').match(/[0-9a-f]{40,128}/i);
-    if (!m) return say('Cole o link de acesso completo.');
-    history.replaceState(null, '', location.pathname + '?empresa=' + EMPRESA);
-    const {error} = await sb.auth.verifyOtp({token_hash:m[0].toLowerCase(), type:'magiclink'});
-    if (error) { mode = 'code'; paintLogin(); return say('Este link expirou ou já foi usado. Gere outro em Equipe e acesso, ou entre com e-mail e senha.'); }
+    const code = String(raw || '').trim();
+    if (!code) return say('Digite o código de acesso.');
+    const r = await fn('access-code', {slug:EMPRESA, code});
+    if (r.error) return say(r.error);
+    const {error} = await sb.auth.verifyOtp({token_hash:r.token, type:'magiclink'});
+    if (error) return say('Não deu para entrar com o código. Tente de novo.');
     mode = 'login'; $('#lgCode').value = ''; await openApp();
   }
-  async function deviceLink() {
-    const r = await fn('device-link', {});
-    if (r.error) return toast(r.error);
-    const home = `${location.origin}${location.pathname}?empresa=${EMPRESA}`, url = `${home}&acesso=${r.token}`;
-    modal('Acessar no celular', `<p>Este link entra na sua conta, com o seu perfil de acesso. Funciona uma vez e vale por até 1 hora. Não envie para outra pessoa.</p><pre class="code">${esc(url)}</pre><div class="acts"><button class="b3 sm" type="button" data-copy="${esc(url)}">${icon('copy')}Copiar link de acesso</button></div>
-      <span class="flabel">iPhone</span><ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px"><li>Abra o endereço do painel no Safari, sem o link de acesso.</li><li>Toque em Compartilhar e em Adicionar à Tela de Início.</li><li>Abra o novo ícone e toque em Entrar com link de acesso.</li><li>Cole o link de acesso.</li></ol><pre class="code">${esc(home)}</pre><div class="acts"><button class="b3 sm ghost" type="button" data-copy="${esc(home)}">${icon('copy')}Copiar endereço do painel</button></div>
-      <span class="flabel">Android</span><ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px"><li>Abra o link de acesso no Chrome.</li><li>No menu do Chrome, toque em Instalar app ou Adicionar à tela inicial.</li></ol>`, null);
+  function accessCode() {
+    modal('Trocar o código de acesso', `<div class="fg">${inp('c', 'Código novo', 'autocomplete="off" autocapitalize="none" required')}</div><p class="note">Quem tiver o código entra na sua conta, com o seu perfil de dono. Use pelo menos 10 caracteres e evite datas ou nomes. O código antigo para de funcionar.</p>`,
+    fd => { const c = String(fd.get('c') || '').trim(); if (c.length < 10) return 'Use um código com pelo menos 10 caracteres.';
+      fn('access-code', {action:'set', slug:EMPRESA, code:c}).then(r => toast(r.error || 'Código trocado.')); }, 'Salvar código');
+  }
+  function accessCodeOff() {
+    modal('Desativar o código de acesso', '<p>Depois disso, só dá para entrar com e-mail e senha. Quem já está logado continua logado.</p>',
+    () => { fn('access-code', {action:'set', slug:EMPRESA, code:''}).then(r => toast(r.error || 'Código desativado.')); }, 'Desativar');
   }
   function changePass() {
     modal('Trocar minha senha', `<div class="fg">${inp('p', 'Senha nova', 'type="password" autocomplete="new-password" required')}${inp('q', 'Repita a senha', 'type="password" autocomplete="new-password" required')}</div><p class="note">Use pelo menos 10 caracteres.</p>`,
@@ -2353,11 +2356,10 @@ const Real = (() => {
     if (LINK_ERR) { history.replaceState(null, '', location.pathname + '?empresa=' + EMPRESA); paintLogin(); return say('Este link expirou ou já foi usado. Peça outro em “Esqueci minha senha”.'); }
     if (RECOVERY) { mode = 'newpass'; return paintLogin(); }
     paintLogin();
-    if (QS.get('acesso')) return useCode(QS.get('acesso'));
     const {data:{session}} = await sb.auth.getSession();
     if (session) await openApp();
   }
-  return {boot, sync, fn, reload, logout, payLink, proposalLink, deleteRecord, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, deviceLink, changePass, tenantId:() => tid};
+  return {boot, sync, fn, reload, logout, payLink, proposalLink, deleteRecord, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
 })();
 
 /* tema do sistema mudou ou o host trocou data-theme */
