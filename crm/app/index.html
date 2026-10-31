@@ -771,7 +771,7 @@ function modalPayLink(leadId) {
 function showPayLink(chargeId) {
   const c = typeof chargeId === 'object' ? chargeId : S.charges.find(x => x.id === chargeId); if (!c) return;
   const l = S.leads.find(x => x.id === c.lead) || {name:'Cliente', phone:''};
-  const msg = `Oi, ${first(l.name)}! Aqui é da ${brandName()}. Segue o link para pagar ${c.desc} (${money(c.amount)}) por Pix ou cartão: ${c.url}`;
+  const msg = fillTpl(tplText('Link de pagamento'), l, {title:c.desc, payCents:c.amount, url:c.url});
   const dg = String(l.phone || '').replace(/\D/g, ''), num = l.demo || dg.length < 10 ? '' : (dg.startsWith('55') ? dg : '55' + dg);
   modal('Link pronto', `<div class="field"><span class="flabel">${esc(c.desc)} · ${money(c.amount)}</span><pre class="code">${esc(c.url)}</pre></div>
     <div class="acts"><button class="b3 sm ghost" type="button" data-copy="${esc(c.url)}">${icon('copy')}Copiar link</button><a class="b3 sm" href="https://wa.me/${num}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${icon('wa')}Mandar no WhatsApp</a></div>
@@ -925,7 +925,7 @@ const propTotal = p => p.items.reduce((a, i) => a + i.q * i.u, 0);
 const phoneShown = p => can('edit') || can('fin') ? p : String(p || '').replace(/\d(?=(?:\D*\d){2})/g, '•');
 function followClass(t) { if (!t) return ''; const n = dayOf(t) - d0(); return n < 0 ? 'late' : n === 0 ? 'today' : 'next'; }
 function waLink(l) {
-  const txt = l.source === 'radar' ? fillTpl(templates()[0][1], l) : `Oi, ${first(l.name)}! Aqui é da ${brandName()}. Vi seu interesse em ${l.interest || 'nossos serviços'}. Posso te ajudar?`;
+  const txt = fillTpl(tplText(l.source === 'radar' ? 'Primeiro contato' : 'Pedido recebido'), l);
   const dg = String(l.phone || '').replace(/\D/g, '');
   const num = l.demo || dg.length < 10 ? '' : (dg.startsWith('55') ? dg : '55' + dg);
   return `https://wa.me/${num}?text=${encodeURIComponent(txt)}`;
@@ -1139,7 +1139,7 @@ V.captacao = () => {
       <div class="field"><label for="fWa">Seu número com DDD</label><input class="inp" id="fWa" data-form="wa" inputmode="tel" placeholder="11 90000-0000" value="${esc(f.wa)}"></div>
       <div class="acts" style="margin-top:10px"><button class="b3 sm" data-copy="${esc(waUrl)}" ${waNum.length >= 10 ? '' : 'disabled'}>${icon('copy')}Copiar link do WhatsApp</button></div></section>
     <section class="card" style="display:flex;flex-direction:column;gap:10px"><div class="ch" style="margin:0"><h3>Modelos de mensagem</h3>${has('modelos') ? '' : '<span class="chip acc">Plano Pro</span>'}</div>
-      ${has('modelos') ? `<p class="muted" style="font-size:14px">Use {nome}, {empresa} e {interesse}. Aparecem como botões na ficha do lead.</p>${templates().map((m, i) => `<div class="field"><label for="tpl${i}">${esc(m[0])}</label><textarea class="inp" id="tpl${i}" data-tpl="${i}">${esc(m[1])}</textarea></div>`).join('')}` : '<p class="muted" style="font-size:14px">Tenha mensagens prontas de primeiro contato, follow-up e proposta com um toque.</p>'}</section>
+      ${has('modelos') ? `<p class="muted" style="font-size:14px">Use {saudacao}, {negocio}, {empresa}, {interesse}, {titulo}, {valor} e {link}. Para destacar, coloque entre *asteriscos*. Aparecem como botões na ficha do lead.</p>${templates().map((m, i) => `<div class="field"><label for="tpl${i}">${esc(m[0])}</label><textarea class="inp" id="tpl${i}" data-tpl="${i}" rows="10">${esc(m[1])}</textarea></div>`).join('')}` : '<p class="muted" style="font-size:14px">Tenha mensagens prontas de primeiro contato, follow-up e proposta com um toque.</p>'}</section>
   </div>`;
 };
 function publicForm() {
@@ -1378,7 +1378,7 @@ function modalProposalReal(leadId, editId) {
   const s = $('#m_to'); if (s) s.onchange = () => { $('#mNewBox').hidden = s.value !== 'new'; };
 }
 function showPropLink(p) {
-  const c = propContact(p), msg = `Oi, ${first(c.name) || 'tudo bem'}! Aqui é da ${brandName()}. Segue o link para pagar ${p.title} (${money(p.payCents)}) por Pix ou cartão: ${p.url}`;
+  const c = propContact(p), msg = fillTpl(tplText('Link de pagamento'), c, p);
   const dg = String(c.phone || '').replace(/\D/g, ''), num = dg.length < 10 ? '' : (dg.startsWith('55') ? dg : '55' + dg);
   modal('Link de pagamento pronto', `<div class="field"><span class="flabel">${esc(p.title)} · ${money(p.payCents)}</span><pre class="code">${esc(p.url)}</pre></div>
     <div class="acts"><a class="b3" href="${esc(p.url)}" target="_blank" rel="noopener">${icon('card')}Abrir pagamento</a><button class="b3 ghost" type="button" data-copy="${esc(p.url)}">${icon('copy')}Copiar link</button><a class="b3 ghost" href="https://wa.me/${num}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${icon('wa')}Mandar no WhatsApp</a></div>
@@ -1913,12 +1913,30 @@ function leadScore(l) {
 }
 const scoreChip = l => { if (!has('score') || !isOpen(l)) return ''; const s = leadScore(l), [t, c] = s >= 65 ? ['Quente', 'bad'] : s >= 35 ? ['Morno', 'warn'] : ['Frio', '']; return `<span class="chip ${c}" title="Pontuação ${s} de 100">${t}</span>`; };
 function staleLeads() { return openLeads().map(l => ({l, last:Math.max(l.created || 0, ...S.acts.filter(a => a.lead === l.id).map(a => a.at || 0))})).filter(x => Date.now() - x.last >= 7 * DAY).sort((a, b) => a.last - b.last); }
-const DEF_TPL = [['Primeiro contato', 'Oi, {nome}! Aqui é da {empresa}. Vi o seu negócio e tenho uma ideia de página para trazer mais clientes pelo WhatsApp. Posso te mostrar uma demonstração rápida? Se não fizer sentido, é só avisar que não mando mais mensagem.'], ['Follow-up', 'Oi, {nome}! Passando para saber se você viu a minha mensagem sobre {interesse}. Se quiser, te mando a demonstração agora. Se não for o momento, sem problema.'], ['Proposta enviada', 'Oi, {nome}! Conseguiu ver a proposta de {interesse}? Se tiver alguma dúvida ou quiser ajustar algo, me fala por aqui.']];
-const templates = () => (S.form.templates && S.form.templates.length ? S.form.templates : DEF_TPL);
-const fillTpl = (t, l) => t.replace(/\{nome\}/g, first(l.name)).replace(/\{empresa\}/g, brandName()).replace(/\{interesse\}/g, l.interest || 'nossos serviços');
+const DEF_TPL = [["Primeiro contato","{saudacao} Tudo bem?\n\nAqui é da *{empresa}*. Encontrei *{negocio}* enquanto pesquisava negócios da região.\n\nQueria fazer uma pergunta rápida: hoje, quando alguém quer falar com vocês pela primeira vez, costuma chamar mais pelo WhatsApp, pelo Instagram ou vem por indicação?\n\nPergunto porque {oferta}, e prefiro entender a rotina de vocês antes de sugerir qualquer coisa.\n\nSe preferir não receber mensagens, é só me avisar."],["Lembrete","{saudacao} Tudo bem?\n\nSei que a rotina é corrida, então deixo só mais uma pergunta sobre *{negocio}*:\n\nQuando um cliente chama e a resposta demora, ele costuma esperar ou acaba procurando outro lugar?\n\nEsta é minha última mensagem por aqui. Se um dia quiser conversar, é só me chamar."],["Pedido recebido","{saudacao} Agradeço o contato com a *{empresa}*.\n\nRecebi o seu pedido sobre *{interesse}* e vou cuidar dele com atenção.\n\nPara preparar a melhor proposta, me conte:\n\n• Qual é o principal objetivo?\n• Para quando você precisa?\n\nFico à disposição para o que precisar."],["Entender a rotina","{saudacao} Agradeço por responder.\n\nPara saber se consigo ajudar de verdade, queria entender três coisas:\n\n1. Quantos clientes novos costumam chamar vocês por semana?\n2. O que mais toma tempo no atendimento hoje?\n3. Já aconteceu de perder um cliente porque a resposta demorou ou faltou alguma informação?\n\nPode responder do seu jeito, até por áudio."],["Convite para a demonstração","{saudacao} Agradeço por me contar como funciona aí.\n\nTenho um exemplo que mostra como isso poderia funcionar em *{negocio}*. Leva uns três minutos e funciona melhor se você testar como se fosse seu próprio cliente.\n\nPrefere que eu envie agora ou em um horário mais tranquilo?"],["Retorno","{saudacao} Tudo bem?\n\nEstou retomando nossa conversa sobre *{interesse}*. Sei que a rotina é corrida, então vou ser breve.\n\nPrefere que eu envie os próximos passos por aqui ou combinamos um horário melhor para você?\n\nSe o momento mudou, pode me dizer sem problema. Agradeço a atenção."],["Proposta enviada","{saudacao} Espero que esteja tudo bem.\n\nQueria saber se você conseguiu ver a proposta:\n\n*{titulo}*\nValor: *{valor}*\n\nSe quiser ajustar algo ou tiver qualquer dúvida, é só me dizer. Quero que ela faça sentido para o seu negócio."],["Link de pagamento","{saudacao} Que bom seguir com você neste projeto.\n\nSegue o link para concluir o pagamento:\n\n*{titulo}*\nValor: *{valor}*\nFormas: Pix ou cartão\n\n{link}\n\nAssim que o pagamento for confirmado, retorno com os próximos passos. Qualquer dúvida, estou por aqui."],["Pagamento confirmado","{saudacao} Seu pagamento foi confirmado. ✅\n\n*{titulo}*\nValor: *{valor}*\n\nAgradeço a confiança. Agora sigo com os próximos passos e mantenho você a par de tudo por aqui."],["Reativação","{saudacao} Tudo bem?\n\nHá um tempo conversamos sobre *{interesse}* e queria saber como estão as coisas por aí.\n\nSe ainda fizer sentido, retomo de onde paramos, sem compromisso. Se as prioridades mudaram, tudo bem também: é só me avisar."]];
+const templates = () => DEF_TPL.map(d => (S.form.templates || []).find(s => s[0] === d[0]) || d);
+const tplText = name => templates().find(x => x[0] === name)[1];
+const tplOferta = () => T.slug === 'amplitudelab' || T.id === 'lab' ? 'criamos sites e sistemas de atendimento para negócios locais' : 'trabalhamos com negócios como o seu';
+const TPL_NEGOCIO = /^(academia|ag[eê]ncia|app|barbearia|caf[eé]|cervejaria|cl[ií]nica|coletivo|consult[oó]rio|doceria|dj|escola|est[uú]dio|fam[ií]lia|hamburgueria|hotel|loja|marca|noivos|oficina|[oó]tica|padaria|pet|r[aá]dio|restaurante|sal[aã]o|studio|tattoo)$/i;
+function fillTpl(text, l, prop) {
+  const p = prop || (S.proposals || []).slice().reverse().find(x => x.lead === l.id) || {};
+  const pessoa = l.source === 'radar' || TPL_NEGOCIO.test(first(l.name)) ? '' : first(l.name), negocio = (l.utm && l.utm.negocio) || (l.source === 'radar' ? l.name : '') || 'seu negócio';
+  const total = p.payCents || (p.items ? propTotal(p) : 0);
+  return text.replace(/\{saudacao\}/g, pessoa ? `Olá, ${pessoa}!` : 'Olá!').replace(/\{nome\}/g, pessoa || l.name || '').replace(/\{negocio\}/g, negocio).replace(/\{empresa\}/g, brandName()).replace(/\{oferta\}/g, tplOferta()).replace(/\{interesse\}/g, l.interest || 'nossos serviços').replace(/\{titulo\}/g, p.title || l.interest || '').replace(/\{valor\}/g, money(total)).replace(/\{link\}/g, p.url || '');
+}
+function tplFits(name, l) {
+  const p = (S.proposals || []).find(x => x.lead === l.id);
+  if (name === 'Link de pagamento') return !!(p && p.url);
+  if (name === 'Proposta enviada') return !!p;
+  if (name === 'Pagamento confirmado') return !!(l.paidAt && p);
+  if (name === 'Primeiro contato' || name === 'Lembrete') return l.source === 'radar' && !p;
+  if (name === 'Entender a rotina' || name === 'Convite para a demonstração') return !p && !l.paidAt;
+  if (name === 'Pedido recebido') return l.source !== 'radar';
+  return true;
+}
 function tplLinks(l) {
   const dg = rDigits(l.phone), num = l.demo || dg.length < 10 ? '' : '55' + dg;
-  return `<div class="sec"><span class="flabel">Mensagens prontas</span><div class="acts">${templates().map(t => `<a class="b3 sm ghost" href="https://wa.me/${num}?text=${encodeURIComponent(fillTpl(t[1], l))}" target="_blank" rel="noopener">${esc(t[0])}</a>`).join('')}</div></div>`;
+  return `<div class="sec"><span class="flabel">Mensagens prontas</span><div class="acts">${templates().filter(t => tplFits(t[0], l)).map(t => `<a class="b3 sm ghost" href="https://wa.me/${num}?text=${encodeURIComponent(fillTpl(t[1], l))}" target="_blank" rel="noopener">${esc(t[0])}</a>`).join('')}</div></div>`;
 }
 
 /* ============ relatórios ============ */
