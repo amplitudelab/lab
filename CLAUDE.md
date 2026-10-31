@@ -60,6 +60,8 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
 - `crm/app/index.html`: protótipo do CRM, arquivo único, dados no `localStorage`
   (`amp-crm:v1:<tenant>`, `amp-crm:prefs`).
   - Clientes de exemplo: `norte`, `okada`, `orbita`, `lab`.
+  - App no celular: `crm/app/manifest.webmanifest` abre o painel da Amplitude Lab. No Supabase Auth, Site URL e Redirect URLs precisam apontar para `crm/app/`; sem isso, o link de recuperação de senha cai em `localhost`.
+  - Link de acesso: `device-link` gera um link de uso único para a própria conta, em Equipe e acesso. No iPhone, o app da tela de início não compartilha o login com o navegador, então o link é colado dentro do app.
   - Perfis: owner, sales, finance, viewer.
   - `?t=<cliente>` escolhe o cliente e `#funil`, `#site` etc. abrem direto numa tela.
 - `crm/IMPLEMENTACAO.md`: guia de teste e implementação. `crm/guia.html` é gerado dele:
