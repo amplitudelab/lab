@@ -69,7 +69,8 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   (29 verificações, testadas num Postgres 16 local) e Edge Functions `capture-lead`,
   `asaas-webhook` e `lembretes` (ainda não testadas com contas reais).
 - `crm/cloudflare/worker.js`: subdomínio por cliente.
-- `voxel-realms/`, `voxel-realms-android/`: jogo à parte, sem relação com o negócio.
+- `voxel-realms/`, `voxel-realms-android/`: jogo à parte, sem relação com o negócio, em
+  `https://amplitudelab.github.io/lab/voxel-realms/` (o APK abre esse link).
   Não vai no pacote .zip.
 
 
