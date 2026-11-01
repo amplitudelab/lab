@@ -2077,7 +2077,7 @@ function keyMsg(k) {
   return `Olá${k.name ? ', ' + k.name : ''}! Este é o seu acesso ao CRM da ${brandName()}, com o perfil ${ROLES[k.role].n}.\n\n`
     + `1. No Android, baixe o app: ${APK_URL}\n   No iPhone ou no computador, abra: ${web}\n`
     + `2. Toque em "Tenho uma chave de cadastro".\n3. Digite a chave: ${k.key}\n4. Crie o seu e-mail e a sua senha.\n\n`
-    + `A chave funciona uma vez só e vale até ${fdate(k.exp)} às ${ftime(k.exp)}.`;
+    + `A chave serve só para esse primeiro cadastro: funciona uma vez e vale até ${fdate(k.exp)} às ${ftime(k.exp)}. Depois, é só entrar com o seu e-mail e a sua senha.`;
 }
 V.chaves = () => {
   if (!V._keys) V._keys = {list:null};
@@ -2105,7 +2105,7 @@ V.chaves = () => {
       : `<div class="rows">
         <div class="row"><span class="ico ok">${icon('key')}</span><div class="grow"><p class="t">1. Gere a chave</p><p class="s" style="white-space:normal">Escolha o perfil. A chave sai no formato AMP-XXXX-XXXX-XXXX.</p></div></div>
         <div class="row"><span class="ico ok">${icon('wa')}</span><div class="grow"><p class="t">2. Mande para o colaborador</p><p class="s" style="white-space:normal">A mensagem pronta leva o link do app Android e a chave.</p></div></div>
-        <div class="row"><span class="ico ok">${icon('lock')}</span><div class="grow"><p class="t">3. Ele cria o próprio acesso</p><p class="s" style="white-space:normal">Digita a chave, o e-mail e a senha. A chave para de funcionar na hora.</p></div></div></div>
+        <div class="row"><span class="ico ok">${icon('lock')}</span><div class="grow"><p class="t">3. Ele cria o próprio acesso</p><p class="s" style="white-space:normal">Digita a chave, o e-mail e a senha. A chave para de funcionar na hora e, dali em diante, ele entra com o e-mail e a senha dele.</p></div></div></div>
         <a class="b3 sm ghost" href="${APK_URL}" style="align-self:flex-start">${icon('copy')}Baixar o app Android</a>`}
     </section></div>
   <section class="card"><div class="ch"><h3>Chaves geradas</h3><span class="chip acc">${list ? list.length : '…'}</span></div>
@@ -2260,7 +2260,7 @@ const Real = (() => {
     $('#lgLogo').textContent = initials(nm); $('#lgName').textContent = nm; $('#lgUrl').textContent = 'Acesso restrito';
     const key = mode === 'key', inv = mode === 'invite' || key, code = mode === 'code';
     $('#lgTitle').textContent = key ? 'Crie o seu acesso com a chave.' : inv ? 'Crie o seu acesso.' : code ? 'Entrar com código de acesso.' : mode === 'newpass' ? 'Crie uma senha nova.' : `Entrar no painel da ${nm}.`;
-    $('#lgSub').textContent = key ? 'Digite a chave que o dono te mandou, o e-mail e a senha que você vai usar. A chave funciona uma vez só.' : inv ? 'Escolha o e-mail e a senha que você vai usar. Este link só funciona uma vez.' : code ? 'Digite o código de acesso da empresa.' : mode === 'newpass' ? 'Use pelo menos 10 caracteres.' : 'Use o seu e-mail e a sua senha.';
+    $('#lgSub').textContent = key ? 'A chave é só para o primeiro cadastro. Digite a chave que o dono te mandou e crie o e-mail e a senha que você vai usar para entrar daqui em diante.' : inv ? 'Escolha o e-mail e a senha que você vai usar. Este link só funciona uma vez.' : code ? 'Digite o código de acesso da empresa.' : mode === 'newpass' ? 'Use pelo menos 10 caracteres.' : 'Use o seu e-mail e a sua senha.';
     $('#lgPass2Box').hidden = !(inv || mode === 'newpass'); $('#lgForgot').hidden = mode !== 'login';
     $('#lgEmail').closest('form').querySelector('label[for=lgEmail]').hidden = $('#lgEmail').hidden = mode === 'newpass' || code;
     $('#lgEmail').closest('form').querySelector('label[for=lgPass]').hidden = $('#lgPass').hidden = code;
@@ -2286,7 +2286,7 @@ const Real = (() => {
         history.replaceState(null, '', location.pathname + '?empresa=' + EMPRESA + (IN_APP ? '&app=android' : ''));
         // a chave é de outra empresa: o acesso já existe, só falta entrar no painel certo
         if (r.slug && r.slug !== EMPRESA) { location.href = location.pathname + '?empresa=' + r.slug; return; }
-        mode = 'login'; $('#lgKey').value = '';
+        mode = 'login'; $('#lgKey').value = ''; justCreated = true;
       }
       if (mode === 'invite') {
         const r = await fn('first-access', {token:CONVITE, email, password:pass});
@@ -2302,6 +2302,7 @@ const Real = (() => {
       if (error) return say(error.status === 400 ? 'E-mail ou senha incorretos. Confira a senha ou use “Esqueci minha senha”.' : error.status === 429 ? 'Muitas tentativas. Aguarde alguns minutos e tente de novo.' : 'Sem conexão com o servidor. Confira a internet e tente de novo.');
       $('#lgPass').value = $('#lgPass2').value = '';
       await openApp();
+      if (justCreated) { justCreated = false; toast('Acesso criado. Da próxima vez, entre com o seu e-mail e a sua senha.'); }
     } finally { go.disabled = false; }
   }
   async function forgot() {
@@ -2315,6 +2316,7 @@ const Real = (() => {
       say('Se esse e-mail tiver acesso, o link para trocar a senha chega em instantes. Olhe também o spam.');
     } finally { b.disabled = false; }
   }
+  let justCreated = false;
   function toggleKey() { mode = mode === 'key' ? 'login' : 'key'; say(''); paintLogin(); if (mode === 'key') $('#lgKey').focus(); }
   function toggleCode() { mode = mode === 'code' ? 'login' : 'code'; say(''); paintLogin(); if (mode === 'code') $('#lgCode').focus(); }
   async function useCode(raw) {
