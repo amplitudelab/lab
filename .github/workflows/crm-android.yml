@@ -1,0 +1,48 @@
+name: CRM Android APK
+on:
+  push:
+    branches: [main]
+    paths: ['crm-android/**', '.github/workflows/crm-android.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Conferir a chave de assinatura
+        id: key
+        env:
+          KS: ${{ secrets.CRM_KEYSTORE_B64 }}
+        run: |
+          if [ -z "$KS" ]; then
+            echo "::warning::Cadastre os segredos CRM_KEYSTORE_B64 e CRM_KEYSTORE_PASS para gerar o APK assinado."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "$KS" | base64 -d > "$RUNNER_TEMP/crm.keystore"
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-java@v4
+        if: steps.key.outputs.ok == 'true'
+        with: { distribution: temurin, java-version: '17' }
+      - name: Aceitar licenças do SDK (já vem instalado na máquina)
+        if: steps.key.outputs.ok == 'true'
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.key.outputs.ok == 'true'
+        with: { gradle-version: '8.7' }
+      - name: Gerar o APK assinado
+        if: steps.key.outputs.ok == 'true'
+        env:
+          CRM_KEYSTORE: ${{ runner.temp }}/crm.keystore
+          CRM_KEYSTORE_PASS: ${{ secrets.CRM_KEYSTORE_PASS }}
+        run: gradle -p crm-android assembleRelease --no-daemon
+      - name: Publicar no site (crm/app/amplitude-crm.apk)
+        if: steps.key.outputs.ok == 'true'
+        run: |
+          cp crm-android/app/build/outputs/apk/release/app-release.apk crm/app/amplitude-crm.apk
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add crm/app/amplitude-crm.apk
+          git diff --cached --quiet || { git commit -m "Atualiza o APK do CRM"; git push; }

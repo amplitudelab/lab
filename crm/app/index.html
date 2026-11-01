@@ -423,6 +423,7 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
     <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></symbol>
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
     <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3M16.5 6.5l2.5 2.5M14 9l2 2"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
   </defs>
 </svg>
@@ -436,6 +437,7 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
       <div class="lg-brand"><span class="logo" id="lgLogo">AL</span><div><p class="mono" id="lgUrl">app.amplitudelab.com.br</p><b id="lgName">Amplitude Lab</b></div></div>
       <div><h1 id="lgTitle">Seu painel de clientes, vendas e caixa.</h1><p class="lg-sub" id="lgSub" style="margin-top:8px">Entre com o seu e-mail e a sua senha.</p></div>
       <form id="lgForm" class="field" novalidate>
+        <div id="lgKeyBox" class="field" hidden><label for="lgKey">Chave de cadastro</label><input class="inp mono-in" id="lgKey" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="AMP-XXXX-XXXX-XXXX"></div>
         <label for="lgEmail">E-mail</label>
         <input class="inp" id="lgEmail" type="email" autocomplete="username" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="voce@empresa.com.br">
         <label for="lgPass" style="margin-top:8px">Senha</label>
@@ -447,6 +449,7 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
         <button class="b3" id="lgGo" type="submit" style="margin-top:8px"><svg class="i"><use href="#i-lock"/></svg><span id="lgGoTxt">Entrar</span></button>
         <button class="link" id="lgForgot" type="button" style="align-self:center">Esqueci minha senha</button>
         <button class="link" id="lgUseCode" type="button" style="align-self:center" hidden>Entrar com código de acesso</button>
+        <button class="link" id="lgUseKey" type="button" style="align-self:center" hidden>Tenho uma chave de cadastro</button>
         <button class="link" id="lgInstall" type="button" style="align-self:center" hidden>Instalar como app</button>
       </form>
       <div class="field" id="lgDemoBox">
@@ -527,6 +530,8 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const QS = new URLSearchParams(location.search);
 const EMPRESA = /^[a-z0-9-]{3,40}$/.test(QS.get('empresa') || '') ? QS.get('empresa') : null;
+const IN_APP = QS.get('app') === 'android' || /AmplitudeCRM/.test(navigator.userAgent);   // aberto pelo APK
+const APK_URL = 'https://amplitudelab.github.io/lab/crm/app/amplitude-crm.apk';
 const REAL = !!EMPRESA; // ?empresa=slug: painel de verdade, com login e banco. Sem isso: demonstração no navegador.
 const uid = () => REAL ? crypto.randomUUID() : Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
 const DAY = 864e5;
@@ -576,7 +581,7 @@ const ROLES = {
 const NAV = [
   ['painel','Painel','home',null], ['funil','Funil','kanban','crm'], ['clientes','Clientes','users','crm'],
   ['propostas','Propostas','file','crm'], ['agenda','Agenda','cal','crm'], ['financeiro','Financeiro','wallet','fin'],
-  ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['equipe','Equipe e acesso','shield','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
+  ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['equipe','Equipe e acesso','shield','team'], ['chaves','Chaves de acesso','key','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
 ];
 const NICHE = {
   norte: {people:['Rafael Lima','Diego Martins','Caio Souza','Lucas Prado','Bruno Teles','Igor Nunes','Thiago Reis','Mateus Alves','Henrique Dias','Pedro Lopes','André Kato','Vitor Hugo'],
@@ -923,6 +928,7 @@ function toast(msg, action) {
   el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), action ? 6000 : 2600);
 }
 async function copy(text, label) {
+  if (window.AmpApp) { AmpApp.copy(String(text)); return toast(label || 'Copiado'); }   // dentro do app Android
   try { await navigator.clipboard.writeText(text); toast(label || 'Copiado'); }
   catch (e) { toast('Não deu para copiar automaticamente. Selecione o texto e copie.'); }
 }
@@ -956,7 +962,7 @@ function nextSteps() {
 }
 
 /* ============ navegação ============ */
-const allowed = v => { const n = NAV.find(x => x[0] === v); if (v === 'empresas' && !(REAL && T.slug === 'amplitudelab' && role === 'owner')) return false; return n && (!n[3] || can(n[3])); };
+const allowed = v => { const n = NAV.find(x => x[0] === v); if (v === 'chaves' && role !== 'owner') return false; if (v === 'empresas' && !(REAL && T.slug === 'amplitudelab' && role === 'owner')) return false; return n && (!n[3] || can(n[3])); };
 function badgeFor(v) { if (v === 'funil') { const n = S.leads.filter(l => l.stage === 's1').length; return n || ''; } if (v === 'agenda') { const n = nextSteps().filter(x => x.k !== 'charge').length; return n || ''; } return ''; }
 function renderNav() {
   $('#sNav').innerHTML = NAV.filter(n => allowed(n[0])).map(n => `<button class="nv" data-go="${n[0]}" ${view === n[0] ? 'aria-current="page"' : ''}>${icon(n[2])}${n[1]}${badgeFor(n[0]) ? `<span class="badge">${badgeFor(n[0])}</span>` : ''}</button>`).join('');
@@ -968,6 +974,7 @@ function renderNav() {
 }
 function go(v, focus) {
   if (!allowed(v)) { toast('Seu perfil não tem acesso a esta área.'); v = 'painel'; }
+  if (v !== view) V._keys = null;   // a chave recém-gerada não fica na tela depois que o dono sai
   view = v; render();
   if (focus) $('#view').focus({preventScroll:true});
   window.scrollTo({top:0});
@@ -1511,6 +1518,10 @@ Válida até ${fdate(p.valid)}`, 'Proposta copiada para colar no WhatsApp'); bre
     case 'acceptProposal': { const p = S.proposals.find(x => x.id === id); p.status = 'accepted'; audit(`Proposta “${p.title}” aceita pelo cliente`); if (p.lead) { const l = S.leads.find(x => x.id === p.lead); if (l && isOpen(l)) { save(); closeLayers(); moveLead(l.id, 's5', a); return; } } save(); const r = a.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top); viewProposal(id); render(); break; }
     case 'agDay': { const d = a.dataset.d ? +a.dataset.d : null; V._ag = d !== null && d === V._ag ? null : d; render(); break; }
     case 'accessCode': Real.accessCode(); break;
+    case 'keyRevoke': { if (role !== 'owner') return toast('Só o dono cancela chaves.');
+      const done = () => { const f = V._keys && V._keys.fresh; V._keys = {list:null, fresh:f}; render(); toast('Chave cancelada.'); };
+      if (REAL) { Real.keyRevoke(id).then(r => r.error ? toast(r.error) : done()); } else { S.keys = (S.keys || []).filter(k => k.id !== id); save(); done(); }
+      break; }
     case 'accessCodeOff': Real.accessCodeOff(); break;
     case 'changePass': Real.changePass(); break;
     case 'invite': if (REAL) { Real.invite(); break; } modal('Convidar pessoa', `<div class="fg">${inp('n', 'Nome', 'required')}${inp('e', 'E-mail', 'type="email" required')}${sel('r', 'Perfil', Object.entries(ROLES).map(([k, r]) => [k, r.n]).slice(1), 'full')}</div><p class="note">A pessoa recebe um link de acesso por e-mail e entra só neste painel.</p>`,
@@ -1720,6 +1731,7 @@ $('#lgInstall').onclick = async () => {
 };
 $('#lgShow').onclick = () => { const show = $('#lgPass').type === 'password'; $('#lgPass').type = $('#lgCode').type = show ? 'text' : 'password'; $('#lgShow').textContent = show ? 'Esconder' : 'Mostrar'; };
 $('#lgUseCode').onclick = () => Real.toggleCode();
+$('#lgUseKey').onclick = () => Real.toggleKey();
 $('#lgForgot').onclick = () => { if (REAL) return Real.forgot(); const note = $('#lgNote'); note.textContent = 'Na versão real, o link para trocar a senha chega no seu e-mail.'; note.hidden = false; };
 
 /* ============ radar de leads: negócios sem site, por nicho, local e raio ============ */
@@ -1903,7 +1915,7 @@ document.addEventListener('click', e => {
     navigator.geolocation.getCurrentPosition(p => { R.area = 'Minha localização'; radarSearch({lat:p.coords.latitude, lon:p.coords.longitude, city:'', uf:'', label:'Minha localização'}); }, () => toast('Não consegui a localização. Digite o local.'), {timeout:10000});
   }
 });
-function downloadText(name, text) { const u = URL.createObjectURL(new Blob([text], {type:'text/csv;charset=utf-8'})), a = document.createElement('a'); a.href = u; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); }
+function downloadText(name, text) { if (window.AmpApp) return AmpApp.save(name, text); const u = URL.createObjectURL(new Blob([text], {type:'text/csv;charset=utf-8'})), a = document.createElement('a'); a.href = u; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); }
 
 /* ============ planos: o que cada um libera ============ */
 const PLAN_RANK = {essencial:1, pro:2, white_label:3};
@@ -2050,6 +2062,75 @@ V.empresas = () => {
   <section class="card"><div class="ch"><h3>Clientes do CRM</h3><span class="chip acc">${list ? list.length : '…'}</span></div><div class="rows">${list ? (list.map(t => `<div class="row rrow"><span class="logo sm" style="background:var(--panel2);color:var(--accent);box-shadow:none">${esc(initials(t.name))}</span><div class="grow"><p class="t">${esc(t.name)}</p><p class="s">${t.leads} leads · ${t.membros} pessoa${t.membros === 1 ? '' : 's'} · ${t.payment_handle ? 'pagamento ligado' : 'sem pagamento'}</p></div>
       <div class="acts"><label class="sr" for="pl-${t.id}">Plano de ${esc(t.name)}</label><select class="sel" id="pl-${t.id}" data-emp-plan="${t.id}">${Object.entries(PLAN_NAME).map(([k, n]) => `<option value="${k}" ${k === t.plan ? 'selected' : ''}>${n}</option>`).join('')}</select><a class="b3 sm ghost" href="${location.pathname}?empresa=${esc(t.slug)}" target="_blank" rel="noopener">Abrir</a>${t.membros ? '' : `<button class="b3 sm ghost" data-emp-inv="${t.id}" data-slug="${esc(t.slug)}">Novo convite</button>`}</div></div>`).join('') || '<p class="empty">Nenhum cliente ainda. Crie o primeiro acima.</p>') : '<p class="empty">Carregando…</p>'}</div></section>`;
 };
+/* ============ chaves de acesso (só o dono) ============ */
+// O dono escolhe o perfil, o servidor gera AMP-XXXX-XXXX-XXXX de uso único e o colaborador cria
+// o próprio e-mail e senha com ela, no app Android ou no navegador.
+const KEY_ROLES = [
+  ['sales', 'Vendas', 'Funil, clientes, propostas e agenda. Não vê o financeiro.'],
+  ['finance', 'Financeiro', 'Cobranças, recebimentos e caixa. Vê o funil, sem editar.'],
+  ['viewer', 'Leitura', 'Só olha funil, clientes e agenda. Telefones aparecem mascarados.'],
+  ['admin', 'Admin', 'Tudo, inclusive equipe e exclusões. Só não gera chaves.']
+];
+const keyState = k => k.used ? 'used' : k.exp < Date.now() ? 'exp' : 'open';
+function keyMsg(k) {
+  const web = `${location.origin}${location.pathname}?empresa=${EMPRESA || 'amplitudelab'}&chave=${encodeURIComponent(k.key)}`;
+  return `Olá${k.name ? ', ' + k.name : ''}! Este é o seu acesso ao CRM da ${brandName()}, com o perfil ${ROLES[k.role].n}.\n\n`
+    + `1. No Android, baixe o app: ${APK_URL}\n   No iPhone ou no computador, abra: ${web}\n`
+    + `2. Toque em "Tenho uma chave de cadastro".\n3. Digite a chave: ${k.key}\n4. Crie o seu e-mail e a sua senha.\n\n`
+    + `A chave funciona uma vez só e vale até ${fdate(k.exp)} às ${ftime(k.exp)}.`;
+}
+V.chaves = () => {
+  if (!V._keys) V._keys = {list:null};
+  if (V._keys.list === null && !V._keys.loading) {
+    const ks = V._keys; ks.loading = true;
+    (REAL ? Real.keysLoad() : Promise.resolve({keys:(S.keys || [])})).then(r => { if (r.error) toast(r.error); ks.list = r.keys || []; ks.loading = false; if (view === 'chaves' && V._keys === ks) render(); });
+  }
+  const list = V._keys.list, fresh = V._keys.fresh;
+  const st = {open:['Aguardando', 'warn'], used:['Usada', 'ok'], exp:['Vencida', '']};
+  return head('Chaves de acesso', 'Gere uma chave de uso único para cada colaborador, já com o perfil que ele vai ter. Ele baixa o app, digita a chave e cria o próprio e-mail e senha.')
+  + `<div class="grid g2">
+    <form class="card" id="keyForm" style="display:flex;flex-direction:column;gap:14px" novalidate><div class="ch" style="margin:0"><h3>Nova chave</h3><span class="chip acc">Só o dono</span></div>
+      <div class="field"><label for="kName">Nome do colaborador</label><input class="inp" id="kName" name="name" autocomplete="off" placeholder="Ex.: Ana Ribeiro"></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><span class="flabel">Perfil de acesso</span><div class="rows" role="radiogroup" aria-label="Perfil de acesso">${KEY_ROLES.map(([k, n, d], i) => `<label class="row" style="cursor:pointer;align-items:flex-start"><input type="radio" name="role" value="${k}" ${i === 0 ? 'checked' : ''} style="accent-color:var(--accent);margin-top:4px"><div class="grow"><p class="t">${n}</p><p class="s" style="white-space:normal">${d}</p></div></label>`).join('')}</div></div>
+      <div class="field"><label for="kDays">Validade</label><select class="inp" id="kDays" name="days"><option value="1">24 horas</option><option value="3">3 dias</option><option value="7" selected>7 dias</option></select></div>
+      <p class="err" id="keyErr" hidden></p>
+      <div class="acts"><button class="b3" type="submit" id="keyGo">${icon('key')}Gerar chave</button></div></form>
+    <section class="card" style="display:flex;flex-direction:column;gap:14px"><div class="ch" style="margin:0"><h3>${fresh ? 'Chave pronta' : 'Como funciona'}</h3>${fresh ? `<span class="chip ok"><span class="dot"></span>${esc(ROLES[fresh.role].n)}</span>` : ''}</div>
+      ${fresh ? `<p class="muted" style="font-size:14px">${fresh.name ? `Para <b style="color:var(--fg)">${esc(fresh.name)}</b>. ` : ''}Copie agora: por segurança, ela não aparece de novo.</p>
+        <pre class="code" style="font-size:28px;letter-spacing:.08em;text-align:center;padding:22px 10px" id="keyShow">${esc(fresh.key)}</pre>
+        <p class="muted" style="font-size:13px">Vale até ${fdate(fresh.exp)} às ${ftime(fresh.exp)} e funciona uma vez só.</p>
+        <div class="acts"><button class="b3 sm" type="button" data-copy="${esc(fresh.key)}">${icon('copy')}Copiar chave</button>
+          <a class="b3 sm ghost" href="https://wa.me/?text=${encodeURIComponent(keyMsg(fresh))}" target="_blank" rel="noopener">${icon('wa')}Enviar pelo WhatsApp</a>
+          <button class="b3 sm ghost" type="button" data-copy="${esc(keyMsg(fresh))}">${icon('copy')}Copiar mensagem</button></div>`
+      : `<div class="rows">
+        <div class="row"><span class="ico ok">${icon('key')}</span><div class="grow"><p class="t">1. Gere a chave</p><p class="s" style="white-space:normal">Escolha o perfil. A chave sai no formato AMP-XXXX-XXXX-XXXX.</p></div></div>
+        <div class="row"><span class="ico ok">${icon('wa')}</span><div class="grow"><p class="t">2. Mande para o colaborador</p><p class="s" style="white-space:normal">A mensagem pronta leva o link do app Android e a chave.</p></div></div>
+        <div class="row"><span class="ico ok">${icon('lock')}</span><div class="grow"><p class="t">3. Ele cria o próprio acesso</p><p class="s" style="white-space:normal">Digita a chave, o e-mail e a senha. A chave para de funcionar na hora.</p></div></div></div>
+        <a class="b3 sm ghost" href="${APK_URL}" style="align-self:flex-start">${icon('copy')}Baixar o app Android</a>`}
+    </section></div>
+  <section class="card"><div class="ch"><h3>Chaves geradas</h3><span class="chip acc">${list ? list.length : '…'}</span></div>
+    <div class="rows">${list ? (list.map(k => { const s0 = keyState(k); return `<div class="row"><span class="ico ${s0 === 'used' ? 'ok' : ''}">${icon('key')}</span><div class="grow"><p class="t">${esc(k.name || 'Sem nome')} · ${esc(ROLES[k.role] ? ROLES[k.role].n : k.role)}</p><p class="s">…${esc(k.hint || '')} · ${s0 === 'used' ? `usada ${fdate(k.used)}${k.by ? ' por ' + esc(k.by) : ''}` : s0 === 'exp' ? `venceu ${fdate(k.exp)}` : `vale até ${fdate(k.exp)} ${ftime(k.exp)}`}</p></div><span class="chip ${st[s0][1]}">${st[s0][0]}</span>${s0 === 'open' ? `<button class="b3 sm ghost" data-act="keyRevoke" data-id="${k.id}">Cancelar</button>` : ''}</div>`; }).join('') || '<p class="empty">Nenhuma chave gerada ainda.</p>') : '<p class="empty">Carregando…</p>'}</div></section>`;
+};
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'keyForm') return; e.preventDefault();
+  if (role !== 'owner') return toast('Só o dono gera chaves de acesso.');
+  const fd = new FormData(e.target), err = $('#keyErr'), go = $('#keyGo');
+  const o = {name:String(fd.get('name') || '').trim(), role:String(fd.get('role') || 'sales'), days:+fd.get('days') || 7};
+  go.disabled = true; err.hidden = true;
+  try {
+    let r;
+    if (REAL) r = await Real.keyCreate(o);
+    else {   // demonstração: a chave só existe neste navegador e não cria contas
+      const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', raw = Array.from(crypto.getRandomValues(new Uint8Array(12)), x => A[x % A.length]).join('');
+      r = {key:`AMP-${raw.slice(0, 4)}-${raw.slice(4, 8)}-${raw.slice(8)}`, id:uid(), expires_at:new Date(Date.now() + o.days * DAY).toISOString()};
+      (S.keys = S.keys || []).unshift({id:r.id, name:o.name, role:o.role, exp:Date.now() + o.days * DAY, used:null, by:'', hint:raw.slice(-4)}); save();
+    }
+    if (r.error) { err.textContent = r.error; err.hidden = false; return; }
+    audit(`Chave de acesso gerada (${ROLES[o.role].n}${o.name ? ' · ' + o.name : ''})`);
+    V._keys = {list:null, fresh:Object.assign({key:r.key, exp:new Date(r.expires_at).getTime()}, o)};
+    render(); setTimeout(() => { const k = $('#keyShow'); k && k.scrollIntoView({block:'center', behavior:'smooth'}); }, 60);
+  } finally { go.disabled = false; }
+});
 function showInvite(slug, token, name) {
   const url = `${location.origin}${location.pathname}?empresa=${slug}&convite=${token}`;
   modal('CRM pronto', `<p>Mande este link para ${esc(name)}. Funciona uma vez, por 7 dias.</p><pre class="code">${esc(url)}</pre><div class="acts"><button class="b3 sm" type="button" data-copy="${esc(url)}">${icon('copy')}Copiar link</button></div>`, null);
@@ -2177,15 +2258,16 @@ const Real = (() => {
     if (!T || T.id !== 'real') return;
     const nm = brandName();
     $('#lgLogo').textContent = initials(nm); $('#lgName').textContent = nm; $('#lgUrl').textContent = 'Acesso restrito';
-    const inv = mode === 'invite', code = mode === 'code';
-    $('#lgTitle').textContent = inv ? 'Crie o seu acesso.' : code ? 'Entrar com código de acesso.' : mode === 'newpass' ? 'Crie uma senha nova.' : `Entrar no painel da ${nm}.`;
-    $('#lgSub').textContent = inv ? 'Escolha o e-mail e a senha que você vai usar. Este link só funciona uma vez.' : code ? 'Digite o código de acesso da empresa.' : mode === 'newpass' ? 'Use pelo menos 10 caracteres.' : 'Use o seu e-mail e a sua senha.';
+    const key = mode === 'key', inv = mode === 'invite' || key, code = mode === 'code';
+    $('#lgTitle').textContent = key ? 'Crie o seu acesso com a chave.' : inv ? 'Crie o seu acesso.' : code ? 'Entrar com código de acesso.' : mode === 'newpass' ? 'Crie uma senha nova.' : `Entrar no painel da ${nm}.`;
+    $('#lgSub').textContent = key ? 'Digite a chave que o dono te mandou, o e-mail e a senha que você vai usar. A chave funciona uma vez só.' : inv ? 'Escolha o e-mail e a senha que você vai usar. Este link só funciona uma vez.' : code ? 'Digite o código de acesso da empresa.' : mode === 'newpass' ? 'Use pelo menos 10 caracteres.' : 'Use o seu e-mail e a sua senha.';
     $('#lgPass2Box').hidden = !(inv || mode === 'newpass'); $('#lgForgot').hidden = mode !== 'login';
     $('#lgEmail').closest('form').querySelector('label[for=lgEmail]').hidden = $('#lgEmail').hidden = mode === 'newpass' || code;
     $('#lgEmail').closest('form').querySelector('label[for=lgPass]').hidden = $('#lgPass').hidden = code;
-    $('#lgCodeBox').hidden = !code;
+    $('#lgCodeBox').hidden = !code; $('#lgKeyBox').hidden = !key;
+    $('#lgUseKey').hidden = !(mode === 'login' || key); $('#lgUseKey').textContent = key ? 'Já tenho acesso: entrar' : 'Tenho uma chave de cadastro';
     $('#lgUseCode').hidden = mode !== 'login' && !code; $('#lgUseCode').textContent = code ? 'Voltar para e-mail e senha' : 'Entrar com código de acesso';
-    $('#lgInstall').hidden = mode !== 'login' || !canInstall();
+    $('#lgInstall').hidden = mode !== 'login' || !canInstall() || IN_APP;
     $('#lgPass').autocomplete = inv || mode === 'newpass' ? 'new-password' : 'current-password';
     $('#lgGoTxt').textContent = inv ? 'Criar acesso e entrar' : code ? 'Entrar' : mode === 'newpass' ? 'Salvar senha e entrar' : 'Entrar';
   }
@@ -2198,6 +2280,14 @@ const Real = (() => {
     if (mode !== 'login') { if (pass.length < 10) return say('Use uma senha com pelo menos 10 caracteres.'); if (pass !== pass2) return say('As duas senhas estão diferentes.'); }
     go.disabled = true; say('');
     try {
+      if (mode === 'key') {
+        const r = await fn('first-access', {code:$('#lgKey').value, email, password:pass});
+        if (r.error) return say(r.error);
+        history.replaceState(null, '', location.pathname + '?empresa=' + EMPRESA + (IN_APP ? '&app=android' : ''));
+        // a chave é de outra empresa: o acesso já existe, só falta entrar no painel certo
+        if (r.slug && r.slug !== EMPRESA) { location.href = location.pathname + '?empresa=' + r.slug; return; }
+        mode = 'login'; $('#lgKey').value = '';
+      }
       if (mode === 'invite') {
         const r = await fn('first-access', {token:CONVITE, email, password:pass});
         if (r.error) return say(r.error);
@@ -2225,6 +2315,7 @@ const Real = (() => {
       say('Se esse e-mail tiver acesso, o link para trocar a senha chega em instantes. Olhe também o spam.');
     } finally { b.disabled = false; }
   }
+  function toggleKey() { mode = mode === 'key' ? 'login' : 'key'; say(''); paintLogin(); if (mode === 'key') $('#lgKey').focus(); }
   function toggleCode() { mode = mode === 'code' ? 'login' : 'code'; say(''); paintLogin(); if (mode === 'code') $('#lgCode').focus(); }
   async function useCode(raw) {
     const code = String(raw || '').trim();
@@ -2304,6 +2395,17 @@ const Real = (() => {
     const p = S.proposals.find(x => x.id === id);
     if (p) showPropLink(p);
   }
+  // chaves de cadastro: o servidor gera e guarda só o hash; a lista nunca traz a chave
+  async function keysLoad() {
+    const [{data, error}, {data:team}] = await Promise.all([
+      sb.from('invites').select('id, name, role, expires_at, used_at, used_by, code_hint, created_at').eq('tenant_id', tid).not('code_hint', 'is', null).order('created_at', {ascending:false}).limit(50),
+      sb.rpc('team_list', {p_tenant:tid})]);
+    if (error) return {error:'Não deu para carregar as chaves.'};
+    const mail = Object.fromEntries((team || []).map(m => [m.user_id, m.email]));
+    return {keys:data.map(k => ({id:k.id, name:k.name, role:k.role, exp:new Date(k.expires_at).getTime(), used:k.used_at ? new Date(k.used_at).getTime() : null, by:mail[k.used_by] || '', hint:k.code_hint}))};
+  }
+  const keyCreate = (o) => fn('first-access', Object.assign({action:'create', tenant_id:tid}, o));
+  async function keyRevoke(id) { const {error} = await sb.from('invites').delete().eq('id', id).is('used_at', null); return error ? {error:'Não deu para cancelar.'} : {ok:true}; }
   function invite() {
     modal('Convidar pessoa', `<div class="fg">${inp('n', 'Nome', 'required')}${sel('r', 'Perfil', ['sales', 'finance', 'viewer', 'admin'].map(k => [k, ROLES[k].n]))}</div><p class="note">Você recebe um link de uso único, válido por 7 dias. A pessoa escolhe o próprio e-mail e a própria senha.</p>`,
     fd => { const n = String(fd.get('n') || '').trim(); if (!n) return 'Escreva o nome.';
@@ -2353,13 +2455,16 @@ const Real = (() => {
       if (c.error) { paintLogin(); return say(c.error); }
       mode = 'invite'; return paintLogin();
     }
+    if (QS.get('chave') !== null) {   // link da mensagem do dono: abre o cadastro com a chave preenchida
+      mode = 'key'; $('#lgKey').value = QS.get('chave'); history.replaceState(null, '', location.pathname + '?empresa=' + EMPRESA + (IN_APP ? '&app=android' : '')); return paintLogin();
+    }
     if (LINK_ERR) { history.replaceState(null, '', location.pathname + '?empresa=' + EMPRESA); paintLogin(); return say('Este link expirou ou já foi usado. Peça outro em “Esqueci minha senha”.'); }
     if (RECOVERY) { mode = 'newpass'; return paintLogin(); }
     paintLogin();
     const {data:{session}} = await sb.auth.getSession();
     if (session) await openApp();
   }
-  return {boot, sync, fn, reload, logout, payLink, proposalLink, deleteRecord, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
+  return {boot, sync, fn, reload, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
 })();
 
 /* tema do sistema mudou ou o host trocou data-theme */

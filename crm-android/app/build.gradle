@@ -1,0 +1,28 @@
+plugins { id 'com.android.application' }
+def build = Integer.parseInt(System.getenv('GITHUB_RUN_NUMBER') ?: '1')
+// A chave de assinatura nunca fica no repositório: vem dos segredos do GitHub (ou do ambiente, no build local).
+def ks = System.getenv('CRM_KEYSTORE')
+android {
+    namespace 'com.amplitudelab.crm'
+    compileSdk 34
+    defaultConfig {
+        applicationId 'com.amplitudelab.crm'
+        minSdk 24
+        targetSdk 34
+        // cada build do GitHub Actions sobe o número, então o APK novo instala por cima do antigo
+        versionCode = build
+        versionName = '1.0.' + build
+    }
+    signingConfigs {
+        release {
+            if (ks) {
+                storeFile file(ks)
+                storePassword System.getenv('CRM_KEYSTORE_PASS')
+                keyAlias 'amplitudecrm'
+                keyPassword System.getenv('CRM_KEYSTORE_PASS')
+            }
+        }
+    }
+    buildTypes { release { if (ks) signingConfig signingConfigs.release; minifyEnabled false } }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}

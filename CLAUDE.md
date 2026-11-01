@@ -62,7 +62,7 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   - Clientes de exemplo: `norte`, `okada`, `orbita`, `lab`.
   - App no celular: `crm/app/manifest.webmanifest` abre o painel da Amplitude Lab. No Supabase Auth, Site URL e Redirect URLs precisam apontar para `crm/app/`; sem isso, o link de recuperação de senha cai em `localhost`.
   - Código de acesso: a função `access-code` troca um código do dono por uma sessão. O hash fica em `access_codes`, nunca o código, e o dono troca ou desativa em Equipe e acesso. No iPhone, o app da tela de início não compartilha o login com o navegador, então o código é digitado dentro do app.
-  - Perfis: owner, sales, finance, viewer.
+  - Perfis: owner, admin, sales, finance, viewer.
   - `?t=<cliente>` escolhe o cliente e `#funil`, `#site` etc. abrem direto numa tela.
 - `crm/IMPLEMENTACAO.md`: guia de teste e implementação. `crm/guia.html` é gerado dele:
   `pandoc IMPLEMENTACAO.md -f gfm+yaml_metadata_block -t html5 -s --toc --toc-depth=3 -H <head.html> -o guia.html`.
@@ -85,6 +85,8 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
 - Radar de leads: roda no navegador com Overpass e, em reserva, Nominatim por quadrantes; com `GEOAPIFY_KEY` ou `GOOGLE_PLACES_KEY` usa o servidor primeiro.
 - Apagar venda, proposta, lead ou lançamento só por `delete_record`, com motivo e autor. Nada é removido do banco.
 - Vender para outras empresas: veja `crm/VENDER-O-CRM.md`. O plano só muda pelo servidor.
+- **Chaves de acesso (só o dono):** menu "Chaves de acesso". O dono escolhe o perfil (Vendas, Financeiro, Leitura ou Admin) e a validade; a função `first-access` (`action:'create'`) gera `AMP-XXXX-XXXX-XXXX` de uso único e guarda só o hash em `invites.code_hash` (migração `006_chaves_acesso.sql`). O colaborador toca em "Tenho uma chave de cadastro" e cria e-mail e senha. Erros de chave têm limite por endereço (`invite_attempts`). O link `?chave=` preenche a chave.
+- **App Android:** `crm-android/` é um WebView que abre `crm/app/?empresa=amplitudelab&app=android` (o painel se atualiza sozinho). O APK fica em `crm/app/amplitude-crm.apk`. A chave de assinatura nunca vai para o repositório: o workflow `crm-android.yml` usa os segredos `CRM_KEYSTORE_B64` e `CRM_KEYSTORE_PASS`, e sem eles não gera nada. Dentro do app, `window.AmpApp` copia texto e salva o CSV.
 - Nunca coloque chaves secretas no repositório.
 
 ## Visual
