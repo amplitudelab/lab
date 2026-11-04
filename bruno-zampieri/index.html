@@ -53,10 +53,8 @@ a{color:inherit}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* ---------- Fundo: céu + partículas ---------- */
-.ceu{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(120% 60% at 50% 62%,rgba(255,123,47,.30) 0%,rgba(210,70,110,.16) 35%,transparent 70%),
-    linear-gradient(180deg,#120c12 0%,var(--couro) 60%);
+.ceu{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background:linear-gradient(180deg,#120c12 0%,var(--couro) 60%);
   opacity:var(--sky);transition:opacity .6s}
 #particulas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
 .grao{position:fixed;inset:-50%;z-index:0;pointer-events:none;opacity:.06;
@@ -272,7 +270,7 @@ p{margin:0}
 .canal .btn{justify-self:start}
 .endereco{font:500 .875rem/1.4 var(--f-mono);word-break:break-word;color:var(--areia)}
 .redes{display:grid;gap:10px;margin-top:36px}
-@media (min-width:760px){.redes{grid-template-columns:1fr 1fr}}
+@media (min-width:760px){.redes{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .rede{display:flex;align-items:center;gap:16px;padding:18px 20px;border:1px solid var(--linha);border-radius:var(--raio);text-decoration:none;background:rgba(13,10,9,.6);transition:border-color .2s;min-width:0}
 a.rede:hover{border-color:var(--sol)}
 .rede svg{width:26px;height:26px;flex:none;color:var(--sol)}
@@ -316,10 +314,116 @@ a.rede:hover{border-color:var(--sol)}
   .letreiro__trilho{animation:none}
   .rec::before{animation:none}
 }
+
+/* ---------- Vídeo de drone no fundo do topo ---------- */
+.ceu__video{position:absolute;inset:0;overflow:hidden}
+.ceu__video video,.ceu__video img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5;transform:scale(1.06)}
+.ceu__video::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(90deg,rgba(13,10,9,.94) 0%,rgba(13,10,9,.62) 48%,rgba(13,10,9,.3) 100%),
+  linear-gradient(0deg,var(--couro) 2%,transparent 45%),
+  linear-gradient(180deg,rgba(13,10,9,.7) 0%,transparent 22%)}
+@media (max-width:899px){.ceu__video video,.ceu__video img{opacity:.7}.ceu__video::after{background:linear-gradient(180deg,rgba(13,10,9,.5) 0%,rgba(13,10,9,.3) 30%,rgba(13,10,9,.62) 62%,var(--couro) 100%)}}
+
+/* ---------- Entrada do topo ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .hero h1 span{animation:entra 1.1s cubic-bezier(.2,.8,.2,1) both}
+  .hero h1 .z{animation:entra 1.1s .12s cubic-bezier(.2,.8,.2,1) both,brilho 9s 1.2s ease-in-out infinite alternate}
+  .hero .olho,.hero__frase,.frentes,.hero .acoes,.numeros{animation:aparece .9s .45s both}
+  .foto-hero__img{animation:revela 1.4s .25s cubic-bezier(.7,0,.2,1) both}
+  .foto-hero figcaption{animation:aparece .8s 1.1s both}
+  .ceu__video video{animation:deriva 26s ease-in-out infinite alternate}
+}
+@keyframes entra{from{transform:translateY(55%);opacity:0;filter:blur(10px)}}
+@keyframes aparece{from{opacity:0;transform:translateY(18px)}}
+@keyframes revela{from{clip-path:inset(100% 0 0 0);transform:rotate(1.5deg) scale(1.08)}}
+@keyframes deriva{to{transform:scale(1.16) translate(-2%,-1%)}}
+
+/* ---------- Massoterapia: modalidades ---------- */
+.modal{list-style:none;margin:0;padding:0;display:grid;gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden}
+.modal li{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:18px 20px;background:var(--couro);font:800 clamp(1.7rem,3.4vw,2.4rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em;transition:background .3s,padding .3s}
+.modal li span{font:500 .6875rem/1 var(--f-mono);letter-spacing:.14em;color:var(--ambar)}
+.modal li:hover{background:var(--couro-2);padding-left:28px}
+.link-sub{color:var(--ambar);text-underline-offset:3px}
+
+/* ---------- Modelagem: retratos de impacto ---------- */
+#modelagem{overflow:clip}
+.retratos{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,2vw,22px);margin-bottom:clamp(40px,6vw,80px)}
+.retrato{margin:0;position:relative}
+.retrato:nth-child(2){margin-top:clamp(40px,9vw,140px)}
+.retrato button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;border-radius:var(--raio);overflow:hidden;box-shadow:0 50px 90px -40px rgba(0,0,0,.9),0 0 0 1px var(--linha)}
+.retrato img{width:100%;aspect-ratio:760/1140;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.retrato button:hover img{transform:scale(1.035)}
+.retrato figcaption{font:500 .6875rem/1.3 var(--f-mono);text-transform:uppercase;letter-spacing:.12em;color:var(--poeira);margin-top:12px}
+.retratos__marca{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);margin:0;pointer-events:none;white-space:nowrap;
+  font:900 clamp(3.2rem,13vw,11rem)/.8 var(--f-display);text-transform:uppercase;color:transparent;-webkit-text-stroke:1.5px rgba(241,230,212,.85);mix-blend-mode:difference;z-index:2}
+.servico{display:grid;gap:18px;padding:clamp(22px,3vw,34px);border:1px solid var(--linha);border-radius:var(--raio);background:var(--couro-2);margin-bottom:clamp(36px,5vw,60px)}
+@media (min-width:900px){.servico{grid-template-columns:1.3fr auto;align-items:center}}
+.servico h3{font:800 clamp(1.8rem,3vw,2.4rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.servico p{color:var(--poeira);max-width:58ch;margin-top:10px}
+
+/* ---------- Faixa da foto aérea ---------- */
+.aerea{position:relative;z-index:1;height:clamp(460px,92svh,980px);overflow:hidden;display:grid;align-items:end;isolation:isolate}
+.aerea img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;z-index:-2}
+.aerea::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--couro) 0%,rgba(13,10,9,.1) 28%,rgba(13,10,9,.15) 60%,var(--couro) 100%)}
+.aerea__txt{max-width:var(--max);width:100%;margin:0 auto;padding-left:var(--gutter-l);padding-right:var(--gutter-r);padding-block:0 clamp(40px,8vw,100px)}
+.aerea__frase{font:900 clamp(4rem,15vw,13rem)/.8 var(--f-display);text-transform:uppercase;margin-top:16px;text-shadow:0 10px 60px rgba(0,0,0,.45)}
+.aerea__frase em{display:block;font:italic 400 .5em/1 var(--f-serif);text-transform:none;color:var(--ambar);margin-top:.1em}
+
+/* ---------- Drone: vídeo no fundo ---------- */
+.drone.faixa{padding-block:0;isolation:isolate}
+.drone__fundo{position:sticky;top:0;height:100svh;margin-bottom:-100svh;z-index:-1;overflow:hidden;
+  margin-left:calc(-1 * var(--gutter-l));margin-right:calc(-1 * var(--gutter-r))}
+.drone__fundo video,.drone__fundo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .6s}
+.drone__fundo::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(180deg,var(--couro) 0%,rgba(13,10,9,.55) 16%,rgba(13,10,9,.4) 55%,rgba(13,10,9,.88) 100%),
+  repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
+.drone__fundo .varre{position:absolute;left:0;right:0;height:22%;background:linear-gradient(180deg,transparent,rgba(255,179,92,.10),transparent);top:-25%;z-index:1}
+@media (prefers-reduced-motion:no-preference){.drone__fundo .varre{animation:varre 7s linear infinite}}
+@keyframes varre{to{top:110%}}
+.drone .faixa__in{padding-block:clamp(110px,16vw,200px) clamp(80px,10vw,140px)}
+.drone h2{font-size:clamp(3.6rem,12vw,9rem);text-shadow:0 8px 50px rgba(0,0,0,.5)}
+.drone .sub{color:var(--areia);text-shadow:0 1px 14px rgba(0,0,0,.8)}
+.hud{background:rgba(13,10,9,.34)}
+.telas{display:grid;gap:14px}
+@media (min-width:900px){.telas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.tela{position:relative;display:grid;align-content:end;gap:8px;min-height:180px;padding:18px;border:1px solid rgba(255,179,92,.35);border-radius:var(--raio);overflow:hidden;cursor:pointer;color:var(--areia);background:#000;text-align:left;font:inherit;isolation:isolate}
+.tela img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.75;transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .4s}
+.tela::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(13,10,9,.92),transparent 70%)}
+.tela:hover img{transform:scale(1.06);opacity:1}
+.tela b{font:800 1.6rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.tela small{font:500 .6875rem/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--poeira)}
+.tela[aria-pressed="true"]{border-color:var(--ambar);box-shadow:0 0 0 1px var(--ambar),0 0 40px -10px var(--sol)}
+.tela[aria-pressed="true"] small::before{content:"● no fundo agora · ";color:#ff4b3a}
+.tela--link{background:var(--couro-2)}
+.drone__info{display:grid;gap:14px;margin-top:26px}
+@media (min-width:900px){.drone__info{grid-template-columns:1fr 1fr}}
+.drone__info .info{border-top-color:rgba(255,179,92,.28)}
+.drone__fotos{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-content:start}
+
+/* ---------- Player com som ---------- */
+.player video{max-width:100%;max-height:100%;border-radius:var(--raio);background:#000;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+
+/* ---------- Revelações na rolagem ---------- */
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .retrato button{animation:abre-foto linear both;animation-timeline:view();animation-range:entry 0% cover 45%}
+    @keyframes abre-foto{from{clip-path:inset(14% 8% 14% 8% round 4px);transform:scale(.94)}to{clip-path:inset(0 0 0 0 round 4px);transform:none}}
+    .retratos__marca{animation:desliza linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+    @keyframes desliza{from{transform:translate(-38%,-50%)}to{transform:translate(-62%,-50%)}}
+    .aerea img{animation:aproxima linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+    @keyframes aproxima{from{transform:scale(1.28) translateY(-4%)}to{transform:scale(1) translateY(3%)}}
+    .aerea__frase{animation:sobe linear both;animation-timeline:view();animation-range:entry 20% cover 55%}
+    .drone h2{animation:cresce linear both;animation-timeline:view();animation-range:entry 0% cover 35%}
+    @keyframes cresce{from{opacity:.3;transform:scale(.86);letter-spacing:.08em}to{opacity:1;transform:none}}
+  }
+}
+@media (prefers-reduced-motion:reduce){.retratos__marca{display:none}}
 </style>
 </head>
 <body>
-<div class="ceu" aria-hidden="true"></div>
+<div class="ceu" aria-hidden="true">
+  <div class="ceu__video"><video id="video-topo" muted loop playsinline preload="none" poster="img/drone-1-capa.webp" data-src="video/drone-1.mp4"></video></div>
+</div>
 <canvas id="particulas" aria-hidden="true"></canvas>
 <div class="grao" aria-hidden="true"></div>
 <div class="progresso" aria-hidden="true"></div>
@@ -403,11 +507,11 @@ a.rede:hover{border-color:var(--sol)}
         <p class="sub">O que hoje está espalhado pelo Instagram, organizado num endereço só. Escolha a área e encontre o próximo passo.</p>
       </div>
       <div class="areas sobe">
-        <a class="area" href="#massoterapia"><span class="area__tag">Serviço</span><h3>Massoterapia</h3><p>Como funciona o atendimento e agendamento pelo WhatsApp.</p><svg class="seta"><use href="#i-seta"/></svg></a>
+        <a class="area" href="#massoterapia"><span class="area__tag">Serviço</span><h3>Massoterapia</h3><p>Ventosaterapia, quiropraxia e relaxante. Sessões de 1 hora.</p><svg class="seta"><use href="#i-seta"/></svg></a>
         <a class="area" href="#lifestyle"><span class="area__tag">Dia a dia</span><h3>Lifestyle</h3><p>Rotina, experiências, eventos e viagens.</p><svg class="seta"><use href="#i-seta"/></svg></a>
         <a class="area" href="#humor"><span class="area__tag">Entretenimento</span><h3>Humor</h3><p>Vídeos curtos e situações do cotidiano.</p><svg class="seta"><use href="#i-seta"/></svg></a>
-        <a class="area" href="#modelagem"><span class="area__tag">Portfólio</span><h3>Modelagem</h3><p>Fotos selecionadas, ensaios e trabalhos.</p><svg class="seta"><use href="#i-seta"/></svg></a>
-        <a class="area" href="#drone"><span class="area__tag">Visão aérea</span><h3>Drone</h3><p>Filmagens feitas com drone.</p><svg class="seta"><use href="#i-seta"/></svg></a>
+        <a class="area" href="#modelagem"><span class="area__tag">Portfólio</span><h3>Modelagem</h3><p>Ensaios, campanhas e fotos de vestuário para lojas.</p><svg class="seta"><use href="#i-seta"/></svg></a>
+        <a class="area" href="#drone"><span class="area__tag">Visão aérea</span><h3>Drone</h3><p>Vídeos e fotos aéreas.</p><svg class="seta"><use href="#i-seta"/></svg></a>
         <a class="area" href="#parcerias"><span class="area__tag">Para marcas</span><h3>Parcerias</h3><p>Perfil do criador e contato comercial.</p><svg class="seta"><use href="#i-seta"/></svg></a>
       </div>
     </div>
@@ -432,7 +536,12 @@ a.rede:hover{border-color:var(--sol)}
       <div class="massa">
         <div class="bloco sobe">
           <h3>Modalidades</h3>
-          <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Quais tipos de massagem o Bruno oferece, com nome e uma frase sobre cada um.</p></div>
+          <ul class="modal">
+            <li>Ventosaterapia <span>1 h</span></li>
+            <li>Quiropraxia <span>1 h</span></li>
+            <li>Relaxante <span>1 h</span></li>
+          </ul>
+          <p class="sub">Mais sobre o atendimento no perfil <a class="link-sub" href="https://www.instagram.com/massagon47/" target="_blank" rel="noopener">@massagon47</a>.</p>
           <h3 style="margin-top:14px">Benefícios</h3>
           <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Texto sobre benefícios aprovado pelo Bruno, descrito de forma responsável e sem promessas de saúde.</p></div>
         </div>
@@ -441,8 +550,9 @@ a.rede:hover{border-color:var(--sol)}
           <dl class="info">
             <div><dt>Agendamento</dt><dd>Pelo WhatsApp <span class="pend">· número pendente</span></dd></div>
             <div><dt>Local</dt><dd><span class="pend">A definir com o Bruno</span></dd></div>
-            <div><dt>Duração</dt><dd><span class="pend">A definir com o Bruno</span></dd></div>
-            <div><dt>Valores</dt><dd><span class="pend">A definir com o Bruno</span></dd></div>
+            <div><dt>Duração</dt><dd>1 hora por sessão</dd></div>
+            <div><dt>Valores</dt><dd>Passados pelo WhatsApp</dd></div>
+            <div><dt>Pagamento</dt><dd>Dinheiro, Pix ou cartão de crédito</dd></div>
           </dl>
           <h3 style="margin-top:14px">O ambiente</h3>
           <div class="trio">
@@ -458,8 +568,9 @@ a.rede:hover{border-color:var(--sol)}
         <div class="faq">
           <details><summary>Como faço para agendar?</summary><p>Pelo botão de WhatsApp desta página. <span class="pend">O número ainda precisa ser enviado.</span></p></details>
           <details><summary>Onde é o atendimento?</summary><p><span class="pend">Resposta pendente: endereço ou região de atendimento.</span></p></details>
-          <details><summary>Quanto tempo dura uma sessão?</summary><p><span class="pend">Resposta pendente: duração de cada modalidade.</span></p></details>
-          <details><summary>Quais formas de pagamento são aceitas?</summary><p><span class="pend">Resposta pendente.</span></p></details>
+          <details><summary>Quanto tempo dura uma sessão?</summary><p>Cada sessão dura 1 hora.</p></details>
+          <details><summary>Quanto custa?</summary><p>Os valores são passados pelo WhatsApp.</p></details>
+          <details><summary>Quais formas de pagamento são aceitas?</summary><p>Dinheiro, Pix ou cartão de crédito.</p></details>
         </div>
       </div>
     </div>
@@ -527,10 +638,24 @@ a.rede:hover{border-color:var(--sol)}
           <h2 id="model-t">Modelagem</h2>
         </div>
         <div style="display:grid;gap:20px">
-          <p class="sub">Fotos selecionadas, ensaios e trabalhos. Toque numa foto para ampliar.</p>
-          <div class="acoes"><a class="btn btn--sol" href="#contato">Contato profissional <svg><use href="#i-seta"/></svg></a></div>
+          <p class="sub">Ensaios, campanhas e fotos de vestuário. Toque numa foto para ampliar.</p>
         </div>
       </div>
+      <div class="retratos" data-galeria="retratos">
+        <figure class="retrato"><button type="button" data-zoom><img src="img/gravata-borboleta.webp" width="760" height="1139" loading="lazy" alt="Retrato em preto e branco: Bruno de smoking e gravata-borboleta, olhando para a câmera"></button><figcaption>Ensaio em estúdio</figcaption></figure>
+        <figure class="retrato"><button type="button" data-zoom><img src="img/retrato-estudio.webp" width="760" height="1141" loading="lazy" alt="Retrato de estúdio do Bruno com fundo preto e corrente prateada"></button><figcaption>Retrato</figcaption></figure>
+        <p class="retratos__marca" aria-hidden="true">Campanhas · Vestuário · Ensaios</p>
+      </div>
+
+      <div class="servico sobe">
+        <div>
+          <span class="rotulo">Para lojas e marcas</span>
+          <h3 style="margin-top:10px">Fotos para campanhas e vestuário</h3>
+          <p>O Bruno vai até a loja e faz as fotos das roupas, em formato de parceria. O valor é combinado pelo WhatsApp.</p>
+        </div>
+        <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero conversar sobre fotos para a minha loja."><svg><use href="#i-conversa"/></svg><span>Combinar fotos</span><small class="btn__pend">número pendente</small></a>
+      </div>
+
       <div class="book sobe" data-galeria="modelagem">
         <figure class="quadro destaque"><button type="button" data-zoom><img src="img/terno-celulares.webp" width="545" height="672" loading="lazy" alt="Ensaio: Bruno de terno preto e óculos brancos, sentado, cercado por mãos segurando celulares que o fotografam"></button><figcaption>Ensaio de terno</figcaption></figure>
         <figure class="quadro"><button type="button" data-zoom><img src="img/jaqueta-couro.webp" width="194" height="236" loading="lazy" alt="Bruno de jaqueta de couro preta e boné"></button><figcaption>Couro</figcaption></figure>
@@ -538,35 +663,64 @@ a.rede:hover{border-color:var(--sol)}
         <figure class="quadro"><button type="button" data-zoom><img src="img/puffer.webp" width="194" height="236" loading="lazy" alt="Bruno de jaqueta puffer preta e boné"></button><figcaption>Puffer</figcaption></figure>
         <figure class="quadro"><button type="button" data-zoom><img src="img/elevador.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa preta num elevador espelhado"></button><figcaption>Preto total</figcaption></figure>
         <figure class="quadro"><button type="button" data-zoom><img src="img/trico-oculos.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa de tricô branca e óculos de sol"></button><figcaption>Tricô</figcaption></figure>
-        <div class="vaga"><svg><use href="#i-foto"/></svg><b>Ensaio ou trabalho</b><span>Enviar fotos em alta</span></div>
-        <div class="vaga"><svg><use href="#i-foto"/></svg><b>Ensaio ou trabalho</b><span>Enviar fotos em alta</span></div>
       </div>
-      <div class="falta sobe" role="note" style="margin-top:22px"><span class="falta__tag">Material pendente</span><p>Lista de ensaios, trabalhos e projetos (com marcas, se ele quiser citar) e as fotos originais em alta resolução. As fotos desta prévia vieram de capturas de tela.</p></div>
+      <div class="falta sobe" role="note" style="margin-top:22px"><span class="falta__tag">Material pendente</span><p>Mais fotos em alta resolução e, se ele quiser, as lojas e campanhas que já fotografou. As fotos pequenas da grade vieram de capturas de tela.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ FOTO AÉREA ============ -->
+  <section class="aerea" aria-label="Foto aérea do Bruno de quadriciclo na areia">
+    <img src="img/quadriciclo-aereo.webp" width="760" height="1013" loading="lazy" alt="Vista de cima: Bruno de boné vermelho pilotando um quadriciclo na areia">
+    <div class="aerea__txt">
+      <span class="olho">Vista de cima</span>
+      <p class="aerea__frase">Do chão<em>ao céu</em></p>
     </div>
   </section>
 
   <!-- ============ DRONE ============ -->
   <section class="faixa drone" id="drone" data-forma="2" aria-labelledby="drone-t">
+    <div class="drone__fundo" aria-hidden="true">
+      <img src="img/drone-2-capa.webp" alt="" id="drone-capa">
+      <video id="video-drone" muted loop playsinline preload="none" poster="img/drone-2-capa.webp" data-src="video/drone-2.mp4"></video>
+      <span class="varre"></span>
+    </div>
     <div class="faixa__in">
-      <div class="cab cab--lado sobe">
-        <div>
-          <span class="olho">Visão aérea</span>
-          <h2 id="drone-t">Filmagens <em>de drone</em></h2>
-        </div>
-        <p class="sub">O Bruno também filma com drone. Aqui ficam os vídeos aéreos e o caminho para pedir uma filmagem.</p>
+      <div class="cab sobe">
+        <span class="olho">Visão aérea</span>
+        <h2 id="drone-t">Filmagens <em>de drone</em></h2>
+        <p class="sub" style="margin-top:8px">Vídeos e fotos aéreas feitos pelo Bruno. O vídeo do fundo é um dos trabalhos: escolha qual assistir.</p>
       </div>
 
       <div class="hud sobe">
         <span class="hud__c1"></span><span class="hud__c2"></span>
-        <div class="hud__topo"><span class="rec">Rec</span><span>Galeria aérea</span><span>3 vídeos aguardando</span></div>
-        <div class="videos">
-          <div class="vaga"><span class="mira" aria-hidden="true"></span><svg><use href="#i-drone"/></svg><b>Vídeo de drone principal</b><span>Enviar arquivo MP4 ou link do vídeo</span></div>
-          <div class="vaga"><svg><use href="#i-video"/></svg><b>Vídeo de drone</b><span>Enviar arquivo ou link</span></div>
-          <div class="vaga"><svg><use href="#i-video"/></svg><b>Vídeo de drone</b><span>Enviar arquivo ou link</span></div>
+        <div class="hud__topo"><span class="rec">Rec</span><span>Galeria aérea</span><span>2 vídeos + 1 reel</span></div>
+        <div class="telas">
+          <button class="tela" type="button" data-video="video/drone-2.mp4" data-capa="img/drone-2-capa.webp" aria-pressed="true">
+            <img src="img/drone-2-capa.webp" width="900" height="506" loading="lazy" alt="">
+            <small>56 s · chalé</small><b>Vídeo 1</b>
+          </button>
+          <button class="tela" type="button" data-video="video/drone-1.mp4" data-capa="img/drone-1-capa.webp" aria-pressed="false">
+            <img src="img/drone-1-capa.webp" width="900" height="506" loading="lazy" alt="">
+            <small>12 s · piscina vista de cima</small><b>Vídeo 2</b>
+          </button>
+          <a class="tela tela--link" href="https://www.instagram.com/reel/DOKauxij41m/" target="_blank" rel="noopener">
+            <small>Instagram</small><b>Reel editado</b><span class="sub" style="font-size:.875rem">Abre o vídeo no Instagram ↗</span>
+          </a>
         </div>
-        <div class="drone__rodape">
-          <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Os vídeos de drone e uma descrição do serviço: que tipo de filmagem ele faz, onde atende e como funciona o pedido.</p></div>
-          <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero saber sobre filmagem com drone."><svg><use href="#i-drone"/></svg><span>Pedir filmagem</span><small class="btn__pend">número pendente</small></a>
+        <div class="acoes" style="margin-top:16px">
+          <button class="btn" type="button" id="drone-som"><svg><use href="#i-video"/></svg>Assistir com som</button>
+        </div>
+
+        <div class="drone__info">
+          <dl class="info">
+            <div><dt>Serviço</dt><dd>Vídeos e fotos aéreas</dd></div>
+            <div><dt>Valores</dt><dd>Passados pelo WhatsApp</dd></div>
+            <div><dt>Pacotes</dt><dd>Com quantidade de vídeos e fotos <span class="pend">· em definição pelo Bruno</span></dd></div>
+          </dl>
+          <div style="display:grid;gap:14px;align-content:start">
+            <p class="sub">Para pedir uma filmagem, chame no WhatsApp e conte o que você quer gravar.</p>
+            <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero saber sobre filmagem com drone." style="justify-self:start"><svg><use href="#i-drone"/></svg><span>Pedir filmagem</span><small class="btn__pend">número pendente</small></a>
+          </div>
         </div>
       </div>
     </div>
@@ -583,7 +737,11 @@ a.rede:hover{border-color:var(--sol)}
         <div class="bloco sobe">
           <p class="lead">Conteúdo pra quem curte boa energia e autenticidade. Lifestyle, humor e modelagem no mesmo perfil, com o tom espontâneo do Instagram.</p>
           <h3 style="margin-top:18px">Formatos de colaboração</h3>
-          <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Quais formatos o Bruno aceita (por exemplo, reels, stories, presença em eventos) e se haverá mídia kit para baixar.</p></div>
+          <dl class="info">
+            <div><dt>Vestuário</dt><dd>Fotos para campanhas e roupas de lojas, em parceria</dd></div>
+            <div><dt>Drone</dt><dd>Vídeos e fotos aéreas</dd></div>
+          </dl>
+          <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Outros formatos que ele aceita (reels, stories, eventos) e se haverá mídia kit.</p></div>
           <div class="acoes" style="margin-top:10px">
             <a class="btn btn--sol" href="https://ig.me/m/obrunozampieri" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>Falar sobre parceria no Direct</a>
           </div>
@@ -599,7 +757,7 @@ a.rede:hover{border-color:var(--sol)}
           </div>
           <div style="display:grid;gap:10px">
             <span class="rotulo">Temas de conteúdo</span>
-            <ul class="temas"><li>Lifestyle</li><li>Humor</li><li>Modelagem</li><li>Massoterapia</li></ul>
+            <ul class="temas"><li>Lifestyle</li><li>Humor</li><li>Modelagem</li><li>Massoterapia</li><li>Drone</li></ul>
           </div>
           <p class="sub" style="font-size:.875rem">Na bio: “Parcerias via Direct”.</p>
         </aside>
@@ -634,14 +792,15 @@ a.rede:hover{border-color:var(--sol)}
           <span class="rotulo">Geral</span>
           <h3>Outros assuntos</h3>
           <p>Para qualquer outro assunto, por e-mail.</p>
-          <p class="endereco" data-email-texto><span class="pend">E-mail pendente</span></p>
-          <a class="btn" href="#contato" data-canal="email"><svg><use href="#i-email"/></svg><span>Enviar e-mail</span><small class="btn__pend">e-mail pendente</small></a>
+          <p class="endereco" data-email-texto>zampiericontato87@gmail.com</p>
+          <a class="btn" href="mailto:zampiericontato87@gmail.com" data-canal="email"><svg><use href="#i-email"/></svg><span>Enviar e-mail</span></a>
         </div>
       </div>
 
       <div class="redes sobe">
         <a class="rede" href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg><div><strong>Instagram</strong><span>@obrunozampieri</span></div></a>
-        <div class="rede rede--falta"><svg><use href="#i-link"/></svg><div><strong>Outras redes</strong><span class="pend">Enviar os links (TikTok, YouTube ou outras que ele usar)</span></div></div>
+        <a class="rede" href="https://www.tiktok.com/@brunozamp7" target="_blank" rel="noopener"><svg><use href="#i-video"/></svg><div><strong>TikTok</strong><span>@brunozamp7</span></div></a>
+        <a class="rede" href="https://www.instagram.com/massagon47/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg><div><strong>Instagram da massoterapia</strong><span>@massagon47</span></div></a>
       </div>
     </div>
   </section>
@@ -652,11 +811,17 @@ a.rede:hover{border-color:var(--sol)}
     <div class="rodape__nome">Bruno<br><b>Zampieri</b></div>
     <div style="display:grid;gap:8px">
       <p><a href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener">@obrunozampieri</a></p>
+      <p><a href="https://www.tiktok.com/@brunozamp7" target="_blank" rel="noopener">TikTok @brunozamp7</a> · <a href="mailto:zampiericontato87@gmail.com">zampiericontato87@gmail.com</a></p>
       <p>Massoterapia · Lifestyle · Humor · Modelagem · Drone</p>
       <p><a href="#inicio">Voltar ao topo ↑</a></p>
     </div>
   </div>
 </footer>
+
+<dialog class="zoom player" id="player" aria-label="Vídeo de drone">
+  <div class="zoom__in"><video id="player-video" controls playsinline preload="none"></video></div>
+  <button class="zoom__btn zoom__fechar" type="button" id="player-fechar" aria-label="Fechar vídeo">✕</button>
+</dialog>
 
 <dialog class="zoom" id="zoom" aria-label="Foto ampliada">
   <div class="zoom__in"><img id="zoom-img" alt=""></div>
@@ -672,7 +837,7 @@ a.rede:hover{border-color:var(--sol)}
    whatsapp: só números, com 55 + DDD (ex.: "5511999999999")
    email: endereço completo
    ============================================================ */
-const CONTATO = { whatsapp: "", email: "" };
+const CONTATO = { whatsapp: "", email: "zampiericontato87@gmail.com" };
 
 (() => {
   // ---- Botões de contato ----
@@ -735,6 +900,55 @@ const CONTATO = { whatsapp: "", email: "" };
   document.getElementById('zoom-prox').onclick = () => passo(1);
   dlg.addEventListener('click', e => { if (e.target === dlg || e.target.classList.contains('zoom__in')) dlg.close(); });
   dlg.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') passo(-1); if (e.key === 'ArrowRight') passo(1); });
+})();
+
+/* ============================================================
+   Vídeos de drone no fundo (só carregam perto da tela; sem autoplay com movimento reduzido ou economia de dados)
+   ============================================================ */
+(() => {
+  const semMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const economia = navigator.connection && navigator.connection.saveData;
+  const topo = document.getElementById('video-topo'), drone = document.getElementById('video-drone'), capa = document.getElementById('drone-capa');
+  const carregar = v => { if (!v.src && v.dataset.src) v.src = v.dataset.src; };
+  const tocar = v => { if (semMov || economia) return; carregar(v); const p = v.play(); if (p) p.catch(() => {}); };
+  const raiz = document.documentElement.style;
+  const hero = document.getElementById('inicio');
+
+  // céu do topo: some conforme a rolagem sai do início
+  let ceuVisivel = true;
+  const ceu = () => {
+    const h = hero.offsetHeight || innerHeight;
+    const s = Math.max(0, Math.min(1, 1 - scrollY / (h * .9)));
+    raiz.setProperty('--sky', s.toFixed(3));
+    const vis = s > .02;
+    if (vis !== ceuVisivel) { ceuVisivel = vis; vis ? tocar(topo) : topo.pause(); }
+  };
+  addEventListener('scroll', ceu, { passive: true }); ceu();
+  addEventListener('load', () => { if (ceuVisivel) tocar(topo); });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => { if (e.isIntersecting) { tocar(drone); drone.addEventListener('playing', () => capa.style.opacity = 0, { once: true }); } else drone.pause(); },
+      { rootMargin: '200px 0px' }).observe(document.getElementById('drone'));
+  }
+  document.querySelectorAll('.tela[data-video]').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.tela[data-video]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    capa.src = b.dataset.capa; capa.style.opacity = 1; drone.poster = b.dataset.capa;
+    drone.dataset.src = b.dataset.video; drone.removeAttribute('src'); drone.load();
+    if (semMov || economia) return;
+    tocar(drone); drone.addEventListener('playing', () => capa.style.opacity = 0, { once: true });
+  }));
+
+  // assistir com som
+  const dlg = document.getElementById('player'), pv = document.getElementById('player-video');
+  document.getElementById('drone-som').addEventListener('click', () => {
+    pv.src = drone.dataset.src; pv.poster = drone.poster; pv.muted = false;
+    if (dlg.showModal) dlg.showModal();
+    const p = pv.play(); if (p) p.catch(() => {});
+  });
+  const fecharPlayer = () => { pv.pause(); dlg.close(); };
+  document.getElementById('player-fechar').onclick = fecharPlayer;
+  dlg.addEventListener('click', e => { if (e.target === dlg || e.target.classList.contains('zoom__in')) fecharPlayer(); });
+  dlg.addEventListener('close', () => pv.pause());
 })();
 
 /* ============================================================
@@ -869,7 +1083,6 @@ const CONTATO = { whatsapp: "", email: "" };
     return pontos[pontos.length - 1].f;
   };
   const brilhoDe = m => m < 1 ? 1 - m * .45 : m < 2 ? .55 + (m - 1) * .45 : 1 - (m - 2) * .2;
-  const raiz = document.documentElement.style;
 
   let m = alvo(), px = 0, py = 0, tx = 0, ty = 0, rodando = false, t0 = performance.now(), tAcum = 0, ultimo = t0;
   addEventListener('pointermove', e => { tx = e.clientX / W * 2 - 1; ty = -(e.clientY / H * 2 - 1); }, { passive: true });
@@ -878,7 +1091,6 @@ const CONTATO = { whatsapp: "", email: "" };
     gl.uniform1f(uT, t); gl.uniform1f(uM, morph); gl.uniform2f(uP, px, py); gl.uniform1f(uG, brilhoDe(morph));
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.POINTS, 0, N);
-    raiz.setProperty('--sky', Math.max(0, 1 - morph * 1.4).toFixed(3));
   };
   const quadro = agora => {
     if (!rodando) return;
@@ -891,7 +1103,7 @@ const CONTATO = { whatsapp: "", email: "" };
   const iniciar = () => { if (rodando || reduz.matches || document.hidden) return; rodando = true; ultimo = performance.now(); requestAnimationFrame(quadro); };
   const parar = () => { rodando = false; };
   // Movimento reduzido: um quadro parado do pôr do sol, sem animação nem troca de forma.
-  const estatico = () => { parar(); px = py = 0; desenhar(8, 0); raiz.setProperty('--sky', '1'); };
+  const estatico = () => { parar(); px = py = 0; desenhar(8, 0); };
   document.addEventListener('visibilitychange', () => document.hidden ? parar() : iniciar());
   reduz.addEventListener?.('change', () => reduz.matches ? estatico() : iniciar());
   addEventListener('resize', () => { if (reduz.matches) estatico(); });
