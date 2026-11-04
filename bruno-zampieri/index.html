@@ -509,6 +509,9 @@ a.rede:hover{border-color:var(--sol)}
   .acoes{display:grid;grid-template-columns:minmax(0,1fr);width:100%}
   .acoes .btn,.canal .btn,.massa-rodape .btn,.servico .btn,.drone__info .btn{width:100%;justify-self:stretch;padding:0 18px;font-size:.9375rem}
 }
+
+.massa-painel__foto{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--raio);box-shadow:0 24px 60px -30px rgba(0,0,0,.9);filter:saturate(.92) contrast(1.04)}
+.massa-ilustra{margin-top:12px;font:400 .75rem/1.4 var(--f-mono);color:var(--poeira);text-align:right}
 </style>
 </head>
 <body>
@@ -700,6 +703,7 @@ a.rede:hover{border-color:var(--sol)}
 
         <div class="massa-paineis">
           <article class="massa-painel" role="tabpanel" id="painel-ventosa" aria-labelledby="aba-ventosa">
+            <img class="massa-painel__foto" src="img/massa-ventosa.webp" width="1100" height="733" alt="Foto ilustrativa: copos de ventosaterapia nas costas" loading="lazy" decoding="async">
             <p class="massa-painel__como">Copos aplicados sobre a pele criam uma leve sucção que puxa o músculo para cima e solta os pontos presos.</p>
             <ul class="beneficios">
               <li><b>Alívio de dores musculares</b> nas costas, nos ombros e no pescoço.</li>
@@ -709,6 +713,7 @@ a.rede:hover{border-color:var(--sol)}
             <p class="massa-painel__nota">É normal ficarem marcas redondas na pele por alguns dias. Elas somem sozinhas.</p>
           </article>
           <article class="massa-painel" role="tabpanel" id="painel-quiro" aria-labelledby="aba-quiro" hidden>
+            <img class="massa-painel__foto" src="img/massa-quiro.webp" width="1100" height="1650" alt="Foto ilustrativa: mãos de terapeuta avaliando a coluna" loading="lazy" decoding="async" style="object-position:50% 45%">
             <p class="massa-painel__como">Técnicas manuais na coluna e nas articulações para devolver movimento e aliviar travas.</p>
             <ul class="beneficios">
               <li><b>Alívio da dor lombar</b> e da tensão no pescoço, principalmente em crises recentes.</li>
@@ -718,6 +723,7 @@ a.rede:hover{border-color:var(--sol)}
             <p class="massa-painel__nota">Avise antes se você já fez cirurgia na coluna, teve AVC ou tem problema de circulação.</p>
           </article>
           <article class="massa-painel" role="tabpanel" id="painel-relax" aria-labelledby="aba-relax" hidden>
+            <img class="massa-painel__foto" src="img/massa-relax.webp" width="1100" height="733" alt="Foto ilustrativa: massagem relaxante nas costas" loading="lazy" decoding="async">
             <p class="massa-painel__como">Movimentos lentos e contínuos, com pressão leve a média, para o corpo desacelerar por uma hora.</p>
             <ul class="beneficios">
               <li><b>Menos tensão muscular</b> acumulada na semana.</li>
@@ -728,6 +734,8 @@ a.rede:hover{border-color:var(--sol)}
           </article>
         </div>
       </div>
+
+      <p class="massa-ilustra">Fotos ilustrativas, de banco de imagens.</p>
 
       <div class="massa-ficha sobe">
         <div><span class="rotulo">Sessão</span><strong>1 hora</strong></div>
