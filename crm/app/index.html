@@ -264,6 +264,12 @@ body.real #roleSel,body.real #tUrl,body.real #lgDemoBox,body.real #genForm,body.
 .pill[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;font-size:14px}
 .kv dt{color:var(--muted)} .kv dd{margin:0;overflow-wrap:anywhere}
+.ficha h4{font-size:15px;margin:18px 0 8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ficha tr.atn td{background:color-mix(in srgb,var(--warn) 16%,transparent)}
+.ficha td small{color:var(--muted)}
+.ficha .tbl table{min-width:0}
+.ficha .tbl td{white-space:normal;overflow-wrap:anywhere}
+.ficha .tbl td.c{width:64px}
 .sel-text{user-select:all;font-variant-numeric:tabular-nums}
 .tl{display:flex;flex-direction:column;gap:0;list-style:none;margin:0;padding:0}
 .tl li{position:relative;padding:0 0 14px 22px;font-size:14px}
@@ -581,7 +587,7 @@ const ROLES = {
 const NAV = [
   ['painel','Painel','home',null], ['funil','Funil','kanban','crm'], ['clientes','Clientes','users','crm'],
   ['propostas','Propostas','file','crm'], ['agenda','Agenda','cal','crm'], ['financeiro','Financeiro','wallet','fin'],
-  ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['equipe','Equipe e acesso','shield','team'], ['chaves','Chaves de acesso','key','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
+  ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['equipe','Equipe e acesso','shield','team'], ['chaves','Chaves de acesso','key','team'], ['fichas','Fichas de anamnese','file','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
 ];
 const NICHE = {
   norte: {people:['Rafael Lima','Diego Martins','Caio Souza','Lucas Prado','Bruno Teles','Igor Nunes','Thiago Reis','Mateus Alves','Henrique Dias','Pedro Lopes','André Kato','Vitor Hugo'],
@@ -974,7 +980,7 @@ function renderNav() {
 }
 function go(v, focus) {
   if (!allowed(v)) { toast('Seu perfil não tem acesso a esta área.'); v = 'painel'; }
-  if (v !== view) V._keys = null;   // a chave recém-gerada não fica na tela depois que o dono sai
+  if (v !== view) V._keys = V._fichas = null;   // a chave recém-gerada não fica na tela depois que o dono sai
   view = v; render();
   if (focus) $('#view').focus({preventScroll:true});
   window.scrollTo({top:0});
@@ -1518,6 +1524,14 @@ Válida até ${fdate(p.valid)}`, 'Proposta copiada para colar no WhatsApp'); bre
     case 'acceptProposal': { const p = S.proposals.find(x => x.id === id); p.status = 'accepted'; audit(`Proposta “${p.title}” aceita pelo cliente`); if (p.lead) { const l = S.leads.find(x => x.id === p.lead); if (l && isOpen(l)) { save(); closeLayers(); moveLead(l.id, 's5', a); return; } } save(); const r = a.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top); viewProposal(id); render(); break; }
     case 'agDay': { const d = a.dataset.d ? +a.dataset.d : null; V._ag = d !== null && d === V._ag ? null : d; render(); break; }
     case 'accessCode': Real.accessCode(); break;
+    case 'fichaOpen': { const f = V._fichas && V._fichas.data && V._fichas.data.forms.find(x => x.id === id); if (!f) break;
+      modal(`Ficha · ${esc(f.client_name)}`, fichaBody(f) + `<div class="acts" style="margin-top:16px"><button class="b3 sm" type="button" data-act="fichaPrint" data-id="${f.id}">${icon('file')}Imprimir ou salvar PDF</button>${role === 'owner' ? `<button class="b3 sm danger" type="button" data-act="fichaDel" data-id="${f.id}">Excluir ficha</button>` : ''}</div>`, null);
+      break; }
+    case 'fichaPrint': { const f = V._fichas && V._fichas.data && V._fichas.data.forms.find(x => x.id === id); if (f) fichaPrint(f); break; }
+    case 'fichaDel': { if (role !== 'owner') return toast('Só o dono exclui fichas.');
+      if (!a.dataset.ok) { a.dataset.ok = '1'; a.textContent = 'Toque de novo para excluir de vez'; break; }
+      (REAL ? Real.fichaDrop('anamnesis_forms', id) : demoFichaDrop('forms', id)).then(r => { if (r.error) return toast(r.error); closeLayers(); V._fichas = {data:null}; render(); toast('Ficha excluída.'); }); break; }
+    case 'fichaCancel': (REAL ? Real.fichaDrop('anamnesis_links', id) : demoFichaDrop('links', id)).then(r => { if (r.error) return toast(r.error); const f = V._fichas && V._fichas.fresh; V._fichas = {data:null, fresh:f && f.id !== id ? f : null}; render(); toast('Link cancelado.'); }); break;
     case 'keyRevoke': { if (role !== 'owner') return toast('Só o dono cancela chaves.');
       const done = () => { const f = V._keys && V._keys.fresh; V._keys = {list:null, fresh:f}; render(); toast('Chave cancelada.'); };
       if (REAL) { Real.keyRevoke(id).then(r => r.error ? toast(r.error) : done()); } else { S.keys = (S.keys || []).filter(k => k.id !== id); save(); done(); }
@@ -2062,6 +2076,99 @@ V.empresas = () => {
   <section class="card"><div class="ch"><h3>Clientes do CRM</h3><span class="chip acc">${list ? list.length : '…'}</span></div><div class="rows">${list ? (list.map(t => `<div class="row rrow"><span class="logo sm" style="background:var(--panel2);color:var(--accent);box-shadow:none">${esc(initials(t.name))}</span><div class="grow"><p class="t">${esc(t.name)}</p><p class="s">${t.leads} leads · ${t.membros} pessoa${t.membros === 1 ? '' : 's'} · ${t.payment_handle ? 'pagamento ligado' : 'sem pagamento'}</p></div>
       <div class="acts"><label class="sr" for="pl-${t.id}">Plano de ${esc(t.name)}</label><select class="sel" id="pl-${t.id}" data-emp-plan="${t.id}">${Object.entries(PLAN_NAME).map(([k, n]) => `<option value="${k}" ${k === t.plan ? 'selected' : ''}>${n}</option>`).join('')}</select><a class="b3 sm ghost" href="${location.pathname}?empresa=${esc(t.slug)}" target="_blank" rel="noopener">Abrir</a>${t.membros ? '' : `<button class="b3 sm ghost" data-emp-inv="${t.id}" data-slug="${esc(t.slug)}">Novo convite</button>`}</div></div>`).join('') || '<p class="empty">Nenhum cliente ainda. Crie o primeiro acima.</p>') : '<p class="empty">Carregando…</p>'}</div></section>`;
 };
+/* ============ fichas de anamnese (dono e admin) ============ */
+// O estúdio gera um link privado por cliente; ele preenche e assina em crm/ficha/ e a ficha aparece aqui.
+const fichaUrl = t => new URL('../ficha/', location.href).href.split(/[?#]/)[0] + '#' + t;
+const FICHA_DADOS = [['nome', 'Nome'], ['nascimento', 'Nascimento'], ['idade', 'Idade'], ['documento', 'CPF/RG'], ['telefone', 'WhatsApp'], ['email', 'E-mail'], ['cidade', 'Cidade'], ['emergencia_nome', 'Contato de emergência'], ['emergencia_tel', 'Telefone de emergência']];
+const simNao = v => v === 'sim' ? 'Sim' : v === 'nao' ? 'Não' : '—';
+function fichaMsg(l) {
+  return `Olá${l.client_name ? ', ' + first(l.client_name) : ''}! Antes da sua tatuagem, preencha a ficha de anamnese pelo link abaixo. Leva uns 3 minutos e é só para a sua segurança:\n\n${fichaUrl(l.token)}\n\nO link é pessoal e funciona para um envio só.`;
+}
+function fichaBody(f) {
+  const a = f.answers || {}, d = a.dados || {}, tt = a.tatuagem || {}, sa = a.saude || {}, sd = a.saude_detalhe || {}, pq = a.perguntas || {}, tm = a.termos || {};
+  const kv = rows => `<dl class="kv">${rows.filter(r => r[1] !== undefined && r[1] !== null && r[1] !== '').map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`;
+  const nasc = d.nascimento ? new Date(d.nascimento + 'T12:00').toLocaleDateString('pt-BR') : '';
+  const saude = Object.keys(sa).map(k => `<tr${sa[k] === 'sim' ? ' class="atn"' : ''}><td>${esc(pq[k] || k)}${sd[k] ? `<br><small>${esc(sd[k])}</small>` : ''}</td><td class="c"><b>${simNao(sa[k])}</b></td></tr>`).join('');
+  return `<div class="ficha">
+    <p class="muted" style="font-size:13px">Enviada em ${fdate(new Date(f.created_at).getTime())} às ${ftime(new Date(f.created_at).getTime())}</p>
+    <h4>Dados</h4>${kv(FICHA_DADOS.map(([k, n]) => [n, k === 'nascimento' ? nasc : d[k]]))}
+    ${a.responsavel ? `<h4>Responsável (menor de 18)</h4>${kv([['Nome', a.responsavel.nome], ['CPF/RG', a.responsavel.documento], ['Parentesco', a.responsavel.parentesco]])}` : ''}
+    <h4>Tatuagem</h4>${kv([['Região', tt.local], ['Ideia', tt.descricao], ['Primeira tatuagem', simNao(tt.primeira)], ['Reação em tatuagem anterior', simNao(tt.reacao_anterior) + (tt.reacao_detalhe ? ' · ' + tt.reacao_detalhe : '')]])}
+    <h4>Saúde ${f.alerts ? `<span class="chip warn">${f.alerts} ponto(s) de atenção</span>` : '<span class="chip ok">sem pontos de atenção</span>'}</h4>
+    <div class="tbl"><table><tbody>${saude}</tbody></table></div>
+    ${a.obs ? `<p style="margin-top:10px"><b>Observações:</b> ${esc(a.obs)}</p>` : ''}
+    <h4>Declarações</h4>${kv([['Informações verdadeiras', simNao(tm.verdade)], ['Ciente dos riscos e cuidados', simNao(tm.riscos)], ['Autoriza guardar os dados (LGPD)', simNao(tm.lgpd)], ['Autoriza fotos nas redes', simNao(tm.fotos)]])}
+    <h4>Assinatura</h4>${f.signature ? `<img src="${esc(f.signature)}" alt="Assinatura de ${esc(f.client_name)}" style="max-width:100%;background:#fff;border-radius:10px;border:1px solid var(--line)">` : '—'}
+  </div>`;
+}
+function fichaPrint(f) {
+  if (IN_APP) return toast('Para imprimir ou salvar em PDF, abra o painel no navegador do celular ou do computador.');
+  const w = window.open('', '_blank'); if (!w) return toast('Libere as janelas pop-up para imprimir.');
+  w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Ficha de anamnese · ${esc(f.client_name)}</title><style>
+    body{font:14px/1.45 Arial,sans-serif;color:#111;margin:28px}h1{font-size:20px;margin:0 0 2px}h4{font-size:14px;margin:18px 0 6px;border-bottom:1px solid #ccc;padding-bottom:4px}
+    dl{display:grid;grid-template-columns:200px 1fr;gap:4px 12px;margin:0}dt{color:#555}dd{margin:0}table{width:100%;border-collapse:collapse}td{border-bottom:1px solid #eee;padding:5px 4px;vertical-align:top}
+    td.c{width:60px;text-align:center}tr.atn td{background:#fff4d6}.chip{font-size:12px;font-weight:normal;margin-left:6px}.muted{color:#555}small{color:#555}img{max-width:360px;border:1px solid #ccc}
+  </style></head><body><h1>Ficha de anamnese · ${esc(brandName())}</h1>${fichaBody(f)}<script>onload=()=>print()<\/script></body></html>`);
+  w.document.close();
+}
+// demonstração: uma ficha de exemplo e links simulados, só neste navegador (o link abre a ficha em modo demo)
+function demoFichas() {
+  if (!S.fichas) {
+    const q = {diabetes:'Tem diabetes?', alergia:'Tem alergia a látex, tinta, metal, remédio ou anestésico?', anticoagulante:'Usa anticoagulante ou AAS (aspirina)?', gestante:'Está grávida ou amamentando?', medicamento:'Usa algum medicamento contínuo?', alcool:'Bebeu álcool ou usou drogas nas últimas 24 horas?'};
+    S.fichas = {links:[], forms:[{id:'fx1', client_name:'Camila Rocha', alerts:1, created_at:new Date(Date.now() - 2 * DAY).toISOString(), signature:null,
+      answers:{dados:{nome:'Camila Rocha', nascimento:'1996-05-14', idade:30, telefone:'(11) 95555-0101', email:'camila.rocha@exemplo.com.br', cidade:'São Paulo', emergencia_nome:'Paula Rocha', emergencia_tel:'(11) 95555-0102'},
+        tatuagem:{local:'Antebraço esquerdo', descricao:'Ramo de oliveira fineline, uns 12 cm', primeira:'nao', reacao_anterior:'nao'},
+        saude:{diabetes:'nao', alergia:'sim', anticoagulante:'nao', gestante:'nao', medicamento:'nao', alcool:'nao'}, saude_detalhe:{alergia:'Látex'}, perguntas:q,
+        obs:'', termos:{verdade:'sim', riscos:'sim', lgpd:'sim', fotos:'sim'}}}]};
+    save();
+  }
+  return {forms:S.fichas.forms, links:S.fichas.links};
+}
+async function demoFichaLink(o) {
+  demoFichas();
+  const l = {id:uid(), token:'demo', client_name:o.name || null, client_phone:o.phone || null, expires_at:new Date(Date.now() + o.days * DAY).toISOString()};
+  S.fichas.links.unshift(l); save(); return {link:l};
+}
+async function demoFichaDrop(kind, id) { demoFichas(); S.fichas[kind] = S.fichas[kind].filter(x => x.id !== id); save(); return {ok:true}; }
+V.fichas = () => {
+  if (!V._fichas) V._fichas = {data:null};
+  const st = V._fichas;
+  if (st.data === null && !st.loading) { st.loading = true; (REAL ? Real.fichasLoad() : Promise.resolve(demoFichas())).then(r => { if (r.error) toast(r.error); st.data = r.error ? {forms:[], links:[]} : r; st.loading = false; if (view === 'fichas' && V._fichas === st) render(); }); }
+  const data = st.data, fresh = st.fresh, now = Date.now();
+  return head('Fichas de anamnese', 'Gere um link privado para cada cliente. Ele preenche e assina no celular, e a ficha chega aqui com os pontos de atenção da saúde em destaque.')
+  + `<div class="grid g2">
+    <form class="card" id="fichaForm" style="display:flex;flex-direction:column;gap:14px" novalidate><div class="ch" style="margin:0"><h3>Novo link privado</h3><span class="chip acc">Tatuagem</span></div>
+      <div class="field"><label for="fcName">Nome do cliente</label><input class="inp" id="fcName" name="name" autocomplete="off" placeholder="Opcional: já vem preenchido na ficha"></div>
+      <div class="field"><label for="fcPhone">WhatsApp do cliente</label><input class="inp" id="fcPhone" name="phone" inputmode="tel" autocomplete="off" placeholder="Opcional: para mandar direto"></div>
+      <div class="field"><label for="fcDays">Validade do link</label><select class="inp" id="fcDays" name="days"><option value="3">3 dias</option><option value="7" selected>7 dias</option><option value="30">30 dias</option></select></div>
+      <div class="acts"><button class="b3" type="submit" id="fcGo">${icon('plus')}Gerar link</button></div></form>
+    <section class="card" style="display:flex;flex-direction:column;gap:12px"><div class="ch" style="margin:0"><h3>${fresh ? 'Link pronto' : 'Como funciona'}</h3></div>
+      ${fresh ? `<p class="muted" style="font-size:14px">${fresh.client_name ? `Para <b style="color:var(--fg)">${esc(fresh.client_name)}</b>. ` : ''}Funciona para um envio e vale até ${fdate(new Date(fresh.expires_at).getTime())}.</p>
+        <pre class="code" style="white-space:pre-wrap;word-break:break-all">${esc(fichaUrl(fresh.token))}</pre>
+        <div class="acts"><button class="b3 sm" type="button" data-copy="${esc(fichaUrl(fresh.token))}">${icon('copy')}Copiar link</button>
+          <a class="b3 sm ghost" href="https://wa.me/${fresh.client_phone ? '55' + String(fresh.client_phone).replace(/\D/g, '').replace(/^55(?=\d{10,11}$)/, '') : ''}?text=${encodeURIComponent(fichaMsg(fresh))}" target="_blank" rel="noopener">${icon('wa')}Enviar pelo WhatsApp</a>
+          <a class="b3 sm ghost" href="${esc(fichaUrl(fresh.token))}" target="_blank" rel="noopener">${icon('eye')}Ver como o cliente</a></div>`
+      : `<div class="rows">
+        <div class="row"><span class="ico ok">${icon('plus')}</span><div class="grow"><p class="t">1. Gere o link</p><p class="s" style="white-space:normal">Um por cliente. Ninguém mais consegue abrir a ficha dele.</p></div></div>
+        <div class="row"><span class="ico ok">${icon('wa')}</span><div class="grow"><p class="t">2. Mande pelo WhatsApp</p><p class="s" style="white-space:normal">O cliente preenche e assina com o dedo, sem baixar nada.</p></div></div>
+        <div class="row"><span class="ico ok">${icon('bell')}</span><div class="grow"><p class="t">3. Receba aqui</p><p class="s" style="white-space:normal">O sino avisa na hora. Abra, confira a saúde e imprima ou salve em PDF.</p></div></div></div>`}
+    </section></div>
+  <section class="card"><div class="ch"><h3>Fichas recebidas</h3><span class="chip acc">${data ? data.forms.length : '…'}</span></div>
+    <div class="rows">${data ? (data.forms.map(f => `<div class="row"><span class="ico ${f.alerts ? '' : 'ok'}">${icon('file')}</span><div class="grow"><p class="t">${esc(f.client_name)}</p><p class="s">${fdate(new Date(f.created_at).getTime())} · ${esc((f.answers && f.answers.tatuagem && f.answers.tatuagem.local) || 'tatuagem')}</p></div><span class="chip ${f.alerts ? 'warn' : 'ok'}">${f.alerts ? f.alerts + ' atenção' : 'ok'}</span><button class="b3 sm ghost" data-act="fichaOpen" data-id="${f.id}">Abrir</button></div>`).join('') || '<p class="empty">Nenhuma ficha recebida ainda.</p>') : '<p class="empty">Carregando…</p>'}</div></section>
+  <section class="card"><div class="ch"><h3>Aguardando o cliente</h3><span class="chip">${data ? data.links.length : '…'}</span></div>
+    <div class="rows">${data ? (data.links.map(l => { const exp = new Date(l.expires_at).getTime() < now; return `<div class="row"><span class="ico">${icon('clock')}</span><div class="grow"><p class="t">${esc(l.client_name || 'Sem nome')}</p><p class="s">${exp ? 'venceu ' : 'vale até '}${fdate(new Date(l.expires_at).getTime())}</p></div>${exp ? '<span class="chip">Vencido</span>' : `<button class="b3 sm ghost" type="button" data-copy="${esc(fichaUrl(l.token))}">${icon('copy')}Link</button>`}<button class="b3 sm ghost" data-act="fichaCancel" data-id="${l.id}">${exp ? 'Remover' : 'Cancelar'}</button></div>`; }).join('') || '<p class="empty">Nenhum link aguardando.</p>') : '<p class="empty">Carregando…</p>'}</div></section>`;
+};
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'fichaForm') return; e.preventDefault();
+  const fd = new FormData(e.target), go = $('#fcGo');
+  go.disabled = true;
+  try {
+    const r = await (REAL ? Real.fichaLink : demoFichaLink)({name:String(fd.get('name') || '').trim().slice(0, 120), phone:String(fd.get('phone') || '').trim().slice(0, 30), days:+fd.get('days') || 7});
+    if (r.error) return toast(r.error);
+    V._fichas = {data:null, fresh:r.link}; render();
+  } finally { go.disabled = false; }
+});
+
 /* ============ chaves de acesso (só o dono) ============ */
 // O dono escolhe o perfil, o servidor gera AMP-XXXX-XXXX-XXXX de uso único e o colaborador cria
 // o próprio e-mail e senha com ela, no app Android ou no navegador.
@@ -2406,6 +2513,19 @@ const Real = (() => {
     const mail = Object.fromEntries((team || []).map(m => [m.user_id, m.email]));
     return {keys:data.map(k => ({id:k.id, name:k.name, role:k.role, exp:new Date(k.expires_at).getTime(), used:k.used_at ? new Date(k.used_at).getTime() : null, by:mail[k.used_by] || '', hint:k.code_hint}))};
   }
+  // fichas de anamnese: só dono e admin leem (RLS); o cliente envia pela página crm/ficha com o link privado
+  async function fichasLoad() {
+    const [f, l] = await Promise.all([
+      sb.from('anamnesis_forms').select('id, client_name, answers, signature, alerts, created_at').eq('tenant_id', tid).order('created_at', {ascending:false}).limit(200),
+      sb.from('anamnesis_links').select('id, token, client_name, client_phone, expires_at, used_at, created_at').eq('tenant_id', tid).is('used_at', null).order('created_at', {ascending:false}).limit(100)]);
+    if (f.error || l.error) return {error:'Não deu para carregar as fichas.'};
+    return {forms:f.data, links:l.data};
+  }
+  async function fichaLink(o) {
+    const {data, error} = await sb.from('anamnesis_links').insert({tenant_id:tid, client_name:o.name || null, client_phone:o.phone || null, expires_at:new Date(Date.now() + o.days * DAY).toISOString()}).select('id, token, client_name, client_phone, expires_at').single();
+    return error ? {error:'Só o dono ou o admin geram fichas.'} : {link:data};
+  }
+  async function fichaDrop(table, id) { const {error} = await sb.from(table).delete().eq('id', id); return error ? {error:'Não deu para excluir.'} : {ok:true}; }
   const keyCreate = (o) => fn('first-access', Object.assign({action:'create', tenant_id:tid}, o));
   async function keyRevoke(id) { const {error} = await sb.from('invites').delete().eq('id', id).is('used_at', null); return error ? {error:'Não deu para cancelar.'} : {ok:true}; }
   function invite() {
@@ -2466,7 +2586,7 @@ const Real = (() => {
     const {data:{session}} = await sb.auth.getSession();
     if (session) await openApp();
   }
-  return {boot, sync, fn, reload, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
+  return {boot, sync, fn, reload, fichasLoad, fichaLink, fichaDrop, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
 })();
 
 /* tema do sistema mudou ou o host trocou data-theme */
