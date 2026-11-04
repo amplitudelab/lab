@@ -501,6 +501,14 @@ a.rede:hover{border-color:var(--sol)}
 /* O degradê só pinta dentro da caixa da linha: folga em cima para o traço superior do Z não sumir */
 .hero h1 .z{padding-top:.16em;margin-top:-.16em;padding-bottom:.04em}
 .marca b,.rodape__nome b{padding-block:.16em .04em}
+
+/* Botões: uma linha só e nunca mais largos que a tela */
+.btn{max-width:100%;white-space:nowrap;justify-content:center}
+@media (max-width:380px){.btn{white-space:normal;text-align:center;line-height:1.2;padding-block:12px;border-radius:26px;font-size:.875rem!important}}
+@media (max-width:520px){
+  .acoes{display:grid;grid-template-columns:minmax(0,1fr);width:100%}
+  .acoes .btn,.canal .btn,.massa-rodape .btn,.servico .btn,.drone__info .btn{width:100%;justify-self:stretch;padding:0 18px;font-size:.9375rem}
+}
 </style>
 </head>
 <body>
