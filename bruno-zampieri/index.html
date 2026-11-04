@@ -7,6 +7,8 @@
 <meta name="description" content="Bruno Zampieri: modelagem, filmagens de drone, massoterapia e lifestyle. Serviços, conteúdo, parcerias e contato em um só lugar.">
 <meta name="theme-color" content="#0d0a09">
 <meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-U6f/4DUI7cR2idFhEqOCf2IV9iEGE9ZrQf2EBCeQQbw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="preload" href="fonts/LeMurmure-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* Fontes livres (SIL OFL) da Velvetyne: Le Murmure, Sporting Grotesque e Sligoil. Licenças em fonts/. */
@@ -15,7 +17,7 @@
 @font-face{font-family:"Sporting Grotesque";src:url("fonts/SportingGrotesque-Bold.otf") format("opentype");font-weight:600 900;font-display:swap}
 @font-face{font-family:"Sligoil";src:url("fonts/Sligoil-Micro.woff2") format("woff2");font-weight:300 500;font-display:swap}
 @font-face{font-family:"Sligoil";src:url("fonts/Sligoil-MicroBold.woff2") format("woff2");font-weight:600 900;font-display:swap}
-/* Layout: horizonte de partículas fixo ao fundo; o conteúdo passa por cima em faixas editoriais, como poeira subindo do deserto ao pôr do sol. */
+/* Layout: vídeo de drone fixo ao fundo do topo; o conteúdo passa por cima em faixas editoriais escuras, com tons de pôr do sol. */
 :root{
   --couro:#0d0a09;      /* couro preto: fundo */
   --couro-2:#17110f;    /* couro em camada */
@@ -49,14 +51,13 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:72px;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--couro);color:var(--areia);font:400 var(--t-corpo)/1.6 var(--f-corpo);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--couro);color:var(--areia);font:400 var(--t-corpo)/1.6 var(--f-corpo);overflow-x:clip;-webkit-font-smoothing:antialiased}
 img{max-width:100%;display:block;height:auto}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--ambar);outline-offset:3px;border-radius:2px}
 [hidden]{display:none!important}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* ---------- Fundo: céu + partículas ---------- */
+/* ---------- Fundo: céu com vídeo ---------- */
 .ceu{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
   background:linear-gradient(180deg,#120c12 0%,var(--couro) 60%);
   opacity:var(--sky);transition:opacity .6s}
@@ -115,17 +116,7 @@ p{margin:0}
 .btn--sol{background:var(--grad);color:#1a0d06;border-color:transparent}
 .btn--sol:hover{filter:brightness(1.06)}
 .btn svg{width:18px;height:18px;flex:none}
-.btn__pend{font:500 .6875rem/1 var(--f-mono);text-transform:uppercase;letter-spacing:.08em;padding:4px 7px;border-radius:999px;border:1px dashed currentColor;opacity:.8}
 
-/* ---------- Material pendente ---------- */
-.falta{border:1px dashed rgba(255,179,92,.5);border-radius:var(--raio);padding:16px 18px;display:grid;gap:6px;
-  background:repeating-linear-gradient(135deg,rgba(255,179,92,.05) 0 10px,transparent 10px 20px)}
-.falta__tag{font:500 .6875rem/1 var(--f-mono);text-transform:uppercase;letter-spacing:.14em;color:var(--ambar)}
-.falta p{color:var(--poeira);font-size:.9375rem}
-.vaga{position:relative;display:grid;place-content:center;gap:10px;text-align:center;padding:20px;aspect-ratio:4/5;max-width:100%;border:1px dashed rgba(255,179,92,.5);border-radius:var(--raio);
-  background:repeating-linear-gradient(135deg,rgba(255,179,92,.06) 0 10px,transparent 10px 20px),var(--couro-2);color:var(--poeira);font-size:.875rem}
-.vaga svg{width:28px;height:28px;margin:0 auto;color:var(--ambar)}
-.vaga b{font:500 .6875rem/1.3 var(--f-mono);text-transform:uppercase;letter-spacing:.14em;color:var(--ambar)}
 
 /* ---------- Hero ---------- */
 .hero{padding-top:calc(110px + env(safe-area-inset-top,0px));padding-bottom:clamp(48px,7vw,90px)}
@@ -158,19 +149,6 @@ p{margin:0}
 .letreiro__trilho i{font-style:normal;color:var(--sol);padding-right:28px}
 @keyframes rolar{to{transform:translateX(-50%)}}
 
-/* ---------- Áreas ---------- */
-.areas{display:grid;grid-template-columns:1fr;gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden}
-@media (min-width:640px){.areas{grid-template-columns:repeat(2,1fr)}}
-@media (min-width:980px){.areas{grid-template-columns:repeat(3,1fr)}}
-.area{position:relative;display:grid;gap:10px;align-content:start;min-height:200px;padding:26px 24px 24px;background:var(--couro);text-decoration:none;overflow:hidden;transition:background .35s}
-.area::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--grad);transform:scaleX(0);transform-origin:0 50%;transition:transform .45s cubic-bezier(.7,0,.2,1)}
-.area:hover{background:var(--couro-2)}
-.area:hover::after{transform:scaleX(1)}
-.area h3{font:400 2.2rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
-.area p{color:var(--poeira);font-size:.9375rem;max-width:34ch}
-.area .seta{position:absolute;right:22px;top:26px;width:22px;height:22px;color:var(--poeira);transition:transform .3s,color .3s}
-.area:hover .seta{transform:translate(3px,-3px);color:var(--sol)}
-.area__tag{font:500 .6875rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ambar)}
 
 /* ---------- Massoterapia ---------- */
 .massa{display:grid;gap:28px}
@@ -185,49 +163,9 @@ p{margin:0}
 .info dt{font:500 .75rem/1.5 var(--f-mono);text-transform:uppercase;letter-spacing:.12em;color:var(--poeira)}
 .info dd{margin:0}
 .pend{font:500 .75rem/1.5 var(--f-mono);color:var(--ambar);letter-spacing:.04em}
-.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.trio .vaga{aspect-ratio:1;padding:10px;font-size:.75rem}
-.faq{display:grid;border-top:1px solid var(--linha)}
-.faq details{border-bottom:1px solid var(--linha)}
-.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;padding:16px 0;font-weight:600}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";font:400 1.4rem/1 var(--f-mono);color:var(--sol);transition:transform .3s}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq details p{padding:0 0 18px;color:var(--poeira)}
 
-/* ---------- Lifestyle: filme ---------- */
-.filme{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 0 18px;scrollbar-width:thin;scrollbar-color:var(--couro-3) transparent;-webkit-overflow-scrolling:touch}
-.filme > *{flex:0 0 auto;scroll-snap-align:start}
-.quadro{position:relative;margin:0;width:clamp(200px,22vw,250px)}
-.quadro:nth-child(even){margin-top:46px}
-.quadro button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;border-radius:var(--raio);overflow:hidden;box-shadow:0 0 0 1px var(--linha)}
-.quadro img{width:100%;aspect-ratio:194/236;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1),filter .6s;filter:saturate(.92)}
-.quadro button:hover img{transform:scale(1.04);filter:saturate(1.08)}
-.quadro figcaption,.retrato figcaption{display:flex;align-items:baseline;gap:10px;font:400 .8125rem/1.35 var(--f-mono);letter-spacing:.02em;color:var(--poeira);margin-top:12px}
-.quadro figcaption::before,.retrato figcaption::before{content:"";flex:none;width:18px;height:1px;background:var(--sol);transform:translateY(-4px)}
-.quadro figcaption b,.retrato figcaption b{color:var(--areia);font-weight:600}
-.filme .vaga{width:clamp(200px,22vw,250px);aspect-ratio:194/236;margin-top:46px}
-.citacao{font:400 clamp(2rem,4.4vw,3.4rem)/1 var(--f-serif);text-transform:uppercase;letter-spacing:.01em;max-width:20ch}
-.citacao small{display:block;margin-top:12px;font:500 .75rem/1 var(--f-mono);font-style:normal;text-transform:uppercase;letter-spacing:.14em;color:var(--poeira)}
 
-/* ---------- Humor ---------- */
-.humor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-@media (min-width:900px){.humor{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.humor .quadro{width:auto}
-.humor .quadro:nth-child(even){margin-top:0}
-.humor .quadro:nth-child(odd){transform:rotate(-1.2deg)}
-.humor .quadro:nth-child(even){transform:rotate(1.2deg)}
-.humor .vaga{aspect-ratio:194/236}
 
-/* ---------- Modelagem ---------- */
-.book{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
-@media (min-width:900px){.book{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-flow:dense}}
-.book .quadro{width:auto}
-.book .quadro:nth-child(even){margin-top:0}
-.book .destaque{grid-column:1/-1}
-@media (min-width:900px){.book .destaque{grid-column:span 2;grid-row:span 2}}
-.book .destaque img{aspect-ratio:545/672}
-.book .vaga{aspect-ratio:194/236}
 
 /* ---------- Drone ---------- */
 .drone{position:relative}
@@ -239,19 +177,6 @@ p{margin:0}
 .hud__c1{bottom:-1px;left:-1px;border-width:0 0 2px 2px}
 .hud__c2{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
 .hud__topo{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font:500 .6875rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--poeira);margin-bottom:26px}
-.rec{display:inline-flex;align-items:center;gap:8px;color:var(--areia)}
-.rec::before{content:"";width:8px;height:8px;border-radius:50%;background:#ff4b3a;animation:piscar 1.4s steps(2,start) infinite}
-@keyframes piscar{to{visibility:hidden}}
-.videos{display:grid;gap:14px}
-@media (min-width:900px){.videos{grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr}.videos .vaga:first-child{grid-row:span 2}}
-.videos .vaga{aspect-ratio:16/9;background:repeating-linear-gradient(135deg,rgba(255,179,92,.04) 0 10px,transparent 10px 20px),rgba(13,10,9,.22)}
-.videos .vaga:first-child{min-height:0}
-.mira{position:absolute;inset:0;pointer-events:none;display:grid;place-items:center}
-.mira::before,.mira::after{content:"";position:absolute;background:rgba(255,179,92,.25)}
-.mira::before{width:44px;height:1px}
-.mira::after{width:1px;height:44px}
-.drone__rodape{display:grid;gap:18px;margin-top:28px}
-@media (min-width:900px){.drone__rodape{grid-template-columns:1fr auto;align-items:center}}
 
 /* ---------- Parcerias ---------- */
 .parc{display:grid;gap:28px}
@@ -284,43 +209,30 @@ a.rede:hover{border-color:var(--sol)}
 .rede svg{width:26px;height:26px;flex:none;color:var(--sol)}
 .rede strong{display:block}
 .rede span{color:var(--poeira);font-size:.875rem}
-.rede--falta{border-style:dashed;border-color:rgba(255,179,92,.5)}
 
 /* ---------- Rodapé ---------- */
-.rodape{padding-left:var(--gutter-l);padding-right:var(--gutter-r);padding-block:56px calc(40px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--linha);background:var(--couro)}
+.rodape{padding-left:var(--gutter-l);padding-right:var(--gutter-r);padding-block:56px 40px;border-top:1px solid var(--linha);background:var(--couro)}
 .rodape__in{max-width:var(--max);margin:0 auto;display:flex;flex-wrap:wrap;gap:18px 32px;align-items:end;justify-content:space-between}
 .rodape__nome{font:400 clamp(3rem,11vw,7rem)/.85 var(--f-display);text-transform:uppercase}
 .rodape__nome b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .rodape p{color:var(--poeira);font-size:.875rem}
 .rodape a{color:var(--areia)}
 
-/* ---------- Lightbox ---------- */
-.zoom{border:0;padding:0;background:transparent;max-width:none;max-height:none;width:100%;height:100%;margin:0;color:var(--areia)}
-.zoom::backdrop{background:rgba(8,6,5,.92)}
-.zoom__in{position:fixed;inset:0;display:grid;place-items:center;padding:calc(64px + env(safe-area-inset-top,0px)) var(--gutter-r) calc(64px + env(safe-area-inset-bottom,0px)) var(--gutter-l)}
-.zoom img{max-width:100%;max-height:100%;width:auto;height:auto;border-radius:var(--raio);box-shadow:0 30px 80px rgba(0,0,0,.6)}
-.zoom__btn{position:fixed;background:rgba(23,17,15,.9);border:1px solid var(--linha);color:var(--areia);width:48px;height:48px;border-radius:50%;cursor:pointer;font:400 1.2rem/1 var(--f-mono);display:grid;place-items:center}
-.zoom__fechar{top:calc(14px + env(safe-area-inset-top,0px));right:calc(14px + env(safe-area-inset-right,0px))}
-.zoom__ant{left:calc(14px + env(safe-area-inset-left,0px));top:50%;transform:translateY(-50%)}
-.zoom__prox{right:calc(14px + env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%)}
-.zoom__leg{position:fixed;left:0;right:0;bottom:calc(20px + env(safe-area-inset-bottom,0px));text-align:center;font:500 .75rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--poeira)}
 
 /* ---------- Entradas suaves (só onde o navegador suporta rolagem animada) ---------- */
 @supports (animation-timeline:view()){
   @media (prefers-reduced-motion:no-preference){
     .sobe{animation:sobe linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
     @keyframes sobe{from{opacity:.25;transform:translateY(42px)}to{opacity:1;transform:none}}
-    .horizonte{animation:abre linear both;animation-timeline:view();animation-range:entry 10% cover 40%}
     @keyframes abre{from{transform:scaleX(.08)}to{transform:scaleX(1)}}
   }
 }
-.horizonte{height:1px;background:var(--grad);margin:0 auto;max-width:var(--max);transform-origin:50% 50%;opacity:.8}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
+  .espaco__trilho{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
   .letreiro__trilho{animation:none}
-  .rec::before{animation:none}
 }
 
 /* ---------- Vídeo de drone no fundo do topo ---------- */
@@ -344,24 +256,8 @@ a.rede:hover{border-color:var(--sol)}
 @keyframes aparece{from{opacity:0;transform:translateY(18px)}}
 @keyframes revela{from{clip-path:inset(100% 0 0 0);transform:rotate(1.5deg) scale(1.08)}}
 
-/* ---------- Massoterapia: modalidades ---------- */
-.modal{list-style:none;margin:0;padding:0;display:grid;gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden}
-.modal li{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:18px 20px;background:var(--couro);font:400 clamp(1.7rem,3.4vw,2.4rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em;transition:background .3s,padding .3s}
-.modal li span{font:500 .6875rem/1 var(--f-mono);letter-spacing:.14em;color:var(--ambar)}
-.modal li:hover{background:var(--couro-2);padding-left:28px}
-.link-sub{color:var(--ambar);text-underline-offset:3px}
 
-/* ---------- Modelagem: retratos de impacto ---------- */
 #modelagem{overflow:clip}
-.retratos{position:relative;isolation:isolate;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,2vw,22px);margin-bottom:clamp(40px,6vw,80px)}
-.retrato{margin:0;position:relative}
-.retratos::before{content:"";position:absolute;z-index:-1;left:50%;top:45%;width:min(110vw,1100px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
-  background:radial-gradient(closest-side,rgba(255,123,47,.30),rgba(210,70,110,.12) 45%,transparent 72%);filter:blur(10px);pointer-events:none}
-.retratos::after{content:"";position:absolute;z-index:-1;left:6%;right:6%;bottom:-18px;height:40px;background:radial-gradient(closest-side,rgba(0,0,0,.75),transparent);pointer-events:none}
-.retrato:nth-child(2){margin-top:clamp(40px,9vw,140px)}
-.retrato button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;border-radius:var(--raio);overflow:hidden;box-shadow:0 50px 90px -40px rgba(0,0,0,.9),0 0 0 1px var(--linha)}
-.retrato img{width:100%;aspect-ratio:760/1140;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
-.retrato button:hover img{transform:scale(1.035)}
 .servico{display:grid;gap:18px;padding:clamp(22px,3vw,34px);border:1px solid var(--linha);border-radius:var(--raio);background:var(--couro-2);margin-bottom:clamp(36px,5vw,60px)}
 @media (min-width:900px){.servico{grid-template-columns:1.3fr auto;align-items:center}}
 .servico h3{font:400 clamp(1.8rem,3vw,2.4rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
@@ -371,9 +267,6 @@ a.rede:hover{border-color:var(--sol)}
 .aerea{position:relative;z-index:1;height:clamp(460px,92svh,980px);overflow:hidden;display:grid;align-items:end;isolation:isolate}
 .aerea img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;z-index:-2}
 .aerea::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--couro) 0%,rgba(13,10,9,.1) 28%,rgba(13,10,9,.15) 60%,var(--couro) 100%)}
-.aerea__txt{max-width:var(--max);width:100%;margin:0 auto;padding-left:var(--gutter-l);padding-right:var(--gutter-r);padding-block:0 clamp(40px,8vw,100px)}
-.aerea__frase{font:400 clamp(4rem,15vw,13rem)/.8 var(--f-display);text-transform:uppercase;margin-top:16px;text-shadow:0 10px 60px rgba(0,0,0,.45)}
-.aerea__frase em{display:block;font:400 .5em/1 var(--f-serif);font-style:normal;text-transform:lowercase;color:var(--ambar);margin-top:.1em}
 
 /* ---------- Drone: vídeo no fundo ---------- */
 .drone.faixa{padding-block:0;isolation:isolate}
@@ -401,20 +294,11 @@ a.rede:hover{border-color:var(--sol)}
 .drone__info{display:grid;gap:14px;margin-top:26px}
 @media (min-width:900px){.drone__info{grid-template-columns:1fr 1fr}}
 .drone__info .info{border-top-color:rgba(255,179,92,.28)}
-.drone__fotos{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-content:start}
 
 
 /* ---------- Revelações na rolagem ---------- */
 @supports (animation-timeline:view()){
   @media (prefers-reduced-motion:no-preference){
-    .retrato button{animation:abre-foto linear both;animation-timeline:view();animation-range:entry 0% cover 45%}
-    .retrato:nth-child(1){animation:sobe-lento linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
-    .retrato:nth-child(2){animation:desce-lento linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
-    @keyframes sobe-lento{from{transform:translateY(60px)}to{transform:translateY(-60px)}}
-    @keyframes desce-lento{from{transform:translateY(-30px)}to{transform:translateY(50px)}}
-    .retratos::before{animation:luz linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
-    @keyframes luz{from{opacity:.2;transform:translate(-50%,-50%) scale(.6)}50%{opacity:1}to{opacity:.3;transform:translate(-50%,-50%) scale(1.1)}}
-    @keyframes abre-foto{from{clip-path:inset(14% 8% 14% 8% round 4px);transform:scale(.94)}to{clip-path:inset(0 0 0 0 round 4px);transform:none}}
     .aerea img{animation:aproxima linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
     @keyframes aproxima{from{transform:scale(1.28) translateY(-4%)}to{transform:scale(1) translateY(3%)}}
     .aerea__frase{animation:sobe linear both;animation-timeline:view();animation-range:entry 20% cover 55%}
@@ -507,7 +391,7 @@ a.rede:hover{border-color:var(--sol)}
 @media (max-width:380px){.btn{white-space:normal;text-align:center;line-height:1.2;padding-block:12px;border-radius:26px;font-size:.875rem!important}}
 @media (max-width:520px){
   .acoes{display:grid;grid-template-columns:minmax(0,1fr);width:100%}
-  .acoes .btn,.canal .btn,.massa-rodape .btn,.servico .btn,.drone__info .btn,.presente__btn{width:100%;justify-self:stretch;padding:0 18px;font-size:.9375rem}
+  .acoes .btn,.canal .btn,.massa-rodape .btn,.servico .btn,.drone__info .btn,.presente__btn{width:100%;justify-self:stretch;padding-inline:18px;font-size:.9375rem}
 }
 
 .massa-painel__foto{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--raio);box-shadow:0 24px 60px -30px rgba(0,0,0,.9);filter:saturate(.92) contrast(1.04)}
@@ -541,6 +425,35 @@ a.rede:hover{border-color:var(--sol)}
 }
 @keyframes pisca{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:1;transform:scale(1.2)}}
 @keyframes pulsa{0%,100%{box-shadow:0 0 0 0 rgba(255,123,47,.45)}50%{box-shadow:0 0 0 12px rgba(255,123,47,0)}}
+
+/* ---------- Passeio pelo espaço ---------- */
+.espaco{margin-top:clamp(36px,5vw,60px);display:grid;gap:16px}
+.espaco__cab{display:flex;align-items:end;justify-content:space-between;gap:16px}
+.espaco__setas{display:flex;gap:8px}
+.espaco__setas button{width:46px;height:46px;border-radius:50%;border:1px solid var(--linha);background:rgba(23,17,15,.8);color:var(--areia);font:400 1.1rem/1 var(--f-mono);cursor:pointer;transition:border-color .2s,background .2s}
+.espaco__setas button:hover{border-color:var(--sol);background:var(--couro-3)}
+.espaco__trilho{display:flex;gap:clamp(12px,2vw,22px);overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:8px max(4%,calc(50% - 210px)) 18px;margin-inline:calc(-1 * var(--gutter-l)) calc(-1 * var(--gutter-r));scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.espaco__trilho::-webkit-scrollbar{display:none}
+.espaco__item{flex:0 0 min(78vw,420px);margin:0;scroll-snap-align:center;border-radius:var(--raio);overflow:hidden;box-shadow:0 40px 90px -40px rgba(0,0,0,.95),0 0 0 1px var(--linha)}
+.espaco__item img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .espaco__item{animation:foco linear both;animation-timeline:view(inline)}
+    @keyframes foco{0%{transform:scale(.82);opacity:.35;filter:saturate(.6)}50%{transform:none;opacity:1;filter:none}100%{transform:scale(.82);opacity:.35;filter:saturate(.6)}}
+  }
+}
+/* ---------- Assinatura ---------- */
+.assinatura{position:relative;z-index:1;background:var(--couro);border-top:1px solid var(--linha);text-align:center;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.assinatura a{font:400 .75rem/1 var(--f-mono);letter-spacing:.08em;color:var(--poeira);text-decoration:none;transition:color .2s}
+.assinatura a b{font-weight:600;color:var(--areia)}
+.assinatura a:hover{color:var(--areia)}
+
+/* ---------- Pausar vídeo de fundo ---------- */
+.pausa{display:inline-flex;align-items:center;gap:10px;margin-top:22px;padding:8px 14px 8px 10px;border:1px solid var(--linha);border-radius:999px;background:rgba(13,10,9,.6);color:var(--poeira);font:400 .75rem/1 var(--f-mono);letter-spacing:.06em;cursor:pointer;transition:color .2s,border-color .2s}
+.pausa:hover{color:var(--areia);border-color:var(--sol)}
+.pausa i{width:10px;height:12px;border-left:3px solid currentColor;border-right:3px solid currentColor}
+.pausa[aria-pressed="true"] i{border:0;width:0;height:0;border-left:10px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent}
+.pausa--hud{margin:0;padding:6px 12px 6px 8px;color:var(--areia)}
 </style>
 </head>
 <body>
@@ -580,7 +493,7 @@ a.rede:hover{border-color:var(--sol)}
 
 <main>
   <!-- ============ INÍCIO ============ -->
-  <section class="faixa hero" id="inicio" data-forma="0">
+  <section class="faixa hero" id="inicio">
     <div class="faixa__in hero__grade">
       <div>
         <span class="olho">@obrunozampieri</span>
@@ -593,6 +506,7 @@ a.rede:hover{border-color:var(--sol)}
           <a class="btn btn--sol" href="#modelagem">Conhecer o trabalho <svg><use href="#i-seta"/></svg></a>
           <a class="btn" href="#contato">Entrar em contato</a>
         </div>
+        <button class="pausa" type="button" data-pausa aria-pressed="false"><i aria-hidden="true"></i><span>Pausar vídeo</span></button>
         <div class="numeros">
           <div><strong>18,3 mil</strong><span>seguidores no Instagram</span></div>
           <div><strong>611</strong><span>posts publicados</span></div>
@@ -602,10 +516,6 @@ a.rede:hover{border-color:var(--sol)}
         <div class="foto-hero__img">
           <img src="img/burning-man.webp" width="550" height="660" alt="Bruno de boné e óculos escuros no deserto, ao pôr do sol, no Burning Man" fetchpriority="high">
         </div>
-        <figcaption>
-          <img src="img/avatar.webp" width="126" height="126" alt="">
-          <span>@obrunozampieri</span>
-        </figcaption>
       </figure>
     </div>
   </section>
@@ -619,7 +529,7 @@ a.rede:hover{border-color:var(--sol)}
   </div>
 
   <!-- ============ MODELAGEM ============ -->
-  <section class="faixa faixa--escura" id="modelagem" data-forma="1" aria-labelledby="model-t">
+  <section class="faixa faixa--escura" id="modelagem" aria-labelledby="model-t">
     <div class="faixa__in">
       <div class="cab cab--lado sobe">
         <div>
@@ -634,12 +544,12 @@ a.rede:hover{border-color:var(--sol)}
 
     <div class="seq" id="seq-modelagem" data-seq role="region" aria-label="Ensaios do Bruno, role para passar as fotos" style="--n:6">
       <div class="seq__palco">
-        <div class="cena"><div class="cena__amb" style="background-image:url(img/gravata-borboleta.webp)"></div><img class="cena__m" src="img/gravata-borboleta.webp" width="760" height="1139" style="aspect-ratio:760/1139" alt="Bruno em preto e branco, de smoking e gravata-borboleta" decoding="async"></div>
-        <div class="cena"><div class="cena__amb" style="background-image:url(img/retrato-estudio.webp)"></div><img class="cena__m" src="img/retrato-estudio.webp" width="760" height="1141" style="aspect-ratio:760/1141" alt="Retrato de estúdio do Bruno com fundo preto" loading="lazy" decoding="async"></div>
-        <div class="cena"><div class="cena__amb" style="background-image:url(img/trico-oculos-hd.webp)"></div><img class="cena__m" src="img/trico-oculos-hd.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno de camisa de tricô branca e óculos de sol caramelo" loading="lazy" decoding="async"></div>
-        <div class="cena"><div class="cena__amb" style="background-image:url(img/jaqueta-restaurante.webp)"></div><img class="cena__m" src="img/jaqueta-restaurante.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno de jaqueta de couro preta num sofá vermelho de restaurante" loading="lazy" decoding="async"></div>
-        <div class="cena"><div class="cena__amb" style="background-image:url(img/terno-celulares.webp)"></div><img class="cena__m" src="img/terno-celulares.webp" width="545" height="672" style="aspect-ratio:545/672" alt="Bruno de terno preto e óculos brancos cercado por celulares que o fotografam" loading="lazy" decoding="async"></div>
-        <div class="cena"><div class="cena__amb" style="background-image:url(img/quadriciclo-aviao.webp)"></div><img class="cena__m" src="img/quadriciclo-aviao.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno de chapéu de couro sentado num quadriciclo diante de um avião antigo" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/gravata-borboleta.webp"></div><img class="cena__m" src="img/gravata-borboleta.webp" width="760" height="1139" style="aspect-ratio:760/1139" alt="Bruno em preto e branco, de smoking e gravata-borboleta" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/retrato-estudio.webp"></div><img class="cena__m" src="img/retrato-estudio.webp" width="760" height="1141" style="aspect-ratio:760/1141" alt="Retrato de estúdio do Bruno com fundo preto" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/trico-oculos-hd.webp"></div><img class="cena__m" src="img/trico-oculos-hd.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno de camisa de tricô branca e óculos de sol caramelo" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/jaqueta-restaurante.webp"></div><img class="cena__m" src="img/jaqueta-restaurante.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno de jaqueta de couro preta num sofá vermelho de restaurante" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/terno-celulares.webp"></div><img class="cena__m" src="img/terno-celulares.webp" width="545" height="672" style="aspect-ratio:545/672" alt="Bruno de terno preto e óculos brancos cercado por celulares que o fotografam" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/quadriciclo-aviao.webp"></div><img class="cena__m" src="img/quadriciclo-aviao.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno de chapéu de couro sentado num quadriciclo diante de um avião antigo" loading="lazy" decoding="async"></div>
         <div class="seq__ritmo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
     </div>
@@ -660,14 +570,10 @@ a.rede:hover{border-color:var(--sol)}
   <!-- ============ FOTO AÉREA ============ -->
   <section class="aerea" aria-label="Foto aérea do Bruno de quadriciclo na areia">
     <img src="img/quadriciclo-aereo.webp" width="760" height="1013" loading="lazy" alt="Vista de cima: Bruno de boné vermelho pilotando um quadriciclo na areia">
-    <div class="aerea__txt">
-      <span class="olho">Vista de cima</span>
-      <p class="aerea__frase">Do chão<em>ao céu</em></p>
-    </div>
   </section>
 
   <!-- ============ DRONE ============ -->
-  <section class="faixa drone" id="drone" data-forma="2" aria-labelledby="drone-t">
+  <section class="faixa drone" id="drone" aria-labelledby="drone-t">
     <div class="drone__fundo" aria-hidden="true">
       <img src="img/drone-2-capa.webp" alt="" id="drone-capa">
       <video id="video-drone" muted loop playsinline preload="none" poster="img/drone-2-capa.webp" data-src="video/drone-2.mp4"></video>
@@ -681,7 +587,7 @@ a.rede:hover{border-color:var(--sol)}
 
       <div class="hud sobe">
         <span class="hud__c1"></span><span class="hud__c2"></span>
-        <div class="hud__topo"><span class="rec">Rec</span><span>Galeria aérea</span><span>2 vídeos + 1 reel</span></div>
+        <div class="hud__topo"><button class="pausa pausa--hud" type="button" data-pausa aria-pressed="false"><i aria-hidden="true"></i><span>Pausar vídeo</span></button><span>Galeria aérea</span><span>2 vídeos + 1 reel</span></div>
         <div class="telas">
           <button class="tela" type="button" data-video="video/drone-2.mp4" data-capa="img/drone-2-capa.webp" aria-pressed="true">
             <img src="img/drone-2-capa.webp" width="900" height="506" loading="lazy" alt="">
@@ -691,7 +597,7 @@ a.rede:hover{border-color:var(--sol)}
             <img src="img/drone-1-capa.webp" width="900" height="506" loading="lazy" alt="">
             <small>12 s · piscina vista de cima</small><b>Vídeo 2</b>
           </button>
-          <a class="tela tela--link" href="https://www.instagram.com/reel/DOKauxij41m/" target="_blank" rel="noopener">
+          <a class="tela tela--link" href="https://www.instagram.com/reel/DOKauxij41m/" target="_blank" rel="noopener noreferrer">
             <small>Instagram</small><b>Reel editado</b><span class="sub" style="font-size:.875rem">Abre o vídeo no Instagram ↗</span>
           </a>
         </div>
@@ -712,7 +618,7 @@ a.rede:hover{border-color:var(--sol)}
   </section>
 
   <!-- ============ MASSOTERAPIA ============ -->
-  <section class="faixa massa-sec" id="massoterapia" data-forma="1" aria-labelledby="massa-t">
+  <section class="faixa massa-sec" id="massoterapia" aria-labelledby="massa-t">
     <div class="respira" aria-hidden="true"></div>
     <div class="faixa__in">
       <div class="cab cab--lado sobe">
@@ -731,33 +637,33 @@ a.rede:hover{border-color:var(--sol)}
         </div>
 
         <div class="massa-paineis">
-          <article class="massa-painel" role="tabpanel" id="painel-ventosa" aria-labelledby="aba-ventosa">
+          <article class="massa-painel" role="tabpanel" tabindex="0" id="painel-ventosa" aria-labelledby="aba-ventosa">
             <img class="massa-painel__foto" src="img/massa-ventosa.webp" width="1100" height="733" alt="Foto ilustrativa: copos de ventosaterapia nas costas" loading="lazy" decoding="async">
             <p class="massa-painel__como">Copos aplicados sobre a pele criam uma leve sucção que puxa o músculo para cima e solta os pontos presos.</p>
             <ul class="beneficios">
-              <li><b>Alívio de dores musculares</b> nas costas, nos ombros e no pescoço.</li>
-              <li><b>Soltura de nós de tensão</b> que se acumulam com treino, postura e estresse.</li>
+              <li><b>Pode aliviar dores musculares</b> nas costas, nos ombros e no pescoço.</li>
+              <li><b>Ajuda a soltar nós de tensão</b> que se acumulam com treino, postura e estresse.</li>
               <li><b>Sensação de leveza</b> e de corpo mais solto depois da sessão.</li>
             </ul>
             <p class="massa-painel__nota">É normal ficarem marcas redondas na pele por alguns dias. Elas somem sozinhas.</p>
           </article>
-          <article class="massa-painel" role="tabpanel" id="painel-quiro" aria-labelledby="aba-quiro" hidden>
+          <article class="massa-painel" role="tabpanel" tabindex="0" id="painel-quiro" aria-labelledby="aba-quiro" hidden>
             <img class="massa-painel__foto" src="img/massa-quiro.webp" width="1100" height="1650" alt="Foto ilustrativa: mãos de terapeuta avaliando a coluna" loading="lazy" decoding="async" style="object-position:50% 45%">
             <p class="massa-painel__como">Técnicas manuais na coluna e nas articulações para devolver movimento e aliviar travas.</p>
             <ul class="beneficios">
-              <li><b>Alívio da dor lombar</b> e da tensão no pescoço, principalmente em crises recentes.</li>
+              <li><b>Pode aliviar a dor lombar</b> e a tensão no pescoço.</li>
               <li><b>Mais mobilidade</b> na coluna e nas articulações.</li>
-              <li><b>Melhor resultado junto com exercícios</b> e cuidado com a postura no dia a dia.</li>
+              <li><b>Costuma render mais</b> junto com exercícios e cuidado com a postura.</li>
             </ul>
             <p class="massa-painel__nota">Avise antes se você já fez cirurgia na coluna, teve AVC ou tem problema de circulação.</p>
           </article>
-          <article class="massa-painel" role="tabpanel" id="painel-relax" aria-labelledby="aba-relax" hidden>
+          <article class="massa-painel" role="tabpanel" tabindex="0" id="painel-relax" aria-labelledby="aba-relax" hidden>
             <img class="massa-painel__foto" src="img/massa-relax.webp" width="1100" height="733" alt="Foto ilustrativa: massagem relaxante nas costas" loading="lazy" decoding="async">
             <p class="massa-painel__como">Movimentos lentos e contínuos, com pressão leve a média, para o corpo desacelerar por uma hora.</p>
             <ul class="beneficios">
-              <li><b>Menos tensão muscular</b> acumulada na semana.</li>
-              <li><b>Menos estresse</b> e mais sensação de calma.</li>
-              <li><b>Descanso melhor</b> nas noites seguintes.</li>
+              <li><b>Ajuda a soltar a tensão</b> acumulada na semana.</li>
+              <li><b>Ajuda a diminuir o estresse</b> e traz sensação de calma.</li>
+              <li><b>Pode melhorar o descanso</b> nas noites seguintes.</li>
             </ul>
             <div class="folego" aria-hidden="true"><span class="folego__bola"></span><span class="folego__txt"><i>inspire</i><i>solte</i></span></div>
           </article>
@@ -776,16 +682,28 @@ a.rede:hover{border-color:var(--sol)}
       <div class="massa-rodape sobe">
         <div class="acoes">
           <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero agendar uma massagem."><svg><use href="#i-conversa"/></svg><span>Agendar pelo WhatsApp</span></a>
-          <a class="btn" href="https://www.instagram.com/massagon47/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>@massagon47</a>
+          <a class="btn" href="https://www.instagram.com/massagon47/" target="_blank" rel="noopener noreferrer"><svg><use href="#i-insta"/></svg>@massagon47</a>
         </div>
         <p class="massa-aviso">As sessões não substituem avaliação médica. Em caso de fratura, osteoporose, feridas abertas, problema de coagulação ou gravidez, avise antes de agendar.</p>
       </div>
-      <div class="falta sobe" role="note" style="margin-top:22px"><span class="falta__tag">Material pendente</span><p>De 3 a 6 fotos do espaço de atendimento.</p></div>
+      <div class="espaco sobe">
+        <div class="espaco__cab">
+          <h3>O espaço</h3>
+          <div class="espaco__setas"><button type="button" data-dir="-1" aria-label="Foto anterior">←</button><button type="button" data-dir="1" aria-label="Próxima foto">→</button></div>
+        </div>
+        <div class="espaco__trilho" tabindex="0" role="region" aria-label="Fotos ilustrativas do espaço, arraste para o lado">
+          <figure class="espaco__item"><img src="img/espaco-sala.webp" width="800" height="1067" loading="lazy" decoding="async" alt="Foto ilustrativa: sala de massagem com luz suave e maca de pedra"></figure>
+          <figure class="espaco__item"><img src="img/espaco-maca.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Foto ilustrativa: maca com toalha ao lado de uma janela"></figure>
+          <figure class="espaco__item"><img src="img/espaco-velas.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Foto ilustrativa: velas e lavanda ao lado de uma sessão de massagem"></figure>
+          <figure class="espaco__item"><img src="img/espaco-toalha.webp" width="800" height="533" loading="lazy" decoding="async" alt="Foto ilustrativa: toalha enrolada e vela sobre a maca"></figure>
+        </div>
+        <p class="massa-ilustra">Fotos ilustrativas, de banco de imagens.</p>
+      </div>
     </div>
   </section>
 
   <!-- ============ LIFESTYLE ============ -->
-  <section class="faixa faixa--escura" id="lifestyle" data-forma="1" aria-labelledby="life-t">
+  <section class="faixa faixa--escura" id="lifestyle" aria-labelledby="life-t">
     <div class="faixa__in">
       <div class="cab cab--lado sobe">
         <div>
@@ -798,23 +716,23 @@ a.rede:hover{border-color:var(--sol)}
 
     <div class="seq" id="seq-lifestyle" data-seq role="region" aria-label="Dia a dia do Bruno, role para passar fotos e vídeos" style="--n:4">
       <div class="seq__palco">
-        <div class="cena"><div class="cena__amb" style="background-image:url(img/piscina-capa.webp)"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/piscina-capa.webp" data-src="video/piscina.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno na piscina, embaixo de uma cascata"></video></div>
-        <div class="cena"><div class="cena__amb" style="background-image:url(img/chapeu-sorriso.webp)"></div><img class="cena__m" src="img/chapeu-sorriso.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno sorrindo de chapéu de couro, sentado num quadriciclo" loading="lazy" decoding="async"></div>
-        <div class="cena"><div class="cena__amb" style="background-image:url(img/quadriciclo-reel-capa.webp)"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/quadriciclo-reel-capa.webp" data-src="video/quadriciclo-reel.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno pilotando um quadriciclo no campo"></video></div>
-        <div class="cena"><div class="cena__amb" style="background-image:url(img/natal-escada-capa.webp)"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/natal-escada-capa.webp" data-src="video/natal-escada.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno descendo uma escada decorada para o Natal"></video></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/piscina-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/piscina-capa.webp" data-src="video/piscina.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno na piscina, embaixo de uma cascata"></video></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/chapeu-sorriso.webp"></div><img class="cena__m" src="img/chapeu-sorriso.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno sorrindo de chapéu de couro, sentado num quadriciclo" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/quadriciclo-reel-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/quadriciclo-reel-capa.webp" data-src="video/quadriciclo-reel.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno pilotando um quadriciclo no campo"></video></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/natal-escada-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/natal-escada-capa.webp" data-src="video/natal-escada.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno descendo uma escada decorada para o Natal"></video></div>
         <div class="seq__ritmo" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       </div>
     </div>
 
     <div class="faixa__in">
       <div class="acoes sobe" style="margin-top:28px">
-        <a class="btn" href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>Acompanhar no Instagram</a>
+        <a class="btn" href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener noreferrer"><svg><use href="#i-insta"/></svg>Acompanhar no Instagram</a>
       </div>
     </div>
   </section>
 
   <!-- ============ PARCERIAS ============ -->
-  <section class="faixa faixa--escura" id="parcerias" data-forma="3" aria-labelledby="parc-t">
+  <section class="faixa faixa--escura" id="parcerias" aria-labelledby="parc-t">
     <div class="faixa__in">
       <div class="cab sobe">
         <span class="olho">Para marcas</span>
@@ -828,9 +746,8 @@ a.rede:hover{border-color:var(--sol)}
             <div><dt>Vestuário</dt><dd>Fotos para campanhas e roupas de lojas, em parceria</dd></div>
             <div><dt>Drone</dt><dd>Vídeos e fotos aéreas</dd></div>
           </dl>
-          <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Outros formatos que ele aceita (reels, stories, eventos) e se haverá mídia kit.</p></div>
           <div class="acoes" style="margin-top:10px">
-            <a class="btn btn--sol" href="https://ig.me/m/obrunozampieri" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>Falar sobre parceria no Direct</a>
+            <a class="btn btn--sol" href="https://ig.me/m/obrunozampieri" target="_blank" rel="noopener noreferrer"><svg><use href="#i-insta"/></svg>Falar sobre parceria no Direct</a>
           </div>
         </div>
         <aside class="ficha sobe" aria-label="Perfil do criador">
@@ -853,7 +770,7 @@ a.rede:hover{border-color:var(--sol)}
   </section>
 
   <!-- ============ CONTATO ============ -->
-  <section class="faixa" id="contato" data-forma="3" aria-labelledby="cont-t">
+  <section class="faixa" id="contato" aria-labelledby="cont-t">
     <div class="faixa__in">
       <div class="cab cab--lado sobe">
         <div>
@@ -867,14 +784,14 @@ a.rede:hover{border-color:var(--sol)}
           <span class="rotulo">Serviço</span>
           <h3>Agendar massagem</h3>
           <p>Para marcar um horário ou tirar dúvidas sobre o atendimento.</p>
-          <p class="endereco">(11) 97707-4881</p>
+          <p class="endereco" data-fone-texto>(11) 97707-4881</p>
           <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero agendar uma massagem."><svg><use href="#i-conversa"/></svg><span>WhatsApp</span></a>
         </div>
         <div class="canal sobe">
           <span class="rotulo">Marcas</span>
           <h3>Parcerias</h3>
-          <p>Propostas de marcas e trabalhos de modelagem.</p>
-          <a class="btn btn--sol" href="https://ig.me/m/obrunozampieri" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>Direct do Instagram</a>
+          <p>Propostas de marcas, campanhas e publicidade.</p>
+          <a class="btn btn--sol" href="https://ig.me/m/obrunozampieri" target="_blank" rel="noopener noreferrer"><svg><use href="#i-insta"/></svg>Direct do Instagram</a>
         </div>
         <div class="canal sobe">
           <span class="rotulo">Geral</span>
@@ -886,9 +803,9 @@ a.rede:hover{border-color:var(--sol)}
       </div>
 
       <div class="redes sobe">
-        <a class="rede" href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg><div><strong>Instagram</strong><span>@obrunozampieri</span></div></a>
-        <a class="rede" href="https://www.tiktok.com/@brunozamp7" target="_blank" rel="noopener"><svg><use href="#i-video"/></svg><div><strong>TikTok</strong><span>@brunozamp7</span></div></a>
-        <a class="rede" href="https://www.instagram.com/massagon47/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg><div><strong>Instagram da massoterapia</strong><span>@massagon47</span></div></a>
+        <a class="rede" href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener noreferrer"><svg><use href="#i-insta"/></svg><div><strong>Instagram</strong><span>@obrunozampieri</span></div></a>
+        <a class="rede" href="https://www.tiktok.com/@brunozamp7" target="_blank" rel="noopener noreferrer"><svg><use href="#i-video"/></svg><div><strong>TikTok</strong><span>@brunozamp7</span></div></a>
+        <a class="rede" href="https://www.instagram.com/massagon47/" target="_blank" rel="noopener noreferrer"><svg><use href="#i-insta"/></svg><div><strong>Instagram da massoterapia</strong><span>@massagon47</span></div></a>
       </div>
     </div>
   </section>
@@ -909,27 +826,19 @@ a.rede:hover{border-color:var(--sol)}
   <div class="rodape__in">
     <div class="rodape__nome">Bruno<br><b>Zampieri</b></div>
     <div style="display:grid;gap:8px">
-      <p><a href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener">@obrunozampieri</a></p>
-      <p><a href="https://www.tiktok.com/@brunozamp7" target="_blank" rel="noopener">TikTok @brunozamp7</a> · <a href="mailto:zampiericontato87@gmail.com">zampiericontato87@gmail.com</a></p>
+      <p><a href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener noreferrer">@obrunozampieri</a></p>
+      <p><a href="https://www.tiktok.com/@brunozamp7" target="_blank" rel="noopener noreferrer">TikTok @brunozamp7</a> · <a href="mailto:zampiericontato87@gmail.com" data-canal="email" data-email-texto>zampiericontato87@gmail.com</a></p>
       <p>Modelagem · Drone · Massoterapia · Lifestyle</p>
       <p><a href="#inicio">Voltar ao topo ↑</a></p>
     </div>
   </div>
 </footer>
-
-<dialog class="zoom" id="zoom" aria-label="Foto ampliada">
-  <div class="zoom__in"><img id="zoom-img" alt=""></div>
-  <button class="zoom__btn zoom__fechar" type="button" id="zoom-fechar" aria-label="Fechar">✕</button>
-  <button class="zoom__btn zoom__ant" type="button" id="zoom-ant" aria-label="Foto anterior">←</button>
-  <button class="zoom__btn zoom__prox" type="button" id="zoom-prox" aria-label="Próxima foto">→</button>
-  <p class="zoom__leg" id="zoom-leg"></p>
-</dialog>
+<div class="assinatura"><a href="https://amplitudelab.github.io/lab/" target="_blank" rel="noopener noreferrer">Site feito por <b>Amplitude Lab</b></a></div>
 
 <script>
 /* ============================================================
-   CONTATOS — preencha aqui quando o Bruno enviar.
+   CONTATOS: troque aqui e todos os botões e textos acompanham.
    whatsapp: só números, com 55 + DDD (ex.: "5511999999999")
-   email: endereço completo
    ============================================================ */
 const CONTATO = { whatsapp: "5511977074881", email: "zampiericontato87@gmail.com" };
 
@@ -939,15 +848,13 @@ const CONTATO = { whatsapp: "5511977074881", email: "zampiericontato87@gmail.com
     const canal = a.dataset.canal;
     if (canal === 'whatsapp' && CONTATO.whatsapp) {
       a.href = 'https://wa.me/' + CONTATO.whatsapp + '?text=' + encodeURIComponent(a.dataset.msg || '');
-      a.target = '_blank'; a.rel = 'noopener';
-      a.querySelector('.btn__pend')?.remove();
+      a.target = '_blank'; a.rel = 'noopener noreferrer';
     }
-    if (canal === 'email' && CONTATO.email) {
-      a.href = 'mailto:' + CONTATO.email;
-      a.querySelector('.btn__pend')?.remove();
-    }
+    if (canal === 'email' && CONTATO.email) a.href = 'mailto:' + CONTATO.email;
   });
   if (CONTATO.email) document.querySelectorAll('[data-email-texto]').forEach(p => p.textContent = CONTATO.email);
+  const f = CONTATO.whatsapp.replace(/^55/, '');
+  if (f.length >= 10) document.querySelectorAll('[data-fone-texto]').forEach(p => p.textContent = '(' + f.slice(0, 2) + ') ' + f.slice(2, -4) + '-' + f.slice(-4));
 
   // ---- Menu no celular ----
   const btn = document.getElementById('menu-btn'), nav = document.getElementById('nav');
@@ -971,28 +878,15 @@ const CONTATO = { whatsapp: "5511977074881", email: "zampiericontato87@gmail.com
     }, { rootMargin: '-45% 0px -50% 0px' });
     secoes.forEach(s => io.observe(s));
   }
+})();
 
-  // ---- Fotos ampliadas ----
-  const dlg = document.getElementById('zoom'), zimg = document.getElementById('zoom-img'), zleg = document.getElementById('zoom-leg');
-  let grupo = [], pos = 0;
-  const mostrar = () => {
-    const img = grupo[pos].querySelector('img');
-    zimg.src = img.currentSrc || img.src; zimg.alt = img.alt;
-    // não ampliar além de 2x o tamanho original, para não borrar
-    zimg.style.maxHeight = 'min(100%, ' + (img.naturalHeight * 2 || 600) + 'px)';
-    zleg.textContent = (pos + 1) + ' / ' + grupo.length;
-  };
-  document.querySelectorAll('[data-zoom]').forEach(b => b.addEventListener('click', () => {
-    grupo = [...b.closest('[data-galeria]').querySelectorAll('[data-zoom]')]; pos = grupo.indexOf(b);
-    mostrar();
-    if (dlg.showModal) dlg.showModal();
+/* Passeio pelo espaço: setas */
+(() => {
+  const trilho = document.querySelector(".espaco__trilho"); if (!trilho) return;
+  document.querySelectorAll(".espaco__setas button").forEach(b => b.addEventListener("click", () => {
+    const item = trilho.querySelector(".espaco__item");
+    trilho.scrollBy({ left: (+b.dataset.dir) * (item ? item.offsetWidth + 16 : 300), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }));
-  const passo = d => { pos = (pos + d + grupo.length) % grupo.length; mostrar(); };
-  document.getElementById('zoom-fechar').onclick = () => dlg.close();
-  document.getElementById('zoom-ant').onclick = () => passo(-1);
-  document.getElementById('zoom-prox').onclick = () => passo(1);
-  dlg.addEventListener('click', e => { if (e.target === dlg || e.target.classList.contains('zoom__in')) dlg.close(); });
-  dlg.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') passo(-1); if (e.key === 'ArrowRight') passo(1); });
 })();
 
 /* Abas da massoterapia */
@@ -1006,11 +900,16 @@ const CONTATO = { whatsapp: "5511977074881", email: "zampiericontato87@gmail.com
     });
     if (foco) aba.focus();
   };
+  const lista = document.querySelector('.massa-abas');
+  const larga = matchMedia('(min-width: 900px)');
+  const orientar = () => lista && lista.setAttribute('aria-orientation', larga.matches ? 'vertical' : 'horizontal');
+  orientar(); larga.addEventListener?.('change', orientar);
   abas.forEach((a, i) => {
     a.addEventListener('click', () => ativar(a));
     a.addEventListener('keydown', e => {
       const d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
       if (d) { e.preventDefault(); ativar(abas[(i + d + abas.length) % abas.length], true); }
+      if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); ativar(abas[e.key === 'Home' ? 0 : abas.length - 1], true); }
     });
   });
 })();
@@ -1018,7 +917,8 @@ const CONTATO = { whatsapp: "5511977074881", email: "zampiericontato87@gmail.com
 /* Sequências imersivas: cada cena se abre por cima da anterior conforme a rolagem */
 (() => {
   const semMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const economia = navigator.connection && navigator.connection.saveData;
+  const rede = navigator.connection || {};
+  const economia = !!rede.saveData || /(^|-)2g$/.test(rede.effectiveType || '');
   document.querySelectorAll('[data-seq]').forEach(seq => {
     const cenas = [...seq.querySelectorAll('.cena')], n = cenas.length;
     const midias = cenas.map(c => c.querySelector('.cena__m'));
@@ -1037,6 +937,8 @@ const CONTATO = { whatsapp: "5511977074881", email: "zampiericontato87@gmail.com
       const p = Math.max(0, Math.min(1, -r.top / total)) * (n - 1);
       const vis = r.top < innerHeight && r.bottom > 0;
       cenas.forEach((c, i) => {
+        const amb = c.firstElementChild;
+        if (vis && amb.dataset.fundo && Math.abs(i - p) < 2) { amb.style.backgroundImage = 'url(' + amb.dataset.fundo + ')'; delete amb.dataset.fundo; }
         const entra = i === 0 ? 1 : Math.max(0, Math.min(1, p - (i - 1)));
         const sai = Math.max(0, Math.min(1, p - i));
         c.style.visibility = entra > 0 && sai < 1 ? 'visible' : 'hidden';
@@ -1059,10 +961,13 @@ const CONTATO = { whatsapp: "5511977074881", email: "zampiericontato87@gmail.com
    ============================================================ */
 (() => {
   const semMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const economia = navigator.connection && navigator.connection.saveData;
+  const rede = navigator.connection || {};
+  const economia = !!rede.saveData || /(^|-)2g$/.test(rede.effectiveType || '');
+  let pausado = false;
   const topo = document.getElementById('video-topo'), drone = document.getElementById('video-drone'), capa = document.getElementById('drone-capa');
   const carregar = v => { if (!v.src && v.dataset.src) v.src = v.dataset.src; };
-  const tocar = v => { if (semMov || economia) return; carregar(v); const p = v.play(); if (p) p.catch(() => {}); };
+  const tocar = v => { if (semMov || economia || pausado) return; carregar(v); const p = v.play(); if (p) p.catch(() => {}); };
+  const esconderCapa = () => drone.addEventListener('playing', () => { capa.style.opacity = 0; }, { once: true });
   const raiz = document.documentElement.style;
   const hero = document.getElementById('inicio');
 
@@ -1079,7 +984,7 @@ const CONTATO = { whatsapp: "5511977074881", email: "zampiericontato87@gmail.com
   addEventListener('load', () => { if (ceuVisivel) tocar(topo); });
 
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([e]) => { if (e.isIntersecting) { tocar(drone); drone.addEventListener('playing', () => capa.style.opacity = 0, { once: true }); } else drone.pause(); },
+    new IntersectionObserver(([e]) => { if (e.isIntersecting) { if (!semMov && !economia && !pausado && drone.paused) { esconderCapa(); tocar(drone); } } else drone.pause(); },
       { rootMargin: '200px 0px' }).observe(document.getElementById('drone'));
   }
   document.querySelectorAll('.tela[data-video]').forEach(b => b.addEventListener('click', () => {
@@ -1087,7 +992,16 @@ const CONTATO = { whatsapp: "5511977074881", email: "zampiericontato87@gmail.com
     capa.src = b.dataset.capa; capa.style.opacity = 1; drone.poster = b.dataset.capa;
     drone.dataset.src = b.dataset.video; drone.removeAttribute('src'); drone.load();
     if (semMov || economia) return;
-    tocar(drone); drone.addEventListener('playing', () => capa.style.opacity = 0, { once: true });
+    esconderCapa(); tocar(drone);
+  }));
+
+  // botões de pausar os vídeos de fundo
+  const botoes = document.querySelectorAll('[data-pausa]');
+  if (semMov || economia) botoes.forEach(b => b.hidden = true);
+  botoes.forEach(b => b.addEventListener('click', () => {
+    pausado = !pausado;
+    botoes.forEach(x => { x.setAttribute('aria-pressed', String(pausado)); x.lastElementChild.textContent = pausado ? 'Tocar vídeo' : 'Pausar vídeo'; });
+    if (pausado) { topo.pause(); drone.pause(); } else { if (ceuVisivel) tocar(topo); const r = document.getElementById('drone').getBoundingClientRect(); if (r.top < innerHeight && r.bottom > 0) tocar(drone); }
   }));
 
 })();

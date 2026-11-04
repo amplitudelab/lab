@@ -57,9 +57,11 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   `AL.toast` e `AL.px`.
 - `demos/`: demos feitas para clientes reais (`noindex`).
 - `bruno-zampieri/`: página do criador Bruno Zampieri (@obrunozampieri), em
-  `amplitudelab.github.io/lab/bruno-zampieri/`. É independente da Amplitude: identidade
-  própria, nenhum link para o site, CRM ou sistemas da Amplitude, e nada da Amplitude
-  aponta para ela. Contatos no objeto `CONTATO` do script; `noindex` enquanto for protótipo.
+  `amplitudelab.github.io/lab/bruno-zampieri/`. Identidade própria, separada da
+  Amplitude: nada do site da Amplitude aponta para ela, e o único link para a Amplitude
+  é a assinatura "Site feito por Amplitude Lab" no fim, pedida pelo dono. Contatos no
+  objeto `CONTATO` do script; `noindex`; CSP com hash do `<script>` inline (recalcule o
+  `sha256` sempre que mudar o script, senão ele não roda).
 - `crm/index.html`: página de vendas Site + CRM.
 - `crm/app/index.html`: protótipo do CRM, arquivo único, dados no `localStorage`
   (`amp-crm:v1:<tenant>`, `amp-crm:prefs`).
