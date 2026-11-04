@@ -179,7 +179,9 @@ p{margin:0}
 .bloco h3{display:flex;align-items:center;gap:12px}
 .bloco h3::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sol);box-shadow:0 0 12px var(--sol)}
 .info{display:grid;margin:0;border-top:1px solid var(--linha)}
-.info div{display:grid;grid-template-columns:9.5rem 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--linha)}
+.info div{display:grid;grid-template-columns:minmax(0,9.5rem) minmax(0,1fr);gap:16px;padding:14px 0;border-bottom:1px solid var(--linha)}
+@media (max-width:420px){.info div{grid-template-columns:minmax(0,1fr);gap:4px}}
+.drone__info>*,.parc>*,.canal,.rede div{min-width:0}
 .info dt{font:500 .75rem/1.5 var(--f-mono);text-transform:uppercase;letter-spacing:.12em;color:var(--poeira)}
 .info dd{margin:0}
 .pend{font:500 .75rem/1.5 var(--f-mono);color:var(--ambar);letter-spacing:.04em}
