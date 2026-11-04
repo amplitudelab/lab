@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Ficha de anamnese</title>
+<meta name="theme-color" content="#0A0F1C">
+<link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Ficha de anamnese para tatuagem: aberta pelo link privado que o estúdio manda ao cliente. */
+:root{
+  --bg:#0A0F1C; --panel:#131B2E; --panel2:#18223A; --line:#26314D; --fg:#E9EEF7; --muted:#9AA5BB;
+  --acc:#5B8CFF; --on-acc:#0A0F1C; --bad:#FF8A8A; --ok:#3FCF9B; --warn:#F5B547;
+  --f:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root{
+  --bg:#F2F5FA; --panel:#FFFFFF; --panel2:#F6F8FC; --line:#D5DDEA; --fg:#0A0F1C; --muted:#46526D;
+  --acc:#2450D6; --on-acc:#FFFFFF; --bad:#B42318; --ok:#0B7F57; --warn:#8F5600; color-scheme:light}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.5 var(--f);-webkit-font-smoothing:antialiased}
+main{max-width:680px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(48px + env(safe-area-inset-bottom,0px))}
+header{display:flex;align-items:center;gap:12px;margin:4px 0 20px}
+.logo{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--acc);color:var(--on-acc);font:700 16px/1 var(--f);flex:0 0 auto}
+header b{display:block;font-size:17px}
+header span{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(26px,7vw,34px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px}
+.lead{color:var(--muted);margin:0 0 22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px 18px;margin:0 0 14px}
+.card h2{font-size:18px;margin:0 0 4px}
+.card .sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+.step{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:0 0 8px;display:block}
+.f{display:flex;flex-direction:column;gap:6px;margin:0 0 14px}
+.f:last-child{margin-bottom:0}
+label.l{font-weight:600;font-size:15px}
+label.l small{font-weight:400;color:var(--muted)}
+input[type=text],input[type=tel],input[type=email],input[type=date],textarea,select{width:100%;min-height:50px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--panel2);color:var(--fg);font:inherit}
+textarea{min-height:90px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--acc)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.two{grid-template-columns:1fr}}
+.q{padding:14px 0;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0;padding-top:0}
+.q p{margin:0 0 10px;font-weight:600}
+.yn{display:flex;gap:8px}
+.yn label{flex:1;position:relative}
+.yn input{position:absolute;opacity:0;inset:0}
+.yn span{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:12px;border:1.5px solid var(--line);font-weight:600;cursor:pointer;user-select:none}
+.yn input:checked + span{border-color:var(--acc);background:var(--acc);color:var(--on-acc)}
+.yn input:focus-visible + span{outline:2px solid var(--acc);outline-offset:2px}
+.yn input[value=sim]:checked + span.warn{background:var(--warn);border-color:var(--warn);color:#1A1200}
+.det{margin-top:10px}
+.ck{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line);cursor:pointer}
+.ck:first-of-type{border-top:0;padding-top:0}
+.ck input{width:24px;height:24px;flex:0 0 auto;margin:1px 0 0;accent-color:var(--acc)}
+.ck b{color:var(--bad);font-weight:600}
+.sig{position:relative;border:1.5px dashed var(--line);border-radius:14px;background:#FFFFFF;touch-action:none;overflow:hidden}
+.sig canvas{display:block;width:100%;height:190px}
+.sig .ph{position:absolute;inset:auto 0 14px;text-align:center;color:#8A94A8;font-size:14px;pointer-events:none}
+.sig-acts{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px;color:var(--muted)}
+button{font:inherit;cursor:pointer}
+.link{background:none;border:0;color:var(--acc);font-weight:600;padding:6px 0}
+.go{width:100%;min-height:56px;border:0;border-radius:14px;background:var(--acc);color:var(--on-acc);font-weight:700;font-size:17px;margin-top:6px}
+.go:disabled{opacity:.6}
+.err{color:var(--bad);font-weight:600;margin:12px 0 0}
+.req{color:var(--bad)}
+.hid{display:none!important}
+.state{text-align:center;padding:48px 18px}
+.state .ico{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;background:var(--panel2);border:1px solid var(--line);font-size:30px}
+.foot{color:var(--muted);font-size:12px;text-align:center;margin-top:24px}
+.bad-field{border-color:var(--bad)!important}
+.bad-q > p{color:var(--bad)}
+</style>
+</head>
+<body>
+<main>
+  <header><span class="logo" id="logo">AL</span><div><span>Ficha de anamnese</span><b id="biz">Carregando…</b></div></header>
+
+  <section id="loading" class="state"><p>Abrindo a sua ficha…</p></section>
+  <section id="bad" class="state hid"><div class="ico">!</div><h1 id="badT">Link inválido</h1><p class="lead" id="badP">Confira se o link está completo ou peça um novo ao estúdio.</p></section>
+  <section id="done" class="state hid"><div class="ico">✓</div><h1>Ficha enviada</h1><p class="lead">Obrigado! O estúdio já recebeu as suas respostas. Qualquer mudança na sua saúde até o dia da sessão, avise o tatuador.</p></section>
+
+  <form id="form" class="hid" novalidate>
+    <h1>Antes da sua tatuagem</h1>
+    <p class="lead">Leva uns 3 minutos. As respostas ajudam o tatuador a cuidar da sua segurança e ficam guardadas com acesso restrito ao estúdio.</p>
+
+    <section class="card">
+      <span class="step">1 de 5</span><h2>Seus dados</h2><p class="sub">Campos com <span class="req">*</span> são obrigatórios.</p>
+      <div class="f"><label class="l" for="nome">Nome completo <span class="req">*</span></label><input type="text" id="nome" autocomplete="name" required></div>
+      <div class="two">
+        <div class="f"><label class="l" for="nascimento">Data de nascimento <span class="req">*</span></label><input type="date" id="nascimento" required></div>
+        <div class="f"><label class="l" for="documento">CPF ou RG</label><input type="text" id="documento" inputmode="numeric" autocomplete="off"></div>
+      </div>
+      <div class="two">
+        <div class="f"><label class="l" for="telefone">WhatsApp <span class="req">*</span></label><input type="tel" id="telefone" autocomplete="tel" placeholder="(11) 90000-0000" required></div>
+        <div class="f"><label class="l" for="email">E-mail</label><input type="email" id="email" autocomplete="email"></div>
+      </div>
+      <div class="f"><label class="l" for="cidade">Cidade</label><input type="text" id="cidade" autocomplete="address-level2"></div>
+      <div class="two">
+        <div class="f"><label class="l" for="emergencia_nome">Contato de emergência</label><input type="text" id="emergencia_nome" placeholder="Nome"></div>
+        <div class="f"><label class="l" for="emergencia_tel">Telefone de emergência</label><input type="tel" id="emergencia_tel"></div>
+      </div>
+      <div id="menor" class="hid">
+        <p class="err" style="margin:4px 0 12px">Menor de 18 anos: a tatuagem só pode ser feita com a autorização e a presença do responsável legal.</p>
+        <div class="f"><label class="l" for="resp_nome">Nome do responsável <span class="req">*</span></label><input type="text" id="resp_nome"></div>
+        <div class="two">
+          <div class="f"><label class="l" for="resp_doc">CPF ou RG do responsável <span class="req">*</span></label><input type="text" id="resp_doc" inputmode="numeric"></div>
+          <div class="f"><label class="l" for="resp_parentesco">Parentesco</label><input type="text" id="resp_parentesco" placeholder="Mãe, pai…"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="step">2 de 5</span><h2>A tatuagem</h2>
+      <div class="f"><label class="l" for="local">Região do corpo <span class="req">*</span></label><input type="text" id="local" placeholder="Ex.: antebraço direito" required></div>
+      <div class="f"><label class="l" for="descricao">Ideia ou desenho <small>(opcional)</small></label><textarea id="descricao" placeholder="Tamanho aproximado, estilo, referência…"></textarea></div>
+      <div class="q"><p>É a sua primeira tatuagem? <span class="req">*</span></p><div class="yn" data-name="primeira"></div></div>
+      <div class="q"><p>Já teve reação, alergia ou problema de cicatrização em tatuagem anterior?</p><div class="yn" data-name="reacao_anterior" data-detail="Conte o que aconteceu"></div></div>
+    </section>
+
+    <section class="card">
+      <span class="step">3 de 5</span><h2>Sua saúde</h2><p class="sub">Responda todas. Um "sim" não impede a tatuagem: o tatuador conversa com você e, se precisar, pede liberação médica.</p>
+      <div id="saude"></div>
+      <div class="f" style="margin-top:14px"><label class="l" for="obs">Mais alguma coisa que o tatuador deva saber? <small>(opcional)</small></label><textarea id="obs"></textarea></div>
+    </section>
+
+    <section class="card">
+      <span class="step">4 de 5</span><h2>Declarações</h2>
+      <label class="ck"><input type="checkbox" id="t_verdade"><span><b>*</b> Declaro que as informações acima são verdadeiras e que vou avisar o estúdio se algo mudar antes da sessão.</span></label>
+      <label class="ck"><input type="checkbox" id="t_riscos"><span><b>*</b> Entendo os riscos da tatuagem, como alergia, infecção e variações na cicatrização e na cor, e vou seguir os cuidados indicados pelo tatuador.</span></label>
+      <label class="ck"><input type="checkbox" id="t_lgpd"><span><b>*</b> Autorizo o estúdio a guardar estes dados, inclusive os de saúde, apenas para a segurança do meu atendimento. Sei que posso pedir a exclusão a qualquer momento.</span></label>
+      <label class="ck"><input type="checkbox" id="t_fotos"><span>Autorizo fotos da tatuagem pronta nas redes sociais do estúdio. <small style="color:var(--muted)">(opcional)</small></span></label>
+    </section>
+
+    <section class="card">
+      <span class="step">5 de 5</span><h2>Assinatura <span class="req">*</span></h2><p class="sub">Assine com o dedo no quadro abaixo<span id="sigWho"></span>.</p>
+      <div class="sig" id="sigBox"><canvas id="sig" aria-label="Quadro de assinatura"></canvas><div class="ph" id="sigPh">Assine aqui</div></div>
+      <div class="sig-acts"><span id="sigDate"></span><button type="button" class="link" id="sigClear">Limpar</button></div>
+    </section>
+
+    <p class="err hid" id="err" role="alert"></p>
+    <button class="go" type="submit" id="go">Enviar ficha</button>
+    <p class="foot">Este link é pessoal e funciona para um envio só.</p>
+  </form>
+</main>
+<script>
+(() => {
+  'use strict';
+  const SB = 'https://ozregdgphaxkxumsujys.supabase.co', KEY = 'sb_publishable_JzclZYD3n7EQ1GAXGhB5RQ_1Ur4_784';
+  const $ = (s) => document.querySelector(s);
+  const TOKEN = (location.hash || '').slice(1).trim();
+  const DEMO = TOKEN === 'demo';   // link da demonstração do CRM: preenche, mas não envia nada
+  const rpc = (fn, body) => fetch(`${SB}/rest/v1/rpc/${fn}`, { method: 'POST', headers: { apikey: KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    .then((r) => r.json()).catch(() => ({ error: 'Sem conexão. Confira a internet e tente de novo.' }));
+
+  // Perguntas de saúde: a chave vai para o banco, o texto vai junto para o estúdio ler exatamente o que foi perguntado
+  const SAUDE = [
+    ['diabetes', 'Tem diabetes?'],
+    ['cardiaco', 'Tem pressão alta, problema cardíaco ou usa marca-passo?'],
+    ['coagulacao', 'Tem hemofilia ou outro problema de coagulação do sangue?'],
+    ['anticoagulante', 'Usa anticoagulante ou AAS (aspirina)?'],
+    ['infecciosa', 'Tem hepatite, HIV ou outra doença infectocontagiosa?'],
+    ['epilepsia', 'Tem epilepsia ou já teve convulsões?'],
+    ['alergia', 'Tem alergia a látex, tinta, metal, remédio ou anestésico?', 'Quais?'],
+    ['pele', 'Tem doença de pele na região (psoríase, dermatite, vitiligo, feridas)?'],
+    ['queloide', 'Tem tendência a queloide ou cicatrização difícil?'],
+    ['gestante', 'Está grávida ou amamentando?'],
+    ['cancer', 'Faz ou já fez tratamento de câncer (quimioterapia ou radioterapia)?'],
+    ['imunidade', 'Tem doença autoimune ou baixa imunidade?'],
+    ['isotretinoina', 'Usou isotretinoína (Roacutan) nos últimos 6 meses?'],
+    ['medicamento', 'Usa algum medicamento contínuo?', 'Quais?'],
+    ['desmaio', 'Costuma desmaiar ou passar mal com agulha ou sangue?'],
+    ['alcool', 'Bebeu álcool ou usou drogas nas últimas 24 horas?'],
+    ['sol', 'A região está bronzeada, queimada de sol ou com depilação recente?'],
+  ];
+  const yn = (name, warn) => `<label><input type="radio" name="${name}" value="sim"><span class="${warn ? 'warn' : ''}">Sim</span></label><label><input type="radio" name="${name}" value="nao"><span>Não</span></label>`;
+  const det = (name, ph) => `<div class="det hid" data-det="${name}"><input type="text" id="det_${name}" placeholder="${ph}"></div>`;
+  $('#saude').innerHTML = SAUDE.map(([k, q, d]) => `<div class="q" data-q="${k}"><p>${q}</p><div class="yn">${yn(k, true)}</div>${det(k, d || 'Conte um pouco mais (opcional)')}</div>`).join('');
+  document.querySelectorAll('.yn[data-name]').forEach((el) => {
+    el.innerHTML = yn(el.dataset.name, false);
+    if (el.dataset.detail) el.insertAdjacentHTML('afterend', det(el.dataset.name, el.dataset.detail));
+  });
+  document.addEventListener('change', (e) => {
+    const t = e.target; if (t.type !== 'radio') return;
+    const det = document.querySelector(`[data-det="${t.name}"]`);
+    if (det) det.classList.toggle('hid', t.value !== 'sim');
+    t.closest('.q') && t.closest('.q').classList.remove('bad-q');
+  });
+
+  // menor de idade pede o responsável
+  const age = () => { const v = $('#nascimento').value; if (!v) return null; const b = new Date(v + 'T12:00'), n = new Date(); let a = n.getFullYear() - b.getFullYear(); if (n < new Date(n.getFullYear(), b.getMonth(), b.getDate())) a--; return a; };
+  $('#nascimento').addEventListener('change', () => { const a = age(); $('#menor').classList.toggle('hid', !(a !== null && a < 18)); });
+
+  // assinatura com o dedo
+  const cv = $('#sig'), ctx = cv.getContext('2d'); let drawing = false, signed = false, last = null;
+  function sizeSig() {
+    const r = cv.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
+    const keep = signed ? cv.toDataURL() : null;
+    cv.width = Math.round(r.width * d); cv.height = Math.round(r.height * d);
+    ctx.setTransform(d, 0, 0, d, 0, 0); ctx.lineWidth = 2.6; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#0A0F1C';
+    if (keep) { const im = new Image(); im.onload = () => ctx.drawImage(im, 0, 0, r.width, r.height); im.src = keep; }
+  }
+  const pt = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  cv.addEventListener('pointerdown', (e) => { drawing = true; last = pt(e); cv.setPointerCapture(e.pointerId); $('#sigPh').classList.add('hid'); });
+  cv.addEventListener('pointermove', (e) => {
+    if (!drawing) return; const p = pt(e);
+    ctx.beginPath(); ctx.moveTo(last[0], last[1]); ctx.lineTo(p[0], p[1]); ctx.stroke(); last = p; signed = true;
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach((ev) => cv.addEventListener(ev, () => { drawing = false; }));
+  $('#sigClear').onclick = () => { ctx.clearRect(0, 0, cv.width, cv.height); signed = false; $('#sigPh').classList.remove('hid'); };
+  $('#sigDate').textContent = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  // a assinatura vai em PNG com fundo branco, menor que a tela, para caber no limite do envio
+  function sigPng() {
+    const o = document.createElement('canvas'); o.width = 700; o.height = Math.round(700 * cv.height / cv.width);
+    const c = o.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, o.width, o.height); c.drawImage(cv, 0, 0, o.width, o.height);
+    return o.toDataURL('image/png');
+  }
+
+  const show = (id) => ['loading', 'bad', 'done', 'form'].forEach((k) => $('#' + k).classList.toggle('hid', k !== id));
+  function fail(t, p) { $('#badT').textContent = t; $('#badP').textContent = p; show('bad'); }
+
+  async function start() {
+    if (DEMO) { $('#biz').textContent = 'Estúdio de exemplo'; $('#logo').textContent = 'EX'; show('form'); return sizeSig(); }
+    if (!/^[0-9a-f]{64}$/.test(TOKEN)) return fail('Link incompleto', 'Abra o link exatamente como o estúdio mandou, sem cortar o final.');
+    const r = await rpc('anamnese_public', { p_token: TOKEN });
+    if (r.business) { $('#biz').textContent = r.business; $('#logo').textContent = r.business.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase(); document.title = 'Ficha de anamnese · ' + r.business; }
+    if (r.color && /^#[0-9a-f]{6}$/i.test(r.color)) document.documentElement.style.setProperty('--acc', r.color);
+    if (r.status === 'used') return fail('Esta ficha já foi enviada', 'Se precisar corrigir alguma resposta, fale com o estúdio.');
+    if (r.status === 'expired') return fail('Este link venceu', 'Peça um novo link ao estúdio.');
+    if (r.status !== 'ok') return fail(r.error ? 'Não deu para abrir' : 'Link inválido', r.error || 'Confira se o link está completo ou peça um novo ao estúdio.');
+    if (r.client_name) { $('#nome').value = r.client_name; $('#sigWho').textContent = ', ' + r.client_name.split(/\s+/)[0]; }
+    show('form'); sizeSig();
+  }
+  addEventListener('resize', () => { if (!$('#form').classList.contains('hid')) sizeSig(); });
+
+  const val = (id) => ($('#' + id).value || '').trim();
+  const radio = (n) => { const r = document.querySelector(`input[name="${n}"]:checked`); return r ? r.value : ''; };
+  function bad(msg, el) {
+    $('#err').textContent = msg; $('#err').classList.remove('hid');
+    if (el) { el.classList.add(el.matches('input,textarea') ? 'bad-field' : 'bad-q'); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); if (el.focus) el.focus({ preventScroll: true }); }
+    return false;
+  }
+  document.addEventListener('input', (e) => e.target.classList && e.target.classList.remove('bad-field'));
+
+  $('#form').addEventListener('submit', async (e) => {
+    e.preventDefault(); $('#err').classList.add('hid');
+    if (val('nome').split(/\s+/).length < 2) return bad('Escreva o nome completo.', $('#nome'));
+    if (!val('nascimento')) return bad('Preencha a data de nascimento.', $('#nascimento'));
+    const a = age();
+    if (val('telefone').replace(/\D/g, '').length < 10) return bad('Digite o WhatsApp com DDD.', $('#telefone'));
+    if (a !== null && a < 18 && (!val('resp_nome') || !val('resp_doc'))) return bad('Preencha os dados do responsável.', $('#resp_nome'));
+    if (!val('local')) return bad('Conte em que região do corpo vai ser a tatuagem.', $('#local'));
+    if (!radio('primeira')) return bad('Responda se é a sua primeira tatuagem.', document.querySelector('[data-name="primeira"]').closest('.q'));
+    for (const [k] of SAUDE) if (!radio(k)) return bad('Responda todas as perguntas de saúde.', document.querySelector(`[data-q="${k}"]`));
+    if (!$('#t_verdade').checked || !$('#t_riscos').checked || !$('#t_lgpd').checked) return bad('Marque as três declarações obrigatórias.', $('#t_verdade'));
+    if (!signed) return bad('Faça a sua assinatura no quadro.', $('#sigBox'));
+
+    const sim = (n) => radio(n) === 'sim';
+    const answers = {
+      v: 1,
+      dados: { nome: val('nome'), nascimento: val('nascimento'), idade: a, documento: val('documento'), telefone: val('telefone'), email: val('email'), cidade: val('cidade'), emergencia_nome: val('emergencia_nome'), emergencia_tel: val('emergencia_tel') },
+      responsavel: a !== null && a < 18 ? { nome: val('resp_nome'), documento: val('resp_doc'), parentesco: val('resp_parentesco') } : null,
+      tatuagem: { local: val('local'), descricao: val('descricao'), primeira: radio('primeira'), reacao_anterior: radio('reacao_anterior') || 'nao', reacao_detalhe: sim('reacao_anterior') ? val('det_reacao_anterior') : '' },
+      saude: Object.fromEntries(SAUDE.map(([k]) => [k, radio(k)])),
+      saude_detalhe: Object.fromEntries(SAUDE.filter(([k]) => sim(k) && val('det_' + k)).map(([k]) => [k, val('det_' + k)])),
+      perguntas: Object.fromEntries(SAUDE.map(([k, q]) => [k, q])),
+      obs: val('obs'),
+      termos: { verdade: 'sim', riscos: 'sim', lgpd: 'sim', fotos: $('#t_fotos').checked ? 'sim' : 'nao' },
+    };
+    if (DEMO) { show('done'); $('#done p').textContent = 'Esta é uma demonstração: nada foi enviado. No link de verdade, a ficha chega na hora no painel do estúdio.'; scrollTo(0, 0); window.__demoAnswers = answers; return; }
+    const go = $('#go'); go.disabled = true; go.textContent = 'Enviando…';
+    const r = await rpc('anamnese_submit', { p_token: TOKEN, p_answers: answers, p_signature: sigPng(), p_user_agent: navigator.userAgent });
+    go.disabled = false; go.textContent = 'Enviar ficha';
+    if (r && r.ok) { history.replaceState(null, '', location.pathname); show('done'); scrollTo(0, 0); return; }
+    bad((r && (r.error || r.message)) || 'Não deu para enviar. Tente de novo.');
+  });
+
+  start();
+})();
+</script>
+</body>
+</html>
