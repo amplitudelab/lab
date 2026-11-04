@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bruno Zampieri</title>
+<meta name="description" content="Bruno Zampieri: massoterapia, lifestyle, humor, modelagem e filmagens de drone. Serviços, conteúdo, parcerias e contato em um só lugar.">
+<meta name="theme-color" content="#0d0a09">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap">
+<style>
+/* Layout: horizonte de partículas fixo ao fundo; o conteúdo passa por cima em faixas editoriais, como poeira subindo do deserto ao pôr do sol. */
+:root{
+  --couro:#0d0a09;      /* couro preto: fundo */
+  --couro-2:#17110f;    /* couro em camada */
+  --couro-3:#241a16;    /* borda/realce do couro */
+  --areia:#f1e6d4;      /* texto principal */
+  --poeira:#b3a18c;     /* texto secundário */
+  --sol:#ff7b2f;        /* sol se pondo: acento */
+  --ambar:#ffb35c;      /* luz dourada */
+  --crepusculo:#d2466e; /* céu depois do sol */
+  --linha:rgba(241,230,212,.14);
+  --vidro:rgba(13,10,9,.78);
+  --grad:linear-gradient(100deg,var(--ambar) 0%,var(--sol) 45%,var(--crepusculo) 100%);
+
+  --f-display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --f-corpo:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-serif:"Instrument Serif","Times New Roman",Georgia,serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+
+  --t-hero:clamp(4.4rem,16vw,12.5rem);
+  --t-h2:clamp(3rem,9vw,6.5rem);
+  --t-h3:clamp(1.35rem,2.4vw,1.7rem);
+  --t-corpo:1.0625rem;
+  --t-mini:.75rem;
+
+  --max:1200px;
+  --gutter-l:max(20px,env(safe-area-inset-left,0px));
+  --gutter-r:max(20px,env(safe-area-inset-right,0px));
+  --raio:4px;
+  --sky:1;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--couro);color:var(--areia);font:400 var(--t-corpo)/1.6 var(--f-corpo);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block;height:auto}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ambar);outline-offset:3px;border-radius:2px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Fundo: céu + partículas ---------- */
+.ceu{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(120% 60% at 50% 62%,rgba(255,123,47,.30) 0%,rgba(210,70,110,.16) 35%,transparent 70%),
+    linear-gradient(180deg,#120c12 0%,var(--couro) 60%);
+  opacity:var(--sky);transition:opacity .6s}
+#particulas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
+.grao{position:fixed;inset:-50%;z-index:0;pointer-events:none;opacity:.06;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+main,header,footer{position:relative;z-index:1}
+
+/* ---------- Barra de progresso ---------- */
+.progresso{position:fixed;top:0;left:0;right:0;height:2px;z-index:30;background:var(--grad);transform-origin:0 50%;transform:scaleX(0)}
+@supports (animation-timeline:scroll()){
+  .progresso{animation:prog linear both;animation-timeline:scroll(root)}
+  @keyframes prog{to{transform:scaleX(1)}}
+}
+
+/* ---------- Topo ---------- */
+.topo{position:fixed;top:0;left:0;right:0;z-index:20;padding-top:env(safe-area-inset-top,0px);
+  background:rgba(13,10,9,.9);border-bottom:1px solid var(--linha)}
+.topo__in{max-width:var(--max);margin:0 auto;display:flex;align-items:center;gap:24px;height:64px;padding-left:var(--gutter-l);padding-right:var(--gutter-r)}
+.marca{display:flex;align-items:baseline;gap:10px;text-decoration:none;font:800 1.45rem/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.marca b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav{margin-left:auto;display:flex;gap:4px}
+.nav a{font:500 .8125rem/1 var(--f-mono);text-transform:uppercase;letter-spacing:.1em;text-decoration:none;color:var(--poeira);padding:10px 10px;border-radius:var(--raio);transition:color .2s}
+.nav a:hover,.nav a[aria-current="true"]{color:var(--areia)}
+.nav a[aria-current="true"]{box-shadow:inset 0 -2px 0 var(--sol)}
+.menu-btn{display:none;margin-left:auto;background:none;border:1px solid var(--linha);color:var(--areia);font:500 .8125rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;padding:11px 14px;border-radius:var(--raio);cursor:pointer}
+@media (max-width:1080px){
+  .menu-btn{display:block}
+  .nav{position:fixed;inset:0;top:0;flex-direction:column;justify-content:center;gap:2px;background:var(--couro);
+    padding:calc(80px + env(safe-area-inset-top,0px)) var(--gutter-r) 40px var(--gutter-l);transform:translateY(-100%);visibility:hidden;transition:transform .45s cubic-bezier(.7,0,.2,1),visibility 0s .45s}
+  .nav.aberto{transform:none;visibility:visible;transition:transform .45s cubic-bezier(.7,0,.2,1)}
+  .nav a{font:800 clamp(2.2rem,9vw,3.4rem)/1.05 var(--f-display);color:var(--areia);padding:6px 0;letter-spacing:.02em}
+  .nav a[aria-current="true"]{box-shadow:none;color:var(--sol)}
+  .menu-btn{position:relative;z-index:2}
+}
+
+/* ---------- Estrutura ---------- */
+.faixa{padding-left:var(--gutter-l);padding-right:var(--gutter-r);padding-block:clamp(72px,11vw,140px)}
+.faixa__in{max-width:var(--max);margin:0 auto}
+.faixa--escura{background:linear-gradient(180deg,transparent 0,var(--vidro) 120px,var(--vidro) calc(100% - 120px),transparent 100%)}
+.olho{display:inline-flex;align-items:center;gap:10px;font:500 var(--t-mini)/1 var(--f-mono);text-transform:uppercase;letter-spacing:.16em;color:var(--ambar)}
+.olho::before{content:"";width:28px;height:1px;background:currentColor}
+h1,h2,h3{margin:0;text-wrap:balance}
+h2{font:900 var(--t-h2)/.86 var(--f-display);text-transform:uppercase;letter-spacing:.005em;margin-top:18px}
+h2 em{font:italic 400 .62em/1 var(--f-serif);text-transform:none;letter-spacing:0;color:var(--ambar)}
+h3{font:600 var(--t-h3)/1.2 var(--f-corpo)}
+p{margin:0}
+.lead{font-size:1.1875rem;line-height:1.6;color:var(--areia);max-width:58ch}
+.sub{color:var(--poeira);max-width:60ch}
+.cab{display:grid;grid-template-columns:1fr;gap:22px;margin-bottom:clamp(36px,5vw,64px)}
+@media (min-width:900px){.cab--lado{grid-template-columns:1.1fr .9fr;align-items:end}}
+
+/* ---------- Botões ---------- */
+.acoes{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:0 22px;border-radius:999px;text-decoration:none;font:600 .9375rem/1 var(--f-corpo);border:1px solid var(--linha);color:var(--areia);background:rgba(23,17,15,.6);transition:border-color .2s,background .2s,transform .2s;cursor:pointer}
+.btn:hover{border-color:var(--ambar);transform:translateY(-1px)}
+.btn--sol{background:var(--grad);color:#1a0d06;border-color:transparent}
+.btn--sol:hover{filter:brightness(1.06)}
+.btn svg{width:18px;height:18px;flex:none}
+.btn__pend{font:500 .6875rem/1 var(--f-mono);text-transform:uppercase;letter-spacing:.08em;padding:4px 7px;border-radius:999px;border:1px dashed currentColor;opacity:.8}
+
+/* ---------- Material pendente ---------- */
+.falta{border:1px dashed rgba(255,179,92,.5);border-radius:var(--raio);padding:16px 18px;display:grid;gap:6px;
+  background:repeating-linear-gradient(135deg,rgba(255,179,92,.05) 0 10px,transparent 10px 20px)}
+.falta__tag{font:500 .6875rem/1 var(--f-mono);text-transform:uppercase;letter-spacing:.14em;color:var(--ambar)}
+.falta p{color:var(--poeira);font-size:.9375rem}
+.vaga{position:relative;display:grid;place-content:center;gap:10px;text-align:center;padding:20px;aspect-ratio:4/5;max-width:100%;border:1px dashed rgba(255,179,92,.5);border-radius:var(--raio);
+  background:repeating-linear-gradient(135deg,rgba(255,179,92,.06) 0 10px,transparent 10px 20px),var(--couro-2);color:var(--poeira);font-size:.875rem}
+.vaga svg{width:28px;height:28px;margin:0 auto;color:var(--ambar)}
+.vaga b{font:500 .6875rem/1.3 var(--f-mono);text-transform:uppercase;letter-spacing:.14em;color:var(--ambar)}
+
+/* ---------- Hero ---------- */
+.hero{padding-top:calc(110px + env(safe-area-inset-top,0px));padding-bottom:clamp(48px,7vw,90px)}
+.hero__grade{display:grid;gap:40px;align-items:center}
+@media (min-width:900px){.hero__grade{grid-template-columns:1.25fr .75fr;gap:56px}}
+.hero h1{font:900 var(--t-hero)/.8 var(--f-display);text-transform:uppercase;letter-spacing:-.005em;margin-top:22px}
+.hero h1 span{display:block}
+.hero h1 .z{background:var(--grad);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brilho 9s ease-in-out infinite alternate}
+@keyframes brilho{to{background-position:100% 0}}
+.hero__frase{font:italic 400 clamp(1.6rem,3.6vw,2.4rem)/1.15 var(--f-serif);color:var(--areia);margin-top:26px;max-width:22ch}
+.frentes{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;padding:0;list-style:none}
+.frentes li{font:500 .75rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;padding:9px 12px;border:1px solid var(--linha);border-radius:999px;color:var(--poeira);background:rgba(13,10,9,.5)}
+.hero .acoes{margin-top:32px}
+.foto-hero{position:relative;margin:0;justify-self:center;width:min(100%,430px)}
+.foto-hero__img{border-radius:var(--raio);overflow:hidden;transform:rotate(1.5deg);box-shadow:0 40px 80px -30px rgba(255,123,47,.45),0 0 0 1px var(--linha)}
+.foto-hero__img img{width:100%;aspect-ratio:550/660;object-fit:cover}
+.foto-hero figcaption{position:absolute;left:-14px;bottom:28px;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;border-radius:999px;background:rgba(13,10,9,.88);border:1px solid var(--linha);font:500 .8125rem/1.2 var(--f-mono)}
+.foto-hero figcaption img{width:34px;height:34px;border-radius:50%}
+.foto-hero figcaption small{display:block;color:var(--poeira);font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase}
+.numeros{display:flex;flex-wrap:wrap;gap:12px 36px;margin-top:38px;padding-top:22px;border-top:1px solid var(--linha);max-width:560px}
+.numeros div{display:grid;gap:4px}
+.numeros strong{font:800 2.4rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.numeros span{font:500 .6875rem/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--poeira)}
+
+/* ---------- Letreiro ---------- */
+.letreiro{overflow:hidden;border-block:1px solid var(--linha);background:rgba(13,10,9,.7);padding-block:16px}
+.letreiro__trilho{display:flex;width:max-content;animation:rolar 38s linear infinite}
+.letreiro__trilho span{font:800 clamp(1.6rem,3.5vw,2.6rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.04em;padding-right:28px;white-space:nowrap;color:var(--areia)}
+.letreiro__trilho i{font-style:normal;color:var(--sol);padding-right:28px}
+@keyframes rolar{to{transform:translateX(-50%)}}
+
+/* ---------- Áreas ---------- */
+.areas{display:grid;grid-template-columns:1fr;gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden}
+@media (min-width:640px){.areas{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:980px){.areas{grid-template-columns:repeat(3,1fr)}}
+.area{position:relative;display:grid;gap:10px;align-content:start;min-height:200px;padding:26px 24px 24px;background:var(--couro);text-decoration:none;overflow:hidden;transition:background .35s}
+.area::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--grad);transform:scaleX(0);transform-origin:0 50%;transition:transform .45s cubic-bezier(.7,0,.2,1)}
+.area:hover{background:var(--couro-2)}
+.area:hover::after{transform:scaleX(1)}
+.area h3{font:800 2.2rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.area p{color:var(--poeira);font-size:.9375rem;max-width:34ch}
+.area .seta{position:absolute;right:22px;top:26px;width:22px;height:22px;color:var(--poeira);transition:transform .3s,color .3s}
+.area:hover .seta{transform:translate(3px,-3px);color:var(--sol)}
+.area__tag{font:500 .6875rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ambar)}
+
+/* ---------- Massoterapia ---------- */
+.massa{display:grid;gap:28px}
+@media (min-width:960px){.massa{grid-template-columns:1fr 1fr;gap:40px}}
+.bloco{display:grid;gap:16px;align-content:start;min-width:0}
+.bloco h3{display:flex;align-items:center;gap:12px}
+.bloco h3::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sol);box-shadow:0 0 12px var(--sol)}
+.info{display:grid;margin:0;border-top:1px solid var(--linha)}
+.info div{display:grid;grid-template-columns:9.5rem 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--linha)}
+.info dt{font:500 .75rem/1.5 var(--f-mono);text-transform:uppercase;letter-spacing:.12em;color:var(--poeira)}
+.info dd{margin:0}
+.pend{font:500 .75rem/1.5 var(--f-mono);color:var(--ambar);letter-spacing:.04em}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.trio .vaga{aspect-ratio:1;padding:10px;font-size:.75rem}
+.faq{display:grid;border-top:1px solid var(--linha)}
+.faq details{border-bottom:1px solid var(--linha)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;padding:16px 0;font-weight:600}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:400 1.4rem/1 var(--f-mono);color:var(--sol);transition:transform .3s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{padding:0 0 18px;color:var(--poeira)}
+
+/* ---------- Lifestyle: filme ---------- */
+.filme{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 0 18px;scrollbar-width:thin;scrollbar-color:var(--couro-3) transparent;-webkit-overflow-scrolling:touch}
+.filme > *{flex:0 0 auto;scroll-snap-align:start}
+.quadro{position:relative;margin:0;width:clamp(200px,22vw,250px)}
+.quadro:nth-child(even){margin-top:46px}
+.quadro button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;border-radius:var(--raio);overflow:hidden;box-shadow:0 0 0 1px var(--linha)}
+.quadro img{width:100%;aspect-ratio:194/236;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1),filter .6s;filter:saturate(.92)}
+.quadro button:hover img{transform:scale(1.04);filter:saturate(1.08)}
+.quadro figcaption{font:500 .6875rem/1.3 var(--f-mono);text-transform:uppercase;letter-spacing:.12em;color:var(--poeira);margin-top:10px}
+.filme .vaga{width:clamp(200px,22vw,250px);aspect-ratio:194/236;margin-top:46px}
+.citacao{font:italic 400 clamp(1.8rem,4vw,3rem)/1.1 var(--f-serif);max-width:20ch}
+.citacao small{display:block;margin-top:12px;font:500 .75rem/1 var(--f-mono);font-style:normal;text-transform:uppercase;letter-spacing:.14em;color:var(--poeira)}
+
+/* ---------- Humor ---------- */
+.humor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (min-width:900px){.humor{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.humor .quadro{width:auto}
+.humor .quadro:nth-child(even){margin-top:0}
+.humor .quadro:nth-child(odd){transform:rotate(-1.2deg)}
+.humor .quadro:nth-child(even){transform:rotate(1.2deg)}
+.humor .vaga{aspect-ratio:194/236}
+
+/* ---------- Modelagem ---------- */
+.book{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:900px){.book{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-flow:dense}}
+.book .quadro{width:auto}
+.book .quadro:nth-child(even){margin-top:0}
+.book .destaque{grid-column:1/-1}
+@media (min-width:900px){.book .destaque{grid-column:span 2;grid-row:span 2}}
+.book .destaque img{aspect-ratio:545/672}
+.book .vaga{aspect-ratio:194/236}
+
+/* ---------- Drone ---------- */
+.drone{position:relative}
+.drone .faixa__in{position:relative}
+.hud{position:relative;border:1px solid rgba(255,179,92,.28);border-radius:var(--raio);padding:clamp(20px,4vw,44px);background:rgba(13,10,9,.18)}
+.hud::before,.hud::after,.hud__c1,.hud__c2{content:"";position:absolute;width:26px;height:26px;border-color:var(--ambar);border-style:solid;pointer-events:none}
+.hud::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+.hud::after{top:-1px;right:-1px;border-width:2px 2px 0 0}
+.hud__c1{bottom:-1px;left:-1px;border-width:0 0 2px 2px}
+.hud__c2{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+.hud__topo{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font:500 .6875rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--poeira);margin-bottom:26px}
+.rec{display:inline-flex;align-items:center;gap:8px;color:var(--areia)}
+.rec::before{content:"";width:8px;height:8px;border-radius:50%;background:#ff4b3a;animation:piscar 1.4s steps(2,start) infinite}
+@keyframes piscar{to{visibility:hidden}}
+.videos{display:grid;gap:14px}
+@media (min-width:900px){.videos{grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr}.videos .vaga:first-child{grid-row:span 2}}
+.videos .vaga{aspect-ratio:16/9;background:repeating-linear-gradient(135deg,rgba(255,179,92,.04) 0 10px,transparent 10px 20px),rgba(13,10,9,.22)}
+.videos .vaga:first-child{min-height:0}
+.mira{position:absolute;inset:0;pointer-events:none;display:grid;place-items:center}
+.mira::before,.mira::after{content:"";position:absolute;background:rgba(255,179,92,.25)}
+.mira::before{width:44px;height:1px}
+.mira::after{width:1px;height:44px}
+.drone__rodape{display:grid;gap:18px;margin-top:28px}
+@media (min-width:900px){.drone__rodape{grid-template-columns:1fr auto;align-items:center}}
+
+/* ---------- Parcerias ---------- */
+.parc{display:grid;gap:28px}
+@media (min-width:960px){.parc{grid-template-columns:1.05fr .95fr;gap:40px}}
+.ficha{border:1px solid var(--linha);border-radius:var(--raio);background:var(--couro-2);padding:clamp(22px,3vw,34px);display:grid;gap:22px;align-content:start}
+.ficha__perfil{display:flex;align-items:center;gap:14px}
+.ficha__perfil img{width:56px;height:56px;border-radius:50%;box-shadow:0 0 0 2px var(--couro),0 0 0 3px var(--sol)}
+.ficha__perfil strong{display:block;font-weight:600}
+.ficha__perfil span{color:var(--poeira);font-size:.875rem}
+.ficha__nums{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden}
+.ficha__nums div{background:var(--couro-2);padding:16px;display:grid;gap:6px}
+.ficha__nums strong{font:800 2.2rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.ficha__nums span{font:500 .6875rem/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--poeira)}
+.temas{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
+.temas li{padding:8px 12px;border-radius:999px;background:var(--couro-3);font-size:.875rem}
+.rotulo{font:500 .6875rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--poeira)}
+
+/* ---------- Contato ---------- */
+.canais{display:grid;gap:14px}
+@media (min-width:900px){.canais{grid-template-columns:repeat(3,1fr)}}
+.canal{display:grid;gap:14px;align-content:start;padding:26px 24px;border:1px solid var(--linha);border-radius:var(--raio);background:rgba(23,17,15,.82);min-width:0}
+.canal h3{font:800 2rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.canal p{color:var(--poeira);font-size:.9375rem}
+.canal .btn{justify-self:start}
+.endereco{font:500 .875rem/1.4 var(--f-mono);word-break:break-word;color:var(--areia)}
+.redes{display:grid;gap:10px;margin-top:36px}
+@media (min-width:760px){.redes{grid-template-columns:1fr 1fr}}
+.rede{display:flex;align-items:center;gap:16px;padding:18px 20px;border:1px solid var(--linha);border-radius:var(--raio);text-decoration:none;background:rgba(13,10,9,.6);transition:border-color .2s;min-width:0}
+a.rede:hover{border-color:var(--sol)}
+.rede svg{width:26px;height:26px;flex:none;color:var(--sol)}
+.rede strong{display:block}
+.rede span{color:var(--poeira);font-size:.875rem}
+.rede--falta{border-style:dashed;border-color:rgba(255,179,92,.5)}
+
+/* ---------- Rodapé ---------- */
+.rodape{padding-left:var(--gutter-l);padding-right:var(--gutter-r);padding-block:56px calc(40px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--linha);background:var(--couro)}
+.rodape__in{max-width:var(--max);margin:0 auto;display:flex;flex-wrap:wrap;gap:18px 32px;align-items:end;justify-content:space-between}
+.rodape__nome{font:900 clamp(3rem,11vw,7rem)/.85 var(--f-display);text-transform:uppercase}
+.rodape__nome b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rodape p{color:var(--poeira);font-size:.875rem}
+.rodape a{color:var(--areia)}
+
+/* ---------- Lightbox ---------- */
+.zoom{border:0;padding:0;background:transparent;max-width:none;max-height:none;width:100%;height:100%;margin:0;color:var(--areia)}
+.zoom::backdrop{background:rgba(8,6,5,.92)}
+.zoom__in{position:fixed;inset:0;display:grid;place-items:center;padding:calc(64px + env(safe-area-inset-top,0px)) var(--gutter-r) calc(64px + env(safe-area-inset-bottom,0px)) var(--gutter-l)}
+.zoom img{max-width:100%;max-height:100%;width:auto;height:auto;border-radius:var(--raio);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.zoom__btn{position:fixed;background:rgba(23,17,15,.9);border:1px solid var(--linha);color:var(--areia);width:48px;height:48px;border-radius:50%;cursor:pointer;font:400 1.2rem/1 var(--f-mono);display:grid;place-items:center}
+.zoom__fechar{top:calc(14px + env(safe-area-inset-top,0px));right:calc(14px + env(safe-area-inset-right,0px))}
+.zoom__ant{left:calc(14px + env(safe-area-inset-left,0px));top:50%;transform:translateY(-50%)}
+.zoom__prox{right:calc(14px + env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%)}
+.zoom__leg{position:fixed;left:0;right:0;bottom:calc(20px + env(safe-area-inset-bottom,0px));text-align:center;font:500 .75rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--poeira)}
+
+/* ---------- Entradas suaves (só onde o navegador suporta rolagem animada) ---------- */
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .sobe{animation:sobe linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
+    @keyframes sobe{from{opacity:.25;transform:translateY(42px)}to{opacity:1;transform:none}}
+    .horizonte{animation:abre linear both;animation-timeline:view();animation-range:entry 10% cover 40%}
+    @keyframes abre{from{transform:scaleX(.08)}to{transform:scaleX(1)}}
+  }
+}
+.horizonte{height:1px;background:var(--grad);margin:0 auto;max-width:var(--max);transform-origin:50% 50%;opacity:.8}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .letreiro__trilho{animation:none}
+  .rec::before{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="ceu" aria-hidden="true"></div>
+<canvas id="particulas" aria-hidden="true"></canvas>
+<div class="grao" aria-hidden="true"></div>
+<div class="progresso" aria-hidden="true"></div>
+
+<!-- Ícones -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-seta" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-insta" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-conversa" viewBox="0 0 24 24"><path d="M4 19.5 5.3 16A8 8 0 1 1 8.4 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 10.5c.3 1.8 1.9 3.4 3.7 3.8l1.1-1.1 1.8.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-email" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-foto" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="9" cy="10" r="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m16 10 5-3v10l-5-3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-drone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="5" cy="5" r="2.6"/><circle cx="19" cy="5" r="2.6"/><circle cx="5" cy="19" r="2.6"/><circle cx="19" cy="19" r="2.6"/><path d="m7 7 3 3m7-3-3 3m-7 7 3-3m7 3-3-3"/><rect x="9.5" y="9.5" width="5" height="5" rx="1.2"/></g></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="topo">
+  <div class="topo__in">
+    <a class="marca" href="#inicio" aria-label="Bruno Zampieri, voltar ao início">Bruno <b>Zampieri</b></a>
+    <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Seções">
+      <a href="#inicio">Início</a>
+      <a href="#massoterapia">Massoterapia</a>
+      <a href="#lifestyle">Lifestyle</a>
+      <a href="#humor">Humor</a>
+      <a href="#modelagem">Modelagem</a>
+      <a href="#drone">Drone</a>
+      <a href="#parcerias">Parcerias</a>
+      <a href="#contato">Contato</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ============ INÍCIO ============ -->
+  <section class="faixa hero" id="inicio" data-forma="0">
+    <div class="faixa__in hero__grade">
+      <div>
+        <span class="olho">@obrunozampieri</span>
+        <h1><span>Bruno</span><span class="z">Zampieri</span></h1>
+        <p class="hero__frase">O profissional, o criador e a personalidade por trás do perfil.</p>
+        <ul class="frentes" aria-label="Frentes de trabalho">
+          <li>Massoterapia</li><li>Lifestyle</li><li>Humor</li><li>Modelagem</li><li>Drone</li>
+        </ul>
+        <div class="acoes">
+          <a class="btn btn--sol" href="#areas">Conhecer o trabalho <svg><use href="#i-seta"/></svg></a>
+          <a class="btn" href="#contato">Entrar em contato</a>
+        </div>
+        <div class="numeros">
+          <div><strong>18,3 mil</strong><span>seguidores no Instagram</span></div>
+          <div><strong>611</strong><span>posts publicados</span></div>
+        </div>
+      </div>
+      <figure class="foto-hero">
+        <div class="foto-hero__img">
+          <img src="img/burning-man.webp" width="550" height="660" alt="Bruno de boné e óculos escuros no deserto, ao pôr do sol, no Burning Man" fetchpriority="high">
+        </div>
+        <figcaption>
+          <img src="img/avatar.webp" width="126" height="126" alt="">
+          <span>@obrunozampieri<small>Burning Man</small></span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <div class="letreiro" aria-hidden="true">
+    <div class="letreiro__trilho">
+      <span>Lifestyle</span><i>✦</i><span>Humor</span><i>✦</i><span>Modelagem</span><i>✦</i><span>Massoterapia</span><i>✦</i><span>Drone</span><i>✦</i><span>Boa energia e autenticidade</span><i>✦</i>
+      <span>Lifestyle</span><i>✦</i><span>Humor</span><i>✦</i><span>Modelagem</span><i>✦</i><span>Massoterapia</span><i>✦</i><span>Drone</span><i>✦</i><span>Boa energia e autenticidade</span><i>✦</i>
+    </div>
+  </div>
+
+  <!-- ============ ÁREAS ============ -->
+  <section class="faixa faixa--escura" id="areas" data-forma="1" aria-labelledby="areas-t">
+    <div class="faixa__in">
+      <div class="cab cab--lado sobe">
+        <div>
+          <span class="olho">Escolha por onde começar</span>
+          <h2 id="areas-t">Cada interesse, <em>um caminho</em></h2>
+        </div>
+        <p class="sub">O que hoje está espalhado pelo Instagram, organizado num endereço só. Escolha a área e encontre o próximo passo.</p>
+      </div>
+      <div class="areas sobe">
+        <a class="area" href="#massoterapia"><span class="area__tag">Serviço</span><h3>Massoterapia</h3><p>Como funciona o atendimento e agendamento pelo WhatsApp.</p><svg class="seta"><use href="#i-seta"/></svg></a>
+        <a class="area" href="#lifestyle"><span class="area__tag">Dia a dia</span><h3>Lifestyle</h3><p>Rotina, experiências, eventos e viagens.</p><svg class="seta"><use href="#i-seta"/></svg></a>
+        <a class="area" href="#humor"><span class="area__tag">Entretenimento</span><h3>Humor</h3><p>Vídeos curtos e situações do cotidiano.</p><svg class="seta"><use href="#i-seta"/></svg></a>
+        <a class="area" href="#modelagem"><span class="area__tag">Portfólio</span><h3>Modelagem</h3><p>Fotos selecionadas, ensaios e trabalhos.</p><svg class="seta"><use href="#i-seta"/></svg></a>
+        <a class="area" href="#drone"><span class="area__tag">Visão aérea</span><h3>Drone</h3><p>Filmagens feitas com drone.</p><svg class="seta"><use href="#i-seta"/></svg></a>
+        <a class="area" href="#parcerias"><span class="area__tag">Para marcas</span><h3>Parcerias</h3><p>Perfil do criador e contato comercial.</p><svg class="seta"><use href="#i-seta"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MASSOTERAPIA ============ -->
+  <section class="faixa faixa--escura" id="massoterapia" data-forma="1" aria-labelledby="massa-t">
+    <div class="faixa__in">
+      <div class="cab cab--lado sobe">
+        <div>
+          <span class="olho">Atendimento profissional</span>
+          <h2 id="massa-t">Massoterapia</h2>
+        </div>
+        <div style="display:grid;gap:20px">
+          <p class="lead">Além do conteúdo, o Bruno atende como massoterapeuta. Aqui estão as informações do atendimento e o caminho para agendar.</p>
+          <div class="acoes">
+            <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero informações sobre massoterapia."><svg><use href="#i-conversa"/></svg><span>Agendar pelo WhatsApp</span><small class="btn__pend">número pendente</small></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="massa">
+        <div class="bloco sobe">
+          <h3>Modalidades</h3>
+          <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Quais tipos de massagem o Bruno oferece, com nome e uma frase sobre cada um.</p></div>
+          <h3 style="margin-top:14px">Benefícios</h3>
+          <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Texto sobre benefícios aprovado pelo Bruno, descrito de forma responsável e sem promessas de saúde.</p></div>
+        </div>
+        <div class="bloco sobe">
+          <h3>Informações práticas</h3>
+          <dl class="info">
+            <div><dt>Agendamento</dt><dd>Pelo WhatsApp <span class="pend">· número pendente</span></dd></div>
+            <div><dt>Local</dt><dd><span class="pend">A definir com o Bruno</span></dd></div>
+            <div><dt>Duração</dt><dd><span class="pend">A definir com o Bruno</span></dd></div>
+            <div><dt>Valores</dt><dd><span class="pend">A definir com o Bruno</span></dd></div>
+          </dl>
+          <h3 style="margin-top:14px">O ambiente</h3>
+          <div class="trio">
+            <div class="vaga"><svg><use href="#i-foto"/></svg><b>Foto do espaço</b></div>
+            <div class="vaga"><svg><use href="#i-foto"/></svg><b>Foto do espaço</b></div>
+            <div class="vaga"><svg><use href="#i-foto"/></svg><b>Foto do trabalho</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bloco sobe" style="margin-top:44px">
+        <h3>Perguntas frequentes</h3>
+        <div class="faq">
+          <details><summary>Como faço para agendar?</summary><p>Pelo botão de WhatsApp desta página. <span class="pend">O número ainda precisa ser enviado.</span></p></details>
+          <details><summary>Onde é o atendimento?</summary><p><span class="pend">Resposta pendente: endereço ou região de atendimento.</span></p></details>
+          <details><summary>Quanto tempo dura uma sessão?</summary><p><span class="pend">Resposta pendente: duração de cada modalidade.</span></p></details>
+          <details><summary>Quais formas de pagamento são aceitas?</summary><p><span class="pend">Resposta pendente.</span></p></details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="horizonte" aria-hidden="true"></div>
+
+  <!-- ============ LIFESTYLE ============ -->
+  <section class="faixa" id="lifestyle" data-forma="1" aria-labelledby="life-t">
+    <div class="faixa__in">
+      <div class="cab cab--lado sobe">
+        <div>
+          <span class="olho">Dia a dia</span>
+          <h2 id="life-t">Lifestyle</h2>
+        </div>
+        <p class="citacao">“Me acompanha no dia a dia.”<small>Da bio do Instagram</small></p>
+      </div>
+      <p class="sub sobe" style="margin-bottom:26px">Rotina, experiências, eventos e viagens. Arraste para o lado e toque numa foto para ampliar.</p>
+      <div class="filme sobe" data-galeria="lifestyle" tabindex="0" aria-label="Fotos de lifestyle, role para o lado">
+        <figure class="quadro"><button type="button" data-zoom><img src="img/cachoeira.webp" width="194" height="236" loading="lazy" alt="Bruno sorrindo dentro de uma piscina com cascata de pedras ao fundo"></button><figcaption>Cascata</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/camera.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa branca visto na tela de uma câmera digital"></button><figcaption>Na câmera</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/sol.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa branca de tricô num dia de sol"></button><figcaption>Dia de sol</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/camisa-19.webp" width="194" height="236" loading="lazy" alt="Bruno tirando selfie no espelho com camisa vermelha de futebol número 19"></button><figcaption>Futebol</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/piscina.webp" width="194" height="236" loading="lazy" alt="Bruno sem camisa à beira da piscina"></button><figcaption>Piscina</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/espelho.webp" width="194" height="236" loading="lazy" alt="Bruno de camiseta branca tirando selfie no espelho"></button><figcaption>Selfie</figcaption></figure>
+        <div class="vaga"><svg><use href="#i-foto"/></svg><b>Viagens e eventos</b><span>Enviar mais fotos ou destaques</span></div>
+      </div>
+      <div class="acoes sobe" style="margin-top:28px">
+        <a class="btn" href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>Acompanhar no Instagram</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HUMOR ============ -->
+  <section class="faixa faixa--escura" id="humor" data-forma="1" aria-labelledby="humor-t">
+    <div class="faixa__in">
+      <div class="cab cab--lado sobe">
+        <div>
+          <span class="olho">Entretenimento</span>
+          <h2 id="humor-t">Humor <em>do cotidiano</em></h2>
+        </div>
+        <p class="sub">Vídeos curtos, situações do dia a dia e reels para assistir e mandar para os amigos.</p>
+      </div>
+      <div class="humor sobe" data-galeria="humor">
+        <figure class="quadro"><button type="button" data-zoom><img src="img/moto-crianca.webp" width="194" height="236" loading="lazy" alt="Post de humor: Bruno de moto com o texto “Encontrei meu eu criança” e a resposta “Tô indo almoçar com a mãe. Ele venceu.”"></button><figcaption>Reel</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/escadaria.webp" width="194" height="236" loading="lazy" alt="Post de humor: Bruno descendo uma escadaria com o texto “Não leia revistas de beleza”"></button><figcaption>Reel</figcaption></figure>
+        <div class="vaga"><svg><use href="#i-video"/></svg><b>Reel de humor</b><span>Enviar link ou vídeo</span></div>
+        <div class="vaga"><svg><use href="#i-video"/></svg><b>Reel de humor</b><span>Enviar link ou vídeo</span></div>
+      </div>
+      <div class="falta sobe" role="note" style="margin-top:22px"><span class="falta__tag">Material pendente</span><p>Os reels favoritos do Bruno e as categorias para organizar (por exemplo, por série ou tema que ele já usa nos destaques).</p></div>
+      <div class="acoes sobe" style="margin-top:26px">
+        <a class="btn" href="https://www.instagram.com/obrunozampieri/reels/" target="_blank" rel="noopener"><svg><use href="#i-video"/></svg>Ver os reels no Instagram</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="horizonte" aria-hidden="true"></div>
+
+  <!-- ============ MODELAGEM ============ -->
+  <section class="faixa" id="modelagem" data-forma="1" aria-labelledby="model-t">
+    <div class="faixa__in">
+      <div class="cab cab--lado sobe">
+        <div>
+          <span class="olho">Portfólio</span>
+          <h2 id="model-t">Modelagem</h2>
+        </div>
+        <div style="display:grid;gap:20px">
+          <p class="sub">Fotos selecionadas, ensaios e trabalhos. Toque numa foto para ampliar.</p>
+          <div class="acoes"><a class="btn btn--sol" href="#contato">Contato profissional <svg><use href="#i-seta"/></svg></a></div>
+        </div>
+      </div>
+      <div class="book sobe" data-galeria="modelagem">
+        <figure class="quadro destaque"><button type="button" data-zoom><img src="img/terno-celulares.webp" width="545" height="672" loading="lazy" alt="Ensaio: Bruno de terno preto e óculos brancos, sentado, cercado por mãos segurando celulares que o fotografam"></button><figcaption>Ensaio de terno</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/jaqueta-couro.webp" width="194" height="236" loading="lazy" alt="Bruno de jaqueta de couro preta e boné"></button><figcaption>Couro</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/oculos-preto.webp" width="194" height="236" loading="lazy" alt="Bruno de óculos escuros e camiseta preta diante de uma parede verde"></button><figcaption>Óculos escuros</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/puffer.webp" width="194" height="236" loading="lazy" alt="Bruno de jaqueta puffer preta e boné"></button><figcaption>Puffer</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/elevador.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa preta num elevador espelhado"></button><figcaption>Preto total</figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/trico-oculos.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa de tricô branca e óculos de sol"></button><figcaption>Tricô</figcaption></figure>
+        <div class="vaga"><svg><use href="#i-foto"/></svg><b>Ensaio ou trabalho</b><span>Enviar fotos em alta</span></div>
+        <div class="vaga"><svg><use href="#i-foto"/></svg><b>Ensaio ou trabalho</b><span>Enviar fotos em alta</span></div>
+      </div>
+      <div class="falta sobe" role="note" style="margin-top:22px"><span class="falta__tag">Material pendente</span><p>Lista de ensaios, trabalhos e projetos (com marcas, se ele quiser citar) e as fotos originais em alta resolução. As fotos desta prévia vieram de capturas de tela.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ DRONE ============ -->
+  <section class="faixa drone" id="drone" data-forma="2" aria-labelledby="drone-t">
+    <div class="faixa__in">
+      <div class="cab cab--lado sobe">
+        <div>
+          <span class="olho">Visão aérea</span>
+          <h2 id="drone-t">Filmagens <em>de drone</em></h2>
+        </div>
+        <p class="sub">O Bruno também filma com drone. Aqui ficam os vídeos aéreos e o caminho para pedir uma filmagem.</p>
+      </div>
+
+      <div class="hud sobe">
+        <span class="hud__c1"></span><span class="hud__c2"></span>
+        <div class="hud__topo"><span class="rec">Rec</span><span>Galeria aérea</span><span>3 vídeos aguardando</span></div>
+        <div class="videos">
+          <div class="vaga"><span class="mira" aria-hidden="true"></span><svg><use href="#i-drone"/></svg><b>Vídeo de drone principal</b><span>Enviar arquivo MP4 ou link do vídeo</span></div>
+          <div class="vaga"><svg><use href="#i-video"/></svg><b>Vídeo de drone</b><span>Enviar arquivo ou link</span></div>
+          <div class="vaga"><svg><use href="#i-video"/></svg><b>Vídeo de drone</b><span>Enviar arquivo ou link</span></div>
+        </div>
+        <div class="drone__rodape">
+          <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Os vídeos de drone e uma descrição do serviço: que tipo de filmagem ele faz, onde atende e como funciona o pedido.</p></div>
+          <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero saber sobre filmagem com drone."><svg><use href="#i-drone"/></svg><span>Pedir filmagem</span><small class="btn__pend">número pendente</small></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PARCERIAS ============ -->
+  <section class="faixa faixa--escura" id="parcerias" data-forma="3" aria-labelledby="parc-t">
+    <div class="faixa__in">
+      <div class="cab sobe">
+        <span class="olho">Para marcas</span>
+        <h2 id="parc-t">Parcerias</h2>
+      </div>
+      <div class="parc">
+        <div class="bloco sobe">
+          <p class="lead">Conteúdo pra quem curte boa energia e autenticidade. Lifestyle, humor e modelagem no mesmo perfil, com o tom espontâneo do Instagram.</p>
+          <h3 style="margin-top:18px">Formatos de colaboração</h3>
+          <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Quais formatos o Bruno aceita (por exemplo, reels, stories, presença em eventos) e se haverá mídia kit para baixar.</p></div>
+          <div class="acoes" style="margin-top:10px">
+            <a class="btn btn--sol" href="https://ig.me/m/obrunozampieri" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>Falar sobre parceria no Direct</a>
+          </div>
+        </div>
+        <aside class="ficha sobe" aria-label="Perfil do criador">
+          <div class="ficha__perfil">
+            <img src="img/avatar.webp" width="126" height="126" alt="Foto de perfil do Bruno">
+            <div><strong>Bruno Zampieri</strong><span>@obrunozampieri · Instagram</span></div>
+          </div>
+          <div class="ficha__nums">
+            <div><strong>18,3 mil</strong><span>seguidores</span></div>
+            <div><strong>611</strong><span>posts</span></div>
+          </div>
+          <div style="display:grid;gap:10px">
+            <span class="rotulo">Temas de conteúdo</span>
+            <ul class="temas"><li>Lifestyle</li><li>Humor</li><li>Modelagem</li><li>Massoterapia</li></ul>
+          </div>
+          <p class="sub" style="font-size:.875rem">Na bio: “Parcerias via Direct”.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTATO ============ -->
+  <section class="faixa" id="contato" data-forma="3" aria-labelledby="cont-t">
+    <div class="faixa__in">
+      <div class="cab cab--lado sobe">
+        <div>
+          <span class="olho">Fale com o Bruno</span>
+          <h2 id="cont-t">Contato <em>&amp; redes</em></h2>
+        </div>
+        <p class="sub">Escolha o motivo do contato. Cada um vai direto para o canal certo.</p>
+      </div>
+      <div class="canais">
+        <div class="canal sobe">
+          <span class="rotulo">Serviço</span>
+          <h3>Agendar massagem</h3>
+          <p>Para marcar um horário ou tirar dúvidas sobre o atendimento.</p>
+          <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero agendar uma massagem."><svg><use href="#i-conversa"/></svg><span>WhatsApp</span><small class="btn__pend">número pendente</small></a>
+        </div>
+        <div class="canal sobe">
+          <span class="rotulo">Marcas</span>
+          <h3>Parcerias</h3>
+          <p>Propostas de marcas e trabalhos de modelagem.</p>
+          <a class="btn btn--sol" href="https://ig.me/m/obrunozampieri" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>Direct do Instagram</a>
+        </div>
+        <div class="canal sobe">
+          <span class="rotulo">Geral</span>
+          <h3>Outros assuntos</h3>
+          <p>Para qualquer outro assunto, por e-mail.</p>
+          <p class="endereco" data-email-texto><span class="pend">E-mail pendente</span></p>
+          <a class="btn" href="#contato" data-canal="email"><svg><use href="#i-email"/></svg><span>Enviar e-mail</span><small class="btn__pend">e-mail pendente</small></a>
+        </div>
+      </div>
+
+      <div class="redes sobe">
+        <a class="rede" href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg><div><strong>Instagram</strong><span>@obrunozampieri</span></div></a>
+        <div class="rede rede--falta"><svg><use href="#i-link"/></svg><div><strong>Outras redes</strong><span class="pend">Enviar os links (TikTok, YouTube ou outras que ele usar)</span></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape">
+  <div class="rodape__in">
+    <div class="rodape__nome">Bruno<br><b>Zampieri</b></div>
+    <div style="display:grid;gap:8px">
+      <p><a href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener">@obrunozampieri</a></p>
+      <p>Massoterapia · Lifestyle · Humor · Modelagem · Drone</p>
+      <p><a href="#inicio">Voltar ao topo ↑</a></p>
+    </div>
+  </div>
+</footer>
+
+<dialog class="zoom" id="zoom" aria-label="Foto ampliada">
+  <div class="zoom__in"><img id="zoom-img" alt=""></div>
+  <button class="zoom__btn zoom__fechar" type="button" id="zoom-fechar" aria-label="Fechar">✕</button>
+  <button class="zoom__btn zoom__ant" type="button" id="zoom-ant" aria-label="Foto anterior">←</button>
+  <button class="zoom__btn zoom__prox" type="button" id="zoom-prox" aria-label="Próxima foto">→</button>
+  <p class="zoom__leg" id="zoom-leg"></p>
+</dialog>
+
+<script>
+/* ============================================================
+   CONTATOS — preencha aqui quando o Bruno enviar.
+   whatsapp: só números, com 55 + DDD (ex.: "5511999999999")
+   email: endereço completo
+   ============================================================ */
+const CONTATO = { whatsapp: "", email: "" };
+
+(() => {
+  // ---- Botões de contato ----
+  document.querySelectorAll('[data-canal]').forEach(a => {
+    const canal = a.dataset.canal;
+    if (canal === 'whatsapp' && CONTATO.whatsapp) {
+      a.href = 'https://wa.me/' + CONTATO.whatsapp + '?text=' + encodeURIComponent(a.dataset.msg || '');
+      a.target = '_blank'; a.rel = 'noopener';
+      a.querySelector('.btn__pend')?.remove();
+    }
+    if (canal === 'email' && CONTATO.email) {
+      a.href = 'mailto:' + CONTATO.email;
+      a.querySelector('.btn__pend')?.remove();
+    }
+  });
+  if (CONTATO.email) document.querySelectorAll('[data-email-texto]').forEach(p => p.textContent = CONTATO.email);
+  if (CONTATO.whatsapp) document.querySelectorAll('.info .pend').forEach((s, i) => { if (i === 0) s.remove(); });
+
+  // ---- Menu no celular ----
+  const btn = document.getElementById('menu-btn'), nav = document.getElementById('nav');
+  const fechar = () => { nav.classList.remove('aberto'); btn.setAttribute('aria-expanded', 'false'); btn.textContent = 'Menu'; };
+  btn.addEventListener('click', () => {
+    const abrir = !nav.classList.contains('aberto');
+    nav.classList.toggle('aberto', abrir); btn.setAttribute('aria-expanded', String(abrir)); btn.textContent = abrir ? 'Fechar' : 'Menu';
+  });
+  nav.addEventListener('click', e => { if (e.target.closest('a')) fechar(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') fechar(); });
+
+  // ---- Link ativo no menu ----
+  const links = [...nav.querySelectorAll('a')];
+  const secoes = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(ents => {
+      ents.forEach(en => {
+        if (!en.isIntersecting) return;
+        links.forEach(l => l.setAttribute('aria-current', l.getAttribute('href') === '#' + en.target.id ? 'true' : 'false'));
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    secoes.forEach(s => io.observe(s));
+  }
+
+  // ---- Fotos ampliadas ----
+  const dlg = document.getElementById('zoom'), zimg = document.getElementById('zoom-img'), zleg = document.getElementById('zoom-leg');
+  let grupo = [], pos = 0;
+  const mostrar = () => {
+    const img = grupo[pos].querySelector('img');
+    zimg.src = img.currentSrc || img.src; zimg.alt = img.alt;
+    // não ampliar além de 2x o tamanho original, para não borrar
+    zimg.style.maxHeight = 'min(100%, ' + (img.naturalHeight * 2 || 600) + 'px)';
+    zleg.textContent = (pos + 1) + ' / ' + grupo.length;
+  };
+  document.querySelectorAll('[data-zoom]').forEach(b => b.addEventListener('click', () => {
+    grupo = [...b.closest('[data-galeria]').querySelectorAll('[data-zoom]')]; pos = grupo.indexOf(b);
+    mostrar();
+    if (dlg.showModal) dlg.showModal();
+  }));
+  const passo = d => { pos = (pos + d + grupo.length) % grupo.length; mostrar(); };
+  document.getElementById('zoom-fechar').onclick = () => dlg.close();
+  document.getElementById('zoom-ant').onclick = () => passo(-1);
+  document.getElementById('zoom-prox').onclick = () => passo(1);
+  dlg.addEventListener('click', e => { if (e.target === dlg || e.target.classList.contains('zoom__in')) dlg.close(); });
+  dlg.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') passo(-1); if (e.key === 'ArrowRight') passo(1); });
+})();
+
+/* ============================================================
+   Partículas 3D (WebGL puro, sem biblioteca)
+   Formas: 0 pôr do sol nas dunas · 1 poeira · 2 terreno visto do drone · 3 anel
+   ============================================================ */
+(() => {
+  const cv = document.getElementById('particulas');
+  const gl = cv.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true, powerPreference: 'low-power' });
+  if (!gl) { cv.remove(); return; }
+  const reduz = matchMedia('(prefers-reduced-motion: reduce)');
+  const celular = matchMedia('(max-width: 760px)').matches || (navigator.hardwareConcurrency || 8) <= 4;
+  const N = celular ? 5200 : 12000;
+
+  const VS = `
+  precision highp float;
+  attribute vec4 aS;
+  uniform float uT, uM, uA, uS;
+  uniform vec2 uP;
+  varying vec3 vC; varying float vA;
+  const float PI = 3.14159265;
+  const vec3 cSol = vec3(1.0,.48,.18), cAmb = vec3(1.0,.70,.36), cCre = vec3(.82,.27,.43), cVio = vec3(.42,.27,.78), cAre = vec3(.95,.90,.83);
+  float dune(vec2 p){ return sin(p.x*.55+p.y*.35)*.55 + sin(p.x*1.25-p.y*.9+1.3)*.22 + sin(p.y*2.1+p.x*.4)*.08; }
+  void forma(float k, out vec3 p, out vec3 c, out float a){
+    float r1=aS.x, r2=aS.y, r3=aS.z, r4=aS.w;
+    if (k < .5) {
+      if (r4 < .26) {
+        float ang = r1*2.*PI + uT*.02; float rad = pow(r2,.55)*1.35;
+        p = vec3(cos(ang)*rad, .55+sin(ang)*rad, -5.);
+        p.xy += vec2(sin(uT*.7+r3*20.), cos(uT*.6+r3*17.))*.025;
+        c = mix(cAmb*1.1, cSol, rad/1.35); a = .75;
+      } else {
+        float x = (r1-.5)*18.; float z = 2.4 - r2*13.;
+        float h = dune(vec2(x + uT*.12, z));
+        p = vec3(x, -1.45 + h*.55, z);
+        float poeira = step(.93, r3);
+        p.y += poeira * fract(r3*37. + uT*.04) * 3.5;
+        p.x += sin(uT*.3 + r3*40.) * .15 * poeira;
+        c = mix(cCre*.75, cSol, clamp(h*.8+.45, 0., 1.));
+        c = mix(c, cAre, poeira*.6);
+        a = mix(.9, .3, r2);
+      }
+    } else if (k < 1.5) {
+      float ang = r1*2.*PI + uT*.015*(.5+r2);
+      float rad = 1.5 + r2*6.;
+      p = vec3(cos(ang)*rad, (fract(r3 + uT*.006) - .5)*8., -4. - sin(ang)*rad*.6);
+      c = mix(cAre, cAmb, r4); a = .28 + .22*r4;
+    } else if (k < 2.5) {
+      float lin = floor(r2*64.)/64.;
+      float x = (r1-.5)*14.; float z = (lin-.5)*14.;
+      vec2 q = vec2(x*.8, z*.8 - uT*.35);
+      float h = dune(q) + sin(q.x*.3+q.y*.2)*.6;
+      vec3 w = vec3(x, h*.6, z);
+      float cs = cos(-1.0), sn = sin(-1.0);
+      p = vec3(w.x, w.y*cs - w.z*sn, w.y*sn + w.z*cs) + vec3(0., -.4, -3.5);
+      c = mix(cVio, cAmb, clamp(h*.55+.5, 0., 1.)); a = .7;
+    } else {
+      float ang = r1*2.*PI + uT*.05;
+      float R = 2.3 + (r2-.5)*.5 + sin(ang*6. + uT*.4)*.06;
+      vec3 w = vec3(cos(ang)*R, sin(ang)*R, (r3-.5)*.35);
+      float tl = .95;
+      p = vec3(w.x, w.y*cos(tl) - w.z*sin(tl), w.y*sin(tl) + w.z*cos(tl)) + vec3(0., 0., -2.5);
+      c = mix(cSol, cCre, .5+.5*sin(ang)); c = mix(c, cAmb, .5+.5*cos(ang*2.)); a = .7;
+      if (r4 > .86) { p = vec3((r1-.5)*14., (r2-.5)*8., -r3*6. - 1.); c = cAre; a = .35; }
+    }
+  }
+  void main(){
+    float m = clamp(uM, 0., 3.);
+    float k0 = floor(m); float f = m - k0;
+    float lf = smoothstep(0., 1., clamp(f*1.7 - aS.x*.7, 0., 1.));
+    vec3 p0, c0, p1, c1; float a0, a1;
+    forma(k0, p0, c0, a0); forma(min(k0+1., 3.), p1, c1, a1);
+    vec3 p = mix(p0, p1, lf);
+    vC = mix(c0, c1, lf); vA = mix(a0, a1, lf);
+    vec3 v = p - vec3(uP.x*.4, uP.y*.25, 6.);
+    float zv = -v.z;
+    gl_Position = vec4(v.x*1.9/uA, v.y*1.9, 0., max(zv, .001));
+    gl_PointSize = uS*(.6 + aS.z*1.1)/max(zv, .3);
+    vA *= smoothstep(.4, 1.6, zv);
+  }`;
+  const FS = `
+  precision mediump float;
+  varying vec3 vC; varying float vA;
+  uniform float uG;
+  void main(){
+    vec2 d = gl_PointCoord - .5;
+    float a = exp(-dot(d,d)*14.) * vA * uG;
+    if (a < .01) discard;
+    gl_FragColor = vec4(vC*a, a);
+  }`;
+  const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+  let pr;
+  try {
+    pr = gl.createProgram();
+    gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
+  } catch (e) { console.warn('Partículas desligadas:', e); cv.remove(); return; }
+  gl.useProgram(pr);
+
+  // sementes aleatórias fixas (mesma cena a cada visita)
+  let s = 7; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const dados = new Float32Array(N * 4); for (let i = 0; i < dados.length; i++) dados[i] = rnd();
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, dados, gl.STATIC_DRAW);
+  const aS = gl.getAttribLocation(pr, 'aS'); gl.enableVertexAttribArray(aS); gl.vertexAttribPointer(aS, 4, gl.FLOAT, false, 0, 0);
+  const U = n => gl.getUniformLocation(pr, n);
+  const uT = U('uT'), uM = U('uM'), uA = U('uA'), uS = U('uS'), uP = U('uP'), uG = U('uG');
+  gl.disable(gl.DEPTH_TEST); gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+
+  let W = 0, H = 0, dpr = 1;
+  const tamanho = () => {
+    dpr = Math.min(devicePixelRatio || 1, celular ? 1.25 : 1.5);
+    W = innerWidth; H = innerHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    gl.viewport(0, 0, cv.width, cv.height);
+    gl.uniform1f(uA, W / H);
+    gl.uniform1f(uS, (celular ? 30 : 26) * dpr * Math.min(1.25, Math.max(.8, H / 900)));
+  };
+  tamanho(); addEventListener('resize', tamanho);
+
+  // forma de cada seção, interpolada pela rolagem
+  const ancoras = [...document.querySelectorAll('[data-forma]')];
+  let pontos = [];
+  const medir = () => { pontos = ancoras.map(el => { const r = el.getBoundingClientRect(); return { y: r.top + scrollY + r.height / 2, f: +el.dataset.forma }; }); };
+  medir(); addEventListener('resize', medir); addEventListener('load', medir);
+  const alvo = () => {
+    const y = scrollY + innerHeight / 2;
+    if (!pontos.length || y <= pontos[0].y) return pontos[0]?.f ?? 0;
+    for (let i = 1; i < pontos.length; i++) {
+      if (y <= pontos[i].y) { const a = pontos[i - 1], b = pontos[i]; const t = (y - a.y) / (b.y - a.y); return a.f + (b.f - a.f) * t; }
+    }
+    return pontos[pontos.length - 1].f;
+  };
+  const brilhoDe = m => m < 1 ? 1 - m * .45 : m < 2 ? .55 + (m - 1) * .45 : 1 - (m - 2) * .2;
+  const raiz = document.documentElement.style;
+
+  let m = alvo(), px = 0, py = 0, tx = 0, ty = 0, rodando = false, t0 = performance.now(), tAcum = 0, ultimo = t0;
+  addEventListener('pointermove', e => { tx = e.clientX / W * 2 - 1; ty = -(e.clientY / H * 2 - 1); }, { passive: true });
+
+  const desenhar = (t, morph) => {
+    gl.uniform1f(uT, t); gl.uniform1f(uM, morph); gl.uniform2f(uP, px, py); gl.uniform1f(uG, brilhoDe(morph));
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.POINTS, 0, N);
+    raiz.setProperty('--sky', Math.max(0, 1 - morph * 1.4).toFixed(3));
+  };
+  const quadro = agora => {
+    if (!rodando) return;
+    const dt = Math.min(.05, (agora - ultimo) / 1000); ultimo = agora; tAcum += dt;
+    m += (alvo() - m) * Math.min(1, dt * 3.2);
+    px += (tx - px) * dt * 2; py += (ty - py) * dt * 2;
+    desenhar(tAcum + 6, m);
+    requestAnimationFrame(quadro);
+  };
+  const iniciar = () => { if (rodando || reduz.matches || document.hidden) return; rodando = true; ultimo = performance.now(); requestAnimationFrame(quadro); };
+  const parar = () => { rodando = false; };
+  // Movimento reduzido: um quadro parado do pôr do sol, sem animação nem troca de forma.
+  const estatico = () => { parar(); px = py = 0; desenhar(8, 0); raiz.setProperty('--sky', '1'); };
+  document.addEventListener('visibilitychange', () => document.hidden ? parar() : iniciar());
+  reduz.addEventListener?.('change', () => reduz.matches ? estatico() : iniciar());
+  addEventListener('resize', () => { if (reduz.matches) estatico(); });
+  if (reduz.matches) estatico(); else iniciar();
+})();
+</script>
+</body>
+</html>

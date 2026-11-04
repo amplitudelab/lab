@@ -56,6 +56,10 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   `modelos/kit.js` têm a barra "voltar ao hub", a simulação do WhatsApp (`AL.whats`),
   `AL.toast` e `AL.px`.
 - `demos/`: demos feitas para clientes reais (`noindex`).
+- `bruno-zampieri/`: página do criador Bruno Zampieri (@obrunozampieri), em
+  `amplitudelab.github.io/lab/bruno-zampieri/`. É independente da Amplitude: identidade
+  própria, nenhum link para o site, CRM ou sistemas da Amplitude, e nada da Amplitude
+  aponta para ela. Contatos no objeto `CONTATO` do script; `noindex` enquanto for protótipo.
 - `crm/index.html`: página de vendas Site + CRM.
 - `crm/app/index.html`: protótipo do CRM, arquivo único, dados no `localStorage`
   (`amp-crm:v1:<tenant>`, `amp-crm:prefs`).
@@ -106,7 +110,7 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   antes (as animações de entrada dependem do scroll).
 - Links internos usam `index.html` explícito quando a página precisa abrir também do
   disco (pacote .zip).
-- Pacote para enviar: `git archive` do `main` sem `voxel-realms*`, mais uma página
+- Pacote para enviar: `git archive` do `main` sem `voxel-realms*` e sem `bruno-zampieri/`, mais uma página
   `COMECE-AQUI.html` na raiz, zipado como `amplitude-lab-completo.zip`.
 - Pull requests só quando pedido. O dono costuma pedir PR + merge no fim.
 
