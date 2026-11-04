@@ -472,6 +472,29 @@ a.rede:hover{border-color:var(--sol)}
 .massa-rodape{display:grid;gap:18px;margin-top:26px}
 @media (min-width:900px){.massa-rodape{grid-template-columns:auto 1fr;align-items:center;gap:40px}}
 .massa-aviso{font-size:.8125rem;line-height:1.55;color:var(--poeira);max-width:62ch}
+
+/* ---------- Sequências imersivas ---------- */
+.seq{position:relative;height:calc(var(--n) * 88svh + 12svh);margin-left:calc(-1 * var(--gutter-l));margin-right:calc(-1 * var(--gutter-r));margin-block:clamp(28px,5vw,56px)}
+.seq__palco{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--couro)}
+.cena{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;clip-path:inset(100% 0 0 0)}
+.cena:first-child{clip-path:none}
+.cena__amb{position:absolute;inset:-12%;background-size:cover;background-position:center;filter:blur(42px) brightness(.42) saturate(1.25)}
+.cena__m{position:relative;display:block;height:min(84svh,1000px);width:auto;max-width:calc(100% - 40px);object-fit:cover;border-radius:var(--raio);box-shadow:0 50px 120px -30px rgba(0,0,0,.85),0 0 0 1px var(--linha);background:#000;transform-origin:50% 60%}
+.seq__ritmo{position:absolute;right:max(18px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);display:grid;gap:8px;z-index:5}
+.seq__ritmo i{display:block;width:3px;height:22px;border-radius:2px;background:rgba(241,230,212,.25);transition:background .3s,height .3s}
+.seq__ritmo i.on{background:var(--sol);height:38px}
+@media (max-width:700px){
+  .cena__amb{display:none}
+  .cena__m{height:100%;width:100%;max-width:none;border-radius:0;box-shadow:none}
+  .cena::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,10,9,.55) 0%,transparent 18%,transparent 80%,rgba(13,10,9,.55) 100%);pointer-events:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .seq{height:auto;margin-left:0;margin-right:0}
+  .seq__palco{position:static;height:auto;overflow:visible;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;background:none;padding-left:var(--gutter-l);padding-right:var(--gutter-r)}
+  .cena{position:relative;inset:auto;clip-path:none!important;visibility:visible!important;filter:none!important}
+  .cena__amb,.seq__ritmo,.cena::after{display:none}
+  .cena__m{height:auto;width:100%;max-width:none;transform:none!important;border-radius:var(--raio)}
+}
 </style>
 </head>
 <body>
@@ -535,7 +558,7 @@ a.rede:hover{border-color:var(--sol)}
         </div>
         <figcaption>
           <img src="img/avatar.webp" width="126" height="126" alt="">
-          <span>@obrunozampieri<small>Burning Man</small></span>
+          <span>@obrunozampieri</span>
         </figcaption>
       </figure>
     </div>
@@ -558,14 +581,24 @@ a.rede:hover{border-color:var(--sol)}
           <h2 id="model-t">Modelagem</h2>
         </div>
         <div style="display:grid;gap:20px">
-          <p class="sub">Ensaios, campanhas e fotos de vestuário. Toque numa foto para ampliar.</p>
+          <p class="sub">Ensaios, campanhas e fotos de vestuário. Role para passar de um ensaio ao outro.</p>
         </div>
       </div>
-      <div class="retratos" data-galeria="retratos">
-        <figure class="retrato"><button type="button" data-zoom><img src="img/gravata-borboleta.webp" width="760" height="1139" loading="lazy" alt="Retrato em preto e branco: Bruno de smoking e gravata-borboleta, olhando para a câmera"></button><figcaption><span><b>Preto e branco.</b> Smoking, gravata-borboleta e luz dura.</span></figcaption></figure>
-        <figure class="retrato"><button type="button" data-zoom><img src="img/retrato-estudio.webp" width="760" height="1141" loading="lazy" alt="Retrato de estúdio do Bruno com fundo preto e corrente prateada"></button><figcaption><span><b>Retrato de estúdio.</b> Fundo preto, pele e prata.</span></figcaption></figure>
-              </div>
+      </div>
 
+    <div class="seq" id="seq-modelagem" data-seq role="region" aria-label="Ensaios do Bruno, role para passar as fotos" style="--n:6">
+      <div class="seq__palco">
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/gravata-borboleta.webp)"></div><img class="cena__m" src="img/gravata-borboleta.webp" width="760" height="1139" style="aspect-ratio:760/1139" alt="Bruno em preto e branco, de smoking e gravata-borboleta" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/retrato-estudio.webp)"></div><img class="cena__m" src="img/retrato-estudio.webp" width="760" height="1141" style="aspect-ratio:760/1141" alt="Retrato de estúdio do Bruno com fundo preto" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/trico-oculos-hd.webp)"></div><img class="cena__m" src="img/trico-oculos-hd.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno de camisa de tricô branca e óculos de sol caramelo" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/jaqueta-restaurante.webp)"></div><img class="cena__m" src="img/jaqueta-restaurante.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno de jaqueta de couro preta num sofá vermelho de restaurante" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/terno-celulares.webp)"></div><img class="cena__m" src="img/terno-celulares.webp" width="545" height="672" style="aspect-ratio:545/672" alt="Bruno de terno preto e óculos brancos cercado por celulares que o fotografam" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/quadriciclo-aviao.webp)"></div><img class="cena__m" src="img/quadriciclo-aviao.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno de chapéu de couro sentado num quadriciclo diante de um avião antigo" loading="lazy" decoding="async"></div>
+        <div class="seq__ritmo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </div>
+
+    <div class="faixa__in">
       <div class="servico sobe">
         <div>
           <span class="rotulo">Para lojas e marcas</span>
@@ -575,16 +608,7 @@ a.rede:hover{border-color:var(--sol)}
         <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero conversar sobre fotos para a minha loja."><svg><use href="#i-conversa"/></svg><span>Combinar fotos</span><small class="btn__pend">número pendente</small></a>
       </div>
 
-      <div class="book sobe" data-galeria="modelagem">
-        <figure class="quadro destaque"><button type="button" data-zoom><img src="img/terno-celulares.webp" width="545" height="672" loading="lazy" alt="Ensaio: Bruno de terno preto e óculos brancos, sentado, cercado por mãos segurando celulares que o fotografam"></button><figcaption><span><b>Ensaio de terno.</b> Seis telas, um olhar</span></figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/jaqueta-couro.webp" width="194" height="236" loading="lazy" alt="Bruno de jaqueta de couro preta e boné"></button><figcaption><span><b>Couro preto.</b> Jaqueta e boné</span></figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/oculos-preto.webp" width="194" height="236" loading="lazy" alt="Bruno de óculos escuros e camiseta preta diante de uma parede verde"></button><figcaption><span><b>Óculos escuros.</b> Fundo de folhas</span></figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/puffer.webp" width="194" height="236" loading="lazy" alt="Bruno de jaqueta puffer preta e boné"></button><figcaption><span><b>Puffer.</b> Preto brilhante</span></figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/elevador.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa preta num elevador espelhado"></button><figcaption><span><b>Preto total.</b> Elevador espelhado</span></figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/trico-oculos.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa de tricô branca e óculos de sol"></button><figcaption><span><b>Tricô.</b> Branco e óculos de sol</span></figcaption></figure>
       </div>
-      <div class="falta sobe" role="note" style="margin-top:22px"><span class="falta__tag">Material pendente</span><p>Mais fotos em alta resolução e, se ele quiser, as lojas e campanhas que já fotografou. As fotos pequenas da grade vieram de capturas de tela.</p></div>
-    </div>
   </section>
 
   <!-- ============ FOTO AÉREA ============ -->
@@ -717,18 +741,22 @@ a.rede:hover{border-color:var(--sol)}
           <span class="olho">Dia a dia</span>
           <h2 id="life-t">Lifestyle</h2>
         </div>
-        <p class="citacao">“Me acompanha no dia a dia.”<small>Da bio do Instagram</small></p>
+        <p class="sub">Rotina, viagens e momentos do dia a dia. Role para entrar em cada cena.</p>
       </div>
-      <p class="sub sobe" style="margin-bottom:26px">Rotina, experiências, eventos e viagens. Arraste para o lado e toque numa foto para ampliar.</p>
-      <div class="filme sobe" data-galeria="lifestyle" tabindex="0" aria-label="Fotos de lifestyle, role para o lado">
-        <figure class="quadro"><button type="button" data-zoom><img src="img/cachoeira.webp" width="194" height="236" loading="lazy" alt="Bruno sorrindo dentro de uma piscina com cascata de pedras ao fundo"></button><figcaption><span><b>Cascata.</b> Água fria no meio do verde</span></figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/camera.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa branca visto na tela de uma câmera digital"></button><figcaption><span><b>Na câmera.</b> Bastidor na tela da Sony</span></figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/sol.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa branca de tricô num dia de sol"></button><figcaption><span><b>Dia de sol.</b> Tricô branco e luz direta</span></figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/camisa-19.webp" width="194" height="236" loading="lazy" alt="Bruno tirando selfie no espelho com camisa vermelha de futebol número 19"></button><figcaption><span><b>Camisa 19.</b> Dia de jogo</span></figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/piscina.webp" width="194" height="236" loading="lazy" alt="Bruno sem camisa à beira da piscina"></button><figcaption><span><b>Beira da piscina.</b> Fim de tarde</span></figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/espelho.webp" width="194" height="236" loading="lazy" alt="Bruno de camiseta branca tirando selfie no espelho"></button><figcaption><span><b>Espelho.</b> Camiseta branca, sem pose</span></figcaption></figure>
-        <div class="vaga"><svg><use href="#i-foto"/></svg><b>Viagens e eventos</b><span>Enviar mais fotos ou destaques</span></div>
       </div>
+
+    <div class="seq" id="seq-lifestyle" data-seq role="region" aria-label="Dia a dia do Bruno, role para passar fotos e vídeos" style="--n:5">
+      <div class="seq__palco">
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/piscina-capa.webp)"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/piscina-capa.webp" data-src="video/piscina.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno na piscina, embaixo de uma cascata"></video></div>
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/chapeu-sorriso.webp)"></div><img class="cena__m" src="img/chapeu-sorriso.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno sorrindo de chapéu de couro, sentado num quadriciclo" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/quadriciclo-reel-capa.webp)"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/quadriciclo-reel-capa.webp" data-src="video/quadriciclo-reel.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno pilotando um quadriciclo no campo"></video></div>
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/natal-arvore.webp)"></div><img class="cena__m" src="img/natal-arvore.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno ao lado de uma árvore de Natal dourada segurando um presente" loading="lazy" decoding="async"></div>
+        <div class="cena"><div class="cena__amb" style="background-image:url(img/natal-escada-capa.webp)"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/natal-escada-capa.webp" data-src="video/natal-escada.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno descendo uma escada decorada para o Natal"></video></div>
+        <div class="seq__ritmo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </div>
+
+    <div class="faixa__in">
       <div class="acoes sobe" style="margin-top:28px">
         <a class="btn" href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>Acompanhar no Instagram</a>
       </div>
@@ -922,6 +950,45 @@ const CONTATO = { whatsapp: "", email: "zampiericontato87@gmail.com" };
       const d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
       if (d) { e.preventDefault(); ativar(abas[(i + d + abas.length) % abas.length], true); }
     });
+  });
+})();
+
+/* Sequências imersivas: cada cena se abre por cima da anterior conforme a rolagem */
+(() => {
+  const semMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const economia = navigator.connection && navigator.connection.saveData;
+  document.querySelectorAll('[data-seq]').forEach(seq => {
+    const cenas = [...seq.querySelectorAll('.cena')], n = cenas.length;
+    const midias = cenas.map(c => c.querySelector('.cena__m'));
+    const ticks = [...seq.querySelectorAll('.seq__ritmo i')];
+    const carregar = v => { if (v && v.tagName === 'VIDEO' && !v.src) v.src = v.dataset.src; };
+    if (semMov) { midias.forEach(m => { if (m.tagName === 'VIDEO') { m.controls = true; m.preload = 'metadata'; carregar(m); } }); return; }
+    let atual = -1, visivel = false, pedido = false;
+    const tocar = () => midias.forEach((m, i) => {
+      if (m.tagName !== 'VIDEO') return;
+      if (i === atual && visivel && !economia) { carregar(m); const p = m.play(); if (p) p.catch(() => {}); }
+      else m.pause();
+    });
+    const desenhar = () => {
+      pedido = false;
+      const r = seq.getBoundingClientRect(), total = Math.max(1, r.height - innerHeight);
+      const p = Math.max(0, Math.min(1, -r.top / total)) * (n - 1);
+      const vis = r.top < innerHeight && r.bottom > 0;
+      cenas.forEach((c, i) => {
+        const entra = i === 0 ? 1 : Math.max(0, Math.min(1, p - (i - 1)));
+        const sai = Math.max(0, Math.min(1, p - i));
+        c.style.visibility = entra > 0 && sai < 1 ? 'visible' : 'hidden';
+        if (i) c.style.clipPath = 'inset(' + ((1 - entra) * 100).toFixed(2) + '% 0 0 0)';
+        midias[i].style.transform = 'scale(' + ((1.14 - .14 * entra) * (1 - .07 * sai)).toFixed(4) + ')';
+        c.style.filter = sai > 0 ? 'brightness(' + (1 - .55 * sai).toFixed(3) + ')' : '';
+      });
+      const cur = Math.min(n - 1, Math.round(p));
+      // carrega o próximo vídeo antes de chegar nele
+      if (vis) { carregar(midias[cur]); if (midias[cur + 1]) carregar(midias[cur + 1]); }
+      if (cur !== atual || vis !== visivel) { atual = cur; visivel = vis; ticks.forEach((k, i) => k.classList.toggle('on', i === cur)); tocar(); }
+    };
+    const pedir = () => { if (!pedido) { pedido = true; requestAnimationFrame(desenhar); } };
+    addEventListener('scroll', pedir, { passive: true }); addEventListener('resize', pedir); desenhar();
   });
 })();
 
