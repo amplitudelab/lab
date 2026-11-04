@@ -4,13 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bruno Zampieri</title>
-<meta name="description" content="Bruno Zampieri: massoterapia, lifestyle, humor, modelagem e filmagens de drone. Serviços, conteúdo, parcerias e contato em um só lugar.">
+<meta name="description" content="Bruno Zampieri: modelagem, filmagens de drone, massoterapia e lifestyle. Serviços, conteúdo, parcerias e contato em um só lugar.">
 <meta name="theme-color" content="#0d0a09">
 <meta name="robots" content="noindex">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap">
+<link rel="preload" href="fonts/LeMurmure-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* Fontes livres (SIL OFL) da Velvetyne: Le Murmure, Sporting Grotesque e Sligoil. Licenças em fonts/. */
+@font-face{font-family:"Le Murmure";src:url("fonts/LeMurmure-Regular.woff2") format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Sporting Grotesque";src:url("fonts/SportingGrotesque-Regular.otf") format("opentype");font-weight:300 500;font-display:swap}
+@font-face{font-family:"Sporting Grotesque";src:url("fonts/SportingGrotesque-Bold.otf") format("opentype");font-weight:600 900;font-display:swap}
+@font-face{font-family:"Sligoil";src:url("fonts/Sligoil-Micro.woff2") format("woff2");font-weight:300 500;font-display:swap}
+@font-face{font-family:"Sligoil";src:url("fonts/Sligoil-MicroBold.woff2") format("woff2");font-weight:600 900;font-display:swap}
 /* Layout: horizonte de partículas fixo ao fundo; o conteúdo passa por cima em faixas editoriais, como poeira subindo do deserto ao pôr do sol. */
 :root{
   --couro:#0d0a09;      /* couro preto: fundo */
@@ -25,10 +29,10 @@
   --vidro:rgba(13,10,9,.78);
   --grad:linear-gradient(100deg,var(--ambar) 0%,var(--sol) 45%,var(--crepusculo) 100%);
 
-  --f-display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",Impact,sans-serif;
-  --f-corpo:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --f-serif:"Instrument Serif","Times New Roman",Georgia,serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+  --f-display:"Le Murmure","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --f-corpo:"Sporting Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-serif:"Le Murmure","Arial Narrow",Impact,sans-serif;
+  --f-mono:"Sligoil",ui-monospace,"SFMono-Regular",Consolas,monospace;
 
   --t-hero:clamp(4.4rem,16vw,12.5rem);
   --t-h2:clamp(3rem,9vw,6.5rem);
@@ -56,7 +60,6 @@ a{color:inherit}
 .ceu{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
   background:linear-gradient(180deg,#120c12 0%,var(--couro) 60%);
   opacity:var(--sky);transition:opacity .6s}
-#particulas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
 .grao{position:fixed;inset:-50%;z-index:0;pointer-events:none;opacity:.06;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 main,header,footer{position:relative;z-index:1}
@@ -72,7 +75,7 @@ main,header,footer{position:relative;z-index:1}
 .topo{position:fixed;top:0;left:0;right:0;z-index:20;padding-top:env(safe-area-inset-top,0px);
   background:rgba(13,10,9,.9);border-bottom:1px solid var(--linha)}
 .topo__in{max-width:var(--max);margin:0 auto;display:flex;align-items:center;gap:24px;height:64px;padding-left:var(--gutter-l);padding-right:var(--gutter-r)}
-.marca{display:flex;align-items:baseline;gap:10px;text-decoration:none;font:800 1.45rem/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.marca{display:flex;align-items:baseline;gap:10px;text-decoration:none;font:400 1.45rem/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
 .marca b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .nav{margin-left:auto;display:flex;gap:4px}
 .nav a{font:500 .8125rem/1 var(--f-mono);text-transform:uppercase;letter-spacing:.1em;text-decoration:none;color:var(--poeira);padding:10px 10px;border-radius:var(--raio);transition:color .2s}
@@ -84,7 +87,7 @@ main,header,footer{position:relative;z-index:1}
   .nav{position:fixed;inset:0;top:0;flex-direction:column;justify-content:center;gap:2px;background:var(--couro);
     padding:calc(80px + env(safe-area-inset-top,0px)) var(--gutter-r) 40px var(--gutter-l);transform:translateY(-100%);visibility:hidden;transition:transform .45s cubic-bezier(.7,0,.2,1),visibility 0s .45s}
   .nav.aberto{transform:none;visibility:visible;transition:transform .45s cubic-bezier(.7,0,.2,1)}
-  .nav a{font:800 clamp(2.2rem,9vw,3.4rem)/1.05 var(--f-display);color:var(--areia);padding:6px 0;letter-spacing:.02em}
+  .nav a{font:400 clamp(2.2rem,9vw,3.4rem)/1.05 var(--f-display);color:var(--areia);padding:6px 0;letter-spacing:.02em}
   .nav a[aria-current="true"]{box-shadow:none;color:var(--sol)}
   .menu-btn{position:relative;z-index:2}
 }
@@ -96,8 +99,8 @@ main,header,footer{position:relative;z-index:1}
 .olho{display:inline-flex;align-items:center;gap:10px;font:500 var(--t-mini)/1 var(--f-mono);text-transform:uppercase;letter-spacing:.16em;color:var(--ambar)}
 .olho::before{content:"";width:28px;height:1px;background:currentColor}
 h1,h2,h3{margin:0;text-wrap:balance}
-h2{font:900 var(--t-h2)/.86 var(--f-display);text-transform:uppercase;letter-spacing:.005em;margin-top:18px}
-h2 em{font:italic 400 .62em/1 var(--f-serif);text-transform:none;letter-spacing:0;color:var(--ambar)}
+h2{font:400 var(--t-h2)/.86 var(--f-display);text-transform:uppercase;letter-spacing:.005em;margin-top:18px}
+h2 em{font:400 .62em/1 var(--f-serif);font-style:normal;text-transform:lowercase;letter-spacing:.01em;color:var(--ambar)}
 h3{font:600 var(--t-h3)/1.2 var(--f-corpo)}
 p{margin:0}
 .lead{font-size:1.1875rem;line-height:1.6;color:var(--areia);max-width:58ch}
@@ -128,13 +131,14 @@ p{margin:0}
 .hero{padding-top:calc(110px + env(safe-area-inset-top,0px));padding-bottom:clamp(48px,7vw,90px)}
 .hero__grade{display:grid;gap:40px;align-items:center}
 @media (min-width:900px){.hero__grade{grid-template-columns:1.25fr .75fr;gap:56px}}
-.hero h1{font:900 var(--t-hero)/.8 var(--f-display);text-transform:uppercase;letter-spacing:-.005em;margin-top:22px}
+.hero h1{font:400 var(--t-hero)/.82 var(--f-display);text-transform:uppercase;letter-spacing:.01em;margin-top:22px}
 .hero h1 span{display:block}
 .hero h1 .z{background:var(--grad);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brilho 9s ease-in-out infinite alternate}
 @keyframes brilho{to{background-position:100% 0}}
-.hero__frase{font:italic 400 clamp(1.6rem,3.6vw,2.4rem)/1.15 var(--f-serif);color:var(--areia);margin-top:26px;max-width:22ch}
-.frentes{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;padding:0;list-style:none}
-.frentes li{font:500 .75rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;padding:9px 12px;border:1px solid var(--linha);border-radius:999px;color:var(--poeira);background:rgba(13,10,9,.5)}
+.hero__frase{font:400 clamp(1.4rem,3vw,2rem)/1.25 var(--f-corpo);letter-spacing:-.01em;color:var(--areia);margin-top:26px;max-width:22ch}
+.frentes{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.frentes a:hover{border-color:var(--sol);color:var(--areia)}
+.frentes a{text-decoration:none;transition:border-color .2s,color .2s;font:500 .75rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;padding:9px 12px;border:1px solid var(--linha);border-radius:999px;color:var(--poeira);background:rgba(13,10,9,.5)}
 .hero .acoes{margin-top:32px}
 .foto-hero{position:relative;margin:0;justify-self:center;width:min(100%,430px)}
 .foto-hero__img{border-radius:var(--raio);overflow:hidden;transform:rotate(1.5deg);box-shadow:0 40px 80px -30px rgba(255,123,47,.45),0 0 0 1px var(--linha)}
@@ -144,13 +148,13 @@ p{margin:0}
 .foto-hero figcaption small{display:block;color:var(--poeira);font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase}
 .numeros{display:flex;flex-wrap:wrap;gap:12px 36px;margin-top:38px;padding-top:22px;border-top:1px solid var(--linha);max-width:560px}
 .numeros div{display:grid;gap:4px}
-.numeros strong{font:800 2.4rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.numeros strong{font:400 2.4rem/1 var(--f-display);font-variant-numeric:tabular-nums}
 .numeros span{font:500 .6875rem/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--poeira)}
 
 /* ---------- Letreiro ---------- */
 .letreiro{overflow:hidden;border-block:1px solid var(--linha);background:rgba(13,10,9,.7);padding-block:16px}
 .letreiro__trilho{display:flex;width:max-content;animation:rolar 38s linear infinite}
-.letreiro__trilho span{font:800 clamp(1.6rem,3.5vw,2.6rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.04em;padding-right:28px;white-space:nowrap;color:var(--areia)}
+.letreiro__trilho span{font:400 clamp(1.6rem,3.5vw,2.6rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.04em;padding-right:28px;white-space:nowrap;color:var(--areia)}
 .letreiro__trilho i{font-style:normal;color:var(--sol);padding-right:28px}
 @keyframes rolar{to{transform:translateX(-50%)}}
 
@@ -162,7 +166,7 @@ p{margin:0}
 .area::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--grad);transform:scaleX(0);transform-origin:0 50%;transition:transform .45s cubic-bezier(.7,0,.2,1)}
 .area:hover{background:var(--couro-2)}
 .area:hover::after{transform:scaleX(1)}
-.area h3{font:800 2.2rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.area h3{font:400 2.2rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
 .area p{color:var(--poeira);font-size:.9375rem;max-width:34ch}
 .area .seta{position:absolute;right:22px;top:26px;width:22px;height:22px;color:var(--poeira);transition:transform .3s,color .3s}
 .area:hover .seta{transform:translate(3px,-3px);color:var(--sol)}
@@ -197,9 +201,11 @@ p{margin:0}
 .quadro button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;border-radius:var(--raio);overflow:hidden;box-shadow:0 0 0 1px var(--linha)}
 .quadro img{width:100%;aspect-ratio:194/236;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1),filter .6s;filter:saturate(.92)}
 .quadro button:hover img{transform:scale(1.04);filter:saturate(1.08)}
-.quadro figcaption{font:500 .6875rem/1.3 var(--f-mono);text-transform:uppercase;letter-spacing:.12em;color:var(--poeira);margin-top:10px}
+.quadro figcaption,.retrato figcaption{display:flex;align-items:baseline;gap:10px;font:400 .8125rem/1.35 var(--f-mono);letter-spacing:.02em;color:var(--poeira);margin-top:12px}
+.quadro figcaption::before,.retrato figcaption::before{content:"";flex:none;width:18px;height:1px;background:var(--sol);transform:translateY(-4px)}
+.quadro figcaption b,.retrato figcaption b{color:var(--areia);font-weight:600}
 .filme .vaga{width:clamp(200px,22vw,250px);aspect-ratio:194/236;margin-top:46px}
-.citacao{font:italic 400 clamp(1.8rem,4vw,3rem)/1.1 var(--f-serif);max-width:20ch}
+.citacao{font:400 clamp(2rem,4.4vw,3.4rem)/1 var(--f-serif);text-transform:uppercase;letter-spacing:.01em;max-width:20ch}
 .citacao small{display:block;margin-top:12px;font:500 .75rem/1 var(--f-mono);font-style:normal;text-transform:uppercase;letter-spacing:.14em;color:var(--poeira)}
 
 /* ---------- Humor ---------- */
@@ -255,7 +261,7 @@ p{margin:0}
 .ficha__perfil span{color:var(--poeira);font-size:.875rem}
 .ficha__nums{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden}
 .ficha__nums div{background:var(--couro-2);padding:16px;display:grid;gap:6px}
-.ficha__nums strong{font:800 2.2rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.ficha__nums strong{font:400 2.2rem/1 var(--f-display);font-variant-numeric:tabular-nums}
 .ficha__nums span{font:500 .6875rem/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--poeira)}
 .temas{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
 .temas li{padding:8px 12px;border-radius:999px;background:var(--couro-3);font-size:.875rem}
@@ -265,7 +271,7 @@ p{margin:0}
 .canais{display:grid;gap:14px}
 @media (min-width:900px){.canais{grid-template-columns:repeat(3,1fr)}}
 .canal{display:grid;gap:14px;align-content:start;padding:26px 24px;border:1px solid var(--linha);border-radius:var(--raio);background:rgba(23,17,15,.82);min-width:0}
-.canal h3{font:800 2rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.canal h3{font:400 2rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
 .canal p{color:var(--poeira);font-size:.9375rem}
 .canal .btn{justify-self:start}
 .endereco{font:500 .875rem/1.4 var(--f-mono);word-break:break-word;color:var(--areia)}
@@ -281,7 +287,7 @@ a.rede:hover{border-color:var(--sol)}
 /* ---------- Rodapé ---------- */
 .rodape{padding-left:var(--gutter-l);padding-right:var(--gutter-r);padding-block:56px calc(40px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--linha);background:var(--couro)}
 .rodape__in{max-width:var(--max);margin:0 auto;display:flex;flex-wrap:wrap;gap:18px 32px;align-items:end;justify-content:space-between}
-.rodape__nome{font:900 clamp(3rem,11vw,7rem)/.85 var(--f-display);text-transform:uppercase}
+.rodape__nome{font:400 clamp(3rem,11vw,7rem)/.85 var(--f-display);text-transform:uppercase}
 .rodape__nome b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .rodape p{color:var(--poeira);font-size:.875rem}
 .rodape a{color:var(--areia)}
@@ -317,7 +323,7 @@ a.rede:hover{border-color:var(--sol)}
 
 /* ---------- Vídeo de drone no fundo do topo ---------- */
 .ceu__video{position:absolute;inset:0;overflow:hidden}
-.ceu__video video,.ceu__video img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5;transform:scale(1.06)}
+.ceu__video video,.ceu__video img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.62}
 .ceu__video::after{content:"";position:absolute;inset:0;background:
   linear-gradient(90deg,rgba(13,10,9,.94) 0%,rgba(13,10,9,.62) 48%,rgba(13,10,9,.3) 100%),
   linear-gradient(0deg,var(--couro) 2%,transparent 45%),
@@ -331,34 +337,32 @@ a.rede:hover{border-color:var(--sol)}
   .hero .olho,.hero__frase,.frentes,.hero .acoes,.numeros{animation:aparece .9s .45s both}
   .foto-hero__img{animation:revela 1.4s .25s cubic-bezier(.7,0,.2,1) both}
   .foto-hero figcaption{animation:aparece .8s 1.1s both}
-  .ceu__video video{animation:deriva 26s ease-in-out infinite alternate}
 }
 @keyframes entra{from{transform:translateY(55%);opacity:0;filter:blur(10px)}}
 @keyframes aparece{from{opacity:0;transform:translateY(18px)}}
 @keyframes revela{from{clip-path:inset(100% 0 0 0);transform:rotate(1.5deg) scale(1.08)}}
-@keyframes deriva{to{transform:scale(1.16) translate(-2%,-1%)}}
 
 /* ---------- Massoterapia: modalidades ---------- */
 .modal{list-style:none;margin:0;padding:0;display:grid;gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden}
-.modal li{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:18px 20px;background:var(--couro);font:800 clamp(1.7rem,3.4vw,2.4rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em;transition:background .3s,padding .3s}
+.modal li{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:18px 20px;background:var(--couro);font:400 clamp(1.7rem,3.4vw,2.4rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em;transition:background .3s,padding .3s}
 .modal li span{font:500 .6875rem/1 var(--f-mono);letter-spacing:.14em;color:var(--ambar)}
 .modal li:hover{background:var(--couro-2);padding-left:28px}
 .link-sub{color:var(--ambar);text-underline-offset:3px}
 
 /* ---------- Modelagem: retratos de impacto ---------- */
 #modelagem{overflow:clip}
-.retratos{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,2vw,22px);margin-bottom:clamp(40px,6vw,80px)}
+.retratos{position:relative;isolation:isolate;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,2vw,22px);margin-bottom:clamp(40px,6vw,80px)}
 .retrato{margin:0;position:relative}
+.retratos::before{content:"";position:absolute;z-index:-1;left:50%;top:45%;width:min(110vw,1100px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,123,47,.30),rgba(210,70,110,.12) 45%,transparent 72%);filter:blur(10px);pointer-events:none}
+.retratos::after{content:"";position:absolute;z-index:-1;left:6%;right:6%;bottom:-18px;height:40px;background:radial-gradient(closest-side,rgba(0,0,0,.75),transparent);pointer-events:none}
 .retrato:nth-child(2){margin-top:clamp(40px,9vw,140px)}
 .retrato button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;border-radius:var(--raio);overflow:hidden;box-shadow:0 50px 90px -40px rgba(0,0,0,.9),0 0 0 1px var(--linha)}
 .retrato img{width:100%;aspect-ratio:760/1140;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
 .retrato button:hover img{transform:scale(1.035)}
-.retrato figcaption{font:500 .6875rem/1.3 var(--f-mono);text-transform:uppercase;letter-spacing:.12em;color:var(--poeira);margin-top:12px}
-.retratos__marca{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);margin:0;pointer-events:none;white-space:nowrap;
-  font:900 clamp(3.2rem,13vw,11rem)/.8 var(--f-display);text-transform:uppercase;color:transparent;-webkit-text-stroke:1.5px rgba(241,230,212,.85);mix-blend-mode:difference;z-index:2}
 .servico{display:grid;gap:18px;padding:clamp(22px,3vw,34px);border:1px solid var(--linha);border-radius:var(--raio);background:var(--couro-2);margin-bottom:clamp(36px,5vw,60px)}
 @media (min-width:900px){.servico{grid-template-columns:1.3fr auto;align-items:center}}
-.servico h3{font:800 clamp(1.8rem,3vw,2.4rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.servico h3{font:400 clamp(1.8rem,3vw,2.4rem)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
 .servico p{color:var(--poeira);max-width:58ch;margin-top:10px}
 
 /* ---------- Faixa da foto aérea ---------- */
@@ -366,8 +370,8 @@ a.rede:hover{border-color:var(--sol)}
 .aerea img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;z-index:-2}
 .aerea::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--couro) 0%,rgba(13,10,9,.1) 28%,rgba(13,10,9,.15) 60%,var(--couro) 100%)}
 .aerea__txt{max-width:var(--max);width:100%;margin:0 auto;padding-left:var(--gutter-l);padding-right:var(--gutter-r);padding-block:0 clamp(40px,8vw,100px)}
-.aerea__frase{font:900 clamp(4rem,15vw,13rem)/.8 var(--f-display);text-transform:uppercase;margin-top:16px;text-shadow:0 10px 60px rgba(0,0,0,.45)}
-.aerea__frase em{display:block;font:italic 400 .5em/1 var(--f-serif);text-transform:none;color:var(--ambar);margin-top:.1em}
+.aerea__frase{font:400 clamp(4rem,15vw,13rem)/.8 var(--f-display);text-transform:uppercase;margin-top:16px;text-shadow:0 10px 60px rgba(0,0,0,.45)}
+.aerea__frase em{display:block;font:400 .5em/1 var(--f-serif);font-style:normal;text-transform:lowercase;color:var(--ambar);margin-top:.1em}
 
 /* ---------- Drone: vídeo no fundo ---------- */
 .drone.faixa{padding-block:0;isolation:isolate}
@@ -377,9 +381,6 @@ a.rede:hover{border-color:var(--sol)}
 .drone__fundo::after{content:"";position:absolute;inset:0;background:
   linear-gradient(180deg,var(--couro) 0%,rgba(13,10,9,.55) 16%,rgba(13,10,9,.4) 55%,rgba(13,10,9,.88) 100%),
   repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
-.drone__fundo .varre{position:absolute;left:0;right:0;height:22%;background:linear-gradient(180deg,transparent,rgba(255,179,92,.10),transparent);top:-25%;z-index:1}
-@media (prefers-reduced-motion:no-preference){.drone__fundo .varre{animation:varre 7s linear infinite}}
-@keyframes varre{to{top:110%}}
 .drone .faixa__in{padding-block:clamp(110px,16vw,200px) clamp(80px,10vw,140px)}
 .drone h2{font-size:clamp(3.6rem,12vw,9rem);text-shadow:0 8px 50px rgba(0,0,0,.5)}
 .drone .sub{color:var(--areia);text-shadow:0 1px 14px rgba(0,0,0,.8)}
@@ -390,7 +391,7 @@ a.rede:hover{border-color:var(--sol)}
 .tela img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.75;transition:transform .8s cubic-bezier(.2,.7,.2,1),opacity .4s}
 .tela::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(13,10,9,.92),transparent 70%)}
 .tela:hover img{transform:scale(1.06);opacity:1}
-.tela b{font:800 1.6rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.tela b{font:400 1.6rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
 .tela small{font:500 .6875rem/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--poeira)}
 .tela[aria-pressed="true"]{border-color:var(--ambar);box-shadow:0 0 0 1px var(--ambar),0 0 40px -10px var(--sol)}
 .tela[aria-pressed="true"] small::before{content:"● no fundo agora · ";color:#ff4b3a}
@@ -400,16 +401,18 @@ a.rede:hover{border-color:var(--sol)}
 .drone__info .info{border-top-color:rgba(255,179,92,.28)}
 .drone__fotos{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-content:start}
 
-/* ---------- Player com som ---------- */
-.player video{max-width:100%;max-height:100%;border-radius:var(--raio);background:#000;box-shadow:0 30px 80px rgba(0,0,0,.6)}
 
 /* ---------- Revelações na rolagem ---------- */
 @supports (animation-timeline:view()){
   @media (prefers-reduced-motion:no-preference){
     .retrato button{animation:abre-foto linear both;animation-timeline:view();animation-range:entry 0% cover 45%}
+    .retrato:nth-child(1){animation:sobe-lento linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+    .retrato:nth-child(2){animation:desce-lento linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+    @keyframes sobe-lento{from{transform:translateY(60px)}to{transform:translateY(-60px)}}
+    @keyframes desce-lento{from{transform:translateY(-30px)}to{transform:translateY(50px)}}
+    .retratos::before{animation:luz linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+    @keyframes luz{from{opacity:.2;transform:translate(-50%,-50%) scale(.6)}50%{opacity:1}to{opacity:.3;transform:translate(-50%,-50%) scale(1.1)}}
     @keyframes abre-foto{from{clip-path:inset(14% 8% 14% 8% round 4px);transform:scale(.94)}to{clip-path:inset(0 0 0 0 round 4px);transform:none}}
-    .retratos__marca{animation:desliza linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
-    @keyframes desliza{from{transform:translate(-38%,-50%)}to{transform:translate(-62%,-50%)}}
     .aerea img{animation:aproxima linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
     @keyframes aproxima{from{transform:scale(1.28) translateY(-4%)}to{transform:scale(1) translateY(3%)}}
     .aerea__frase{animation:sobe linear both;animation-timeline:view();animation-range:entry 20% cover 55%}
@@ -417,14 +420,64 @@ a.rede:hover{border-color:var(--sol)}
     @keyframes cresce{from{opacity:.3;transform:scale(.86);letter-spacing:.08em}to{opacity:1;transform:none}}
   }
 }
-@media (prefers-reduced-motion:reduce){.retratos__marca{display:none}}
+
+/* ---------- Massoterapia imersiva ---------- */
+.massa-sec{position:relative;overflow:clip;isolation:isolate;background:radial-gradient(120% 80% at 80% 30%,rgba(210,70,110,.10),transparent 60%),var(--couro)}
+.respira{position:absolute;z-index:-1;right:-20vw;top:8%;width:min(90vw,900px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,179,92,.20),rgba(255,123,47,.08) 55%,transparent 75%);pointer-events:none}
+@media (prefers-reduced-motion:no-preference){.respira{animation:respira 8s ease-in-out infinite}}
+@keyframes respira{0%,100%{transform:scale(.82);opacity:.6}50%{transform:scale(1.05);opacity:1}}
+.massa-palco{display:grid;gap:clamp(20px,3vw,44px);align-items:start}
+@media (min-width:900px){.massa-palco{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr)}}
+.massa-abas{display:grid;gap:0;border-top:1px solid var(--linha)}
+.massa-abas button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:6px;padding:18px 0 16px;border-bottom:1px solid var(--linha);
+  font:400 clamp(2.6rem,7.5vw,5.4rem)/.9 var(--f-display);text-transform:uppercase;letter-spacing:.01em;color:rgba(241,230,212,.28);transition:color .35s,padding .35s}
+.massa-abas__n{font:400 .75rem/1 var(--f-mono);letter-spacing:.06em;text-transform:none;color:var(--poeira)}
+.massa-abas button:hover{color:rgba(241,230,212,.6)}
+.massa-abas button[aria-selected="true"]{color:var(--areia);padding-left:clamp(10px,2vw,22px);box-shadow:inset 3px 0 0 var(--sol)}
+.massa-abas button[aria-selected="true"] .massa-abas__n{color:var(--ambar)}
+.massa-abas button:focus-visible{outline:2px solid var(--ambar);outline-offset:-2px}
+@media (max-width:899px){
+  .massa-abas{grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto;gap:18px;border-top:0;border-bottom:1px solid var(--linha);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .massa-abas button{font-size:clamp(2rem,9vw,2.6rem);border-bottom:0;padding:8px 0 14px}
+  .massa-abas button[aria-selected="true"]{padding-left:0;box-shadow:inset 0 -3px 0 var(--sol)}
+}
+.massa-painel{display:grid;gap:22px;padding:clamp(22px,3vw,36px);border:1px solid var(--linha);border-radius:var(--raio);background:rgba(23,17,15,.78);min-height:100%}
+@media (prefers-reduced-motion:no-preference){.massa-painel:not([hidden]){animation:painel .6s cubic-bezier(.2,.8,.2,1) both}}
+@keyframes painel{from{opacity:0;transform:translateY(16px);filter:blur(6px)}}
+.massa-painel__como{font:400 clamp(1.25rem,2.2vw,1.6rem)/1.35 var(--f-corpo);letter-spacing:-.01em;max-width:34ch}
+.beneficios{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--linha)}
+.beneficios li{position:relative;padding:14px 0 14px 26px;border-bottom:1px solid var(--linha);color:var(--poeira)}
+.beneficios li::before{content:"";position:absolute;left:2px;top:calc(14px + .55em);width:9px;height:9px;border-radius:50%;background:var(--sol);box-shadow:0 0 14px var(--sol)}
+.beneficios b{color:var(--areia);font-weight:600}
+.massa-painel__nota{font:400 .8125rem/1.5 var(--f-mono);color:var(--ambar);letter-spacing:.01em}
+.folego{display:flex;align-items:center;gap:20px}
+.folego__bola{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--ambar),var(--sol) 55%,var(--crepusculo));box-shadow:0 0 40px -6px var(--sol)}
+.folego__txt{position:relative;display:grid;font:400 .875rem/1 var(--f-mono);color:var(--areia)}
+.folego__txt i{font-style:normal;grid-area:1/1}
+.folego__txt i:last-child{opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  .folego__bola{animation:folego 8s ease-in-out infinite}
+  .folego__txt i:first-child{animation:folego-a 8s ease-in-out infinite}
+  .folego__txt i:last-child{animation:folego-b 8s ease-in-out infinite}
+}
+@keyframes folego{0%,100%{transform:scale(.6)}50%{transform:scale(1)}}
+@keyframes folego-a{0%,45%{opacity:1}50%,95%{opacity:0}100%{opacity:1}}
+@keyframes folego-b{0%,45%{opacity:0}50%,95%{opacity:1}100%{opacity:0}}
+.massa-ficha{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden;margin-top:clamp(24px,4vw,44px)}
+@media (min-width:900px){.massa-ficha{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.massa-ficha div{display:grid;gap:8px;padding:18px;background:var(--couro)}
+.massa-ficha strong{font-weight:600;font-size:1.0625rem}
+.massa-ficha .pend{font-weight:400;font-size:.8125rem}
+.massa-rodape{display:grid;gap:18px;margin-top:26px}
+@media (min-width:900px){.massa-rodape{grid-template-columns:auto 1fr;align-items:center;gap:40px}}
+.massa-aviso{font-size:.8125rem;line-height:1.55;color:var(--poeira);max-width:62ch}
 </style>
 </head>
 <body>
 <div class="ceu" aria-hidden="true">
   <div class="ceu__video"><video id="video-topo" muted loop playsinline preload="none" poster="img/drone-1-capa.webp" data-src="video/drone-1.mp4"></video></div>
 </div>
-<canvas id="particulas" aria-hidden="true"></canvas>
 <div class="grao" aria-hidden="true"></div>
 <div class="progresso" aria-hidden="true"></div>
 
@@ -446,11 +499,10 @@ a.rede:hover{border-color:var(--sol)}
     <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav class="nav" id="nav" aria-label="Seções">
       <a href="#inicio">Início</a>
-      <a href="#massoterapia">Massoterapia</a>
-      <a href="#lifestyle">Lifestyle</a>
-      <a href="#humor">Humor</a>
       <a href="#modelagem">Modelagem</a>
       <a href="#drone">Drone</a>
+      <a href="#massoterapia">Massoterapia</a>
+      <a href="#lifestyle">Lifestyle</a>
       <a href="#parcerias">Parcerias</a>
       <a href="#contato">Contato</a>
     </nav>
@@ -465,11 +517,11 @@ a.rede:hover{border-color:var(--sol)}
         <span class="olho">@obrunozampieri</span>
         <h1><span>Bruno</span><span class="z">Zampieri</span></h1>
         <p class="hero__frase">O profissional, o criador e a personalidade por trás do perfil.</p>
-        <ul class="frentes" aria-label="Frentes de trabalho">
-          <li>Massoterapia</li><li>Lifestyle</li><li>Humor</li><li>Modelagem</li><li>Drone</li>
-        </ul>
+        <nav class="frentes" aria-label="Atalhos">
+          <a href="#modelagem">Modelagem</a><a href="#drone">Drone</a><a href="#massoterapia">Massoterapia</a><a href="#lifestyle">Lifestyle</a><a href="#parcerias">Parcerias</a>
+        </nav>
         <div class="acoes">
-          <a class="btn btn--sol" href="#areas">Conhecer o trabalho <svg><use href="#i-seta"/></svg></a>
+          <a class="btn btn--sol" href="#modelagem">Conhecer o trabalho <svg><use href="#i-seta"/></svg></a>
           <a class="btn" href="#contato">Entrar em contato</a>
         </div>
         <div class="numeros">
@@ -489,148 +541,16 @@ a.rede:hover{border-color:var(--sol)}
     </div>
   </section>
 
+
   <div class="letreiro" aria-hidden="true">
     <div class="letreiro__trilho">
-      <span>Lifestyle</span><i>✦</i><span>Humor</span><i>✦</i><span>Modelagem</span><i>✦</i><span>Massoterapia</span><i>✦</i><span>Drone</span><i>✦</i><span>Boa energia e autenticidade</span><i>✦</i>
-      <span>Lifestyle</span><i>✦</i><span>Humor</span><i>✦</i><span>Modelagem</span><i>✦</i><span>Massoterapia</span><i>✦</i><span>Drone</span><i>✦</i><span>Boa energia e autenticidade</span><i>✦</i>
+      <span>Modelagem</span><i>✦</i><span>Drone</span><i>✦</i><span>Massoterapia</span><i>✦</i><span>Lifestyle</span><i>✦</i><span>Boa energia e autenticidade</span><i>✦</i>
+      <span>Modelagem</span><i>✦</i><span>Drone</span><i>✦</i><span>Massoterapia</span><i>✦</i><span>Lifestyle</span><i>✦</i><span>Boa energia e autenticidade</span><i>✦</i>
     </div>
   </div>
 
-  <!-- ============ ÁREAS ============ -->
-  <section class="faixa faixa--escura" id="areas" data-forma="1" aria-labelledby="areas-t">
-    <div class="faixa__in">
-      <div class="cab cab--lado sobe">
-        <div>
-          <span class="olho">Escolha por onde começar</span>
-          <h2 id="areas-t">Cada interesse, <em>um caminho</em></h2>
-        </div>
-        <p class="sub">O que hoje está espalhado pelo Instagram, organizado num endereço só. Escolha a área e encontre o próximo passo.</p>
-      </div>
-      <div class="areas sobe">
-        <a class="area" href="#massoterapia"><span class="area__tag">Serviço</span><h3>Massoterapia</h3><p>Ventosaterapia, quiropraxia e relaxante. Sessões de 1 hora.</p><svg class="seta"><use href="#i-seta"/></svg></a>
-        <a class="area" href="#lifestyle"><span class="area__tag">Dia a dia</span><h3>Lifestyle</h3><p>Rotina, experiências, eventos e viagens.</p><svg class="seta"><use href="#i-seta"/></svg></a>
-        <a class="area" href="#humor"><span class="area__tag">Entretenimento</span><h3>Humor</h3><p>Vídeos curtos e situações do cotidiano.</p><svg class="seta"><use href="#i-seta"/></svg></a>
-        <a class="area" href="#modelagem"><span class="area__tag">Portfólio</span><h3>Modelagem</h3><p>Ensaios, campanhas e fotos de vestuário para lojas.</p><svg class="seta"><use href="#i-seta"/></svg></a>
-        <a class="area" href="#drone"><span class="area__tag">Visão aérea</span><h3>Drone</h3><p>Vídeos e fotos aéreas.</p><svg class="seta"><use href="#i-seta"/></svg></a>
-        <a class="area" href="#parcerias"><span class="area__tag">Para marcas</span><h3>Parcerias</h3><p>Perfil do criador e contato comercial.</p><svg class="seta"><use href="#i-seta"/></svg></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ MASSOTERAPIA ============ -->
-  <section class="faixa faixa--escura" id="massoterapia" data-forma="1" aria-labelledby="massa-t">
-    <div class="faixa__in">
-      <div class="cab cab--lado sobe">
-        <div>
-          <span class="olho">Atendimento profissional</span>
-          <h2 id="massa-t">Massoterapia</h2>
-        </div>
-        <div style="display:grid;gap:20px">
-          <p class="lead">Além do conteúdo, o Bruno atende como massoterapeuta. Aqui estão as informações do atendimento e o caminho para agendar.</p>
-          <div class="acoes">
-            <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero informações sobre massoterapia."><svg><use href="#i-conversa"/></svg><span>Agendar pelo WhatsApp</span><small class="btn__pend">número pendente</small></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="massa">
-        <div class="bloco sobe">
-          <h3>Modalidades</h3>
-          <ul class="modal">
-            <li>Ventosaterapia <span>1 h</span></li>
-            <li>Quiropraxia <span>1 h</span></li>
-            <li>Relaxante <span>1 h</span></li>
-          </ul>
-          <p class="sub">Mais sobre o atendimento no perfil <a class="link-sub" href="https://www.instagram.com/massagon47/" target="_blank" rel="noopener">@massagon47</a>.</p>
-          <h3 style="margin-top:14px">Benefícios</h3>
-          <div class="falta" role="note"><span class="falta__tag">Material pendente</span><p>Texto sobre benefícios aprovado pelo Bruno, descrito de forma responsável e sem promessas de saúde.</p></div>
-        </div>
-        <div class="bloco sobe">
-          <h3>Informações práticas</h3>
-          <dl class="info">
-            <div><dt>Agendamento</dt><dd>Pelo WhatsApp <span class="pend">· número pendente</span></dd></div>
-            <div><dt>Local</dt><dd><span class="pend">A definir com o Bruno</span></dd></div>
-            <div><dt>Duração</dt><dd>1 hora por sessão</dd></div>
-            <div><dt>Valores</dt><dd>Passados pelo WhatsApp</dd></div>
-            <div><dt>Pagamento</dt><dd>Dinheiro, Pix ou cartão de crédito</dd></div>
-          </dl>
-          <h3 style="margin-top:14px">O ambiente</h3>
-          <div class="trio">
-            <div class="vaga"><svg><use href="#i-foto"/></svg><b>Foto do espaço</b></div>
-            <div class="vaga"><svg><use href="#i-foto"/></svg><b>Foto do espaço</b></div>
-            <div class="vaga"><svg><use href="#i-foto"/></svg><b>Foto do trabalho</b></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bloco sobe" style="margin-top:44px">
-        <h3>Perguntas frequentes</h3>
-        <div class="faq">
-          <details><summary>Como faço para agendar?</summary><p>Pelo botão de WhatsApp desta página. <span class="pend">O número ainda precisa ser enviado.</span></p></details>
-          <details><summary>Onde é o atendimento?</summary><p><span class="pend">Resposta pendente: endereço ou região de atendimento.</span></p></details>
-          <details><summary>Quanto tempo dura uma sessão?</summary><p>Cada sessão dura 1 hora.</p></details>
-          <details><summary>Quanto custa?</summary><p>Os valores são passados pelo WhatsApp.</p></details>
-          <details><summary>Quais formas de pagamento são aceitas?</summary><p>Dinheiro, Pix ou cartão de crédito.</p></details>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="horizonte" aria-hidden="true"></div>
-
-  <!-- ============ LIFESTYLE ============ -->
-  <section class="faixa" id="lifestyle" data-forma="1" aria-labelledby="life-t">
-    <div class="faixa__in">
-      <div class="cab cab--lado sobe">
-        <div>
-          <span class="olho">Dia a dia</span>
-          <h2 id="life-t">Lifestyle</h2>
-        </div>
-        <p class="citacao">“Me acompanha no dia a dia.”<small>Da bio do Instagram</small></p>
-      </div>
-      <p class="sub sobe" style="margin-bottom:26px">Rotina, experiências, eventos e viagens. Arraste para o lado e toque numa foto para ampliar.</p>
-      <div class="filme sobe" data-galeria="lifestyle" tabindex="0" aria-label="Fotos de lifestyle, role para o lado">
-        <figure class="quadro"><button type="button" data-zoom><img src="img/cachoeira.webp" width="194" height="236" loading="lazy" alt="Bruno sorrindo dentro de uma piscina com cascata de pedras ao fundo"></button><figcaption>Cascata</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/camera.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa branca visto na tela de uma câmera digital"></button><figcaption>Na câmera</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/sol.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa branca de tricô num dia de sol"></button><figcaption>Dia de sol</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/camisa-19.webp" width="194" height="236" loading="lazy" alt="Bruno tirando selfie no espelho com camisa vermelha de futebol número 19"></button><figcaption>Futebol</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/piscina.webp" width="194" height="236" loading="lazy" alt="Bruno sem camisa à beira da piscina"></button><figcaption>Piscina</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/espelho.webp" width="194" height="236" loading="lazy" alt="Bruno de camiseta branca tirando selfie no espelho"></button><figcaption>Selfie</figcaption></figure>
-        <div class="vaga"><svg><use href="#i-foto"/></svg><b>Viagens e eventos</b><span>Enviar mais fotos ou destaques</span></div>
-      </div>
-      <div class="acoes sobe" style="margin-top:28px">
-        <a class="btn" href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>Acompanhar no Instagram</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ HUMOR ============ -->
-  <section class="faixa faixa--escura" id="humor" data-forma="1" aria-labelledby="humor-t">
-    <div class="faixa__in">
-      <div class="cab cab--lado sobe">
-        <div>
-          <span class="olho">Entretenimento</span>
-          <h2 id="humor-t">Humor <em>do cotidiano</em></h2>
-        </div>
-        <p class="sub">Vídeos curtos, situações do dia a dia e reels para assistir e mandar para os amigos.</p>
-      </div>
-      <div class="humor sobe" data-galeria="humor">
-        <figure class="quadro"><button type="button" data-zoom><img src="img/moto-crianca.webp" width="194" height="236" loading="lazy" alt="Post de humor: Bruno de moto com o texto “Encontrei meu eu criança” e a resposta “Tô indo almoçar com a mãe. Ele venceu.”"></button><figcaption>Reel</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/escadaria.webp" width="194" height="236" loading="lazy" alt="Post de humor: Bruno descendo uma escadaria com o texto “Não leia revistas de beleza”"></button><figcaption>Reel</figcaption></figure>
-        <div class="vaga"><svg><use href="#i-video"/></svg><b>Reel de humor</b><span>Enviar link ou vídeo</span></div>
-        <div class="vaga"><svg><use href="#i-video"/></svg><b>Reel de humor</b><span>Enviar link ou vídeo</span></div>
-      </div>
-      <div class="falta sobe" role="note" style="margin-top:22px"><span class="falta__tag">Material pendente</span><p>Os reels favoritos do Bruno e as categorias para organizar (por exemplo, por série ou tema que ele já usa nos destaques).</p></div>
-      <div class="acoes sobe" style="margin-top:26px">
-        <a class="btn" href="https://www.instagram.com/obrunozampieri/reels/" target="_blank" rel="noopener"><svg><use href="#i-video"/></svg>Ver os reels no Instagram</a>
-      </div>
-    </div>
-  </section>
-
-  <div class="horizonte" aria-hidden="true"></div>
-
   <!-- ============ MODELAGEM ============ -->
-  <section class="faixa" id="modelagem" data-forma="1" aria-labelledby="model-t">
+  <section class="faixa faixa--escura" id="modelagem" data-forma="1" aria-labelledby="model-t">
     <div class="faixa__in">
       <div class="cab cab--lado sobe">
         <div>
@@ -642,10 +562,9 @@ a.rede:hover{border-color:var(--sol)}
         </div>
       </div>
       <div class="retratos" data-galeria="retratos">
-        <figure class="retrato"><button type="button" data-zoom><img src="img/gravata-borboleta.webp" width="760" height="1139" loading="lazy" alt="Retrato em preto e branco: Bruno de smoking e gravata-borboleta, olhando para a câmera"></button><figcaption>Ensaio em estúdio</figcaption></figure>
-        <figure class="retrato"><button type="button" data-zoom><img src="img/retrato-estudio.webp" width="760" height="1141" loading="lazy" alt="Retrato de estúdio do Bruno com fundo preto e corrente prateada"></button><figcaption>Retrato</figcaption></figure>
-        <p class="retratos__marca" aria-hidden="true">Campanhas · Vestuário · Ensaios</p>
-      </div>
+        <figure class="retrato"><button type="button" data-zoom><img src="img/gravata-borboleta.webp" width="760" height="1139" loading="lazy" alt="Retrato em preto e branco: Bruno de smoking e gravata-borboleta, olhando para a câmera"></button><figcaption><span><b>Preto e branco.</b> Smoking, gravata-borboleta e luz dura.</span></figcaption></figure>
+        <figure class="retrato"><button type="button" data-zoom><img src="img/retrato-estudio.webp" width="760" height="1141" loading="lazy" alt="Retrato de estúdio do Bruno com fundo preto e corrente prateada"></button><figcaption><span><b>Retrato de estúdio.</b> Fundo preto, pele e prata.</span></figcaption></figure>
+              </div>
 
       <div class="servico sobe">
         <div>
@@ -657,12 +576,12 @@ a.rede:hover{border-color:var(--sol)}
       </div>
 
       <div class="book sobe" data-galeria="modelagem">
-        <figure class="quadro destaque"><button type="button" data-zoom><img src="img/terno-celulares.webp" width="545" height="672" loading="lazy" alt="Ensaio: Bruno de terno preto e óculos brancos, sentado, cercado por mãos segurando celulares que o fotografam"></button><figcaption>Ensaio de terno</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/jaqueta-couro.webp" width="194" height="236" loading="lazy" alt="Bruno de jaqueta de couro preta e boné"></button><figcaption>Couro</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/oculos-preto.webp" width="194" height="236" loading="lazy" alt="Bruno de óculos escuros e camiseta preta diante de uma parede verde"></button><figcaption>Óculos escuros</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/puffer.webp" width="194" height="236" loading="lazy" alt="Bruno de jaqueta puffer preta e boné"></button><figcaption>Puffer</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/elevador.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa preta num elevador espelhado"></button><figcaption>Preto total</figcaption></figure>
-        <figure class="quadro"><button type="button" data-zoom><img src="img/trico-oculos.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa de tricô branca e óculos de sol"></button><figcaption>Tricô</figcaption></figure>
+        <figure class="quadro destaque"><button type="button" data-zoom><img src="img/terno-celulares.webp" width="545" height="672" loading="lazy" alt="Ensaio: Bruno de terno preto e óculos brancos, sentado, cercado por mãos segurando celulares que o fotografam"></button><figcaption><span><b>Ensaio de terno.</b> Seis telas, um olhar</span></figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/jaqueta-couro.webp" width="194" height="236" loading="lazy" alt="Bruno de jaqueta de couro preta e boné"></button><figcaption><span><b>Couro preto.</b> Jaqueta e boné</span></figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/oculos-preto.webp" width="194" height="236" loading="lazy" alt="Bruno de óculos escuros e camiseta preta diante de uma parede verde"></button><figcaption><span><b>Óculos escuros.</b> Fundo de folhas</span></figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/puffer.webp" width="194" height="236" loading="lazy" alt="Bruno de jaqueta puffer preta e boné"></button><figcaption><span><b>Puffer.</b> Preto brilhante</span></figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/elevador.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa preta num elevador espelhado"></button><figcaption><span><b>Preto total.</b> Elevador espelhado</span></figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/trico-oculos.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa de tricô branca e óculos de sol"></button><figcaption><span><b>Tricô.</b> Branco e óculos de sol</span></figcaption></figure>
       </div>
       <div class="falta sobe" role="note" style="margin-top:22px"><span class="falta__tag">Material pendente</span><p>Mais fotos em alta resolução e, se ele quiser, as lojas e campanhas que já fotografou. As fotos pequenas da grade vieram de capturas de tela.</p></div>
     </div>
@@ -682,7 +601,6 @@ a.rede:hover{border-color:var(--sol)}
     <div class="drone__fundo" aria-hidden="true">
       <img src="img/drone-2-capa.webp" alt="" id="drone-capa">
       <video id="video-drone" muted loop playsinline preload="none" poster="img/drone-2-capa.webp" data-src="video/drone-2.mp4"></video>
-      <span class="varre"></span>
     </div>
     <div class="faixa__in">
       <div class="cab sobe">
@@ -707,9 +625,6 @@ a.rede:hover{border-color:var(--sol)}
             <small>Instagram</small><b>Reel editado</b><span class="sub" style="font-size:.875rem">Abre o vídeo no Instagram ↗</span>
           </a>
         </div>
-        <div class="acoes" style="margin-top:16px">
-          <button class="btn" type="button" id="drone-som"><svg><use href="#i-video"/></svg>Assistir com som</button>
-        </div>
 
         <div class="drone__info">
           <dl class="info">
@@ -726,6 +641,100 @@ a.rede:hover{border-color:var(--sol)}
     </div>
   </section>
 
+  <!-- ============ MASSOTERAPIA ============ -->
+  <section class="faixa massa-sec" id="massoterapia" data-forma="1" aria-labelledby="massa-t">
+    <div class="respira" aria-hidden="true"></div>
+    <div class="faixa__in">
+      <div class="cab cab--lado sobe">
+        <div>
+          <span class="olho">Atendimento profissional</span>
+          <h2 id="massa-t">Massoterapia</h2>
+        </div>
+        <p class="lead">Três formas de cuidar do corpo, cada uma com sessão de 1 hora. Escolha uma para ver como funciona e o que ela pode fazer por você.</p>
+      </div>
+
+      <div class="massa-palco sobe">
+        <div class="massa-abas" role="tablist" aria-label="Tipos de massagem">
+          <button role="tab" id="aba-ventosa" aria-controls="painel-ventosa" aria-selected="true" tabindex="0"><span class="massa-abas__n">Sucção</span>Ventosaterapia</button>
+          <button role="tab" id="aba-quiro" aria-controls="painel-quiro" aria-selected="false" tabindex="-1"><span class="massa-abas__n">Coluna</span>Quiropraxia</button>
+          <button role="tab" id="aba-relax" aria-controls="painel-relax" aria-selected="false" tabindex="-1"><span class="massa-abas__n">Calma</span>Relaxante</button>
+        </div>
+
+        <div class="massa-paineis">
+          <article class="massa-painel" role="tabpanel" id="painel-ventosa" aria-labelledby="aba-ventosa">
+            <p class="massa-painel__como">Copos aplicados sobre a pele criam uma leve sucção que puxa o músculo para cima e solta os pontos presos.</p>
+            <ul class="beneficios">
+              <li><b>Alívio de dores musculares</b> nas costas, nos ombros e no pescoço.</li>
+              <li><b>Soltura de nós de tensão</b> que se acumulam com treino, postura e estresse.</li>
+              <li><b>Sensação de leveza</b> e de corpo mais solto depois da sessão.</li>
+            </ul>
+            <p class="massa-painel__nota">É normal ficarem marcas redondas na pele por alguns dias. Elas somem sozinhas.</p>
+          </article>
+          <article class="massa-painel" role="tabpanel" id="painel-quiro" aria-labelledby="aba-quiro" hidden>
+            <p class="massa-painel__como">Técnicas manuais na coluna e nas articulações para devolver movimento e aliviar travas.</p>
+            <ul class="beneficios">
+              <li><b>Alívio da dor lombar</b> e da tensão no pescoço, principalmente em crises recentes.</li>
+              <li><b>Mais mobilidade</b> na coluna e nas articulações.</li>
+              <li><b>Melhor resultado junto com exercícios</b> e cuidado com a postura no dia a dia.</li>
+            </ul>
+            <p class="massa-painel__nota">Avise antes se você já fez cirurgia na coluna, teve AVC ou tem problema de circulação.</p>
+          </article>
+          <article class="massa-painel" role="tabpanel" id="painel-relax" aria-labelledby="aba-relax" hidden>
+            <p class="massa-painel__como">Movimentos lentos e contínuos, com pressão leve a média, para o corpo desacelerar por uma hora.</p>
+            <ul class="beneficios">
+              <li><b>Menos tensão muscular</b> acumulada na semana.</li>
+              <li><b>Menos estresse</b> e mais sensação de calma.</li>
+              <li><b>Descanso melhor</b> nas noites seguintes.</li>
+            </ul>
+            <div class="folego" aria-hidden="true"><span class="folego__bola"></span><span class="folego__txt"><i>inspire</i><i>solte</i></span></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="massa-ficha sobe">
+        <div><span class="rotulo">Sessão</span><strong>1 hora</strong></div>
+        <div><span class="rotulo">Valores</span><strong>Pelo WhatsApp</strong></div>
+        <div><span class="rotulo">Pagamento</span><strong>Dinheiro, Pix ou cartão de crédito</strong></div>
+        <div><span class="rotulo">Local</span><strong class="pend">A definir com o Bruno</strong></div>
+      </div>
+
+      <div class="massa-rodape sobe">
+        <div class="acoes">
+          <a class="btn btn--sol" href="#contato" data-canal="whatsapp" data-msg="Olá, Bruno! Vim pelo seu site e quero agendar uma massagem."><svg><use href="#i-conversa"/></svg><span>Agendar pelo WhatsApp</span><small class="btn__pend">número pendente</small></a>
+          <a class="btn" href="https://www.instagram.com/massagon47/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>@massagon47</a>
+        </div>
+        <p class="massa-aviso">As sessões não substituem avaliação médica. Em caso de fratura, osteoporose, feridas abertas, problema de coagulação ou gravidez, avise antes de agendar.</p>
+      </div>
+      <div class="falta sobe" role="note" style="margin-top:22px"><span class="falta__tag">Material pendente</span><p>Endereço ou região de atendimento e de 3 a 6 fotos do espaço.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ LIFESTYLE ============ -->
+  <section class="faixa faixa--escura" id="lifestyle" data-forma="1" aria-labelledby="life-t">
+    <div class="faixa__in">
+      <div class="cab cab--lado sobe">
+        <div>
+          <span class="olho">Dia a dia</span>
+          <h2 id="life-t">Lifestyle</h2>
+        </div>
+        <p class="citacao">“Me acompanha no dia a dia.”<small>Da bio do Instagram</small></p>
+      </div>
+      <p class="sub sobe" style="margin-bottom:26px">Rotina, experiências, eventos e viagens. Arraste para o lado e toque numa foto para ampliar.</p>
+      <div class="filme sobe" data-galeria="lifestyle" tabindex="0" aria-label="Fotos de lifestyle, role para o lado">
+        <figure class="quadro"><button type="button" data-zoom><img src="img/cachoeira.webp" width="194" height="236" loading="lazy" alt="Bruno sorrindo dentro de uma piscina com cascata de pedras ao fundo"></button><figcaption><span><b>Cascata.</b> Água fria no meio do verde</span></figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/camera.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa branca visto na tela de uma câmera digital"></button><figcaption><span><b>Na câmera.</b> Bastidor na tela da Sony</span></figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/sol.webp" width="194" height="236" loading="lazy" alt="Bruno de camisa branca de tricô num dia de sol"></button><figcaption><span><b>Dia de sol.</b> Tricô branco e luz direta</span></figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/camisa-19.webp" width="194" height="236" loading="lazy" alt="Bruno tirando selfie no espelho com camisa vermelha de futebol número 19"></button><figcaption><span><b>Camisa 19.</b> Dia de jogo</span></figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/piscina.webp" width="194" height="236" loading="lazy" alt="Bruno sem camisa à beira da piscina"></button><figcaption><span><b>Beira da piscina.</b> Fim de tarde</span></figcaption></figure>
+        <figure class="quadro"><button type="button" data-zoom><img src="img/espelho.webp" width="194" height="236" loading="lazy" alt="Bruno de camiseta branca tirando selfie no espelho"></button><figcaption><span><b>Espelho.</b> Camiseta branca, sem pose</span></figcaption></figure>
+        <div class="vaga"><svg><use href="#i-foto"/></svg><b>Viagens e eventos</b><span>Enviar mais fotos ou destaques</span></div>
+      </div>
+      <div class="acoes sobe" style="margin-top:28px">
+        <a class="btn" href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener"><svg><use href="#i-insta"/></svg>Acompanhar no Instagram</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ PARCERIAS ============ -->
   <section class="faixa faixa--escura" id="parcerias" data-forma="3" aria-labelledby="parc-t">
     <div class="faixa__in">
@@ -735,7 +744,7 @@ a.rede:hover{border-color:var(--sol)}
       </div>
       <div class="parc">
         <div class="bloco sobe">
-          <p class="lead">Conteúdo pra quem curte boa energia e autenticidade. Lifestyle, humor e modelagem no mesmo perfil, com o tom espontâneo do Instagram.</p>
+          <p class="lead">Conteúdo pra quem curte boa energia e autenticidade. Modelagem, drone, massoterapia e lifestyle no mesmo perfil, com o tom espontâneo do Instagram.</p>
           <h3 style="margin-top:18px">Formatos de colaboração</h3>
           <dl class="info">
             <div><dt>Vestuário</dt><dd>Fotos para campanhas e roupas de lojas, em parceria</dd></div>
@@ -757,7 +766,7 @@ a.rede:hover{border-color:var(--sol)}
           </div>
           <div style="display:grid;gap:10px">
             <span class="rotulo">Temas de conteúdo</span>
-            <ul class="temas"><li>Lifestyle</li><li>Humor</li><li>Modelagem</li><li>Massoterapia</li><li>Drone</li></ul>
+            <ul class="temas"><li>Modelagem</li><li>Drone</li><li>Massoterapia</li><li>Lifestyle</li></ul>
           </div>
           <p class="sub" style="font-size:.875rem">Na bio: “Parcerias via Direct”.</p>
         </aside>
@@ -812,16 +821,11 @@ a.rede:hover{border-color:var(--sol)}
     <div style="display:grid;gap:8px">
       <p><a href="https://www.instagram.com/obrunozampieri/" target="_blank" rel="noopener">@obrunozampieri</a></p>
       <p><a href="https://www.tiktok.com/@brunozamp7" target="_blank" rel="noopener">TikTok @brunozamp7</a> · <a href="mailto:zampiericontato87@gmail.com">zampiericontato87@gmail.com</a></p>
-      <p>Massoterapia · Lifestyle · Humor · Modelagem · Drone</p>
+      <p>Modelagem · Drone · Massoterapia · Lifestyle</p>
       <p><a href="#inicio">Voltar ao topo ↑</a></p>
     </div>
   </div>
 </footer>
-
-<dialog class="zoom player" id="player" aria-label="Vídeo de drone">
-  <div class="zoom__in"><video id="player-video" controls playsinline preload="none"></video></div>
-  <button class="zoom__btn zoom__fechar" type="button" id="player-fechar" aria-label="Fechar vídeo">✕</button>
-</dialog>
 
 <dialog class="zoom" id="zoom" aria-label="Foto ampliada">
   <div class="zoom__in"><img id="zoom-img" alt=""></div>
@@ -854,7 +858,6 @@ const CONTATO = { whatsapp: "", email: "zampiericontato87@gmail.com" };
     }
   });
   if (CONTATO.email) document.querySelectorAll('[data-email-texto]').forEach(p => p.textContent = CONTATO.email);
-  if (CONTATO.whatsapp) document.querySelectorAll('.info .pend').forEach((s, i) => { if (i === 0) s.remove(); });
 
   // ---- Menu no celular ----
   const btn = document.getElementById('menu-btn'), nav = document.getElementById('nav');
@@ -902,6 +905,26 @@ const CONTATO = { whatsapp: "", email: "zampiericontato87@gmail.com" };
   dlg.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') passo(-1); if (e.key === 'ArrowRight') passo(1); });
 })();
 
+/* Abas da massoterapia */
+(() => {
+  const abas = [...document.querySelectorAll('.massa-abas [role="tab"]')];
+  const ativar = (aba, foco) => {
+    abas.forEach(a => {
+      const on = a === aba;
+      a.setAttribute('aria-selected', String(on)); a.tabIndex = on ? 0 : -1;
+      document.getElementById(a.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (foco) aba.focus();
+  };
+  abas.forEach((a, i) => {
+    a.addEventListener('click', () => ativar(a));
+    a.addEventListener('keydown', e => {
+      const d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+      if (d) { e.preventDefault(); ativar(abas[(i + d + abas.length) % abas.length], true); }
+    });
+  });
+})();
+
 /* ============================================================
    Vídeos de drone no fundo (só carregam perto da tela; sem autoplay com movimento reduzido ou economia de dados)
    ============================================================ */
@@ -938,177 +961,8 @@ const CONTATO = { whatsapp: "", email: "zampiericontato87@gmail.com" };
     tocar(drone); drone.addEventListener('playing', () => capa.style.opacity = 0, { once: true });
   }));
 
-  // assistir com som
-  const dlg = document.getElementById('player'), pv = document.getElementById('player-video');
-  document.getElementById('drone-som').addEventListener('click', () => {
-    pv.src = drone.dataset.src; pv.poster = drone.poster; pv.muted = false;
-    if (dlg.showModal) dlg.showModal();
-    const p = pv.play(); if (p) p.catch(() => {});
-  });
-  const fecharPlayer = () => { pv.pause(); dlg.close(); };
-  document.getElementById('player-fechar').onclick = fecharPlayer;
-  dlg.addEventListener('click', e => { if (e.target === dlg || e.target.classList.contains('zoom__in')) fecharPlayer(); });
-  dlg.addEventListener('close', () => pv.pause());
 })();
 
-/* ============================================================
-   Partículas 3D (WebGL puro, sem biblioteca)
-   Formas: 0 pôr do sol nas dunas · 1 poeira · 2 terreno visto do drone · 3 anel
-   ============================================================ */
-(() => {
-  const cv = document.getElementById('particulas');
-  const gl = cv.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true, powerPreference: 'low-power' });
-  if (!gl) { cv.remove(); return; }
-  const reduz = matchMedia('(prefers-reduced-motion: reduce)');
-  const celular = matchMedia('(max-width: 760px)').matches || (navigator.hardwareConcurrency || 8) <= 4;
-  const N = celular ? 5200 : 12000;
-
-  const VS = `
-  precision highp float;
-  attribute vec4 aS;
-  uniform float uT, uM, uA, uS;
-  uniform vec2 uP;
-  varying vec3 vC; varying float vA;
-  const float PI = 3.14159265;
-  const vec3 cSol = vec3(1.0,.48,.18), cAmb = vec3(1.0,.70,.36), cCre = vec3(.82,.27,.43), cVio = vec3(.42,.27,.78), cAre = vec3(.95,.90,.83);
-  float dune(vec2 p){ return sin(p.x*.55+p.y*.35)*.55 + sin(p.x*1.25-p.y*.9+1.3)*.22 + sin(p.y*2.1+p.x*.4)*.08; }
-  void forma(float k, out vec3 p, out vec3 c, out float a){
-    float r1=aS.x, r2=aS.y, r3=aS.z, r4=aS.w;
-    if (k < .5) {
-      if (r4 < .26) {
-        float ang = r1*2.*PI + uT*.02; float rad = pow(r2,.55)*1.35;
-        p = vec3(cos(ang)*rad, .55+sin(ang)*rad, -5.);
-        p.xy += vec2(sin(uT*.7+r3*20.), cos(uT*.6+r3*17.))*.025;
-        c = mix(cAmb*1.1, cSol, rad/1.35); a = .75;
-      } else {
-        float x = (r1-.5)*18.; float z = 2.4 - r2*13.;
-        float h = dune(vec2(x + uT*.12, z));
-        p = vec3(x, -1.45 + h*.55, z);
-        float poeira = step(.93, r3);
-        p.y += poeira * fract(r3*37. + uT*.04) * 3.5;
-        p.x += sin(uT*.3 + r3*40.) * .15 * poeira;
-        c = mix(cCre*.75, cSol, clamp(h*.8+.45, 0., 1.));
-        c = mix(c, cAre, poeira*.6);
-        a = mix(.9, .3, r2);
-      }
-    } else if (k < 1.5) {
-      float ang = r1*2.*PI + uT*.015*(.5+r2);
-      float rad = 1.5 + r2*6.;
-      p = vec3(cos(ang)*rad, (fract(r3 + uT*.006) - .5)*8., -4. - sin(ang)*rad*.6);
-      c = mix(cAre, cAmb, r4); a = .28 + .22*r4;
-    } else if (k < 2.5) {
-      float lin = floor(r2*64.)/64.;
-      float x = (r1-.5)*14.; float z = (lin-.5)*14.;
-      vec2 q = vec2(x*.8, z*.8 - uT*.35);
-      float h = dune(q) + sin(q.x*.3+q.y*.2)*.6;
-      vec3 w = vec3(x, h*.6, z);
-      float cs = cos(-1.0), sn = sin(-1.0);
-      p = vec3(w.x, w.y*cs - w.z*sn, w.y*sn + w.z*cs) + vec3(0., -.4, -3.5);
-      c = mix(cVio, cAmb, clamp(h*.55+.5, 0., 1.)); a = .7;
-    } else {
-      float ang = r1*2.*PI + uT*.05;
-      float R = 2.3 + (r2-.5)*.5 + sin(ang*6. + uT*.4)*.06;
-      vec3 w = vec3(cos(ang)*R, sin(ang)*R, (r3-.5)*.35);
-      float tl = .95;
-      p = vec3(w.x, w.y*cos(tl) - w.z*sin(tl), w.y*sin(tl) + w.z*cos(tl)) + vec3(0., 0., -2.5);
-      c = mix(cSol, cCre, .5+.5*sin(ang)); c = mix(c, cAmb, .5+.5*cos(ang*2.)); a = .7;
-      if (r4 > .86) { p = vec3((r1-.5)*14., (r2-.5)*8., -r3*6. - 1.); c = cAre; a = .35; }
-    }
-  }
-  void main(){
-    float m = clamp(uM, 0., 3.);
-    float k0 = floor(m); float f = m - k0;
-    float lf = smoothstep(0., 1., clamp(f*1.7 - aS.x*.7, 0., 1.));
-    vec3 p0, c0, p1, c1; float a0, a1;
-    forma(k0, p0, c0, a0); forma(min(k0+1., 3.), p1, c1, a1);
-    vec3 p = mix(p0, p1, lf);
-    vC = mix(c0, c1, lf); vA = mix(a0, a1, lf);
-    vec3 v = p - vec3(uP.x*.4, uP.y*.25, 6.);
-    float zv = -v.z;
-    gl_Position = vec4(v.x*1.9/uA, v.y*1.9, 0., max(zv, .001));
-    gl_PointSize = uS*(.6 + aS.z*1.1)/max(zv, .3);
-    vA *= smoothstep(.4, 1.6, zv);
-  }`;
-  const FS = `
-  precision mediump float;
-  varying vec3 vC; varying float vA;
-  uniform float uG;
-  void main(){
-    vec2 d = gl_PointCoord - .5;
-    float a = exp(-dot(d,d)*14.) * vA * uG;
-    if (a < .01) discard;
-    gl_FragColor = vec4(vC*a, a);
-  }`;
-  const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
-  let pr;
-  try {
-    pr = gl.createProgram();
-    gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS));
-    gl.linkProgram(pr);
-    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
-  } catch (e) { console.warn('Partículas desligadas:', e); cv.remove(); return; }
-  gl.useProgram(pr);
-
-  // sementes aleatórias fixas (mesma cena a cada visita)
-  let s = 7; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
-  const dados = new Float32Array(N * 4); for (let i = 0; i < dados.length; i++) dados[i] = rnd();
-  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, dados, gl.STATIC_DRAW);
-  const aS = gl.getAttribLocation(pr, 'aS'); gl.enableVertexAttribArray(aS); gl.vertexAttribPointer(aS, 4, gl.FLOAT, false, 0, 0);
-  const U = n => gl.getUniformLocation(pr, n);
-  const uT = U('uT'), uM = U('uM'), uA = U('uA'), uS = U('uS'), uP = U('uP'), uG = U('uG');
-  gl.disable(gl.DEPTH_TEST); gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
-
-  let W = 0, H = 0, dpr = 1;
-  const tamanho = () => {
-    dpr = Math.min(devicePixelRatio || 1, celular ? 1.25 : 1.5);
-    W = innerWidth; H = innerHeight;
-    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-    gl.viewport(0, 0, cv.width, cv.height);
-    gl.uniform1f(uA, W / H);
-    gl.uniform1f(uS, (celular ? 30 : 26) * dpr * Math.min(1.25, Math.max(.8, H / 900)));
-  };
-  tamanho(); addEventListener('resize', tamanho);
-
-  // forma de cada seção, interpolada pela rolagem
-  const ancoras = [...document.querySelectorAll('[data-forma]')];
-  let pontos = [];
-  const medir = () => { pontos = ancoras.map(el => { const r = el.getBoundingClientRect(); return { y: r.top + scrollY + r.height / 2, f: +el.dataset.forma }; }); };
-  medir(); addEventListener('resize', medir); addEventListener('load', medir);
-  const alvo = () => {
-    const y = scrollY + innerHeight / 2;
-    if (!pontos.length || y <= pontos[0].y) return pontos[0]?.f ?? 0;
-    for (let i = 1; i < pontos.length; i++) {
-      if (y <= pontos[i].y) { const a = pontos[i - 1], b = pontos[i]; const t = (y - a.y) / (b.y - a.y); return a.f + (b.f - a.f) * t; }
-    }
-    return pontos[pontos.length - 1].f;
-  };
-  const brilhoDe = m => m < 1 ? 1 - m * .45 : m < 2 ? .55 + (m - 1) * .45 : 1 - (m - 2) * .2;
-
-  let m = alvo(), px = 0, py = 0, tx = 0, ty = 0, rodando = false, t0 = performance.now(), tAcum = 0, ultimo = t0;
-  addEventListener('pointermove', e => { tx = e.clientX / W * 2 - 1; ty = -(e.clientY / H * 2 - 1); }, { passive: true });
-
-  const desenhar = (t, morph) => {
-    gl.uniform1f(uT, t); gl.uniform1f(uM, morph); gl.uniform2f(uP, px, py); gl.uniform1f(uG, brilhoDe(morph));
-    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.drawArrays(gl.POINTS, 0, N);
-  };
-  const quadro = agora => {
-    if (!rodando) return;
-    const dt = Math.min(.05, (agora - ultimo) / 1000); ultimo = agora; tAcum += dt;
-    m += (alvo() - m) * Math.min(1, dt * 3.2);
-    px += (tx - px) * dt * 2; py += (ty - py) * dt * 2;
-    desenhar(tAcum + 6, m);
-    requestAnimationFrame(quadro);
-  };
-  const iniciar = () => { if (rodando || reduz.matches || document.hidden) return; rodando = true; ultimo = performance.now(); requestAnimationFrame(quadro); };
-  const parar = () => { rodando = false; };
-  // Movimento reduzido: um quadro parado do pôr do sol, sem animação nem troca de forma.
-  const estatico = () => { parar(); px = py = 0; desenhar(8, 0); };
-  document.addEventListener('visibilitychange', () => document.hidden ? parar() : iniciar());
-  reduz.addEventListener?.('change', () => reduz.matches ? estatico() : iniciar());
-  addEventListener('resize', () => { if (reduz.matches) estatico(); });
-  if (reduz.matches) estatico(); else iniciar();
-})();
 </script>
 </body>
 </html>
