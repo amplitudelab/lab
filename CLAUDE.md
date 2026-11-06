@@ -66,6 +66,13 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   (`amplitudelab.github.io/lab/clientes/`), que é o único lugar que reúne o grupo e
   também guarda o passo a passo para entrar um site novo. Não confundir com `demos/`,
   que são prévias para fechar negócio.
+  - A lista **pede o código de acesso do CRM**. Como o repositório é público, os nomes
+    dos clientes não ficam no HTML: eles vivem em `SITES`, dentro da função
+    `clientes-lista` (`crm/supabase/producao/functions/clientes-lista/index.ts`), que
+    confere o código contra `access_codes` e só então devolve a lista. Para incluir um
+    cliente, acrescente a linha em `SITES` **e faça o deploy da função**; mudar só o
+    HTML não adianta. A função tem limite de tentativas (5 por IP em 15 min, 10 por
+    hora no total) e nunca guarda o código, só compara com o hash.
   - `bruno-zampieri/`: página do criador Bruno Zampieri (@obrunozampieri). Contatos no
     objeto `CONTATO` do script.
   - `bruxo/`: página do DJ Bruxo (@bruxoemsp) — Progressive, Hard e Hi-Tech. Fotos em

@@ -23,6 +23,7 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.55 var(--f-sans);-webkit-font-smoothing:antialiased}
 .wrap{max-width:720px;margin:0 auto;padding:calc(40px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(56px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 a{color:inherit}
@@ -35,9 +36,7 @@ h1{font:800 clamp(34px,9vw,56px)/1 var(--f-display);letter-spacing:-.04em;margin
 .item{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel);text-decoration:none;transition:border-color .2s,background-color .2s}
 .item:hover{border-color:var(--line-2);background:#111a2e}
 .sw{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;overflow:hidden;position:relative;flex:0 0 auto}
-.sw-bruxo{background:radial-gradient(circle at 35% 30%,#2a1038,#07040d 72%);border:1px solid #3a1f4e}
-.sw-bruno{background:radial-gradient(circle at 30% 30%,#2a1c13,#0d0a09 70%);border:1px solid #3d3532}
-.sw svg{width:30px;height:30px}
+.sw{font:700 15px/1 var(--f-display);letter-spacing:.02em}
 .name{display:block;font:700 19px/1.15 var(--f-display);letter-spacing:-.03em}
 .meta{display:block;font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:6px}
 .url{display:block;font:400 12px var(--f-mono);color:var(--dim);margin-top:5px;word-break:break-all}
@@ -50,6 +49,16 @@ h1{font:800 clamp(34px,9vw,56px)/1 var(--f-display);letter-spacing:-.04em;margin
 .regra li + li{margin-top:7px}
 .regra code{font:400 13px var(--f-mono);color:var(--verde)}
 .note{margin-top:24px;font-size:14px;color:var(--dim)}
+/* Portão de acesso */
+.gate{margin:36px 0 0;border:1px solid var(--line);border-radius:16px;padding:22px;background:var(--panel);display:grid;gap:14px;max-width:420px}
+.gate label{font:500 12px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gate input{width:100%;padding:13px 14px;border:1px solid var(--line-2);border-radius:10px;background:#070b14;color:var(--fg);font:400 16px var(--f-mono)}
+.gate input:focus-visible{outline:2px solid var(--volt-hi);outline-offset:2px}
+.gate button{padding:13px 18px;border:0;border-radius:10px;background:var(--volt);color:#06101f;font:600 15px var(--f-sans);cursor:pointer;justify-self:start}
+.gate button:hover{background:var(--volt-hi)}
+.gate button[disabled]{opacity:.6;cursor:progress}
+.gate .erro{color:#ff8a8a;font-size:14px;min-height:1.2em;margin:0}
+.gate .dica{color:var(--dim);font-size:13.5px;margin:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -58,39 +67,17 @@ h1{font:800 clamp(34px,9vw,56px)/1 var(--f-display);letter-spacing:-.04em;margin
   <a class="back" href="../">← Amplitude Lab</a>
   <p class="eyebrow">Grupo separado · sites entregues</p>
   <h1>Sites de clientes</h1>
-  <p class="lede">Cada site aqui tem identidade própria e vive solto na raiz do repositório, com o nome do cliente direto no fim do link. Nada do site da Amplitude aponta para eles, e nenhum deles usa o CRM, o orçamento ou o WhatsApp da Amplitude. Esta lista é o único lugar que reúne todos.</p>
+  <p class="lede">Cada site aqui tem identidade própria e vive solto na raiz do repositório, com o nome do cliente direto no fim do link. Nada do site da Amplitude aponta para eles, e nenhum deles usa o CRM, o orçamento ou o WhatsApp da Amplitude. Esta lista é o único lugar que reúne todos, e só abre com o código de acesso.</p>
 
-  <ul class="list">
-    <li>
-      <a class="item" href="../bruxo/">
-        <span class="sw sw-bruxo" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="13" stroke="#e0a44a" stroke-width="2"/><path d="M20 7a13 13 0 0 0 0 26 9 9 0 0 1 0-26Z" fill="#e0a44a"/><circle cx="20" cy="20" r="17" stroke="#ff2fd0" stroke-opacity=".5" stroke-width="1.2" stroke-dasharray="2 5"/></svg></span>
-        <span>
-          <span class="name">BRUXO</span>
-          <span class="meta">DJ · Progressive, Hard e Hi-Tech · nov 2026</span>
-          <span class="url">amplitudelab.github.io/lab/bruxo/</span>
-        </span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-    </li>
-    <li>
-      <a class="item" href="../bruno-zampieri/">
-        <span class="sw sw-bruno" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="15" r="7" fill="#ffb35c"/><path d="M6 33c3-7 8-10 14-10s11 3 14 10" stroke="#ff7b2f" stroke-width="2.4" stroke-linecap="round"/></svg></span>
-        <span>
-          <span class="name">Bruno Zampieri</span>
-          <span class="meta">Criador · modelagem, drone e massoterapia · nov 2026</span>
-          <span class="url">amplitudelab.github.io/lab/bruno-zampieri/</span>
-        </span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-    </li>
-    <li>
-      <div class="item soon">
-        <span class="sw" aria-hidden="true"></span>
-        <span><span class="name">Próximo cliente</span><span class="meta">Em produção</span></span>
-        <span></span>
-      </div>
-    </li>
-  </ul>
+  <form class="gate" id="gate">
+    <label for="codigo">Código de acesso</label>
+    <input id="codigo" name="codigo" type="password" autocomplete="current-password" inputmode="text" required>
+    <button type="submit" id="entrar">Ver a lista</button>
+    <p class="erro" id="erro" role="alert"></p>
+    <p class="dica">É o mesmo código de acesso do CRM. Os nomes dos clientes não ficam nesta página: eles chegam do servidor depois do código.</p>
+  </form>
+
+  <ul class="list" id="lista" hidden></ul>
 
   <section class="regra">
     <h2>Como entra um site novo aqui</h2>
@@ -105,5 +92,51 @@ h1{font:800 clamp(34px,9vw,56px)/1 var(--f-display);letter-spacing:-.04em;margin
 
   <p class="note">Prévias montadas para fechar negócio, que ainda não são sites entregues, ficam em <a href="../demos/">demos</a>.</p>
 </main>
+<script>
+(() => {
+  const SB = 'https://ozregdgphaxkxumsujys.supabase.co', KEY = 'sb_publishable_JzclZYD3n7EQ1GAXGhB5RQ_1Ur4_784';
+  const gate = document.getElementById('gate'), campo = document.getElementById('codigo');
+  const botao = document.getElementById('entrar'), erro = document.getElementById('erro'), lista = document.getElementById('lista');
+  const cor = v => /^#[0-9a-f]{6}$/i.test(String(v)) ? v : '#5b8cff';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  const mostrar = sites => {
+    lista.innerHTML = sites.map(s => `<li>
+      <a class="item" href="${esc(s.url)}">
+        <span class="sw" aria-hidden="true" style="color:${cor(s.cor)};background:radial-gradient(circle at 32% 30%,${cor(s.fundo)},#07040d 72%);border:1px solid ${cor(s.cor)}33">${esc(s.inicial || '')}</span>
+        <span>
+          <span class="name">${esc(s.nome)}</span>
+          <span class="meta">${esc(s.sobre)}</span>
+          <span class="url">${esc(s.endereco)}</span>
+        </span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </li>`).join('') + `<li><div class="item soon"><span class="sw" aria-hidden="true"></span><span><span class="name">Próximo cliente</span><span class="meta">Em produção</span></span><span></span></div></li>`;
+    gate.hidden = true;
+    lista.hidden = false;
+    lista.querySelector('a')?.focus();
+  };
+
+  gate.addEventListener('submit', async e => {
+    e.preventDefault();
+    const code = campo.value.trim();
+    if (!code) return;
+    botao.disabled = true; erro.textContent = '';
+    try {
+      const r = await fetch(SB + '/functions/v1/clientes-lista', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY },
+        body: JSON.stringify({ code }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok && Array.isArray(d.sites)) { campo.value = ''; mostrar(d.sites); return; }
+      erro.textContent = d.error || 'Não deu certo. Tente de novo.';
+    } catch {
+      erro.textContent = 'Sem conexão com o servidor. Confira a internet.';
+    }
+    botao.disabled = false;
+  });
+})();
+</script>
 </body>
 </html>
