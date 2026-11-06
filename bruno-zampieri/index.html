@@ -454,6 +454,19 @@ a.rede:hover{border-color:var(--sol)}
 .pausa i{width:10px;height:12px;border-left:3px solid currentColor;border-right:3px solid currentColor}
 .pausa[aria-pressed="true"] i{border:0;width:0;height:0;border-left:10px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent}
 .pausa--hud{margin:0;padding:6px 12px 6px 8px;color:var(--areia)}
+
+/* ---------- Unidades ---------- */
+.unidades{margin-top:clamp(32px,5vw,56px);display:grid;gap:16px}
+.unidades__lista{list-style:none;margin:0;padding:0;display:grid;gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio);overflow:hidden}
+@media (min-width:640px){.unidades__lista{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1040px){.unidades__lista{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.unidades__lista a{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 14px;min-height:100%;padding:16px 18px;background:var(--couro);text-decoration:none;transition:background .25s}
+.unidades__lista a:hover{background:var(--couro-2)}
+.unidades__lista b{font:400 1.5rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.unidades__lista span{grid-column:1;color:var(--poeira);font-size:.875rem;min-width:0}
+.unidades__lista svg{grid-row:1/3;width:18px;height:18px;color:var(--poeira);transition:transform .25s,color .25s}
+.unidades__lista a:hover svg{transform:translate(2px,-2px);color:var(--sol)}
+.unidades__nota{font:400 .8125rem/1.5 var(--f-mono);color:var(--poeira)}
 </style>
 </head>
 <body>
@@ -670,13 +683,13 @@ a.rede:hover{border-color:var(--sol)}
         </div>
       </div>
 
-      <p class="massa-ilustra">Fotos ilustrativas, de banco de imagens.</p>
+      <p class="massa-ilustra">Fotos ilustrativas dos tipos de massagem, de banco de imagens.</p>
 
       <div class="massa-ficha sobe">
         <div><span class="rotulo">Sessão</span><strong>1 hora</strong></div>
         <div><span class="rotulo">Valores</span><strong>Pelo WhatsApp</strong></div>
         <div><span class="rotulo">Pagamento</span><strong>Dinheiro, Pix ou cartão de crédito</strong></div>
-        <div><span class="rotulo">Onde atende</span><strong>Moema, Vila Mariana e Tatuapé, em São Paulo</strong></div>
+        <div><span class="rotulo">Onde atende</span><strong>7 unidades em São Paulo</strong></div>
       </div>
 
       <div class="massa-rodape sobe">
@@ -686,18 +699,31 @@ a.rede:hover{border-color:var(--sol)}
         </div>
         <p class="massa-aviso">As sessões não substituem avaliação médica. Em caso de fratura, osteoporose, feridas abertas, problema de coagulação ou gravidez, avise antes de agendar.</p>
       </div>
+      <div class="unidades sobe">
+        <h3>Unidades em São Paulo</h3>
+        <ul class="unidades__lista">
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Rua%20Manuel%20da%20N%C3%B3brega%2C%20354%2C%20S%C3%A3o%20Paulo" target="_blank" rel="noopener noreferrer"><b>Paulista</b><span>Rua Manuel da Nóbrega, 354</span><svg aria-hidden="true"><use href="#i-seta"/></svg></a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Rua%20Am%C3%A1lia%20de%20Noronha%2C%20151%2C%20S%C3%A3o%20Paulo" target="_blank" rel="noopener noreferrer"><b>Vila Madalena</b><span>Rua Amália de Noronha, 151</span><svg aria-hidden="true"><use href="#i-seta"/></svg></a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Rua%20Domingos%20de%20Morais%2C%202781%2C%20S%C3%A3o%20Paulo" target="_blank" rel="noopener noreferrer"><b>Vila Mariana</b><span>Rua Domingos de Morais, 2781</span><svg aria-hidden="true"><use href="#i-seta"/></svg></a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Rua%20Bom%20Sucesso%2C%20220%2C%20S%C3%A3o%20Paulo" target="_blank" rel="noopener noreferrer"><b>Tatuapé</b><span>Rua Bom Sucesso, 220</span><svg aria-hidden="true"><use href="#i-seta"/></svg></a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Rua%20Volunt%C3%A1rios%20da%20P%C3%A1tria%2C%202468%2C%20S%C3%A3o%20Paulo" target="_blank" rel="noopener noreferrer"><b>Santana</b><span>Rua Voluntários da Pátria, 2468</span><svg aria-hidden="true"><use href="#i-seta"/></svg></a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Av.%20Ant%C3%A1rtica%2C%20675%2C%20S%C3%A3o%20Paulo" target="_blank" rel="noopener noreferrer"><b>Perdizes</b><span>Av. Antártica, 675</span><svg aria-hidden="true"><use href="#i-seta"/></svg></a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Av.%20Ibirapuera%2C%202120%2C%20S%C3%A3o%20Paulo" target="_blank" rel="noopener noreferrer"><b>Moema</b><span>Av. Ibirapuera, 2120</span><svg aria-hidden="true"><use href="#i-seta"/></svg></a></li>
+        </ul>
+        <p class="unidades__nota">Combine a unidade pelo WhatsApp antes de ir. Os links abrem o endereço no mapa.</p>
+      </div>
+
       <div class="espaco sobe">
         <div class="espaco__cab">
           <h3>O espaço</h3>
           <div class="espaco__setas"><button type="button" data-dir="-1" aria-label="Foto anterior">←</button><button type="button" data-dir="1" aria-label="Próxima foto">→</button></div>
         </div>
-        <div class="espaco__trilho" tabindex="0" role="region" aria-label="Fotos ilustrativas do espaço, arraste para o lado">
-          <figure class="espaco__item"><img src="img/espaco-sala.webp" width="800" height="1067" loading="lazy" decoding="async" alt="Foto ilustrativa: sala de massagem com luz suave e maca de pedra"></figure>
-          <figure class="espaco__item"><img src="img/espaco-maca.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Foto ilustrativa: maca com toalha ao lado de uma janela"></figure>
-          <figure class="espaco__item"><img src="img/espaco-velas.webp" width="800" height="1200" loading="lazy" decoding="async" alt="Foto ilustrativa: velas e lavanda ao lado de uma sessão de massagem"></figure>
-          <figure class="espaco__item"><img src="img/espaco-toalha.webp" width="800" height="533" loading="lazy" decoding="async" alt="Foto ilustrativa: toalha enrolada e vela sobre a maca"></figure>
+        <div class="espaco__trilho" tabindex="0" role="region" aria-label="Fotos do espaço de atendimento, arraste para o lado">
+          <figure class="espaco__item"><img src="img/sala-maca.webp" width="960" height="1280" loading="lazy" decoding="async" alt="Sala de atendimento vista da maca, com toalhas enroladas e bancada clara ao fundo"></figure>
+          <figure class="espaco__item"><img src="img/sala-bancada.webp" width="1000" height="750" loading="lazy" decoding="async" alt="Bancada da sala com pia, espelhos e prateleira de madeira"></figure>
+          <figure class="espaco__item"><img src="img/sala-lateral.webp" width="960" height="1280" loading="lazy" decoding="async" alt="Vista lateral da sala, com bancada, cadeira e piso claro"></figure>
+          <figure class="espaco__item"><img src="img/sala-fisio.webp" width="1000" height="1333" loading="lazy" decoding="async" alt="Sala com maca azul de atendimento, carrinho de apoio e banqueta"></figure>
         </div>
-        <p class="massa-ilustra">Fotos ilustrativas, de banco de imagens.</p>
       </div>
     </div>
   </section>
@@ -710,17 +736,21 @@ a.rede:hover{border-color:var(--sol)}
           <span class="olho">Dia a dia</span>
           <h2 id="life-t">Lifestyle</h2>
         </div>
-        <p class="sub">Rotina, viagens e momentos do dia a dia. Role para entrar em cada cena.</p>
+        <p class="sub">Viagens, dunas, serra, show e a rotina. Role para entrar em cada cena.</p>
       </div>
       </div>
 
-    <div class="seq" id="seq-lifestyle" data-seq role="region" aria-label="Dia a dia do Bruno, role para passar fotos e vídeos" style="--n:4">
+    <div class="seq" id="seq-lifestyle" data-seq role="region" aria-label="Dia a dia do Bruno, role para passar fotos e vídeos" style="--n:8">
       <div class="seq__palco">
+        <div class="cena"><div class="cena__amb" data-fundo="img/balanco-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/balanco-capa.webp" data-src="video/balanco.mp4" width="464" height="832" style="aspect-ratio:464/832" aria-label="Vídeo: Bruno num balanço na beira da serra, com o sol se pondo"></video></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/falesias-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/falesias-capa.webp" data-src="video/falesias.mp4" width="464" height="832" style="aspect-ratio:464/832" aria-label="Vídeo: Bruno caminhando entre falésias de areia alaranjada"></video></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/duna-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/duna-capa.webp" data-src="video/duna.mp4" width="464" height="832" style="aspect-ratio:464/832" aria-label="Vídeo: Bruno pilotando um quadriciclo vermelho nas dunas"></video></div>
         <div class="cena"><div class="cena__amb" data-fundo="img/piscina-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/piscina-capa.webp" data-src="video/piscina.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno na piscina, embaixo de uma cascata"></video></div>
         <div class="cena"><div class="cena__amb" data-fundo="img/chapeu-sorriso.webp"></div><img class="cena__m" src="img/chapeu-sorriso.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno sorrindo de chapéu de couro, sentado num quadriciclo" loading="lazy" decoding="async"></div>
-        <div class="cena"><div class="cena__amb" data-fundo="img/quadriciclo-reel-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/quadriciclo-reel-capa.webp" data-src="video/quadriciclo-reel.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno pilotando um quadriciclo no campo"></video></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/caminhada-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/caminhada-capa.webp" data-src="video/caminhada.mp4" width="464" height="832" style="aspect-ratio:464/832" aria-label="Vídeo: Bruno caminhando por uma rua arborizada"></video></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/show-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/show-capa.webp" data-src="video/show.mp4" width="464" height="832" style="aspect-ratio:464/832" aria-label="Vídeo: Bruno num show, no meio da multidão, com luzes e palmeiras"></video></div>
         <div class="cena"><div class="cena__amb" data-fundo="img/natal-escada-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/natal-escada-capa.webp" data-src="video/natal-escada.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno descendo uma escada decorada para o Natal"></video></div>
-        <div class="seq__ritmo" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="seq__ritmo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
     </div>
 
