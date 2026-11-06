@@ -56,12 +56,31 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   `modelos/kit.js` têm a barra "voltar ao hub", a simulação do WhatsApp (`AL.whats`),
   `AL.toast` e `AL.px`.
 - `demos/`: demos feitas para clientes reais (`noindex`).
-- `bruno-zampieri/`: página do criador Bruno Zampieri (@obrunozampieri), em
-  `amplitudelab.github.io/lab/bruno-zampieri/`. Identidade própria, separada da
-  Amplitude: nada do site da Amplitude aponta para ela, e o único link para a Amplitude
-  é a assinatura "Site feito por Amplitude Lab" no fim, pedida pelo dono. Contatos no
-  objeto `CONTATO` do script; `noindex`; CSP com hash do `<script>` inline (recalcule o
-  `sha256` sempre que mudar o script, senão ele não roda).
+- **Sites de clientes** — grupo à parte, sem ligação com o ecossistema da Amplitude
+  (nada de CRM, orçamento ou WhatsApp da Amplitude). Cada cliente tem uma pasta própria
+  **na raiz**, então o nome dele fica no fim do link:
+  `amplitudelab.github.io/lab/<cliente>/`. Regras do grupo: identidade do cliente,
+  `noindex`, tudo dentro da própria pasta (fontes, fotos e vídeo, sem CDN), nenhum link
+  do site da Amplitude apontando para lá, e como único laço a assinatura "Site feito por
+  Amplitude Lab" no rodapé. A lista de todos fica em `clientes/index.html`
+  (`amplitudelab.github.io/lab/clientes/`), que é o único lugar que reúne o grupo e
+  também guarda o passo a passo para entrar um site novo. Não confundir com `demos/`,
+  que são prévias para fechar negócio.
+  - `bruno-zampieri/`: página do criador Bruno Zampieri (@obrunozampieri). Contatos no
+    objeto `CONTATO` do script.
+  - `bruxo/`: página do DJ Bruxo (@bruxoemsp) — Progressive, Hard e Hi-Tech. Fotos em
+    `bruxo/img/` e fontes em `bruxo/fonts/` (Pirata One, Barlow, Barlow Condensed e
+    IBM Plex Mono, todas SIL OFL, licenças na mesma pasta). O campo de partículas do
+    fundo bate no BPM da seção em que o visitante está — 136 na abertura, 190 na
+    catarse —, e o HUD embaixo à esquerda mostra esse BPM e pausa o movimento. As
+    seções levam `data-bpm`; é de lá que sai o andamento.
+  - As duas páginas usam CSP com hash do `<script>` inline: **recalcule o `sha256`
+    sempre que mudar o script**, senão ele não roda. Para recalcular e já gravar no
+    cabeçalho:
+
+    ```bash
+    node -e "const f=process.argv[1],fs=require('fs'),c=require('crypto');const h=fs.readFileSync(f,'utf8');const m=h.match(/<script>([\s\S]*?)<\/script>/);const s=c.createHash('sha256').update(m[1],'utf8').digest('base64');fs.writeFileSync(f,h.replace(/script-src 'sha256-[^']*'/,\"script-src 'sha256-\"+s+\"'\"));console.log(s)" bruxo/index.html
+    ```
 - `crm/index.html`: página de vendas Site + CRM.
 - `crm/app/index.html`: protótipo do CRM, arquivo único, dados no `localStorage`
   (`amp-crm:v1:<tenant>`, `amp-crm:prefs`).
@@ -112,8 +131,10 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   antes (as animações de entrada dependem do scroll).
 - Links internos usam `index.html` explícito quando a página precisa abrir também do
   disco (pacote .zip).
-- Pacote para enviar: `git archive` do `main` sem `voxel-realms*` e sem `bruno-zampieri/`, mais uma página
-  `COMECE-AQUI.html` na raiz, zipado como `amplitude-lab-completo.zip`.
+- Pacote para enviar: `git archive` do `main` sem `voxel-realms*` e sem os sites de
+  clientes (`clientes/`, `bruno-zampieri/`, `bruxo/` e os próximos que entrarem na
+  lista), mais uma página `COMECE-AQUI.html` na raiz, zipado como
+  `amplitude-lab-completo.zip`.
 - Pull requests só quando pedido. O dono costuma pedir PR + merge no fim.
 
 ## Próximos passos
