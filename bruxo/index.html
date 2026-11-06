@@ -46,6 +46,8 @@
 }
 
 *{box-sizing:border-box; margin:0; padding:0;}
+/* Toda imagem guarda a proporção do arquivo: sem isso, os atributos width/height do HTML esticam a foto. */
+img{ max-width:100%; height:auto; }
 html{scroll-behavior:smooth; overflow-x:hidden; background:var(--void);}
 body{
   background:var(--void); color:var(--ink);
@@ -260,9 +262,21 @@ h1,h2,h3{ line-height:1.02; text-wrap:balance; font-weight:400; }
 
 /* ---------- A VIAGEM ---------- */
 .band{ position:relative; z-index:4; overflow:hidden; height:clamp(230px,38vw,400px); border-block:1px solid var(--line); }
-.band img{
-  position:absolute; inset:-14% 0; width:100%; height:128%; object-fit:cover;
-  object-position:center 40%; filter:contrast(1.1) saturate(1.05); will-change:transform;
+/* O fundo desfocado preenche a largura toda; a foto nítida nunca é ampliada além do que o arquivo aguenta. */
+.band-bg{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  object-position:center 40%; filter:blur(30px) saturate(1.15) brightness(.42); transform:scale(1.18);
+}
+.band-fg{
+  position:absolute; top:-14%; left:0; right:0; margin-inline:auto;
+  width:100%; height:128%; object-fit:cover; object-position:center 40%;
+  filter:contrast(1.1) saturate(1.05); will-change:transform;
+}
+@media (min-width:700px){
+  .band-fg{
+    width:clamp(360px, 34vw, 470px); max-width:none;
+    box-shadow:0 0 0 1px rgba(224,164,74,.2), 0 0 70px rgba(6,4,11,.85);
+  }
 }
 .band::after{
   content:""; position:absolute; inset:0;
@@ -333,7 +347,7 @@ h1,h2,h3{ line-height:1.02; text-wrap:balance; font-weight:400; }
 .lightbox.open{ display:flex; }
 .lightbox-backdrop{ position:absolute; inset:0; background:rgba(4,2,8,.95); backdrop-filter:blur(6px); }
 .lightbox-content{ position:relative; z-index:1; max-width:min(94vw,860px); max-height:84vh; display:grid; place-items:center; }
-.lightbox-content img{ max-width:100%; max-height:84vh; border-radius:4px; box-shadow:0 0 80px rgba(224,164,74,.22); }
+.lightbox-content img{ width:auto; max-width:min(100%,700px); max-height:min(84vh,700px); border-radius:4px; box-shadow:0 0 80px rgba(224,164,74,.22); }
 .lb-btn{
   position:absolute; z-index:2; width:44px; height:44px; border-radius:50%;
   border:1px solid var(--line-strong); background:rgba(8,5,14,.6); color:var(--ink);
@@ -510,7 +524,8 @@ footer h2{
 </section>
 
 <div class="band" data-bpm="150">
-  <img src="img/cabine.jpg" alt="Bruxo mixando na cabine sob luz verde" id="bandImg" width="536" height="700">
+  <img class="band-bg" src="img/cabine.jpg" alt="" aria-hidden="true" width="534" height="700">
+  <img class="band-fg" src="img/cabine.jpg" alt="Bruxo mixando na cabine sob luz verde" id="bandImg" width="534" height="700">
   <div class="band-label">A cabine · onde a curva começa a subir</div>
 </div>
 
@@ -595,13 +610,13 @@ footer h2{
     <div class="sec-note">Clique para ampliar</div>
   </div>
   <div class="mosaic" id="mosaic">
-    <figure class="tile rv" data-src="img/cabine.jpg"><img src="img/cabine.jpg" alt="Bruxo mixando sob luz verde" loading="lazy" width="536" height="700"><figcaption>nos pratos</figcaption></figure>
+    <figure class="tile rv" data-src="img/cabine.jpg"><img src="img/cabine.jpg" alt="Bruxo mixando sob luz verde" loading="lazy" width="534" height="700"><figcaption>nos pratos</figcaption></figure>
     <figure class="tile rv" data-src="img/retrato-pb.jpg"><img src="img/retrato-pb.jpg" alt="Retrato em preto e branco, sorrindo" loading="lazy" width="700" height="700"><figcaption>grillz</figcaption></figure>
     <figure class="tile rv" data-src="img/ponte.jpg"><img src="img/ponte.jpg" alt="Bruxo pendurado na estrutura de uma ponte ferroviária sobre a mata" loading="lazy" width="525" height="700"><figcaption>a ponte</figcaption></figure>
     <figure class="tile rv" data-src="img/parceiro.jpg"><img src="img/parceiro.jpg" alt="Bruxo rindo ao lado de um cão preto" loading="lazy" width="525" height="700"><figcaption>parceiro</figcaption></figure>
     <figure class="tile rv" data-src="img/retrato-vermelho.jpg"><img src="img/retrato-vermelho.jpg" alt="Retrato aproximado sobre fundo vermelho" loading="lazy" width="700" height="700"><figcaption>fundo vermelho</figcaption></figure>
     <figure class="tile rv" data-src="img/asfalto.jpg"><img src="img/asfalto.jpg" alt="Bruxo deitado no asfalto ao lado de um tênis" loading="lazy" width="466" height="700"><figcaption>asfalto</figcaption></figure>
-    <figure class="tile rv" data-src="img/set-dia.jpg"><img src="img/set-dia.jpg" alt="Bruxo tocando ao ar livre durante o dia" loading="lazy" width="450" height="700"><figcaption>luz do dia</figcaption></figure>
+    <figure class="tile rv" data-src="img/set-dia.jpg"><img src="img/set-dia.jpg" alt="Bruxo tocando ao ar livre durante o dia" loading="lazy" width="449" height="700"><figcaption>luz do dia</figcaption></figure>
   </div>
 </section>
 
@@ -629,7 +644,8 @@ footer h2{
 </section>
 
 <div class="band" data-bpm="190">
-  <img src="img/ponte.jpg" alt="Bruxo na estrutura de uma ponte sobre a mata" id="bandImg2" width="525" height="700">
+  <img class="band-bg" src="img/ponte.jpg" alt="" aria-hidden="true" width="525" height="700">
+  <img class="band-fg" src="img/ponte.jpg" alt="Bruxo na estrutura de uma ponte sobre a mata" id="bandImg2" width="525" height="700">
   <div class="band-label">Fora da pista · mesma frequência</div>
 </div>
 

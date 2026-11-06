@@ -81,6 +81,10 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
     fundo bate no BPM da seção em que o visitante está — 136 na abertura, 190 na
     catarse —, e o HUD embaixo à esquerda mostra esse BPM e pausa o movimento. As
     seções levam `data-bpm`; é de lá que sai o andamento.
+    As fotos originais têm no máximo 700 px de lado, então nada na página pode
+    ampliá-las muito: as faixas de largura total (`.band`) mostram a foto nítida
+    no centro, com uma cópia desfocada preenchendo o resto, e o "ampliar" da galeria
+    para em 700 px. Se chegarem fotos maiores, dá para soltar esses limites.
   - As duas páginas usam CSP com hash do `<script>` inline: **recalcule o `sha256`
     sempre que mudar o script**, senão ele não roda. Para recalcular e já gravar no
     cabeçalho:
