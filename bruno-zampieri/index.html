@@ -7,7 +7,7 @@
 <meta name="description" content="Bruno Zampieri: modelagem, filmagens de drone, massoterapia e lifestyle. Serviços, conteúdo, parcerias e contato em um só lugar.">
 <meta name="theme-color" content="#0d0a09">
 <meta name="robots" content="noindex">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-U6f/4DUI7cR2idFhEqOCf2IV9iEGE9ZrQf2EBCeQQbw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-O1KXdeSBV3xSxWJ4E3t/pzIAhHHBptXvu0kNEPBTCro='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="preload" href="fonts/LeMurmure-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -743,7 +743,7 @@ a.rede:hover{border-color:var(--sol)}
     <div class="seq" id="seq-lifestyle" data-seq role="region" aria-label="Dia a dia do Bruno, role para passar fotos e vídeos" style="--n:8">
       <div class="seq__palco">
         <div class="cena"><div class="cena__amb" data-fundo="img/balanco-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/balanco-capa.webp" data-src="video/balanco.mp4" width="464" height="832" style="aspect-ratio:464/832" aria-label="Vídeo: Bruno num balanço na beira da serra, com o sol se pondo"></video></div>
-        <div class="cena"><div class="cena__amb" data-fundo="img/falesias-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/falesias-capa.webp" data-src="video/falesias.mp4" width="464" height="832" style="aspect-ratio:464/832" aria-label="Vídeo: Bruno caminhando entre falésias de areia alaranjada"></video></div>
+        <div class="cena"><div class="cena__amb" data-fundo="img/falesias-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/falesias-capa.webp" data-src="video/falesias.mp4" data-inicio="4" width="464" height="832" style="aspect-ratio:464/832" aria-label="Vídeo: Bruno caminhando entre falésias de areia alaranjada"></video></div>
         <div class="cena"><div class="cena__amb" data-fundo="img/duna-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/duna-capa.webp" data-src="video/duna.mp4" width="464" height="832" style="aspect-ratio:464/832" aria-label="Vídeo: Bruno pilotando um quadriciclo vermelho nas dunas"></video></div>
         <div class="cena"><div class="cena__amb" data-fundo="img/piscina-capa.webp"></div><video class="cena__m" muted loop playsinline preload="none" poster="img/piscina-capa.webp" data-src="video/piscina.mp4" width="576" height="1024" style="aspect-ratio:576/1024" aria-label="Vídeo: Bruno na piscina, embaixo de uma cascata"></video></div>
         <div class="cena"><div class="cena__amb" data-fundo="img/chapeu-sorriso.webp"></div><img class="cena__m" src="img/chapeu-sorriso.webp" width="960" height="1280" style="aspect-ratio:960/1280" alt="Bruno sorrindo de chapéu de couro, sentado num quadriciclo" loading="lazy" decoding="async"></div>
@@ -953,7 +953,17 @@ const CONTATO = { whatsapp: "5511977074881", email: "zampiericontato87@gmail.com
     const cenas = [...seq.querySelectorAll('.cena')], n = cenas.length;
     const midias = cenas.map(c => c.querySelector('.cena__m'));
     const ticks = [...seq.querySelectorAll('.seq__ritmo i')];
-    const carregar = v => { if (v && v.tagName === 'VIDEO' && !v.src) v.src = v.dataset.src; };
+    // data-inicio corta o começo do arquivo: o vídeo abre nesse segundo e volta para ele ao repetir.
+    const carregar = v => {
+      if (!v || v.tagName !== 'VIDEO' || v.src) return;
+      const ini = parseFloat(v.dataset.inicio) || 0;
+      v.src = v.dataset.src + (ini ? '#t=' + ini : '');
+      if (!ini) return;
+      v.loop = false;
+      const voltar = () => { if (v.currentTime < ini) v.currentTime = ini; };
+      v.addEventListener('loadedmetadata', voltar);
+      v.addEventListener('ended', () => { v.currentTime = ini; const p = v.play(); if (p) p.catch(() => {}); });
+    };
     if (semMov) { midias.forEach(m => { if (m.tagName === 'VIDEO') { m.controls = true; m.preload = 'metadata'; carregar(m); } }); return; }
     let atual = -1, visivel = false, pedido = false;
     const tocar = () => midias.forEach((m, i) => {

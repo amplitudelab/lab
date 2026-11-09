@@ -75,6 +75,10 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
     hora no total) e nunca guarda o código, só compara com o hash.
   - `bruno-zampieri/`: página do criador Bruno Zampieri (@obrunozampieri). Contatos no
     objeto `CONTATO` do script.
+    Um vídeo da sequência de vivências pode começar depois do início do arquivo:
+    `data-inicio="4"` no `<video>` faz a cena abrir no segundo 4 e voltar para lá ao
+    repetir. É assim que o começo do vídeo das falésias fica de fora. A capa
+    (`poster`) precisa sair de um quadro depois desse ponto.
   - `bruxo/`: página do DJ Bruxo (@bruxoemsp) — Progressive, Hard e Hi-Tech. Fotos em
     `bruxo/img/` e fontes em `bruxo/fonts/` (Pirata One, Barlow, Barlow Condensed e
     IBM Plex Mono, todas SIL OFL, licenças na mesma pasta). O campo de partículas do
