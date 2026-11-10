@@ -241,6 +241,8 @@ body.real #roleSel,body.real #tUrl,body.real #lgDemoBox,body.real #genForm,body.
   box-shadow:0 2px 0 var(--line);transition:transform .12s,box-shadow .12s}
 .kcard:hover{transform:translateY(-2px);box-shadow:0 5px 0 var(--line)}
 .kcard.dragging{opacity:.5}
+.kcard{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.kcard.press{transform:scale(.97);transition:transform .45s}
 .kcard.sel{outline:2px solid var(--accent);outline-offset:-2px;background:color-mix(in srgb,var(--accent) 8%,var(--panel))}
 .kchk{width:22px;height:22px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
 .kchk svg{width:14px;height:14px}
@@ -1075,7 +1077,7 @@ V.funil = () => {
       ${s.k === 'lost' && l.lost ? `<span class="fu next">${esc(l.lost)}</span>` : ''}
     </button>`).join('') || '<p class="empty">Nenhum lead nesta etapa</p>'}</section>`; }).join('');
   const delBtn = can('del') && S.leads.length ? `<button class="b3 ghost" data-act="selMode">${sel ? 'Cancelar' : 'Selecionar'}</button>` : '';
-  return head('Funil de vendas', sel ? 'Toque nos cartões para marcar os leads que vão ser excluídos.' : can('edit') ? 'Arraste os cartões entre as colunas no computador. No celular, toque no cartão e escolha a etapa.' : 'Seu perfil vê o funil, mas não altera.', `<div class="acts">${delBtn}${sel ? '' : leadBtn(can('edit'))}</div>`)
+  return head('Funil de vendas', sel ? 'Toque nos cartões para marcar os leads que vão ser excluídos.' : can('edit') ? `Arraste os cartões entre as colunas no computador. No celular, toque no cartão e escolha a etapa.${can('del') ? ' Para excluir, segure um cartão.' : ''}` : 'Seu perfil vê o funil, mas não altera.', `<div class="acts">${delBtn}${sel ? '' : leadBtn(can('edit'))}</div>`)
     + (sel ? `<section class="card selbar"><b id="selN">${selCount(sel)}</b><div class="acts"><button class="b3 sm ghost" data-act="selAll" id="selAllBtn">${S.leads.every(l => sel.has(l.id)) ? 'Desmarcar todos' : 'Selecionar todos'}</button><button class="b3 sm danger" data-act="selDel" id="selDel" ${sel.size ? '' : 'disabled'}>${icon('x')}Excluir</button></div></section>` : '')
     + `<div class="kwrap"><div class="kanban">${cols}</div></div>`;
 };
@@ -1593,6 +1595,18 @@ Válida até ${fdate(p.valid)}`, 'Proposta copiada para colar no WhatsApp'); bre
 
 /* drag and drop do funil (PC) */
 let dragMoved = false;
+// segurar o cartão por meio segundo abre a seleção; mexer o dedo ou o mouse cancela (para arrastar ou rolar)
+let pressT = null, pressAt = null, pressFired = false;
+const pressOff = () => { clearTimeout(pressT); pressT = null; $$('.kcard.press').forEach(c => c.classList.remove('press')); };
+document.addEventListener('pointerdown', e => {
+  const c = e.target.closest && e.target.closest('.kcard[data-act="openLead"]'); if (!c || !can('del') || e.button > 0) return;
+  pressAt = [e.clientX, e.clientY]; c.classList.add('press');
+  pressT = setTimeout(() => { pressOff(); pressFired = true; V._sel = new Set([c.dataset.id]); render(); if (navigator.vibrate) navigator.vibrate(15); }, 500);
+});
+document.addEventListener('pointermove', e => { if (pressT && Math.hypot(e.clientX - pressAt[0], e.clientY - pressAt[1]) > 8) pressOff(); }, {passive:true});
+['pointerup', 'pointercancel', 'dragstart', 'scroll'].forEach(ev => document.addEventListener(ev, pressOff, true));
+document.addEventListener('click', e => { if (pressFired) { pressFired = false; if (e.target.closest && e.target.closest('.kcard')) { e.preventDefault(); e.stopPropagation(); } } }, true);
+document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('.kcard')) e.preventDefault(); });
 document.addEventListener('dragstart', e => { const c = e.target.closest && e.target.closest('.kcard'); if (!c || !can('edit')) return; dragMoved = true; e.dataTransfer.setData('text/plain', c.dataset.id); e.dataTransfer.effectAllowed = 'move'; c.classList.add('dragging'); });
 document.addEventListener('dragend', e => { $$('.kcard.dragging').forEach(c => c.classList.remove('dragging')); $$('.kcol.over').forEach(c => c.classList.remove('over')); setTimeout(() => dragMoved = false, 50); });
 document.addEventListener('dragover', e => { const col = e.target.closest && e.target.closest('.kcol'); if (!col) return; e.preventDefault(); $$('.kcol.over').forEach(c => c !== col && c.classList.remove('over')); col.classList.add('over'); });
