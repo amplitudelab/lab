@@ -1078,10 +1078,12 @@ V.funil = () => {
     </button>`).join('') || '<p class="empty">Nenhum lead nesta etapa</p>'}</section>`; }).join('');
   const delBtn = can('del') && S.leads.length ? `<button class="b3 ghost" data-act="selMode">${sel ? 'Cancelar' : 'Selecionar'}</button>` : '';
   return head('Funil de vendas', sel ? 'Toque nos cartões para marcar os leads que vão ser excluídos.' : can('edit') ? `Arraste os cartões entre as colunas no computador. No celular, toque no cartão e escolha a etapa.${can('del') ? ' Para excluir, segure um cartão.' : ''}` : 'Seu perfil vê o funil, mas não altera.', `<div class="acts">${delBtn}${sel ? '' : leadBtn(can('edit'))}</div>`)
-    + (sel ? `<section class="card selbar"><b id="selN">${selCount(sel)}</b><div class="acts"><button class="b3 sm ghost" data-act="selAll" id="selAllBtn">${S.leads.every(l => sel.has(l.id)) ? 'Desmarcar todos' : 'Selecionar todos'}</button><button class="b3 sm danger" data-act="selDel" id="selDel" ${sel.size ? '' : 'disabled'}>${icon('x')}Excluir</button></div></section>` : '')
+    + (sel ? `<section class="card selbar"><b id="selN">${selCount(sel)}</b><div class="acts"><button class="b3 sm ghost" data-act="selAll" id="selAllBtn" ${sel.size ? '' : 'disabled'}>${selAllLabel(sel)}</button><button class="b3 sm danger" data-act="selDel" id="selDel" ${sel.size ? '' : 'disabled'}>${icon('x')}Excluir</button></div></section>` : '')
     + `<div class="kwrap"><div class="kanban">${cols}</div></div>`;
 };
 
+const selGroup = s => { const f = S.leads.find(l => l.id === [...s][0]); return f ? {st:stageOf(f.stage), ids:S.leads.filter(l => l.stage === f.stage).map(l => l.id)} : null; };
+const selAllLabel = s => { const g = selGroup(s); return !g ? 'Marque um lead primeiro' : g.ids.every(x => s.has(x)) ? 'Desmarcar todos' : `Selecionar todos de ${g.st.n}`; };
 const selCount = s => s.size === 1 ? '1 lead marcado' : `${s.size} leads marcados`;
 // atualiza só o cartão e a barra, para o funil não voltar ao começo no celular
 function selPaint(card) {
@@ -1089,7 +1091,7 @@ function selPaint(card) {
   if (card) { const on = s.has(card.dataset.id); card.classList.toggle('sel', on); card.setAttribute('aria-pressed', on); const c = card.querySelector('.kchk'); if (c) c.innerHTML = on ? icon('check') : ''; }
   else document.querySelectorAll('.kcard[data-act="selLead"]').forEach(selPaint);
   $('#selN').textContent = selCount(s); $('#selDel').disabled = !s.size;
-  $('#selAllBtn').textContent = S.leads.every(l => s.has(l.id)) ? 'Desmarcar todos' : 'Selecionar todos';
+  $('#selAllBtn').textContent = selAllLabel(s); $('#selAllBtn').disabled = !s.size;
 }
 function modalDeleteMany(ids) {
   const ls = S.leads.filter(l => ids.includes(l.id)), total = ls.reduce((a, l) => a + (l.value || 0), 0), names = ls.slice(0, 5).map(l => esc(l.name)).join(', ') + (ls.length > 5 ? ` e mais ${ls.length - 5}` : '');
@@ -1542,7 +1544,7 @@ document.addEventListener('click', e => {
     case 'addItem': $('#mItems').insertAdjacentHTML('beforeend', itemRow()); $('#mItems .item:last-child input').focus(); break;
     case 'selMode': V._sel = V._sel ? null : new Set(); render(); break;
     case 'selLead': if (V._sel) { V._sel.has(id) ? V._sel.delete(id) : V._sel.add(id); selPaint(a); } break;
-    case 'selAll': if (V._sel) { const s = V._sel, all = S.leads.map(l => l.id); if (all.every(x => s.has(x))) s.clear(); else all.forEach(x => s.add(x)); selPaint(); } break;
+    case 'selAll': if (V._sel) { const s = V._sel, g = selGroup(s); if (!g) break; if (g.ids.every(x => s.has(x))) s.clear(); else g.ids.forEach(x => s.add(x)); selPaint(); } break;
     case 'selDel': if (V._sel && V._sel.size) modalDeleteMany([...V._sel]); break;
     case 'openLead': if (!a.classList.contains('kcard') || !dragMoved) openLead(id); break;
     case 'stage': moveLead(openId, a.dataset.s, a); break;
@@ -2540,10 +2542,11 @@ const Real = (() => {
   async function deleteMany(kind, list, reason, asked) {
     await sync(); await chain;
     toast(`Excluindo ${list.length} ${list.length === 1 ? 'lead' : 'leads'}…`);
-    let fail = 0;
-    for (const [id, title] of list) { const {error} = await sb.rpc('delete_record', {p_kind:kind, p_id:id, p_reason:reason, p_requested_by:asked || null}); if (error) { fail++; console.error(title, error); } }
+    // uma chamada para o lote todo: o servidor gera uma notificação só, em vez de uma por lead
+    const {data, error} = await sb.rpc('delete_records', {p_kind:kind, p_ids:list.map(x => x[0]), p_reason:reason, p_requested_by:asked || null});
+    if (error) return toast(error.message || 'Não deu para excluir.');
     V._sel = null; await reload(); render();
-    const ok = list.length - fail;
+    const ok = data.deleted, fail = data.failed.length;
     toast(fail ? `${ok} excluídos. ${fail} não puderam ser excluídos: confira o seu perfil de acesso.` : `${ok === 1 ? '1 lead excluído' : ok + ' leads excluídos'}. Motivo registrado no histórico.`);
   }
   async function savePay(tag, rows) {

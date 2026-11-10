@@ -1,6 +1,6 @@
 // Radar de leads, parte do servidor: só entra quando há chave de uma fonte com limite próprio.
 // Sem chave responde { nokey: true } na hora, e o navegador usa os mapas abertos diretamente.
-// Segredos aceitos: GEOAPIFY_KEY (grátis, 3.000 créditos por dia) e GOOGLE_PLACES_KEY.
+// Segredos aceitos: GOOGLE_PLACES_KEY (o melhor para comércio local), GOOGLE_MONTHLY_CALLS (teto do mês, padrão 900) e GEOAPIFY_KEY.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
@@ -37,31 +37,53 @@ async function fromGeoapify(seg: string, lat: number, lon: number, km: number, k
       address: p.address_line2 || p.formatted || "", suburb: p.suburb || p.district || "", site: SOCIAL.test(site) ? "" : site, instagram: raw["contact:instagram"] || (/instagram\.com/i.test(site) ? site : ""), lat: p.lat, lon: p.lon, map: "" };
   }).filter((i: any) => i.name) };
 }
-// Cada pedido traz no máximo 20 lugares. Por isso a área vira uma grade, com até 3 páginas por quadrado e um teto de pedidos.
+// Cada pedido traz no máximo 20 lugares. Por isso a área vira uma grade, com até 3 páginas por quadrado.
+// Cada quadrado fica guardado por 30 dias, e o mês tem um teto de pedidos (GOOGLE_MONTHLY_CALLS, padrão 900),
+// abaixo dos 1.000 grátis do Google para buscas que trazem telefone e site.
+const CAP = Number(Deno.env.get("GOOGLE_MONTHLY_CALLS") ?? 900);
+async function googleCell(seg: string, low: any, high: any, key: string, budget: { left: number, used: number }) {
+  const ck = `g:${seg}:${low.latitude.toFixed(3)}:${low.longitude.toFixed(3)}:${high.latitude.toFixed(3)}:${high.longitude.toFixed(3)}`;
+  const { data: hit } = await admin.from("radar_cache").select("items").eq("key", ck).gte("created_at", new Date(Date.now() - 30 * 86400000).toISOString()).maybeSingle();
+  if (hit) return { items: hit.items as any[], cut: false };
+  const items: any[] = [];
+  let pageToken = "", cut = false;
+  for (let page = 0; page < 3; page++) {
+    if (budget.left <= 0) { cut = true; break; }
+    budget.left--; budget.used++;
+    const data = await timed("https://places.googleapis.com/v1/places:searchText", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Goog-Api-Key": key, "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.websiteUri,places.nationalPhoneNumber,places.googleMapsUri,places.businessStatus,places.location,nextPageToken" },
+      body: JSON.stringify({ textQuery: GOOGLE_TERM[seg], languageCode: "pt-BR", regionCode: "BR", pageSize: 20, locationRestriction: { rectangle: { low, high } }, ...(pageToken ? { pageToken } : {}) }),
+    }, 15000);
+    for (const p of data.places ?? []) {
+      if (p.businessStatus === "CLOSED_PERMANENTLY" || !p.displayName?.text) continue;
+      const site = p.websiteUri ?? "";
+      items.push({ id: `google:${p.id}`, name: p.displayName.text, phone: digits(p.nationalPhoneNumber), email: "", address: p.formattedAddress ?? "", suburb: "", site: SOCIAL.test(site) ? "" : site, instagram: /instagram\.com/i.test(site) ? site : "", lat: p.location?.latitude, lon: p.location?.longitude, map: p.googleMapsUri ?? "" });
+    }
+    pageToken = data.nextPageToken ?? "";
+    if (!pageToken) break;
+  }
+  if (!cut) await admin.from("radar_cache").upsert({ key: ck, items, created_at: new Date().toISOString() });
+  return { items, cut };
+}
 async function fromGoogle(seg: string, lat: number, lon: number, km: number, key: string) {
   const n = km <= 3 ? 1 : km <= 8 ? 2 : 3, dLat = km / 111, dLon = km / (111 * Math.cos(lat * Math.PI / 180)), out = new Map<string, any>();
-  let calls = 0;
-  for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) {
-    const low = { latitude: lat - dLat + 2 * dLat * a / n, longitude: lon - dLon + 2 * dLon * b / n };
-    const high = { latitude: lat - dLat + 2 * dLat * (a + 1) / n, longitude: lon - dLon + 2 * dLon * (b + 1) / n };
-    let pageToken = "";
-    for (let page = 0; page < 3 && calls < 18; page++) {
-      calls++;
-      const data = await timed("https://places.googleapis.com/v1/places:searchText", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Goog-Api-Key": key, "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.websiteUri,places.nationalPhoneNumber,places.googleMapsUri,places.businessStatus,places.location,nextPageToken" },
-        body: JSON.stringify({ textQuery: GOOGLE_TERM[seg], languageCode: "pt-BR", regionCode: "BR", pageSize: 20, locationRestriction: { rectangle: { low, high } }, ...(pageToken ? { pageToken } : {}) }),
-      }, 15000);
-      for (const p of data.places ?? []) {
-        if (p.businessStatus === "CLOSED_PERMANENTLY" || !p.displayName?.text || out.has(p.id)) continue;
-        const site = p.websiteUri ?? "";
-        out.set(p.id, { id: `google:${p.id}`, name: p.displayName.text, phone: digits(p.nationalPhoneNumber), email: "", address: p.formattedAddress ?? "", suburb: "", site: SOCIAL.test(site) ? "" : site, instagram: /instagram\.com/i.test(site) ? site : "", lat: p.location?.latitude, lon: p.location?.longitude, map: p.googleMapsUri ?? "" });
-      }
-      pageToken = data.nextPageToken ?? "";
-      if (!pageToken) break;
+  const { data: u } = await admin.from("radar_usage").select("calls").eq("month", new Date().toISOString().slice(0, 7)).maybeSingle();
+  const budget = { left: Math.max(0, Math.min(18, CAP - (u?.calls ?? 0))), used: 0 };
+  let cut = false;
+  try {
+    for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) {
+      const low = { latitude: lat - dLat + 2 * dLat * a / n, longitude: lon - dLon + 2 * dLon * b / n };
+      const high = { latitude: lat - dLat + 2 * dLat * (a + 1) / n, longitude: lon - dLon + 2 * dLon * (b + 1) / n };
+      const r = await googleCell(seg, low, high, key, budget);
+      cut = cut || r.cut;
+      for (const it of r.items) if (!out.has(it.id)) out.set(it.id, it);
     }
+  } finally {
+    if (budget.used) await admin.rpc("radar_use", { p_calls: budget.used });
   }
-  return { source: "Google Maps", items: [...out.values()] };
+  if (!out.size && cut) throw new Error("teto do mês");
+  return { source: cut ? "Google Maps (o teto grátis do mês acabou: parte da área ficou de fora)" : "Google Maps", items: [...out.values()] };
 }
 
 Deno.serve(async (req) => {
