@@ -66,25 +66,41 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   (`amplitudelab.github.io/lab/clientes/`), que é o único lugar que reúne o grupo e
   também guarda o passo a passo para entrar um site novo. Não confundir com `demos/`,
   que são prévias para fechar negócio.
+  - A lista **pede o código de acesso do CRM**. Como o repositório é público, os nomes
+    dos clientes não ficam no HTML: eles vivem em `SITES`, dentro da função
+    `clientes-lista` (`crm/supabase/producao/functions/clientes-lista/index.ts`), que
+    confere o código contra `access_codes` e só então devolve a lista. Para incluir um
+    cliente, acrescente a linha em `SITES` **e faça o deploy da função**; mudar só o
+    HTML não adianta. A função tem limite de tentativas (5 por IP em 15 min, 10 por
+    hora no total) e nunca guarda o código, só compara com o hash.
   - `bruno-zampieri/`: página do criador Bruno Zampieri (@obrunozampieri). Contatos no
     objeto `CONTATO` do script.
+    Um vídeo da sequência de vivências pode começar depois do início do arquivo:
+    `data-inicio="4"` no `<video>` faz a cena abrir no segundo 4 e voltar para lá ao
+    repetir. É assim que o começo do vídeo das falésias fica de fora. A capa
+    (`poster`) precisa sair de um quadro depois desse ponto.
   - `bruxo/`: página do DJ Bruxo (@bruxoemsp) — Progressive, Hard e Hi-Tech. Fotos em
     `bruxo/img/` e fontes em `bruxo/fonts/` (Pirata One, Barlow, Barlow Condensed e
     IBM Plex Mono, todas SIL OFL, licenças na mesma pasta). O campo de partículas do
     fundo bate no BPM da seção em que o visitante está — 136 na abertura, 190 na
     catarse —, e o HUD embaixo à esquerda mostra esse BPM e pausa o movimento. As
     seções levam `data-bpm`; é de lá que sai o andamento.
+    As fotos originais têm no máximo 700 px de lado, então nada na página pode
+    ampliá-las muito: as faixas de largura total (`.band`) mostram a foto nítida
+    no centro, com uma cópia desfocada preenchendo o resto, e o "ampliar" da galeria
+    para em 700 px. Se chegarem fotos maiores, dá para soltar esses limites.
   - `darky/`: site do DJ Darky (Bruno) e seus três projetos — DARKY, SLOWLY e
-    OBSKURIAL. A página do projeto Darky fica em `darky/darky/`. Uma só aplicação com quatro rotas (`/`, `/darky/`, `/slowly/`,
-    `/obskurial/`) trocadas por History API; as três subpastas são cópias do
-    `index.html` geradas por `node darky/gerar-rotas.js` (**rode de novo sempre
-    que mudar o `index.html`**). Todo texto, link e contato fica em `js/content.js`:
-    campo vazio não aparece na página, nada é inventado. `js/app.js` monta as vistas,
-    as passagens e o formulário; `js/fx.js` é o fundo WebGL (Three.js em `vendor/`).
-    Sem script inline, então a CSP é `script-src 'self'` e não tem hash para recalcular.
-    O inventário do material e o que ainda falta do artista estão em
-    `darky/INVENTARIO.md`. As fotos e vídeos originais (ZIP de 2 GB) não vão
-    para o repositório; só as versões otimizadas em `assets/`.
+    OBSKURIAL. A página do projeto Darky fica em `darky/darky/`. Uma só aplicação com
+    quatro rotas (`/`, `/darky/`, `/slowly/`, `/obskurial/`) trocadas por History API;
+    as três subpastas são cópias do `index.html` geradas por
+    `node darky/gerar-rotas.js` (**rode de novo sempre que mudar o `index.html`**).
+    Todo texto, link e contato fica em `js/content.js`: campo vazio não aparece na
+    página, nada é inventado. `js/app.js` monta as vistas, as passagens e o formulário;
+    `js/fx.js` é o fundo WebGL (Three.js em `vendor/`). Sem script inline, então a CSP
+    é `script-src 'self'` e não tem hash para recalcular. O inventário do material e
+    o que ainda falta do artista estão em `darky/INVENTARIO.md`. As fotos e vídeos
+    originais (ZIP de 2 GB) não vão para o repositório; só as versões otimizadas em
+    `assets/`.
   - Bruxo e Bruno Zampieri usam CSP com hash do `<script>` inline: **recalcule o `sha256`
     sempre que mudar o script**, senão ele não roda. Para recalcular e já gravar no
     cabeçalho:

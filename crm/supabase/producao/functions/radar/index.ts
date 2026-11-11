@@ -37,16 +37,31 @@ async function fromGeoapify(seg: string, lat: number, lon: number, km: number, k
       address: p.address_line2 || p.formatted || "", suburb: p.suburb || p.district || "", site: SOCIAL.test(site) ? "" : site, instagram: raw["contact:instagram"] || (/instagram\.com/i.test(site) ? site : ""), lat: p.lat, lon: p.lon, map: "" };
   }).filter((i: any) => i.name) };
 }
+// Cada pedido traz no máximo 20 lugares. Por isso a área vira uma grade, com até 3 páginas por quadrado e um teto de pedidos.
 async function fromGoogle(seg: string, lat: number, lon: number, km: number, key: string) {
-  const data = await timed("https://places.googleapis.com/v1/places:searchText", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Goog-Api-Key": key, "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.websiteUri,places.nationalPhoneNumber,places.googleMapsUri,places.businessStatus,places.location" },
-    body: JSON.stringify({ textQuery: GOOGLE_TERM[seg], languageCode: "pt-BR", regionCode: "BR", pageSize: 20, locationBias: { circle: { center: { latitude: lat, longitude: lon }, radius: Math.min(50000, km * 1000) } } }),
-  }, 15000);
-  return { source: "Google Maps", items: (data.places ?? []).filter((p: any) => p.businessStatus !== "CLOSED_PERMANENTLY").map((p: any) => {
-    const site = p.websiteUri ?? "";
-    return { id: `google:${p.id}`, name: p.displayName?.text, phone: digits(p.nationalPhoneNumber), email: "", address: p.formattedAddress ?? "", suburb: "", site: SOCIAL.test(site) ? "" : site, instagram: /instagram\.com/i.test(site) ? site : "", lat: p.location?.latitude, lon: p.location?.longitude, map: p.googleMapsUri ?? "" };
-  }).filter((i: any) => i.name) };
+  const n = km <= 3 ? 1 : km <= 8 ? 2 : 3, dLat = km / 111, dLon = km / (111 * Math.cos(lat * Math.PI / 180)), out = new Map<string, any>();
+  let calls = 0;
+  for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) {
+    const low = { latitude: lat - dLat + 2 * dLat * a / n, longitude: lon - dLon + 2 * dLon * b / n };
+    const high = { latitude: lat - dLat + 2 * dLat * (a + 1) / n, longitude: lon - dLon + 2 * dLon * (b + 1) / n };
+    let pageToken = "";
+    for (let page = 0; page < 3 && calls < 18; page++) {
+      calls++;
+      const data = await timed("https://places.googleapis.com/v1/places:searchText", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Goog-Api-Key": key, "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.websiteUri,places.nationalPhoneNumber,places.googleMapsUri,places.businessStatus,places.location,nextPageToken" },
+        body: JSON.stringify({ textQuery: GOOGLE_TERM[seg], languageCode: "pt-BR", regionCode: "BR", pageSize: 20, locationRestriction: { rectangle: { low, high } }, ...(pageToken ? { pageToken } : {}) }),
+      }, 15000);
+      for (const p of data.places ?? []) {
+        if (p.businessStatus === "CLOSED_PERMANENTLY" || !p.displayName?.text || out.has(p.id)) continue;
+        const site = p.websiteUri ?? "";
+        out.set(p.id, { id: `google:${p.id}`, name: p.displayName.text, phone: digits(p.nationalPhoneNumber), email: "", address: p.formattedAddress ?? "", suburb: "", site: SOCIAL.test(site) ? "" : site, instagram: /instagram\.com/i.test(site) ? site : "", lat: p.location?.latitude, lon: p.location?.longitude, map: p.googleMapsUri ?? "" });
+      }
+      pageToken = data.nextPageToken ?? "";
+      if (!pageToken) break;
+    }
+  }
+  return { source: "Google Maps", items: [...out.values()] };
 }
 
 Deno.serve(async (req) => {
@@ -68,7 +83,7 @@ Deno.serve(async (req) => {
   if (t?.plan === "essencial") return json({ error: "O Radar faz parte do plano Pro.", upgrade: true }, 402);
 
   const geo = Deno.env.get("GEOAPIFY_KEY"), google = Deno.env.get("GOOGLE_PLACES_KEY");
-  if (geo) { try { return json(await fromGeoapify(seg, lat, lon, km, geo)); } catch (e) { console.error("geoapify", e); } }
   if (google) { try { return json(await fromGoogle(seg, lat, lon, km, google)); } catch (e) { console.error("google", e); } }
+  if (geo) { try { return json(await fromGeoapify(seg, lat, lon, km, geo)); } catch (e) { console.error("geoapify", e); } }
   return json({ nokey: true });
 });

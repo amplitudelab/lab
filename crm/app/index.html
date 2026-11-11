@@ -241,6 +241,13 @@ body.real #roleSel,body.real #tUrl,body.real #lgDemoBox,body.real #genForm,body.
   box-shadow:0 2px 0 var(--line);transition:transform .12s,box-shadow .12s}
 .kcard:hover{transform:translateY(-2px);box-shadow:0 5px 0 var(--line)}
 .kcard.dragging{opacity:.5}
+.kcard{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.kcard.press{transform:scale(.97);transition:transform .45s}
+.kcard.sel{outline:2px solid var(--accent);outline-offset:-2px;background:color-mix(in srgb,var(--accent) 8%,var(--panel))}
+.kchk{width:22px;height:22px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
+.kchk svg{width:14px;height:14px}
+.kcard.sel .kchk{background:var(--accent);border-color:var(--accent);color:#fff}
+.selbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .kcard .t{font-weight:600;font-size:15px;line-height:1.25}
 .kcard .m{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
 .kcard .v{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
@@ -968,7 +975,7 @@ function nextSteps() {
 }
 
 /* ============ navegação ============ */
-const allowed = v => { const n = NAV.find(x => x[0] === v); if (v === 'chaves' && role !== 'owner') return false; if (v === 'empresas' && !(REAL && T.slug === 'amplitudelab' && role === 'owner')) return false; return n && (!n[3] || can(n[3])); };
+const allowed = v => { const n = NAV.find(x => x[0] === v); if (v === 'chaves' && role !== 'owner') return false; if (v === 'fichas' && (T.slug === 'amplitudelab' || T.id === 'lab')) return false; if (v === 'empresas' && !(REAL && T.slug === 'amplitudelab' && role === 'owner')) return false; return n && (!n[3] || can(n[3])); };
 function badgeFor(v) { if (v === 'funil') { const n = S.leads.filter(l => l.stage === 's1').length; return n || ''; } if (v === 'agenda') { const n = nextSteps().filter(x => x.k !== 'charge').length; return n || ''; } return ''; }
 function renderNav() {
   $('#sNav').innerHTML = NAV.filter(n => allowed(n[0])).map(n => `<button class="nv" data-go="${n[0]}" ${view === n[0] ? 'aria-current="page"' : ''}>${icon(n[2])}${n[1]}${badgeFor(n[0]) ? `<span class="badge">${badgeFor(n[0])}</span>` : ''}</button>`).join('');
@@ -980,7 +987,7 @@ function renderNav() {
 }
 function go(v, focus) {
   if (!allowed(v)) { toast('Seu perfil não tem acesso a esta área.'); v = 'painel'; }
-  if (v !== view) V._keys = V._fichas = null;   // a chave recém-gerada não fica na tela depois que o dono sai
+  if (v !== view) { V._keys = V._fichas = null; V._sel = null; }   // a chave recém-gerada não fica na tela depois que o dono sai
   view = v; render();
   if (focus) $('#view').focus({preventScroll:true});
   window.scrollTo({top:0});
@@ -1060,17 +1067,44 @@ function cashChart() {
 }
 
 V.funil = () => {
+  const sel = V._sel;
   const cols = STAGES.map(s => { const ls = S.leads.filter(l => l.stage === s.id).sort((a, b) => (a.follow || 9e15) - (b.follow || 9e15));
     return `<section class="kcol" data-stage="${s.id}" aria-label="${s.n}"><div class="kh"><b>${s.n}</b><small>${ls.length} · ${money(ls.reduce((a, l) => a + l.value, 0)).replace(',00', '')}</small></div>
-    ${ls.map(l => `<button class="kcard" draggable="${can('edit')}" data-act="openLead" data-id="${l.id}">
-      <span class="t">${esc(l.name)}</span><span class="m"><span>${esc(l.interest)}</span></span>
+    ${ls.map(l => `<button class="kcard${sel && sel.has(l.id) ? ' sel' : ''}" draggable="${can('edit') && !sel}" data-act="${sel ? 'selLead' : 'openLead'}" data-id="${l.id}"${sel ? ` aria-pressed="${sel.has(l.id)}"` : ''}>
+      ${sel ? `<span style="display:flex;gap:10px;align-items:flex-start"><span class="kchk" aria-hidden="true">${sel.has(l.id) ? icon('check') : ''}</span><span class="t">${esc(l.name)}</span></span>` : `<span class="t">${esc(l.name)}</span>`}<span class="m"><span>${esc(l.interest)}</span></span>
       <span class="m">${l.paidAt ? `<span class="chip ok"><span class="dot"></span>Pagante</span>` : `<span class="chip">${SRC[l.source] || 'Outro'}</span>`}${scoreChip(l)}<span class="v">${money(l.value).replace(',00', '')}</span></span>
       ${l.follow && !s.k ? `<span class="fu ${followClass(l.follow)}">${icon('clock')}${followClass(l.follow) === 'late' ? 'Atrasado · ' : ''}${rel(l.follow)} ${ftime(l.follow)}</span>` : ''}
       ${s.k === 'lost' && l.lost ? `<span class="fu next">${esc(l.lost)}</span>` : ''}
     </button>`).join('') || '<p class="empty">Nenhum lead nesta etapa</p>'}</section>`; }).join('');
-  return head('Funil de vendas', can('edit') ? 'Arraste os cartões entre as colunas no computador. No celular, toque no cartão e escolha a etapa.' : 'Seu perfil vê o funil, mas não altera.', leadBtn(can('edit')))
+  const delBtn = can('del') && S.leads.length ? `<button class="b3 ghost" data-act="selMode">${sel ? 'Cancelar' : 'Selecionar'}</button>` : '';
+  return head('Funil de vendas', sel ? 'Toque nos cartões para marcar os leads que vão ser excluídos.' : can('edit') ? `Arraste os cartões entre as colunas no computador. No celular, toque no cartão e escolha a etapa.${can('del') ? ' Para excluir, segure um cartão.' : ''}` : 'Seu perfil vê o funil, mas não altera.', `<div class="acts">${delBtn}${sel ? '' : leadBtn(can('edit'))}</div>`)
+    + (sel ? `<section class="card selbar"><b id="selN">${selCount(sel)}</b><div class="acts"><button class="b3 sm ghost" data-act="selAll" id="selAllBtn">${S.leads.every(l => sel.has(l.id)) ? 'Desmarcar todos' : 'Selecionar todos'}</button><button class="b3 sm danger" data-act="selDel" id="selDel" ${sel.size ? '' : 'disabled'}>${icon('x')}Excluir</button></div></section>` : '')
     + `<div class="kwrap"><div class="kanban">${cols}</div></div>`;
 };
+
+const selCount = s => s.size === 1 ? '1 lead marcado' : `${s.size} leads marcados`;
+// atualiza só o cartão e a barra, para o funil não voltar ao começo no celular
+function selPaint(card) {
+  const s = V._sel; if (!s) return;
+  if (card) { const on = s.has(card.dataset.id); card.classList.toggle('sel', on); card.setAttribute('aria-pressed', on); const c = card.querySelector('.kchk'); if (c) c.innerHTML = on ? icon('check') : ''; }
+  else document.querySelectorAll('.kcard[data-act="selLead"]').forEach(selPaint);
+  $('#selN').textContent = selCount(s); $('#selDel').disabled = !s.size;
+  $('#selAllBtn').textContent = S.leads.every(l => s.has(l.id)) ? 'Desmarcar todos' : 'Selecionar todos';
+}
+function modalDeleteMany(ids) {
+  const ls = S.leads.filter(l => ids.includes(l.id)), total = ls.reduce((a, l) => a + (l.value || 0), 0), names = ls.slice(0, 5).map(l => esc(l.name)).join(', ') + (ls.length > 5 ? ` e mais ${ls.length - 5}` : '');
+  modal(`Excluir ${ls.length === 1 ? '1 lead' : ls.length + ' leads'}`, `<p><b>${names}</b>${total ? ` · <span class="num">${money(total)}</span>` : ''}</p>
+    <div class="fg">${sel('why', 'Motivo', REASONS.map(r => [r, r]), 'full')}${inp('detail', 'Detalhes', 'full autocomplete="off" placeholder="Explique em poucas palavras"')}${inp('asked', 'Quem pediu', 'full autocomplete="off" placeholder="Nome de quem pediu, se foi outra pessoa"')}</div>
+    <p class="note">Os leads saem do funil, e os follow-ups deles saem da agenda. As propostas ligadas a eles também são apagadas. Fica registrado no histórico quem excluiu, quando e por quê.</p>`,
+  fd => {
+    const why = String(fd.get('why')), det = String(fd.get('detail') || '').trim(), asked = String(fd.get('asked') || '').trim();
+    if (why === 'Outro motivo' && det.length < 5) return 'Explique o motivo em pelo menos 5 letras.';
+    const reason = why === 'Outro motivo' ? det : why + (det ? `: ${det}` : '');
+    if (REAL) { Real.deleteMany('lead', ls.map(l => [l.id, l.name]), reason, asked); return; }
+    ls.forEach(l => localDelete('lead', l.id, reason, asked, l.name, l.value));
+    V._sel = null; render(); toast(`${ls.length === 1 ? '1 lead excluído' : ls.length + ' leads excluídos'}. Motivo registrado.`);
+  }, 'Excluir');
+}
 
 V.clientes = () => {
   const q = (V._cq || '').toLowerCase();
@@ -1506,6 +1540,10 @@ document.addEventListener('click', e => {
     case 'newClient': modalClient(); break;
     case 'newProposal': closeLayers(); setTimeout(() => modalProposal(a.dataset.lead), 30); break;
     case 'addItem': $('#mItems').insertAdjacentHTML('beforeend', itemRow()); $('#mItems .item:last-child input').focus(); break;
+    case 'selMode': V._sel = V._sel ? null : new Set(); render(); break;
+    case 'selLead': if (V._sel) { V._sel.has(id) ? V._sel.delete(id) : V._sel.add(id); selPaint(a); } break;
+    case 'selAll': if (V._sel) { const s = V._sel, all = S.leads.map(l => l.id); if (all.every(x => s.has(x))) s.clear(); else all.forEach(x => s.add(x)); selPaint(); } break;
+    case 'selDel': if (V._sel && V._sel.size) modalDeleteMany([...V._sel]); break;
     case 'openLead': if (!a.classList.contains('kcard') || !dragMoved) openLead(id); break;
     case 'stage': moveLead(openId, a.dataset.s, a); break;
     case 'fu': { const l = S.leads.find(x => x.id === openId); l.follow = a.dataset.days ? at(+a.dataset.days, 10) : null; audit(`Follow-up de “${l.name}” ${l.follow ? 'marcado para ' + fdate(l.follow) : 'removido'}`); save(); openLead(openId); render(); toast(l.follow ? 'Follow-up marcado para ' + fdate(l.follow) : 'Follow-up removido'); break; }
@@ -1557,6 +1595,18 @@ Válida até ${fdate(p.valid)}`, 'Proposta copiada para colar no WhatsApp'); bre
 
 /* drag and drop do funil (PC) */
 let dragMoved = false;
+// segurar o cartão por meio segundo abre a seleção; mexer o dedo ou o mouse cancela (para arrastar ou rolar)
+let pressT = null, pressAt = null, pressFired = false;
+const pressOff = () => { clearTimeout(pressT); pressT = null; $$('.kcard.press').forEach(c => c.classList.remove('press')); };
+document.addEventListener('pointerdown', e => {
+  const c = e.target.closest && e.target.closest('.kcard[data-act="openLead"]'); if (!c || !can('del') || e.button > 0) return;
+  pressAt = [e.clientX, e.clientY]; c.classList.add('press');
+  pressT = setTimeout(() => { pressOff(); pressFired = true; V._sel = new Set([c.dataset.id]); render(); if (navigator.vibrate) navigator.vibrate(15); }, 500);
+});
+document.addEventListener('pointermove', e => { if (pressT && Math.hypot(e.clientX - pressAt[0], e.clientY - pressAt[1]) > 8) pressOff(); }, {passive:true});
+['pointerup', 'pointercancel', 'dragstart', 'scroll'].forEach(ev => document.addEventListener(ev, pressOff, true));
+document.addEventListener('click', e => { if (pressFired) { pressFired = false; if (e.target.closest && e.target.closest('.kcard')) { e.preventDefault(); e.stopPropagation(); } } }, true);
+document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('.kcard')) e.preventDefault(); });
 document.addEventListener('dragstart', e => { const c = e.target.closest && e.target.closest('.kcard'); if (!c || !can('edit')) return; dragMoved = true; e.dataTransfer.setData('text/plain', c.dataset.id); e.dataTransfer.effectAllowed = 'move'; c.classList.add('dragging'); });
 document.addEventListener('dragend', e => { $$('.kcard.dragging').forEach(c => c.classList.remove('dragging')); $$('.kcol.over').forEach(c => c.classList.remove('over')); setTimeout(() => dragMoved = false, 50); });
 document.addEventListener('dragover', e => { const col = e.target.closest && e.target.closest('.kcol'); if (!col) return; e.preventDefault(); $$('.kcol.over').forEach(c => c !== col && c.classList.remove('over')); col.classList.add('over'); });
@@ -1756,7 +1806,7 @@ const RADAR_TERMS = {barbearia:['hairdresser', 'barbearia'], tattoo:['tattoo', '
 const RADAR_OSM = {barbearia:['["shop"="hairdresser"]', '["shop"="barber"]'], tattoo:['["shop"="tattoo"]'], salao:['["shop"="beauty"]', '["shop"="hairdresser"]', '["shop"="massage"]'], clinica:['["amenity"="dentist"]', '["amenity"="clinic"]', '["amenity"="doctors"]'], restaurante:['["amenity"="restaurant"]', '["amenity"="fast_food"]', '["amenity"="cafe"]'], loja:['["shop"="clothes"]', '["shop"="shoes"]', '["shop"="gift"]', '["shop"="furniture"]'], academia:['["leisure"="fitness_centre"]'], pet:['["shop"="pet"]', '["amenity"="veterinary"]'], padaria:['["shop"="bakery"]', '["shop"="pastry"]'], mecanica:['["shop"="car_repair"]', '["shop"="tyres"]'], fotografia:['["craft"="photographer"]', '["shop"="photo"]'], evento:['["amenity"="events_venue"]', '["amenity"="nightclub"]'], contabil:['["office"="accountant"]', '["office"="lawyer"]', '["office"="estate_agent"]'], escola:['["amenity"="language_school"]', '["amenity"="driving_school"]', '["amenity"="music_school"]']};
 const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
 const SOCIAL_RE = /instagram\.com|facebook\.com|fb\.com|wa\.me|whatsapp\.com|linktr\.ee|tiktok\.com/i;
-V._r = {seg:RADAR_PRESET.slice(0, 3), area:'Vila Prudente, São Paulo', km:5, conv:1, filter:'phone', shown:60};
+V._r = {seg:RADAR_PRESET.slice(0, 3), area:'Vila Prudente, São Paulo', km:5, conv:1, filter:'all', shown:60};
 V._rOut = null; let radarRun = 0;
 const rDigits = s => String(s || '').split(';')[0].replace(/\D/g, '').replace(/^55(?=\d{10,11}$)/, '');
 const fmtPhone = p => { const d = String(p || '').replace(/\D/g, ''); return d.length >= 10 ? `(${d.slice(0, 2)}) ${d.slice(2, -4)}-${d.slice(-4)}` : d; };
@@ -1849,7 +1899,7 @@ V.radar = () => {
     ${o && o.loading ? `<div class="scan" role="status" aria-label="Procurando"></div><p class="muted" style="font-size:14px">${esc(o.step || '')}${o.items.length ? ` · ${o.items.length} encontrados até agora` : ''}</p>` : ''}
     ${o && o.error ? `<p class="err">${esc(o.error)}</p>` : ''}
   </section>
-  ${o && o.items && !o.loading ? radarStudy(o) + `<section class="card"><div class="ch"><div><h3>${list.length} leads nesta lista</h3><p class="muted" style="font-size:13px">Fonte: ${esc(o.source)}</p></div><div class="acts">
+  ${o && o.items && !o.loading ? radarStudy(o) + `<section class="card"><div class="ch"><div><h3>${list.length} leads nesta lista</h3><p class="muted" style="font-size:13px">Fonte: ${esc(o.source)}</p>${/Google/.test(o.source) ? '' : '<p class="muted" style="font-size:13px;white-space:normal;max-width:60ch">O mapa aberto (OpenStreetMap) conhece só uma parte dos comércios, e quase nenhum estúdio de tatuagem. Com o Google Maps ligado no servidor, a busca encontra muito mais.</p>'}</div><div class="acts">
       <button class="b3 sm ghost" data-radar="csv">${icon('copy')}Baixar CSV</button>${addable.length ? `<button class="b3 sm" data-radar="all">${icon('plus')}Adicionar ${addable.length} ao funil</button>` : ''}</div></div>
     <div class="pills" style="margin-bottom:10px">${[['phone', 'Com telefone'], ['mobile', 'Parece celular'], ['new', 'Fora do CRM'], ['all', 'Todos sem site']].map(([k, l]) => `<button class="pill" data-radar="filter" data-k="${k}" aria-pressed="${R.filter === k}">${l}</button>`).join('')}</div>
     <div class="rows">${list.slice(0, R.shown).map(i => `<div class="row rrow"><span class="ico" title="Pontuação do lead">${leadPoints(i)}</span><div class="grow"><p class="t">${esc(i.name)}</p><p class="s">${esc(RADAR_SEG[i.seg] || '')}${i.dist != null ? ` · ${i.dist.toFixed(1).replace('.', ',')} km` : ''}${i.suburb ? ' · ' + esc(i.suburb) : ''}${i.address ? ' · ' + esc(i.address) : ''}</p><p class="s">${i.phone ? esc(fmtPhone(i.phone)) + (isMobile(i.phone) ? ' · celular' : ' · fixo') : 'Sem telefone no mapa'}${i.instagram ? ' · tem Instagram' : ''}</p></div>
@@ -2487,6 +2537,15 @@ const Real = (() => {
     if (error) return toast(error.message || 'Não deu para apagar.');
     await reload(); render(); toast(`“${title}” apagado. Motivo registrado no histórico.`);
   }
+  async function deleteMany(kind, list, reason, asked) {
+    await sync(); await chain;
+    toast(`Excluindo ${list.length} ${list.length === 1 ? 'lead' : 'leads'}…`);
+    let fail = 0;
+    for (const [id, title] of list) { const {error} = await sb.rpc('delete_record', {p_kind:kind, p_id:id, p_reason:reason, p_requested_by:asked || null}); if (error) { fail++; console.error(title, error); } }
+    V._sel = null; await reload(); render();
+    const ok = list.length - fail;
+    toast(fail ? `${ok} excluídos. ${fail} não puderam ser excluídos: confira o seu perfil de acesso.` : `${ok === 1 ? '1 lead excluído' : ok + ' leads excluídos'}. Motivo registrado no histórico.`);
+  }
   async function savePay(tag, rows) {
     const {error:e1} = await sb.from('tenants').update({payment_handle:tag || null}).eq('id', tid);
     if (e1) return 'Só o dono ou admin muda o pagamento.';
@@ -2586,7 +2645,7 @@ const Real = (() => {
     const {data:{session}} = await sb.auth.getSession();
     if (session) await openApp();
   }
-  return {boot, sync, fn, reload, fichasLoad, fichaLink, fichaDrop, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
+  return {boot, sync, fn, reload, fichasLoad, fichaLink, fichaDrop, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, deleteMany, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
 })();
 
 /* tema do sistema mudou ou o host trocou data-theme */
