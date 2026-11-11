@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR" data-universo="slowly">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SLOWLY — projeto de Bruno</title>
+<meta name="description" content="Slowly: músicas mais lentas, psicodelia e melodias, dos BPMs mais baixos ao progressive melódico. Projeto de Bruno Martins.">
+<meta name="theme-color" content="#f4ece1">
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://open.spotify.com https://w.soundcloud.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="preload" href="../fonts/Syne-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/InstrumentSans-VF.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/site.css">
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+<!-- fundo vivo (WebGL). Sem WebGL ou com movimento reduzido, vale o gradiente do CSS. -->
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="grao" aria-hidden="true"></div>
+
+<header class="topo">
+  <a class="topo__marca" data-rota="" href="../">BRUNO</a>
+  <nav class="topo__nav" aria-label="Seções">
+    <a href="#som" data-ancora="som">Som</a>
+    <a href="#audiovisual" data-ancora="audiovisual">Audiovisual</a>
+    <a href="#press" data-ancora="press">Press kit</a>
+    <a class="topo__cta" href="#booking" data-ancora="booking">Contratar</a>
+  </nav>
+</header>
+
+<main id="conteudo" tabindex="-1">
+  <div id="vista"></div>
+  <div id="comum"></div>
+</main>
+
+<footer class="rodape" id="rodape"></footer>
+
+<!-- seletor de universos -->
+<nav class="seletor" id="seletor" aria-label="Universos"></nav>
+
+<!-- passagem entre universos -->
+<div class="passagem" id="passagem" aria-hidden="true"></div>
+
+<div class="cursor" id="cursor" aria-hidden="true"><i></i></div>
+<div class="aviso" id="aviso" role="status" aria-live="polite"></div>
+
+<noscript>
+  <div class="semjs">
+    <h1>BRUNO</h1>
+    <p>Darky · Slowly · Obskurial</p>
+    <p>Este site precisa de JavaScript para abrir os três universos.</p>
+    <p><a href="https://www.instagram.com/darkydj/">Instagram @darkydj</a></p>
+  </div>
+</noscript>
+
+<script src="../vendor/gsap.min.js"></script>
+<script src="../vendor/ScrollTrigger.min.js"></script>
+<script type="module" src="../js/app.js"></script>
+</body>
+</html>
