@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "lab", "runtimeExecutable": "node", "runtimeArgs": [".claude/serve.js", "8099"], "port": 8099 }
+  ]
+}

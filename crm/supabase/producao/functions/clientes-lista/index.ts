@@ -23,6 +23,15 @@ const SITES = [
     cor: "#ffb35c",
     fundo: "#2a1c13",
   },
+  {
+    nome: "DARKY",
+    sobre: "DJ · Darky, Slowly e Obskurial · nov 2026",
+    url: "../darky/",
+    endereco: "amplitudelab.github.io/lab/darky/",
+    inicial: "DK",
+    cor: "#9a6bff",
+    fundo: "#120a22",
+  },
 ];
 
 const SLUG = "amplitudelab";

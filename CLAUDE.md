@@ -89,7 +89,19 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
     ampliá-las muito: as faixas de largura total (`.band`) mostram a foto nítida
     no centro, com uma cópia desfocada preenchendo o resto, e o "ampliar" da galeria
     para em 700 px. Se chegarem fotos maiores, dá para soltar esses limites.
-  - As duas páginas usam CSP com hash do `<script>` inline: **recalcule o `sha256`
+  - `darky/`: site do DJ Darky (Bruno) e seus três projetos — DARKY, SLOWLY e
+    OBSKURIAL. A página do projeto Darky fica em `darky/darky/`. Uma só aplicação com
+    quatro rotas (`/`, `/darky/`, `/slowly/`, `/obskurial/`) trocadas por History API;
+    as três subpastas são cópias do `index.html` geradas por
+    `node darky/gerar-rotas.js` (**rode de novo sempre que mudar o `index.html`**).
+    Todo texto, link e contato fica em `js/content.js`: campo vazio não aparece na
+    página, nada é inventado. `js/app.js` monta as vistas, as passagens e o formulário;
+    `js/fx.js` é o fundo WebGL (Three.js em `vendor/`). Sem script inline, então a CSP
+    é `script-src 'self'` e não tem hash para recalcular. O inventário do material e
+    o que ainda falta do artista estão em `darky/INVENTARIO.md`. As fotos e vídeos
+    originais (ZIP de 2 GB) não vão para o repositório; só as versões otimizadas em
+    `assets/`.
+  - Bruxo e Bruno Zampieri usam CSP com hash do `<script>` inline: **recalcule o `sha256`
     sempre que mudar o script**, senão ele não roda. Para recalcular e já gravar no
     cabeçalho:
 
@@ -147,7 +159,7 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
 - Links internos usam `index.html` explícito quando a página precisa abrir também do
   disco (pacote .zip).
 - Pacote para enviar: `git archive` do `main` sem `voxel-realms*` e sem os sites de
-  clientes (`clientes/`, `bruno-zampieri/`, `bruxo/` e os próximos que entrarem na
+  clientes (`clientes/`, `bruno-zampieri/`, `bruxo/`, `darky/` e os próximos que entrarem na
   lista), mais uma página `COMECE-AQUI.html` na raiz, zipado como
   `amplitude-lab-completo.zip`.
 - Pull requests só quando pedido. O dono costuma pedir PR + merge no fim.
