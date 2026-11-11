@@ -8,7 +8,7 @@ const ScrollTrigger = window.ScrollTrigger;
 gsap.registerPlugin(ScrollTrigger);
 
 const RAIZ = new URL('..', import.meta.url);            // pasta do site
-const BASE = RAIZ.pathname;                             // ex.: /lab/bruno-martins/
+const BASE = RAIZ.pathname;                             // ex.: /lab/darky/
 const A = (p) => new URL('assets/' + p, RAIZ).href;
 const ROTAS = ['', 'darky', 'slowly', 'obskurial'];
 const CALMO = matchMedia('(prefers-reduced-motion: reduce)').matches;
