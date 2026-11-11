@@ -89,18 +89,24 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
     ampliá-las muito: as faixas de largura total (`.band`) mostram a foto nítida
     no centro, com uma cópia desfocada preenchendo o resto, e o "ampliar" da galeria
     para em 700 px. Se chegarem fotos maiores, dá para soltar esses limites.
-  - `darky/`: site do DJ Darky (Bruno) e seus três projetos — DARKY, SLOWLY e
-    OBSKURIAL. A página do projeto Darky fica em `darky/darky/`. Uma só aplicação com
-    quatro rotas (`/`, `/darky/`, `/slowly/`, `/obskurial/`) trocadas por History API;
-    as três subpastas são cópias do `index.html` geradas por
+  - `darky/`: site de **DARKY, SLOWLY e OBSKURIAL**, os três projetos de Bruno Martins.
+    O Darky é a porta de entrada (`/lab/darky/`) e é nele que o artista se apresenta — a
+    biografia vale para os três, mas aparece uma vez só. As outras rotas são
+    `darky/slowly/` e `darky/obskurial/`, cópias do `index.html` geradas por
     `node darky/gerar-rotas.js` (**rode de novo sempre que mudar o `index.html`**).
+    Obskurial é o projeto de high BPM.
     Todo texto, link e contato fica em `js/content.js`: campo vazio não aparece na
-    página, nada é inventado. `js/app.js` monta as vistas, as passagens e o formulário;
-    `js/fx.js` é o fundo WebGL (Three.js em `vendor/`). Sem script inline, então a CSP
-    é `script-src 'self'` e não tem hash para recalcular. O inventário do material e
-    o que ainda falta do artista estão em `darky/INVENTARIO.md`. As fotos e vídeos
-    originais (ZIP de 2 GB) não vão para o repositório; só as versões otimizadas em
-    `assets/`.
+    página, nada é inventado. `js/app.js` monta as vistas, a tela de abertura, as
+    passagens, a galeria-roleta e o formulário; `js/fx.js` é o fundo WebGL (Three.js em
+    `vendor/`). Sem script inline, então a CSP é `script-src 'self'` e não tem hash para
+    recalcular.
+    **Peso por aparelho:** o site mede o aparelho e serve o que ele aguenta. No celular
+    não carrega o WebGL (fica a textura), as imagens vão sem `srcset` (só a versão de
+    900 px), os vídeos usam os arquivos `-m` e as passagens têm menos peças. Cada
+    universo tem um vídeo de fundo em `assets/bg/` e uma textura em `assets/texturas/`.
+    O inventário do material, as medições e o que falta do artista estão em
+    `darky/INVENTARIO.md`. As fotos e vídeos originais (ZIP de 2 GB) não vão para o
+    repositório; só as versões otimizadas em `assets/`.
   - Bruxo e Bruno Zampieri usam CSP com hash do `<script>` inline: **recalcule o `sha256`
     sempre que mudar o script**, senão ele não roda. Para recalcular e já gravar no
     cabeçalho:

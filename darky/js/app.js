@@ -1,7 +1,7 @@
-/* BRUNO — Darky · Slowly · Obskurial
+/* DARKY · SLOWLY · OBSKURIAL — os três projetos de Bruno Martins.
    Roteador, montagem das vistas, passagens entre universos, formulário.
    O conteúdo editável fica em content.js. */
-import { ARTISTA, CONTATO, REDES, PROJETOS, VIDEOS_GERAIS, FOTOS_ARTISTA, PRESS, TIPOS_EVENTO } from './content.js';
+import { ARTISTA, CONTATO, REDES, PROJETOS, FOTOS_ARTISTA, ALT_ARTISTA, VIDEO_ARTISTA, PRESS, TIPOS_EVENTO } from './content.js';
 
 const gsap = window.gsap;
 const ScrollTrigger = window.ScrollTrigger;
@@ -10,29 +10,44 @@ gsap.registerPlugin(ScrollTrigger);
 const RAIZ = new URL('..', import.meta.url);            // pasta do site
 const BASE = RAIZ.pathname;                             // ex.: /lab/darky/
 const A = (p) => new URL('assets/' + p, RAIZ).href;
-const ROTAS = ['', 'darky', 'slowly', 'obskurial'];
+const ROTAS = ['', 'slowly', 'obskurial'];              // '' é o Darky
 const CALMO = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINO = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+/* Perfil do aparelho. Define o peso do que entra: no celular e em máquinas
+   fracas o fundo WebGL não roda (fica a textura), os vídeos vêm na versão
+   pequena e as passagens usam menos peças. */
+const MOVEL = matchMedia('(max-width: 860px)').matches || !FINO;
+const NUCLEOS = navigator.hardwareConcurrency || 4;
+const ECONOMIA = !!navigator.connection?.saveData || /2g/.test(navigator.connection?.effectiveType || '');
+const FRACO = MOVEL || NUCLEOS <= 2 || ECONOMIA;
+const COM_FX = !CALMO && !ECONOMIA && !FRACO;
+const PECAS = FRACO ? 0.6 : 1;                          // fator de peças nas passagens
+
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const url = (rota) => BASE + (rota ? rota + '/' : '');
+const chave = (rota) => (rota === '' ? 'darky' : rota);  // rota -> id do projeto
+const vid = (p) => A(p) + (MOVEL ? '-m' : '') + '.mp4';
 
-const NOMES = { '': 'BRUNO', darky: 'DARKY', slowly: 'SLOWLY', obskurial: 'OBSKURIAL' };
 const TITULOS = {
-  '': 'BRUNO — Darky · Slowly · Obskurial',
-  darky: 'DARKY — projeto de Bruno',
-  slowly: 'SLOWLY — projeto de Bruno',
-  obskurial: 'OBSKURIAL — projeto de Bruno',
+  darky: 'DARKY — Bruno Martins',
+  slowly: 'SLOWLY — projeto de Bruno Martins',
+  obskurial: 'OBSKURIAL — projeto de Bruno Martins',
 };
-const TEMA = { '': '#08080a', darky: '#07040d', slowly: '#f4ece1', obskurial: '#070203' };
+const TEMA = { darky: '#07040d', slowly: '#f4ece1', obskurial: '#070203' };
 
 /* ---------- pequenos construtores ---------- */
-function img(p, alt, { cls = '', sizes = '(max-width: 760px) 90vw, 45vw', eager = false, attrs = '' } = {}) {
-  return `<img class="${cls}" src="${A(p)}-m.webp" srcset="${A(p)}-m.webp 900w, ${A(p)}.webp 1800w" sizes="${sizes}" alt="${esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async" ${attrs}>`;
+/* No celular só entra a versão pequena: em telas de alta densidade o navegador
+   escolheria a imagem grande pelo srcset e o peso dobraria sem ganho visível. */
+function img(p, alt, { cls = '', sizes = '(max-width: 760px) 92vw, 46vw', eager = false, arrasta = false } = {}) {
+  const fonte = MOVEL ? '' : ` srcset="${A(p)}-m.webp 900w, ${A(p)}.webp 1800w" sizes="${sizes}"`;
+  return `<img class="${cls}" src="${A(p)}-m.webp"${fonte} alt="${esc(alt)}"${eager ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async"${arrasta ? '' : ' draggable="false"'}>`;
 }
+const tex = (p) => A(p) + (MOVEL ? '-m' : '') + '.webp';
 function logo(p, alt, cls = '') {
-  return `<img class="${cls}" src="${A(p)}.webp" alt="${esc(alt)}" loading="lazy" decoding="async">`;
+  return `<img class="${cls}" src="${tex(p)}" alt="${esc(alt)}" loading="lazy" decoding="async" draggable="false">`;
 }
 function letras(txt, cls = 'l') {
   return [...txt].map((c, i) => `<span class="${cls}" style="--i:${i}">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
@@ -41,85 +56,31 @@ function palavras(txt) {
   return txt.split(' ').map((w, i) => `<span class="w" style="--i:${i}">${esc(w)}</span>`).join(' ');
 }
 function clipe(v, extra = '') {
-  return `<figure class="clipe clipe--${v.formato} ${extra}" data-rev="mascara">
-    <video muted loop playsinline preload="none" poster="${A(v.arquivo)}.webp" data-src="${A(v.arquivo)}.mp4" data-auto aria-label="${esc(v.titulo)} (trecho sem som)"></video>
+  return `<figure class="clipe clipe--${v.formato} ${extra}">
+    <video muted loop playsinline preload="none" poster="${A(v.arquivo)}.webp" data-src="${vid(v.arquivo)}" data-auto aria-label="${esc(v.titulo)} (trecho sem som)"></video>
     <button class="clipe__botao" type="button" aria-label="Pausar ou tocar o trecho: ${esc(v.titulo)}" aria-pressed="false"><i></i></button>
     <figcaption>${esc(v.titulo)}</figcaption>
   </figure>`;
 }
 
 const GLIFOS = {
-  '': '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="6.5" r="1.6" fill="currentColor"/><circle cx="7.2" cy="15" r="1.6" fill="currentColor"/><circle cx="16.8" cy="15" r="1.6" fill="currentColor"/></svg>',
   darky: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 20l4-2.5 4 4.5 4-4.5 4 2.5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="miter"/><path d="M9.5 12.5h1.8M12.7 12.5h1.8" stroke="currentColor" stroke-width="1.6"/></svg>',
   slowly: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11a7 7 0 0 1 14 0v9l-2.3-2-2.4 2-2.3-2-2.3 2-2.4-2z" fill="currentColor"/><circle cx="9.6" cy="11" r="1.3" fill="var(--glifo-olho,#fff)"/><circle cx="14.4" cy="11" r="1.3" fill="var(--glifo-olho,#fff)"/></svg>',
   obskurial: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5 14.2 9.8 22.5 12l-8.3 2.2L12 22.5 9.8 14.2 1.5 12l8.3-2.2z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M12 8.2 15.8 12 12 15.8 8.2 12z" fill="currentColor"/></svg>',
 };
 
 /* ==========================================================================
-   VISTAS
+   BLOCOS QUE APARECEM EM TODOS OS UNIVERSOS
    ========================================================================== */
-function vistaHome() {
-  const portais = ['darky', 'slowly', 'obskurial'].map((id, i) => {
-    const capa = { darky: 'darky/skull-02', slowly: 'slowly/slowly-01', obskurial: 'obskurial/art-01' }[id];
-    return `<a class="portal portal--${id}" href="${url(id)}" data-rota="${id}">
-      <span class="portal__img">${img(capa, '', { sizes: '(max-width:760px) 30vw, 12vw' })}</span>
-      <span class="portal__n">0${i + 1}</span>
-      <span class="portal__nome">${NOMES[id]}</span>
-    </a>`;
-  }).join('');
-
-  const tri = ['darky', 'slowly', 'obskurial'].map((id) => {
-    const p = PROJETOS[id];
-    const capa = { darky: 'darky/darky-01', slowly: 'slowly/slowly-02', obskurial: 'obskurial/art-02' }[id];
-    return `<a class="tri tri--${id}" href="${url(id)}" data-rota="${id}" aria-label="Entrar no universo ${p.nome}">
-      <span class="tri__fundo">${img(capa, '', { sizes: '(max-width:760px) 100vw, 50vw' })}</span>
-      <span class="tri__veu"></span>
-      <span class="tri__glifo">${GLIFOS[id]}</span>
-      <span class="tri__nome">${p.nome}</span>
-      ${p.chamada ? `<span class="tri__chamada">${esc(p.chamada)}</span>` : ''}
-      <span class="tri__entrar">Entrar <i>→</i></span>
-    </a>`;
-  }).join('');
-
-  const extras = [['História', ARTISTA.historia], ['Influências', ARTISTA.influencias], ['Trajetória', ARTISTA.trajetoria], ['Filosofia musical', ARTISTA.filosofia], ['Experiência profissional', ARTISTA.experiencia]]
-    .filter(([, v]) => v && v.length)
-    .map(([t, v]) => `<div class="sobre__bloco" data-rev="sobe"><h3>${t}</h3>${[].concat(v).map((x) => `<p>${esc(x)}</p>`).join('')}</div>`).join('');
-
-  return `
-  <section class="h-hero" aria-label="Abertura">
-    <div class="h-hero__tipo" aria-hidden="true" data-mouse="-14">${letras('BRUNO')}</div>
-    <figure class="h-hero__foto" data-mouse="10">${img('artist/bruno-01', 'Bruno de blazer preto, ajustando os óculos escuros', { eager: true, sizes: '(max-width:760px) 100vw, 46vw' })}</figure>
-    <div class="h-hero__tipo h-hero__tipo--frente" aria-hidden="true" data-mouse="-14">${letras('BRUNO')}</div>
-    <div class="h-hero__texto">
-      <h1><span class="sr">Bruno — </span>Um artista.<br><em>Três projetos independentes.</em></h1>
-      <p class="h-hero__sub">DJ · ${esc(ARTISTA.cidade)}</p>
-    </div>
-    <div class="h-hero__portais" aria-label="Os três projetos">${portais}</div>
-    <a class="h-hero__desce" href="#universos" data-ancora="universos"><span>Explorar</span><i></i></a>
-  </section>
-
-  <section class="h-tri" id="universos" aria-labelledby="t-universos">
-    <header class="cab">
-      <p class="rot">Os projetos</p>
-      <h2 id="t-universos" data-rev="sobe">Três universos,<br>a mesma pessoa.</h2>
-    </header>
-    <div class="h-tri__grade">${tri}</div>
-  </section>
-
-  <section class="h-sobre" id="sobre" aria-labelledby="t-sobre">
-    <figure class="h-sobre__foto" data-rev="mascara"><div data-px="-8">${img('artist/bruno-02', 'Retrato de Bruno em fundo preto, de blazer, segurando os óculos')}</div></figure>
-    <div class="h-sobre__texto">
-      <p class="rot">Sobre</p>
-      <h2 id="t-sobre" data-rev="sobe">${esc(ARTISTA.nomeCompleto)}</h2>
-      <p class="h-sobre__bio" data-rev="sobe">${esc(ARTISTA.bioCurta)}</p>
-      <ul class="fatos">${ARTISTA.fatos.map((f) => `<li data-rev="sobe"><b>${esc(f.valor)}</b><span>${esc(f.rotulo)}</span></li>`).join('')}</ul>
-      ${extras}
-    </div>
-    <figure class="h-sobre__foto2" data-rev="mascara"><div data-px="10">${img('artist/bruno-05', 'Bruno de camiseta azul e óculos azuis, mãos cruzadas', { sizes: '(max-width:760px) 60vw, 24vw' })}</div></figure>
-  </section>`;
+function fundoVivo(p) {
+  return `<div class="cenario" aria-hidden="true">
+    <div class="cenario__tex" style="background-image:url('${tex(p.textura)}')"></div>
+    ${p.fundo ? `<video class="cenario__v" muted loop playsinline preload="none" data-src="${vid(p.fundo)}" data-fundo></video>` : ''}
+    <div class="cenario__veu"></div>
+  </div>`;
 }
 
-function fichaProjeto(p) {
+function ficha(p) {
   const linhas = [
     ['Vertentes', p.vertentes?.join(' · ')],
     ['Influências', p.influencias?.join(' · ')],
@@ -132,134 +93,52 @@ function fichaProjeto(p) {
   return `<dl class="ficha">${linhas.map(([k, v]) => `<div data-rev="sobe"><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`;
 }
 
-function chamadaBooking(p) {
-  return `<section class="contrate contrate--${p.id}" aria-label="Contratar ${p.nome}">
-    <p class="rot">Booking</p>
-    <h2 data-rev="sobe">Leve <b>${p.nome}</b> para a sua pista.</h2>
-    <a class="botao botao--forte" href="#booking" data-ancora="booking" data-projeto="${p.id}">Contratar ${p.nome}</a>
+/* pulso: o BPM do projeto vira batida na tela. Só entra quando há BPM. */
+function pulso(p) {
+  if (!p.bpm) return '';
+  const bpm = Math.round((p.bpmMin + p.bpmMax) / 2);
+  const dur = (60 / bpm).toFixed(3);
+  return `<section class="pulso pulso--${p.id}" aria-labelledby="t-pulso" style="--bat:${dur}s">
+    <div class="pulso__lado">
+      <p class="rot" id="t-pulso">Andamento</p>
+      <p class="pulso__n">${esc(p.bpm)}<span>BPM</span></p>
+      <p class="pulso__txt">${p.id === 'obskurial'
+        ? 'A pista levada ao limite de velocidade: a batida acima acompanha o andamento do projeto.'
+        : 'A batida acima acompanha o andamento em que o set acontece.'}</p>
+    </div>
+    <div class="pulso__campo" aria-hidden="true">${Array.from({ length: 28 }, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>
   </section>`;
 }
 
-function vistaDarky() {
-  const p = PROJETOS.darky;
-  const faixa = (arr) => arr.map((f) => `<span>${esc(f)}</span><i aria-hidden="true">✕</i>`).join('');
-  const cortes = ['a', 'b', 'c', 'd', 'e'];
-  return `
-  <section class="d-hero" aria-label="Darky">
-    <div class="d-hero__tipo" aria-hidden="true" data-mouse="-18"><span>DARKY</span></div>
-    <div class="d-hero__figura" data-mouse="8">
-      <video class="d-hero__video" muted loop playsinline preload="none" poster="${A('generated/darky-aura')}.webp" data-src="${A('generated/darky-aura')}.mp4" data-auto aria-label="Darky de capuz e pintura de caveira, com aura violeta em movimento"></video>
+/* galeria em roleta: clique e arraste gira; a foto não é selecionável */
+function roletaHTML(p, fotos, alts, cls = '') {
+  if (!fotos.length) return '';
+  return `<section class="galeria galeria--${p.id} ${cls}" aria-labelledby="t-galeria">
+    <header class="cab cab--linha">
+      <p class="rot" id="t-galeria">Galeria</p>
+      <p class="cab__dica"><span class="cab__maozinha" aria-hidden="true"></span>Clique e arraste para girar</p>
+    </header>
+    <div class="roleta" data-roleta tabindex="0" role="group" aria-label="Galeria de fotos — use as setas ou arraste">
+      <div class="roleta__trilho">
+        ${fotos.map((f, i) => `<figure class="roleta__i roleta__i--${i % 4}">${img(f, alts[i] || '', { sizes: '(max-width:760px) 62vw, 26vw' })}</figure>`).join('')}
+      </div>
     </div>
-    <div class="d-hero__tipo d-hero__tipo--contorno" aria-hidden="true" data-mouse="-26"><span>DARKY</span></div>
-    <h1 class="sr">Darky</h1>
-    ${logo(p.logo, 'Logo Darky', 'd-hero__logo')}
-    <dl class="d-hero__meta">
-      <div><dt>Base</dt><dd>${esc(p.vertentes[0])}</dd></div>
-      <div><dt>BPM</dt><dd>${esc(p.bpm)}</dd></div>
-    </dl>
-    <div class="brasas" aria-hidden="true">${Array.from({ length: 14 }, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>
-  </section>
-
-  <section class="d-conceito" aria-labelledby="t-dconceito">
-    <p class="rot">Conceito</p>
-    <h2 class="d-grito" id="t-dconceito" aria-label="${esc(p.chamada)}"><span data-rev="corte">NÃO SER</span><span data-rev="corte" class="d-grito__2">ROTULADO.</span></h2>
-    <div class="d-conceito__texto">${p.conceito.map((t) => `<p data-rev="sobe">${esc(t)}</p>`).join('')}</div>
-    ${fichaProjeto(p)}
-  </section>
-
-  <section class="d-faixas" aria-labelledby="t-dfaixas">
-    <h2 class="rot" id="t-dfaixas">Faixas autorais</h2>
-    <div class="esteira" aria-hidden="true"><div class="esteira__trilho">${faixa(p.faixas)}${faixa(p.faixas)}</div></div>
-    <div class="esteira esteira--volta" aria-hidden="true"><div class="esteira__trilho">${faixa([...p.faixas].reverse())}${faixa([...p.faixas].reverse())}</div></div>
-    <ul class="sr">${p.faixas.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>
-    <div class="d-fest">
-      <h3 class="rot">Festivais em que as faixas tocaram</h3>
-      <ul>${p.festivais.map((f, i) => `<li data-rev="sobe"><span>${String(i + 1).padStart(2, '0')}</span>${esc(f)}</li>`).join('')}</ul>
-    </div>
-  </section>
-
-  <section class="d-fotos" aria-label="Fotografias do Darky">
-    <figure class="d-fogo" data-rev="sobe"><div data-px="-10">${img('darky/skull-01', 'Darky de capuz e pintura de caveira, com fogo nas duas mãos', { sizes: '(max-width:760px) 90vw, 40vw' })}</div></figure>
-    ${p.fotos.map((f, i) => `<figure class="d-foto d-foto--${cortes[i]}" data-rev="mascara"><div data-px="${[-6, 8, -9, 6, -5][i]}">${img(f, ['Darky estendendo a mão tatuada em direção à câmera', 'Darky de sobretudo preto, de perfil', 'Darky de óculos escuros, braços abertos, com luz ao fundo', 'Darky de sobretudo, com a mão na nuca', 'Darky de óculos escuros, abrindo o casaco'][i])}</div></figure>`).join('')}
+    <div class="roleta__barra" aria-hidden="true"><i></i></div>
   </section>`;
 }
 
-function vistaSlowly() {
-  const p = PROJETOS.slowly;
-  return `
-  <section class="s-hero" aria-label="Slowly">
-    <div class="s-bolhas" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-    <h1 class="s-hero__titulo" aria-label="Slowly">${letras('Slowly', 'l')}</h1>
-    <figure class="s-hero__foto bolha" data-mouse="10">${img('slowly/slowly-01', 'Slowly de camiseta branca, sorrindo de leve com o punho erguido', { eager: true, sizes: '(max-width:760px) 80vw, 36vw' })}</figure>
-    <figure class="s-hero__foto2 bolha bolha--b" data-mouse="-16">${img('slowly/slowly-06', 'Perfil de Slowly de óculos escuros e cabelo preso', { sizes: '(max-width:760px) 40vw, 18vw' })}</figure>
-    <div class="s-hero__vidro" data-mouse="-8"><p>${esc(p.chamada)}</p></div>
-    ${logo(p.logo, 'Logo Slowly, com um fantasminha no lugar da letra o', 's-hero__logo')}
-  </section>
-
-  <section class="s-conceito" aria-labelledby="t-sconceito">
-    <p class="rot" id="t-sconceito">Conceito</p>
-    ${p.conceito.map((t) => `<p class="s-frase" data-rev="borra" aria-label="${esc(t)}">${palavras(t)}</p>`).join('')}
-    <ul class="s-palavras" aria-hidden="true">${p.palavras.map((w, i) => `<li style="--i:${i}">${esc(w)}</li>`).join('')}</ul>
-    ${fichaProjeto(p)}
-  </section>
-
-  <section class="s-fotos" aria-label="Fotografias do Slowly">
-    <div class="s-fotos__trilho">
-      ${p.fotos.map((f, i) => `<figure class="bolha bolha--${'abc'[i % 3]} s-fotos__item s-fotos__item--${i % 4}">${img(f, ['Slowly com o punho erguido', 'Slowly dançando de braço levantado', 'Slowly fazendo sinal com as duas mãos', 'Slowly de camiseta vinho, ajustando os óculos escuros', 'Perfil de Slowly de óculos escuros', 'Slowly de braços abertos, camiseta estampada', 'Slowly de perfil fazendo o sinal de paz'][i], { sizes: '(max-width:760px) 60vw, 26vw' })}</figure>`).join('')}
-    </div>
-  </section>`;
-}
-
-function vistaObskurial() {
-  const p = PROJETOS.obskurial;
-  const tres = (cls) => `<span class="glitch ${cls}">${logo(p.logo, 'Logo Obskurial', 'g0')}${logo(p.logo, '', 'g1')}${logo(p.logo, '', 'g2')}</span>`;
-  return `
-  <section class="o-hero" aria-label="Obskurial">
-    <div class="o-hero__lado" aria-hidden="true">Obskurial</div>
-    <span class="o-num" aria-hidden="true">I</span>
-    <h1 class="sr">Obskurial</h1>
-    <div class="o-hero__figura" data-mouse="12">
-      <video class="o-hero__video" muted loop playsinline preload="none" poster="${A('generated/obskurial-fumaca')}.webp" data-src="${A('generated/obskurial-fumaca')}.mp4" data-auto aria-label="Ilustração do Obskurial: figura encapuzada com pintura de caveira estendendo a mão, com fumaça vermelha em movimento"></video>
-    </div>
-    <div class="o-hero__logo" data-mouse="-10">${tres('')}</div>
-    <div class="o-linhas" aria-hidden="true"><i></i><i></i><i></i></div>
-    ${p.chamada ? `<p class="o-hero__chamada">${esc(p.chamada)}</p>` : ''}
-  </section>
-
-  ${p.conceito.length ? `<section class="o-conceito"><span class="o-num" aria-hidden="true">·</span>${p.conceito.map((t) => `<p data-rev="corte">${esc(t)}</p>`).join('')}${fichaProjeto(p)}</section>` : ''}
-
-  <section class="o-artes" aria-label="Artes do Obskurial">
-    <span class="o-num" aria-hidden="true">II</span>
-    <figure class="o-arte o-arte--a" data-rev="corte">
-      <div class="o-arte__q" data-px="-8"><span class="glitch glitch--arte">${img(p.artes[0], 'Ilustração: figura de capuz preto forrado de vermelho, rosto pintado de caveira, mão estendida para a frente', { cls: 'g0' })}${img(p.artes[0], '', { cls: 'g1' })}${img(p.artes[0], '', { cls: 'g2' })}</span></div>
-    </figure>
-    <figure class="o-arte o-arte--b" data-rev="corte">
-      <div class="o-arte__q" data-px="10">${img(p.artes[1], 'Ilustração: figura de capuz marrom com meia pintura de caveira, segurando uma chama na mão', { cls: 'g0' })}</div>
-    </figure>
-    <div class="o-artes__selo" data-rev="sobe">${logo(p.logo, '', '')}</div>
-    <svg class="o-geo" viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width=".6"><path d="M200 10 364 105v190L200 390 36 295V105z"/><path d="M200 10v380M36 105l328 190M364 105 36 295"/><path d="M200 70 312 135v130L200 330 88 265V135z"/><circle cx="200" cy="200" r="64"/><path d="M200 136 255 232H145z"/><path d="M200 264 145 168h110z"/></g></svg>
-  </section>`;
-}
-
-/* ---------- blocos comuns ---------- */
-function blocoAudiovisual(rota) {
-  if (rota) {
-    const p = PROJETOS[rota];
-    if (!p.videos.length) return '';
-    return `<section class="av" id="audiovisual" aria-labelledby="t-av">
-      <header class="cab"><p class="rot">Audiovisual</p><h2 id="t-av" data-rev="sobe">Registros de pista</h2></header>
-      <div class="av__clipes av__clipes--${p.videos[0].formato}">${p.videos.map((v) => clipe(v)).join('')}</div>
-    </section>`;
-  }
-  const todos = [...PROJETOS.darky.videos, ...PROJETOS.slowly.videos, ...VIDEOS_GERAIS];
-  const h = todos.filter((v) => v.formato === 'h'), v = todos.filter((x) => x.formato === 'v');
-  const fotos = FOTOS_ARTISTA.slice(2, 12);
-  const alts = ['Bruno de blazer, braços cruzados', 'Bruno de blazer, olhando o relógio', 'Bruno de camiseta azul e óculos azuis', 'Bruno de camiseta azul, mão no queixo', 'Bruno de perfil, camiseta azul', 'Bruno ajustando os óculos azuis', 'Bruno de blazer e camisa estampada, ajustando os óculos', 'Bruno de blazer e camisa estampada', 'Bruno segurando os óculos ao lado do rosto', 'Bruno ajustando o punho do blazer'];
+function blocoAudiovisual(p) {
+  if (!p.videos.length) return '';
+  const h = p.videos.filter((v) => v.formato === 'h');
+  const v = p.videos.filter((x) => x.formato === 'v');
   return `<section class="av" id="audiovisual" aria-labelledby="t-av">
-    <header class="cab"><p class="rot">Experiência audiovisual</p><h2 id="t-av" data-rev="sobe">Imagem<br>em movimento.</h2></header>
-    <div class="av__clipes av__clipes--h">${h.map((x) => clipe(x)).join('')}</div>
-    <div class="av__clipes av__clipes--v">${v.map((x) => clipe(x)).join('')}</div>
-    <div class="mosaico">${fotos.map((f, i) => `<figure class="mosaico__i mosaico__i--${i}" data-rev="mascara"><div data-px="${i % 2 ? 7 : -7}">${img(f, alts[i], { sizes: '(max-width:760px) 50vw, 25vw' })}</div></figure>`).join('')}</div>
+    <header class="cab">
+      <p class="rot">Audiovisual</p>
+      <h2 id="t-av" data-rev="sobe">Imagem<br>em movimento.</h2>
+      <p class="cab__nota">Trechos sem som, direto das pistas. Toque para pausar.</p>
+    </header>
+    ${h.length ? `<div class="av__clipes av__clipes--h">${h.map((x) => clipe(x)).join('')}</div>` : ''}
+    ${v.length ? `<div class="av__clipes av__clipes--v">${v.map((x) => clipe(x)).join('')}</div>` : ''}
   </section>`;
 }
 
@@ -274,26 +153,47 @@ function fachada(s) {
     <div class="player__pe"><h4>${esc(s.titulo)}</h4><a href="${esc(s.url)}" target="_blank" rel="noopener">Abrir no ${nome} ↗</a></div>
   </article>`;
 }
-function blocoSom(rota) {
-  const lista = (rota ? [PROJETOS[rota]] : Object.values(PROJETOS)).filter((p) => p.som.length);
-  if (!lista.length) return '';
+function blocoSom(p) {
+  if (!p.som.length) return '';
   return `<section class="som" id="som" aria-labelledby="t-som">
-    <header class="cab"><p class="rot">Sound</p><h2 id="t-som" data-rev="sobe">Onde ouvir.</h2>
-    <p class="cab__nota">Nada toca sozinho: o player só carrega quando você pede.</p></header>
-    ${lista.map((p) => `<div class="som__grupo som__grupo--${p.id}">
-      <h3 class="som__projeto">${p.nome}</h3>
-      <div class="som__grade">${p.som.map(fachada).join('')}</div>
-    </div>`).join('')}
+    <header class="cab">
+      <p class="rot">Sound</p>
+      <h2 id="t-som" data-rev="sobe">Onde ouvir.</h2>
+      <p class="cab__nota">Os players entram prontos, mas nada toca sozinho: o som só começa quando você manda.</p>
+    </header>
+    <div class="som__grade">${p.som.map(fachada).join('')}</div>
+  </section>`;
+}
+
+/* ponte: os outros dois universos, sempre no fim da leitura */
+function ponte(atual) {
+  const outros = Object.values(PROJETOS).filter((p) => p.id !== atual);
+  return `<section class="ponte" aria-labelledby="t-ponte">
+    <header class="cab">
+      <p class="rot">Os outros universos</p>
+      <h2 id="t-ponte" data-rev="sobe">Um artista.<br>Três pistas diferentes.</h2>
+    </header>
+    <div class="ponte__grade">
+      ${outros.map((p) => `<a class="pt pt--${p.id}" href="${url(p.rota)}" data-rota="${p.rota}" aria-label="Entrar no universo ${p.nome}">
+        <span class="pt__fundo">${img(p.capa, '', { sizes: '(max-width:760px) 92vw, 46vw' })}</span>
+        <span class="pt__veu"></span>
+        <span class="pt__glifo">${GLIFOS[p.id]}</span>
+        <span class="pt__nome">${p.nome}</span>
+        ${p.chamada ? `<span class="pt__chamada">${esc(p.chamada)}</span>` : ''}
+        ${p.resumo ? `<span class="pt__resumo">${esc(p.resumo)}</span>` : ''}
+        <span class="pt__entrar">Entrar <i>→</i></span>
+      </a>`).join('')}
+    </div>
   </section>`;
 }
 
 const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
-function blocoBooking(rota) {
+function blocoBooking(atual) {
   const destino = CONTATO.whatsapp ? 'pelo WhatsApp' : CONTATO.email ? 'por e-mail' : `pela mensagem direta do Instagram @${CONTATO.instagram}`;
   const opcoes = Object.values(PROJETOS).map((p) => `
     <label class="escolha escolha--${p.id}">
-      <input type="radio" name="projeto" value="${p.nome}" ${rota === p.id ? 'checked' : ''} required>
-      <span class="escolha__c">${GLIFOS[p.id]}<b>${p.nome}</b>${p.vertentes?.length ? `<small>${esc(p.vertentes.join(' · '))}</small>` : ''}${p.bpm ? `<small>${esc(p.bpm)} BPM</small>` : ''}</span>
+      <input type="radio" name="projeto" value="${p.nome}" ${atual === p.id ? 'checked' : ''} required>
+      <span class="escolha__c">${GLIFOS[p.id]}<b>${p.nome}</b>${p.vertentes?.length ? `<small>${esc(p.vertentes.join(' · '))}</small>` : ''}${p.bpm ? `<small>${esc(p.bpm)}${p.bpm === 'High BPM' ? '' : ' BPM'}</small>` : ''}</span>
     </label>`).join('');
   return `<section class="booking" id="booking" aria-labelledby="t-booking">
     <header class="cab">
@@ -330,6 +230,10 @@ function blocoBooking(rota) {
         ${CONTATO.email ? `<li><a href="mailto:${CONTATO.email}">${esc(CONTATO.email)}</a></li>` : ''}
         <li><a href="https://www.instagram.com/${CONTATO.instagram}/" target="_blank" rel="noopener">Instagram @${CONTATO.instagram} ↗</a></li>
       </ul>
+      <div class="booking__redes">
+        <h3 class="rot">Escute antes</h3>
+        <ul>${REDES.filter((r) => r.rede !== 'YouTube').map((r) => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.rede)} ↗</a></li>`).join('')}</ul>
+      </div>
       ${CONTATO.agencia ? `<div class="booking__agencia"><span class="rot">Agência</span>${logo(CONTATO.agencia.logo, 'Agência ' + CONTATO.agencia.nome)}</div>` : ''}
     </aside>
   </section>`;
@@ -340,7 +244,7 @@ function blocoPress() {
     const linhas = [['Vertentes', p.vertentes?.join(', ')], ['BPM', p.bpm], ['Faixas', p.faixas?.join(', ')], ['Festivais', p.festivais?.join(', ')]].filter(([, v]) => v);
     return `<article class="pk-proj pk-proj--${p.id}">
       <header>${logo(p.logoLinha, 'Logo ' + p.nome)}<h4>${p.nome}</h4></header>
-      ${p.release ? `<p>${esc(p.release)}</p>` : ''}
+      ${p.release ? `<p>${esc(p.release)}</p>` : p.conceito.length ? `<p>${esc(p.conceito[0])}</p>` : ''}
       ${linhas.length ? `<dl>${linhas.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}
     </article>`;
   }).join('');
@@ -353,9 +257,7 @@ function blocoPress() {
         <button class="botao" type="button" id="pk-imprimir">Salvar esta seção em PDF</button>
       </div>
     </header>
-    <div class="press__bio">
-      <article><h3 class="rot">Biografia curta</h3><p>${esc(ARTISTA.bioCurta)}</p></article>
-    </div>
+    <div class="press__bio"><article><h3 class="rot">Biografia curta</h3><p>${esc(ARTISTA.bioCurta)}</p></article></div>
     <h3 class="rot press__t">Os projetos</h3>
     <div class="press__projetos">${projetos}</div>
     <h3 class="rot press__t">Fotografias oficiais</h3>
@@ -370,12 +272,12 @@ function blocoPress() {
 function rodape() {
   const redes = [...new Map(REDES.filter((r) => r.rede !== 'YouTube').map((r) => [r.url, r])).values()];
   return `<div class="rodape__topo">
-    <a class="rodape__marca" href="${url('')}" data-rota="">BRUNO</a>
-    <ul class="rodape__projetos">${['darky', 'slowly', 'obskurial'].map((id) => `<li><a class="rp rp--${id}" href="${url(id)}" data-rota="${id}">${GLIFOS[id]}${NOMES[id]}</a></li>`).join('')}</ul>
+    <p class="rodape__marca">${Object.values(PROJETOS).map((p) => `<a class="rp rp--${p.id}" href="${url(p.rota)}" data-rota="${p.rota}">${p.nome}</a>`).join('<i aria-hidden="true">·</i>')}</p>
+    <p class="rodape__assina">Três projetos independentes de ${esc(ARTISTA.nomeCompleto)}</p>
   </div>
   <div class="rodape__cols">
     <div><h3 class="rot">Navegação</h3><ul>
-      <li><a href="#sobre" data-ancora="sobre">Sobre</a></li>
+      <li><a href="#artista" data-ancora="artista">O artista</a></li>
       <li><a href="#som" data-ancora="som">Som</a></li>
       <li><a href="#audiovisual" data-ancora="audiovisual">Audiovisual</a></li>
       <li><a href="#press" data-ancora="press">Press kit</a></li>
@@ -393,6 +295,148 @@ function rodape() {
 }
 
 /* ==========================================================================
+   VISTAS
+   ========================================================================== */
+function vistaDarky() {
+  const p = PROJETOS.darky;
+  const faixa = (arr) => arr.map((f) => `<span>${esc(f)}</span><i aria-hidden="true">✕</i>`).join('');
+  const cortes = ['a', 'b', 'c', 'd', 'e'];
+  const extras = [['História', ARTISTA.historia], ['Influências', ARTISTA.influencias], ['Trajetória', ARTISTA.trajetoria], ['Filosofia musical', ARTISTA.filosofia], ['Experiência profissional', ARTISTA.experiencia]]
+    .filter(([, v]) => v && v.length)
+    .map(([t, v]) => `<div class="sobre__bloco" data-rev="sobe"><h3>${t}</h3>${[].concat(v).map((x) => `<p>${esc(x)}</p>`).join('')}</div>`).join('');
+
+  return `
+  <section class="d-hero" aria-label="Darky">
+    <div class="d-hero__tipo" aria-hidden="true"><span>DARKY</span></div>
+    <div class="d-hero__figura">
+      <video class="d-hero__video" muted loop playsinline preload="none" poster="${A(p.heroVideo)}.webp" data-src="${vid(p.heroVideo)}" data-auto aria-label="Darky de capuz e pintura de caveira, com aura violeta em movimento"></video>
+    </div>
+    <div class="d-hero__tipo d-hero__tipo--contorno" aria-hidden="true"><span>DARKY</span></div>
+    <h1 class="sr">Darky — projeto de Bruno Martins</h1>
+    ${logo(p.logo, 'Logo Darky', 'd-hero__logo')}
+    <dl class="d-hero__meta">
+      <div><dt>Base</dt><dd>${esc(p.vertentes[0])}</dd></div>
+      <div><dt>BPM</dt><dd>${esc(p.bpm)}</dd></div>
+    </dl>
+    <p class="d-hero__pe">Um artista · três projetos</p>
+    <div class="brasas" aria-hidden="true">${Array.from({ length: Math.round(14 * PECAS) }, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>
+  </section>
+
+  <section class="d-conceito" aria-labelledby="t-dconceito">
+    <div class="d-conceito__grito">
+      <p class="rot">Conceito</p>
+      <h2 class="d-grito" id="t-dconceito" aria-label="${esc(p.chamada)}"><span data-rev="corte">NÃO SER</span><span data-rev="corte" class="d-grito__2">ROTULADO.</span></h2>
+    </div>
+    <div class="d-conceito__texto">${p.conceito.map((t) => `<p data-rev="sobe">${esc(t)}</p>`).join('')}</div>
+    ${ficha(p)}
+    <figure class="d-conceito__foto" data-rev="mascara">${img('darky/skull-03', 'Darky de capuz e pintura de caveira, braços cruzados', { sizes: '(max-width:760px) 60vw, 26vw' })}</figure>
+  </section>
+
+  ${pulso(p)}
+
+  <section class="artista" id="artista" aria-labelledby="t-artista">
+    <header class="cab">
+      <p class="rot">O artista</p>
+      <h2 id="t-artista" data-rev="sobe">${esc(ARTISTA.nomeCompleto)}</h2>
+    </header>
+    <div class="artista__corpo">
+      <figure class="artista__foto artista__foto--a" data-rev="mascara"><div data-px="-7">${img('artist/bruno-01', ALT_ARTISTA[0], { sizes: '(max-width:760px) 92vw, 36vw' })}</div></figure>
+      <div class="artista__texto">
+        ${ARTISTA.bioLonga.map((t) => `<p class="artista__p" data-rev="sobe">${esc(t)}</p>`).join('')}
+        <ul class="fatos">${ARTISTA.fatos.map((f) => `<li data-rev="sobe"><b>${esc(f.valor)}</b><span>${esc(f.rotulo)}</span></li>`).join('')}</ul>
+        ${extras}
+        <p class="artista__cidade"><span class="rot">Base</span>${esc(ARTISTA.cidade)}</p>
+      </div>
+      <figure class="artista__foto artista__foto--b" data-rev="mascara"><div data-px="8">${img('artist/bruno-05', ALT_ARTISTA[4], { sizes: '(max-width:760px) 46vw, 22vw' })}</div></figure>
+      ${clipe(VIDEO_ARTISTA, 'artista__clipe')}
+    </div>
+    <div class="tira" data-roleta data-auto-roleta>
+      <div class="tira__trilho">${FOTOS_ARTISTA.concat(FOTOS_ARTISTA).map((f, i) => `<figure>${img(f, i < FOTOS_ARTISTA.length ? (ALT_ARTISTA[i] || '') : '', { sizes: '22vw' })}</figure>`).join('')}</div>
+    </div>
+  </section>
+
+  <section class="d-faixas" aria-labelledby="t-dfaixas">
+    <h2 class="rot" id="t-dfaixas">Faixas autorais</h2>
+    <div class="esteira" aria-hidden="true"><div class="esteira__trilho">${faixa(p.faixas)}${faixa(p.faixas)}</div></div>
+    <div class="esteira esteira--volta" aria-hidden="true"><div class="esteira__trilho">${faixa([...p.faixas].reverse())}${faixa([...p.faixas].reverse())}</div></div>
+    <ul class="sr">${p.faixas.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>
+    <div class="d-fest">
+      <h3 class="rot">Festivais em que as faixas tocaram</h3>
+      <ul>${p.festivais.map((f, i) => `<li data-rev="sobe"><span>${String(i + 1).padStart(2, '0')}</span>${esc(f)}</li>`).join('')}</ul>
+    </div>
+  </section>
+
+  <section class="d-fotos" aria-label="Fotografias do Darky">
+    <figure class="d-fogo" data-rev="sobe"><div data-px="-9">${img('darky/skull-01', 'Darky de capuz e pintura de caveira, com fogo nas duas mãos', { sizes: '(max-width:760px) 86vw, 38vw' })}</div></figure>
+    <p class="d-fotos__nota" data-rev="sobe">Cada projeto tem a sua pista, a sua velocidade e o seu público. O que não muda é quem está atrás do equipamento.</p>
+    ${p.fotos.map((f, i) => `<figure class="d-foto d-foto--${cortes[i]}" data-rev="mascara"><div data-px="${[-6, 8, -9, 6, -5][i]}">${img(f, p.altFotos[i])}</div></figure>`).join('')}
+  </section>`;
+}
+
+function vistaSlowly() {
+  const p = PROJETOS.slowly;
+  return `
+  <section class="s-hero" aria-label="Slowly">
+    <div class="s-bolhas" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <h1 class="s-hero__titulo" aria-label="Slowly — projeto de Bruno Martins">${letras('Slowly', 'l')}</h1>
+    <figure class="s-hero__foto bolha">${img('slowly/slowly-01', p.altFotos[0], { eager: true, sizes: '(max-width:760px) 76vw, 34vw' })}</figure>
+    <figure class="s-hero__foto2 bolha bolha--b">${img('slowly/slowly-06', p.altFotos[4], { sizes: '(max-width:760px) 34vw, 16vw' })}</figure>
+    <div class="s-hero__vidro"><p>${esc(p.chamada)}</p></div>
+    ${logo(p.logo, 'Logo Slowly, com um fantasminha no lugar da letra o', 's-hero__logo')}
+    <p class="s-hero__pe">Um dos três projetos de Bruno</p>
+  </section>
+
+  <section class="s-conceito" aria-labelledby="t-sconceito">
+    <p class="rot" id="t-sconceito">Conceito</p>
+    ${p.conceito.map((t) => `<p class="s-frase" data-rev="borra" aria-label="${esc(t)}">${palavras(t)}</p>`).join('')}
+    <ul class="s-palavras" aria-hidden="true">${p.palavras.map((w, i) => `<li style="--i:${i}">${esc(w)}</li>`).join('')}</ul>
+    <ul class="sr">${p.palavras.map((w) => `<li>${esc(w)}</li>`).join('')}</ul>
+    ${ficha(p)}
+  </section>
+
+  <section class="s-onda" aria-hidden="true"><div class="s-onda__linhas">${Array.from({ length: Math.round(26 * PECAS) + 6 }, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div></section>`;
+}
+
+function vistaObskurial() {
+  const p = PROJETOS.obskurial;
+  const tres = () => `<span class="glitch">${logo(p.logo, 'Logo Obskurial', 'g0')}${logo(p.logo, '', 'g1')}${logo(p.logo, '', 'g2')}</span>`;
+  return `
+  <section class="o-hero" aria-label="Obskurial">
+    <div class="o-hero__lado" aria-hidden="true">Obskurial</div>
+    <span class="o-num" aria-hidden="true">I</span>
+    <h1 class="sr">Obskurial — projeto de Bruno Martins</h1>
+    <div class="o-hero__figura">
+      <video class="o-hero__video" muted loop playsinline preload="none" poster="${A(p.heroVideo)}.webp" data-src="${vid(p.heroVideo)}" data-auto aria-label="Ilustração do Obskurial: figura encapuzada com pintura de caveira estendendo a mão, com fumaça vermelha em movimento"></video>
+    </div>
+    <div class="o-hero__logo">${tres()}</div>
+    <div class="o-linhas" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="o-hero__chamada">${esc(p.chamada)}</p>
+    <p class="o-hero__pe">Um dos três projetos de Bruno</p>
+  </section>
+
+  <section class="o-conceito" aria-labelledby="t-oconceito">
+    <span class="o-num" aria-hidden="true">II</span>
+    <p class="rot" id="t-oconceito">Conceito</p>
+    ${p.conceito.map((t) => `<p class="o-frase" data-rev="corte">${esc(t)}</p>`).join('')}
+    ${ficha(p)}
+  </section>
+
+  ${pulso(p)}
+
+  <section class="o-artes" aria-label="Artes do Obskurial">
+    <span class="o-num" aria-hidden="true">III</span>
+    <figure class="o-arte o-arte--a" data-rev="corte">
+      <div class="o-arte__q" data-px="-7"><span class="glitch glitch--arte">${img(p.artes[0], p.altArtes[0], { cls: 'g0', sizes: '(max-width:760px) 86vw, 40vw' })}${img(p.artes[0], '', { cls: 'g1', sizes: '40vw' })}${img(p.artes[0], '', { cls: 'g2', sizes: '40vw' })}</span></div>
+    </figure>
+    <figure class="o-arte o-arte--b" data-rev="corte">
+      <div class="o-arte__q" data-px="9">${img(p.artes[1], p.altArtes[1], { cls: 'g0', sizes: '(max-width:760px) 70vw, 30vw' })}</div>
+    </figure>
+    <div class="o-artes__selo" data-rev="sobe">${logo(p.logo, '')}</div>
+    <svg class="o-geo" viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width=".6"><path d="M200 10 364 105v190L200 390 36 295V105z"/><path d="M200 10v380M36 105l328 190M364 105 36 295"/><path d="M200 70 312 135v130L200 330 88 265V135z"/><circle cx="200" cy="200" r="64"/><path d="M200 136 255 232H145z"/><path d="M200 264 145 168h110z"/></g></svg>
+  </section>`;
+}
+
+/* ==========================================================================
    SELETOR DE UNIVERSOS
    ========================================================================== */
 const seletor = $('#seletor');
@@ -402,9 +446,9 @@ function montarSeletor() {
       <span class="seletor__atual"></span><span class="seletor__trocar">universos</span>
     </button>
     <ul id="seletor-lista" class="seletor__lista">
-      ${ROTAS.map((r) => `<li><a class="sel sel--${r || 'home'}" href="${url(r)}" data-rota="${r}">
-        <span class="sel__glifo">${GLIFOS[r]}</span><span class="sel__nome">${NOMES[r]}</span>
-        <span class="sel__tecla" aria-hidden="true">${ROTAS.indexOf(r)}</span>
+      ${Object.values(PROJETOS).map((p, i) => `<li><a class="sel sel--${p.id}" href="${url(p.rota)}" data-rota="${p.rota}">
+        <span class="sel__glifo">${GLIFOS[p.id]}</span><span class="sel__nome">${p.nome}</span>
+        <span class="sel__tecla" aria-hidden="true">${i + 1}</span>
       </a></li>`).join('')}
       <li class="seletor__marca" aria-hidden="true"></li>
     </ul>`;
@@ -422,15 +466,15 @@ function montarSeletor() {
 function abrirSeletor(sim) {
   seletor.classList.toggle('aberto', sim);
   $('.seletor__alca', seletor).setAttribute('aria-expanded', String(sim));
-  document.documentElement.classList.toggle('trava', sim && innerWidth <= 760);
+  document.documentElement.classList.toggle('trava', sim && MOVEL);
 }
-function marcarSeletor(rota) {
+function marcarSeletor(id) {
   $$('.sel', seletor).forEach((a) => {
-    const on = a.dataset.rota === rota;
+    const on = chave(a.dataset.rota) === id;
     a.classList.toggle('ativo', on);
     if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });
-  $('.seletor__atual', seletor).innerHTML = `${GLIFOS[rota]}<b>${NOMES[rota]}</b>`;
+  $('.seletor__atual', seletor).innerHTML = `${GLIFOS[id]}<b>${PROJETOS[id].nome}</b>`;
   const ativo = $('.sel.ativo', seletor), marca = $('.seletor__marca', seletor);
   if (ativo && marca) requestAnimationFrame(() => {
     marca.style.setProperty('--x', ativo.offsetLeft + 'px');
@@ -451,169 +495,249 @@ function passar(dest, troca) {
       .add(troca)
       .to('#conteudo', { opacity: 1, duration: 0.2 });
   }
-  passagem.className = 'passagem passagem--' + (dest || 'home') + ' ativa';
+  passagem.className = 'passagem passagem--' + dest + ' ativa';
   const tl = gsap.timeline({ onComplete: () => { passagem.className = 'passagem'; passagem.innerHTML = ''; } });
+  const n = (x) => Math.max(3, Math.round(x * PECAS));
 
   if (dest === 'darky') {
-    // lâminas rasgando a tela na diagonal
-    passagem.innerHTML = Array.from({ length: 6 }, (_, i) => `<i class="lamina" style="--i:${i}"></i>`).join('') + `<img class="passagem__logo" src="${A('logos/darky-branco')}.webp" alt="">`;
-    tl.fromTo('.lamina', { xPercent: 130, skewX: -18 }, { xPercent: 0, skewX: -18, duration: 0.5, ease: 'power4.in', stagger: 0.045 })
-      .fromTo('.passagem__logo', { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.18, ease: 'power2.out' }, '-=0.1')
+    const q = n(6);
+    passagem.innerHTML = Array.from({ length: q }, (_, i) => `<i class="lamina" style="--i:${i};--q:${q}"></i>`).join('') + `<img class="passagem__logo" src="${tex('logos/darky-branco')}" alt="">`;
+    tl.fromTo('.lamina', { xPercent: 130 }, { xPercent: 0, duration: 0.46, ease: 'power4.in', stagger: 0.05 })
+      .fromTo('.passagem__logo', { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.18, ease: 'power2.out' }, '-=0.1')
       .add(troca)
-      .to('.passagem__logo', { opacity: 0, scale: 0.9, duration: 0.2 }, '+=0.12')
-      .to('.lamina', { xPercent: -140, duration: 0.55, ease: 'power4.out', stagger: 0.04 }, '<');
+      .to('.passagem__logo', { opacity: 0, scale: 0.92, duration: 0.2 }, '+=0.1')
+      .to('.lamina', { xPercent: -140, duration: 0.5, ease: 'power4.out', stagger: 0.045 }, '<');
   } else if (dest === 'slowly') {
-    // bolhas subindo devagar até cobrir tudo, depois se desfazem
-    passagem.innerHTML = Array.from({ length: 7 }, (_, i) => `<i class="gota" style="--i:${i}"></i>`).join('') + `<img class="passagem__logo" src="${A('logos/slowly-preto')}.webp" alt="">`;
-    tl.fromTo('.gota', { scale: 0, yPercent: 60 }, { scale: 1, yPercent: 0, duration: 1.0, ease: 'sine.inOut', stagger: 0.07 })
-      .fromTo('.passagem__logo', { opacity: 0, y: 30, filter: 'blur(14px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.5, ease: 'sine.out' }, '-=0.5')
+    const q = n(7);
+    passagem.innerHTML = Array.from({ length: q }, (_, i) => `<i class="gota gota--${i}" style="--i:${i}"></i>`).join('') + `<img class="passagem__logo" src="${tex('logos/slowly-preto')}" alt="">`;
+    tl.fromTo('.gota', { scale: 0, yPercent: 50 }, { scale: 1, yPercent: 0, duration: 0.9, ease: 'sine.inOut', stagger: 0.06 })
+      .fromTo('.passagem__logo', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: 'sine.out' }, '-=0.45')
       .add(troca)
-      .to('.passagem__logo', { opacity: 0, y: -20, filter: 'blur(10px)', duration: 0.5, ease: 'sine.in' }, '+=0.15')
-      .to('.gota', { opacity: 0, scale: 1.25, duration: 0.9, ease: 'sine.inOut', stagger: 0.05 }, '<0.1');
-  } else if (dest === 'obskurial') {
-    // faixas de interferência travando a imagem, com varredura vermelha
-    passagem.innerHTML = Array.from({ length: 14 }, (_, i) => `<i class="tira" style="--i:${i}"></i>`).join('') + '<b class="varredura"></b>' + `<img class="passagem__logo" src="${A('logos/obskurial')}.webp" alt="">`;
-    tl.fromTo('.tira', { scaleX: 0, xPercent: () => gsap.utils.random(-30, 30) }, { scaleX: 1, xPercent: 0, duration: 0.34, ease: 'steps(5)', stagger: { each: 0.025, from: 'random' } })
-      .fromTo('.varredura', { yPercent: -55 }, { yPercent: 55, duration: 0.5, ease: 'none' }, 0)
-      .fromTo('.passagem__logo', { opacity: 0, skewX: 30 }, { opacity: 1, skewX: 0, duration: 0.16, ease: 'steps(3)' })
-      .add(troca)
-      .to('.passagem__logo', { opacity: 0, skewX: -30, duration: 0.14, ease: 'steps(3)' }, '+=0.18')
-      .to('.tira', { scaleX: 0, transformOrigin: () => (Math.random() > 0.5 ? 'left' : 'right'), duration: 0.36, ease: 'steps(6)', stagger: { each: 0.02, from: 'random' } }, '<');
+      .to('.passagem__logo', { opacity: 0, y: -18, duration: 0.45, ease: 'sine.in' }, '+=0.12')
+      .to('.gota', { opacity: 0, scale: 1.2, duration: 0.8, ease: 'sine.inOut', stagger: 0.045 }, '<0.1');
   } else {
-    // volta ao centro: íris neutra
-    passagem.innerHTML = '<i class="iris"></i><span class="passagem__nome">BRUNO</span>';
-    tl.fromTo('.iris', { clipPath: 'circle(0% at 50% 50%)' }, { clipPath: 'circle(75% at 50% 50%)', duration: 0.6, ease: 'power3.inOut' })
-      .fromTo('.passagem__nome', { opacity: 0, letterSpacing: '0.6em' }, { opacity: 1, letterSpacing: '0.2em', duration: 0.3 }, '-=0.25')
+    const q = n(14);
+    passagem.innerHTML = Array.from({ length: q }, (_, i) => `<i class="tira" style="--i:${i};--q:${q}"></i>`).join('') + '<b class="varredura"></b>' + `<img class="passagem__logo" src="${tex('logos/obskurial')}" alt="">`;
+    tl.fromTo('.tira', { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: 'steps(5)', stagger: { each: 0.022, from: 'random' } })
+      .fromTo('.varredura', { yPercent: -55 }, { yPercent: 55, duration: 0.46, ease: 'none' }, 0)
+      .fromTo('.passagem__logo', { opacity: 0, skewX: 26 }, { opacity: 1, skewX: 0, duration: 0.16, ease: 'steps(3)' })
       .add(troca)
-      .to('.passagem__nome', { opacity: 0, duration: 0.2 }, '+=0.1')
-      .to('.iris', { opacity: 0, duration: 0.5, ease: 'power2.out' }, '<');
+      .to('.passagem__logo', { opacity: 0, skewX: -26, duration: 0.14, ease: 'steps(3)' }, '+=0.16')
+      .to('.tira', { scaleX: 0, transformOrigin: () => (Math.random() > 0.5 ? 'left' : 'right'), duration: 0.32, ease: 'steps(6)', stagger: { each: 0.018, from: 'random' } }, '<');
   }
   return tl;
 }
 
 /* ==========================================================================
-   MONTAGEM E ANIMAÇÕES DE CADA VISTA
+   MONTAGEM
    ========================================================================== */
-const vista = $('#vista'), comum = $('#comum');
-let rotaAtual = null, ocupado = false, fx = null, mm = null;
+const vista = $('#vista'), comum = $('#comum'), cenario = $('#cenario');
+let idAtual = null, ocupado = false, fx = null;
+let observador = null, revelador = null, mouseAlvos = [];
 
-function montar(rota) {
-  document.documentElement.dataset.universo = rota || 'home';
-  document.title = TITULOS[rota];
-  $('meta[name="theme-color"]').setAttribute('content', TEMA[rota]);
+function montar(id) {
+  const p = PROJETOS[id];
+  document.documentElement.dataset.universo = id;
+  document.title = TITULOS[id];
+  $('meta[name="theme-color"]').setAttribute('content', TEMA[id]);
   ScrollTrigger.getAll().forEach((t) => t.kill());
   gsap.killTweensOf($$('#conteudo *'));
+  observador?.disconnect(); revelador?.disconnect();
   mouseAlvos = [];
-  observador?.disconnect();
 
-  const p = PROJETOS[rota];
-  vista.innerHTML = { '': vistaHome, darky: vistaDarky, slowly: vistaSlowly, obskurial: vistaObskurial }[rota]();
-  comum.innerHTML = blocoAudiovisual(rota) + blocoSom(rota) + (rota ? chamadaBooking(p) : '') + blocoBooking(rota) + (rota ? '' : blocoPress());
+  cenario.innerHTML = fundoVivo(p);
+  vista.innerHTML = { darky: vistaDarky, slowly: vistaSlowly, obskurial: vistaObskurial }[id]();
+  comum.innerHTML =
+    (id === 'darky' ? '' : roletaHTML(p, p.fotos, p.altFotos)) +
+    blocoAudiovisual(p) +
+    blocoSom(p) +
+    ponte(id) +
+    blocoBooking(id) +
+    (id === 'darky' ? blocoPress() : '');
   $('#rodape').innerHTML = rodape();
 
-  // links do topo que não têm destino nesta vista somem
-  $$('.topo__nav [data-ancora]').forEach((a) => { a.hidden = !rota ? !document.getElementById(a.dataset.ancora) : (a.dataset.ancora !== 'press' && !document.getElementById(a.dataset.ancora)); });
-  $$('.rodape [data-ancora]').forEach((a) => { const alvo = a.dataset.ancora; a.closest('li').hidden = !document.getElementById(alvo) && !(rota && (alvo === 'press' || alvo === 'sobre')); });
+  // links do topo só aparecem quando a seção existe nesta vista
+  $$('.topo__nav [data-ancora]').forEach((a) => {
+    a.hidden = !document.getElementById(a.dataset.ancora) && !(a.dataset.ancora === 'press' && id !== 'darky');
+  });
+  $$('.rodape [data-ancora]').forEach((a) => {
+    const alvo = a.dataset.ancora;
+    a.closest('li').hidden = !document.getElementById(alvo) && !(id !== 'darky' && (alvo === 'press' || alvo === 'artista'));
+  });
 
-  marcarSeletor(rota);
-  fx?.modo(rota || 'home');
+  marcarSeletor(id);
+  fx?.modo(id);
   ligarVideos();
+  ligarRoletas();
   ligarFormulario();
+  agendarPlayers();
   const d = $('#form-booking [name="data"]'); if (d) d.min = new Date().toISOString().slice(0, 10);
-  animar(rota);
+  animar(id);
 }
 
-function animar(rota) {
+function animar(id) {
   if (CALMO) { $$('[data-rev]').forEach((e) => e.classList.add('visto')); return; }
 
-  // revelações ao rolar
-  revelador?.disconnect();
-  revelador = new IntersectionObserver((ents) => ents.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('visto'); revelador.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  revelador = new IntersectionObserver((ents) => ents.forEach((en) => {
+    if (en.isIntersecting) { en.target.classList.add('visto'); revelador.unobserve(en.target); }
+  }), { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
   $$('[data-rev]').forEach((el) => revelador.observe(el));
-  // paralaxe de rolagem
-  $$('[data-px]').forEach((el) => {
-    const f = parseFloat(el.dataset.px);
-    gsap.fromTo(el, { yPercent: -f }, { yPercent: f, ease: 'none', scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: 0.6 } });
-  });
-  // paralaxe do cursor
-  if (FINO) {
-    const alvos = $$('[data-mouse]').map((el) => ({ f: parseFloat(el.dataset.mouse), x: gsap.quickTo(el, 'x', { duration: 0.9, ease: 'power3' }), y: gsap.quickTo(el, 'y', { duration: 0.9, ease: 'power3' }) }));
-    mouseAlvos = alvos;
+
+  if (!FRACO) {
+    $$('[data-px]').forEach((el) => {
+      const f = parseFloat(el.dataset.px);
+      gsap.fromTo(el, { yPercent: -f }, { yPercent: f, ease: 'none', scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: 0.6 } });
+    });
+  }
+  if (FINO && !FRACO) {
+    mouseAlvos = $$('[data-mouse]').map((el) => ({
+      f: parseFloat(el.dataset.mouse),
+      x: gsap.quickTo(el, 'x', { duration: 0.9, ease: 'power3' }),
+      y: gsap.quickTo(el, 'y', { duration: 0.9, ease: 'power3' }),
+    }));
   }
 
   const e = { ease: 'power4.out' };
-  if (rota === '') {
-    gsap.from('.h-hero__tipo .l', { yPercent: 110, rotate: 6, duration: 1.2, stagger: 0.07, ...e });
-    gsap.from('.h-hero__foto img', { clipPath: 'inset(100% 0 0 0)', scale: 1.18, duration: 1.5, ease: 'power3.out', delay: 0.15 });
-    gsap.from('.h-hero__texto > *', { y: 30, opacity: 0, duration: 0.9, stagger: 0.12, delay: 0.7, ...e });
-    gsap.from('.portal', { y: 60, opacity: 0, duration: 0.9, stagger: 0.1, delay: 0.9, ...e });
-    gsap.to('.h-hero__foto', { yPercent: 14, ease: 'none', scrollTrigger: { trigger: '.h-hero', start: 'top top', end: 'bottom top', scrub: true } });
-    gsap.to('.h-hero__tipo', { yPercent: -22, ease: 'none', scrollTrigger: { trigger: '.h-hero', start: 'top top', end: 'bottom top', scrub: true } });
-    gsap.from('.tri', { yPercent: 18, opacity: 0, duration: 1, stagger: 0.12, ...e, scrollTrigger: { trigger: '.h-tri__grade', start: 'top 80%' } });
-  }
-  if (rota === 'darky') {
+  if (id === 'darky') {
     gsap.from('.d-hero__tipo span', { scaleY: 0, transformOrigin: '50% 100%', duration: 0.7, ease: 'expo.out', stagger: 0.08 });
-    gsap.from('.d-hero__figura', { yPercent: 12, opacity: 0, duration: 1.1, delay: 0.15, ease: 'power3.out' });
-    gsap.from('.d-hero__logo', { opacity: 0, scale: 1.25, filter: 'blur(12px)', duration: 0.8, delay: 0.55, ease: 'power3.out' });
-    gsap.from('.d-hero__meta > div', { x: -30, opacity: 0, duration: 0.6, stagger: 0.1, delay: 0.8, ...e });
-    gsap.to('.d-hero__tipo:not(.d-hero__tipo--contorno)', { yPercent: 30, ease: 'none', scrollTrigger: { trigger: '.d-hero', start: 'top top', end: 'bottom top', scrub: true } });
-    gsap.to('.d-hero__figura', { scale: 1.08, ease: 'none', scrollTrigger: { trigger: '.d-hero', start: 'top top', end: 'bottom top', scrub: true } });
+    gsap.from('.d-hero__figura', { yPercent: 10, opacity: 0, duration: 1, delay: 0.15, ease: 'power3.out' });
+    gsap.from('.d-hero__logo', { opacity: 0, scale: 1.2, duration: 0.7, delay: 0.5, ease: 'power3.out' });
+    gsap.from('.d-hero__meta > div', { x: -26, opacity: 0, duration: 0.6, stagger: 0.1, delay: 0.7, ...e });
+    if (!FRACO) {
+      gsap.to('.d-hero__tipo:not(.d-hero__tipo--contorno)', { yPercent: 24, ease: 'none', scrollTrigger: { trigger: '.d-hero', start: 'top top', end: 'bottom top', scrub: true } });
+      gsap.to('.d-hero__figura', { scale: 1.07, ease: 'none', scrollTrigger: { trigger: '.d-hero', start: 'top top', end: 'bottom top', scrub: true } });
+    }
   }
-  if (rota === 'slowly') {
+  if (id === 'slowly') {
     const s = { ease: 'sine.out' };
-    gsap.from('.s-hero__titulo .l', { yPercent: 60, opacity: 0, filter: 'blur(18px)', duration: 1.8, stagger: 0.14, ...s });
-    gsap.from('.s-hero__foto, .s-hero__foto2', { scale: 0.6, opacity: 0, duration: 2, stagger: 0.25, delay: 0.3, ease: 'sine.inOut' });
-    gsap.from('.s-hero__vidro', { opacity: 0, y: 40, duration: 1.6, delay: 1, ...s });
-    gsap.from('.s-hero__logo', { opacity: 0, duration: 1.6, delay: 1.3, ...s });
-    gsap.to('.s-hero__titulo', { y: -140, ease: 'none', scrollTrigger: { trigger: '.s-hero', start: 'top top', end: 'bottom top', scrub: 1.5 } });
-    const trilho = $('.s-fotos__trilho');
-    if (trilho) gsap.to(trilho, { x: () => -(trilho.scrollWidth - innerWidth + 40), ease: 'none', scrollTrigger: { trigger: '.s-fotos', start: 'top 70%', end: 'bottom 20%', scrub: 1.8, invalidateOnRefresh: true } });
+    gsap.from('.s-hero__titulo .l', { yPercent: 50, opacity: 0, duration: 1.4, stagger: 0.12, ...s });
+    gsap.from('.s-hero__foto, .s-hero__foto2', { scale: 0.7, opacity: 0, duration: 1.6, stagger: 0.2, delay: 0.25, ease: 'sine.inOut' });
+    gsap.from('.s-hero__vidro', { opacity: 0, y: 30, duration: 1.3, delay: 0.8, ...s });
+    gsap.from('.s-hero__logo', { opacity: 0, duration: 1.3, delay: 1.1, ...s });
+    if (!FRACO) gsap.to('.s-hero__titulo', { y: -120, ease: 'none', scrollTrigger: { trigger: '.s-hero', start: 'top top', end: 'bottom top', scrub: 1.2 } });
   }
-  if (rota === 'obskurial') {
-    gsap.from('.o-hero__logo', { opacity: 0, duration: 0.5, ease: 'steps(4)', delay: 0.2 });
-    gsap.from('.o-hero__figura', { opacity: 0, xPercent: 8, duration: 0.6, ease: 'steps(6)', delay: 0.35 });
-    gsap.from('.o-hero__lado', { opacity: 0, duration: 1.2, delay: 0.5, ease: 'power2.out' });
-    gsap.from('.o-linhas i', { scaleX: 0, duration: 0.9, stagger: 0.12, ease: 'power4.inOut', delay: 0.2 });
-    gsap.to('.o-geo', { rotate: 120, ease: 'none', scrollTrigger: { trigger: '.o-artes', start: 'top bottom', end: 'bottom top', scrub: 1 } });
-    gsap.to('.o-hero__figura', { yPercent: 10, ease: 'none', scrollTrigger: { trigger: '.o-hero', start: 'top top', end: 'bottom top', scrub: true } });
+  if (id === 'obskurial') {
+    gsap.from('.o-hero__logo', { opacity: 0, duration: 0.45, ease: 'steps(4)', delay: 0.2 });
+    gsap.from('.o-hero__figura', { opacity: 0, xPercent: 6, duration: 0.55, ease: 'steps(6)', delay: 0.3 });
+    gsap.from('.o-hero__lado', { opacity: 0, duration: 1.1, delay: 0.45, ease: 'power2.out' });
+    gsap.from('.o-linhas i', { scaleX: 0, duration: 0.85, stagger: 0.1, ease: 'power4.inOut', delay: 0.2 });
+    if (!FRACO) gsap.to('.o-geo', { rotate: 110, ease: 'none', scrollTrigger: { trigger: '.o-artes', start: 'top bottom', end: 'bottom top', scrub: 1 } });
   }
   requestAnimationFrame(() => ScrollTrigger.refresh());
 }
 
-/* ---------- vídeos: só carregam e tocam quando entram na tela ---------- */
-let observador = null, revelador = null;
+/* ---------- vídeos ---------- */
+function tocar(v) {
+  if (!v.src) { v.src = v.dataset.src; v.load(); }
+  const pr = v.play();
+  if (pr && pr.catch) pr.catch(() => v.closest('.clipe')?.classList.add('parado'));
+}
 function ligarVideos() {
-  const vids = $$('video[data-auto]');
+  const fundo = $('video[data-fundo]');
+  if (fundo && !CALMO && !ECONOMIA) tocar(fundo);
+
   observador = new IntersectionObserver((ents) => {
     ents.forEach((en) => {
       const v = en.target;
-      if (en.isIntersecting) {
-        if (!v.src) v.src = v.dataset.src;
-        if (!CALMO && !v.dataset.pausado) v.play().catch(() => {});
-      } else if (!v.paused) v.pause();
+      if (en.isIntersecting) { if (!CALMO && !v.dataset.pausado) tocar(v); }
+      else if (!v.paused) v.pause();
     });
-  }, { rootMargin: '120px 0px', threshold: 0.15 });
-  vids.forEach((v) => observador.observe(v));
+  }, { rootMargin: '200px 0px', threshold: 0.1 });
+  $$('video[data-auto]').forEach((v) => observador.observe(v));
+
   $$('.clipe').forEach((c) => {
     const v = $('video', c), b = $('.clipe__botao', c);
     const pinta = () => { c.classList.toggle('tocando', !v.paused); b.setAttribute('aria-pressed', String(!v.paused)); };
     v.addEventListener('play', pinta); v.addEventListener('pause', pinta);
+    v.addEventListener('error', () => c.classList.add('parado'));
     b.addEventListener('click', () => {
-      if (!v.src) v.src = v.dataset.src;
-      if (v.paused) { delete v.dataset.pausado; v.play().catch(() => {}); } else { v.dataset.pausado = '1'; v.pause(); }
+      if (v.paused) { delete v.dataset.pausado; c.classList.remove('parado'); tocar(v); }
+      else { v.dataset.pausado = '1'; v.pause(); }
     });
   });
 }
 
-/* ---------- players: o iframe só entra quando a pessoa pede ---------- */
+/* ---------- roleta: clique e arraste gira a galeria ---------- */
+function ligarRoletas() {
+  // as fotos da roleta ficam fora da janela na horizontal, e aí o navegador não
+  // as busca sozinho: quando a roleta chega perto da tela, todas são pedidas
+  const aquece = new IntersectionObserver((ents) => ents.forEach((en) => {
+    if (!en.isIntersecting) return;
+    aquece.unobserve(en.target);
+    $$('img[loading="lazy"]', en.target).forEach((i) => { i.loading = 'eager'; });
+  }), { rootMargin: '500px 0px' });
+
+  $$('[data-roleta]').forEach((el) => {
+    aquece.observe(el);
+    const trilho = el.firstElementChild;
+    let x = 0, alvo = 0, vel = 0, pego = false, px = 0, ultimo = 0, moveu = 0, raf = 0;
+    const lim = () => Math.max(0, trilho.scrollWidth - el.clientWidth);
+    const auto = el.hasAttribute('data-auto-roleta') && !CALMO ? (FRACO ? 0.25 : 0.35) : 0;
+
+    const passo = () => {
+      if (!pego) {
+        alvo += vel + auto;
+        vel *= 0.94;
+        if (Math.abs(vel) < 0.02) vel = 0;
+      }
+      const L = lim();
+      if (auto && L > 0) { if (alvo > L) alvo -= L / 2; if (alvo < 0) alvo += L / 2; }
+      else alvo = Math.min(L, Math.max(0, alvo));
+      x += (alvo - x) * 0.16;
+      trilho.style.transform = `translate3d(${-x.toFixed(2)}px,0,0)`;
+      const b = $('.roleta__barra i', el.parentElement) || null;
+      if (b && L > 0) b.style.transform = `translateX(${(x / L * 100).toFixed(1)}%)`;
+      raf = (Math.abs(alvo - x) > 0.2 || vel || auto || pego) ? requestAnimationFrame(passo) : 0;
+    };
+    const acorda = () => { if (!raf) raf = requestAnimationFrame(passo); };
+
+    el.addEventListener('pointerdown', (e) => {
+      if (e.button) return;
+      pego = true; moveu = 0; vel = 0; px = e.clientX; ultimo = performance.now();
+      el.setPointerCapture(e.pointerId);
+      el.classList.add('pegando');
+      acorda();
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (!pego) return;
+      const d = e.clientX - px; px = e.clientX; moveu += Math.abs(d);
+      const t = performance.now(), dt = Math.max(1, t - ultimo); ultimo = t;
+      alvo -= d; x = alvo;
+      vel = -d / dt * 14;
+      trilho.style.transform = `translate3d(${-x.toFixed(2)}px,0,0)`;
+    });
+    const solta = (e) => {
+      if (!pego) return;
+      pego = false;
+      el.classList.remove('pegando');
+      try { el.releasePointerCapture(e.pointerId); } catch { /* o ponteiro já saiu */ }
+      acorda();
+    };
+    el.addEventListener('pointerup', solta);
+    el.addEventListener('pointercancel', solta);
+    el.addEventListener('click', (e) => { if (moveu > 6) { e.preventDefault(); e.stopPropagation(); } }, true);
+    el.addEventListener('dragstart', (e) => e.preventDefault());
+    el.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault(); alvo += d * el.clientWidth * 0.6; acorda();
+    });
+    el.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault(); alvo += e.deltaX; acorda();
+    }, { passive: false });
+    acorda();
+  });
+}
+
+/* ---------- players: entram prontos, sem travar a abertura ---------- */
 const EMBED = {
   youtube: (id) => `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0`,
   spotify: (id) => `https://open.spotify.com/embed/artist/${encodeURIComponent(id)}`,
   soundcloud: (id) => `https://w.soundcloud.com/player/?url=${encodeURIComponent('https://soundcloud.com/' + id)}&auto_play=false&visual=true`,
 };
-document.addEventListener('click', (e) => {
-  const b = e.target.closest('.player__abrir');
-  if (!b) return;
+function abrirPlayer(b) {
+  if (!b.isConnected) return;
   const f = document.createElement('iframe');
   f.src = EMBED[b.dataset.embed](b.dataset.id);
   f.title = b.dataset.titulo;
@@ -621,6 +745,27 @@ document.addEventListener('click', (e) => {
   f.allow = 'encrypted-media; picture-in-picture; fullscreen';
   f.referrerPolicy = 'strict-origin-when-cross-origin';
   b.replaceWith(f);
+}
+function agendarPlayers() {
+  const botoes = $$('.player__abrir');
+  if (!botoes.length) return;
+  const ocioso = window.requestIdleCallback || ((fn) => setTimeout(fn, 300));
+  if (!FRACO) {
+    // desktop: carrega em fila assim que a máquina fica livre
+    botoes.forEach((b, i) => ocioso(() => setTimeout(() => abrirPlayer(b), i * 450)));
+    return;
+  }
+  // celular: carrega quando a seção está a uma tela de distância, para não pesar
+  const io = new IntersectionObserver((ents) => ents.forEach((en) => {
+    if (!en.isIntersecting) return;
+    io.unobserve(en.target);
+    $$('.player__abrir', en.target).forEach((b, i) => setTimeout(() => abrirPlayer(b), i * 500));
+  }), { rootMargin: '600px 0px' });
+  const som = $('#som'); if (som) io.observe(som);
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('.player__abrir');
+  if (b) abrirPlayer(b);
 });
 
 /* ==========================================================================
@@ -651,8 +796,7 @@ function ligarFormulario() {
   const valor = (n) => (n === 'projeto' ? (form.querySelector('[name="projeto"]:checked')?.value || '') : form.elements[n].value);
   const checar = (n) => {
     const msg = REGRAS[n](valor(n));
-    const alvo = $(`[data-erro="${n}"]`, form);
-    alvo.textContent = msg;
+    $(`[data-erro="${n}"]`, form).textContent = msg;
     const campos = n === 'projeto' ? $$('[name="projeto"]', form) : [form.elements[n]];
     campos.forEach((c) => c.setAttribute('aria-invalid', String(!!msg)));
     return !msg;
@@ -667,10 +811,8 @@ function ligarFormulario() {
   });
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const ok = Object.keys(REGRAS).map(checar);
-    if (ok.includes(false)) {
-      const primeiro = form.querySelector('[aria-invalid="true"]');
-      primeiro?.focus();
+    if (Object.keys(REGRAS).map(checar).includes(false)) {
+      form.querySelector('[aria-invalid="true"]')?.focus();
       return;
     }
     const [a, m, d] = valor('data').split('-');
@@ -743,8 +885,9 @@ function rolarPara(id, suave = true) {
 }
 function ir(rota, { ancora = '', empurra = true, projeto = '' } = {}) {
   if (ocupado) return;
+  const id = chave(rota);
   abrirSeletor(false);
-  if (rota === rotaAtual) {
+  if (id === idAtual) {
     if (ancora) { rolarPara(ancora); if (empurra) history.pushState({ rota }, '', url(rota) + '#' + ancora); }
     else scrollTo({ top: 0, behavior: CALMO ? 'auto' : 'smooth' });
     return;
@@ -752,10 +895,10 @@ function ir(rota, { ancora = '', empurra = true, projeto = '' } = {}) {
   ocupado = true;
   document.documentElement.classList.add('em-passagem');
   if (empurra) history.pushState({ rota }, '', url(rota) + (ancora ? '#' + ancora : ''));
-  const tl = passar(rota, () => {
+  const tl = passar(id, () => {
     scrollTo(0, 0);
-    rotaAtual = rota;
-    montar(rota);
+    idAtual = id;
+    montar(id);
     if (ancora) rolarPara(ancora, false);
     if (projeto) marcarProjeto(projeto);
   });
@@ -764,11 +907,11 @@ function ir(rota, { ancora = '', empurra = true, projeto = '' } = {}) {
     ocupado = false;
     document.documentElement.classList.remove('em-passagem');
     $('#conteudo').focus({ preventScroll: true });
-    avisar(`Universo: ${NOMES[rota]}`);
+    avisar(`Universo: ${PROJETOS[id].nome}`);
   });
 }
 function marcarProjeto(id) {
-  const r = $(`#form-booking [name="projeto"][value="${NOMES[id]}"]`);
+  const r = $(`#form-booking [name="projeto"][value="${PROJETOS[id].nome}"]`);
   if (r) { r.checked = true; r.dispatchEvent(new Event('change', { bubbles: true })); }
 }
 
@@ -782,26 +925,23 @@ document.addEventListener('click', (e) => {
   if (a.dataset.projeto) marcarProjeto(a.dataset.projeto);
   if (document.getElementById(alvo)) {
     rolarPara(alvo);
-    history.pushState({ rota: rotaAtual }, '', url(rotaAtual) + '#' + alvo);
-  } else ir('', { ancora: alvo });   // seção que só existe na página inicial
+    history.pushState({ rota: PROJETOS[idAtual].rota }, '', url(PROJETOS[idAtual].rota) + '#' + alvo);
+  } else ir('', { ancora: alvo });   // seção que só existe no Darky
 });
 addEventListener('popstate', () => {
   const r = rotaDaUrl(), h = location.hash.slice(1);
-  if (r !== rotaAtual) ir(r, { ancora: h, empurra: false });
+  if (chave(r) !== idAtual) ir(r, { ancora: h, empurra: false });
   else if (h) rolarPara(h); else scrollTo({ top: 0, behavior: CALMO ? 'auto' : 'smooth' });
 });
-// atalhos: 0 a 3 trocam de universo (fora de campos de texto)
 addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName)) return;
-  if (/^[0-3]$/.test(e.key)) ir(ROTAS[+e.key]);
+  if (/^[1-3]$/.test(e.key)) ir(ROTAS[+e.key - 1]);
 });
 document.addEventListener('click', (e) => { if (e.target.id === 'pk-imprimir') { document.documentElement.classList.add('imprimir-press'); print(); } });
 addEventListener('afterprint', () => document.documentElement.classList.remove('imprimir-press'));
-addEventListener('resize', () => marcarSeletor(rotaAtual));
-new ResizeObserver(() => rotaAtual !== null && marcarSeletor(rotaAtual)).observe(seletor);
+addEventListener('resize', () => idAtual && marcarSeletor(idAtual));
 
 /* ---------- cursor e paralaxe do ponteiro ---------- */
-let mouseAlvos = [];
 if (FINO && !CALMO) {
   const c = $('#cursor');
   document.documentElement.classList.add('tem-cursor');
@@ -812,7 +952,11 @@ if (FINO && !CALMO) {
     mouseAlvos.forEach((a) => { a.x(nx * a.f * 2); a.y(ny * a.f * 2); });
     fx?.ponteiro(e.clientX / innerWidth, 1 - e.clientY / innerHeight);
   }, { passive: true });
-  document.addEventListener('pointerover', (e) => c.classList.toggle('sobre', !!e.target.closest('a,button,label,select,input,textarea,.clipe')));
+  document.addEventListener('pointerover', (e) => {
+    const alvo = e.target.closest('a,button,label,select,input,textarea,.clipe');
+    c.classList.toggle('sobre', !!alvo);
+    c.classList.toggle('arrasta', !!e.target.closest('[data-roleta]'));
+  });
   document.addEventListener('pointerleave', () => c.classList.add('fora'));
   document.addEventListener('pointerenter', () => c.classList.remove('fora'));
 }
@@ -822,24 +966,100 @@ let ultimoY = 0;
 addEventListener('scroll', () => {
   const y = scrollY;
   document.documentElement.classList.toggle('rolou', y > 40);
-  document.documentElement.classList.toggle('descendo', y > ultimoY && y > 300);
+  document.documentElement.classList.toggle('descendo', y > ultimoY && y > 320);
   ultimoY = y;
 }, { passive: true });
 
+/* ==========================================================================
+   ABERTURA: tela de carregamento com os três logos
+   ========================================================================== */
+function precarregar(id, aoAndar) {
+  const p = PROJETOS[id];
+  const imagens = [
+    `${tex(p.textura)}`,
+    `${A(p.capa)}-m.webp`,
+    tex(p.logo),
+    ...Object.values(PROJETOS).map((x) => tex(x.logo)),
+    ...(id === 'darky'
+      ? [`${A('artist/bruno-01')}-m.webp`, `${A('darky/skull-01')}-m.webp`, `${A('darky/skull-03')}-m.webp`]
+      : id === 'slowly'
+        ? [`${A('slowly/slowly-01')}-m.webp`, `${A('slowly/slowly-06')}-m.webp`]
+        : [`${A('obskurial/art-01')}-m.webp`]),
+  ];
+  const videos = [p.fundo && vid(p.fundo), p.heroVideo && vid(p.heroVideo)].filter(Boolean);
+  const total = imagens.length + videos.length;
+  let feitos = 0;
+  const anda = () => { feitos++; aoAndar(Math.min(1, feitos / total)); };
+
+  const umaImagem = (src) => new Promise((ok) => {
+    const i = new Image();
+    i.onload = i.onerror = () => { anda(); ok(); };
+    i.src = src;
+  });
+  const umVideo = (src) => new Promise((ok) => {
+    const v = document.createElement('video');
+    v.muted = true; v.preload = 'auto'; v.playsInline = true; v.src = src;
+    const fim = () => { v.oncanplaythrough = v.onerror = null; anda(); ok(); };
+    v.oncanplaythrough = fim; v.onerror = fim;
+    setTimeout(fim, 7000);     // nunca segurar a abertura por causa de um vídeo
+    v.load();
+  });
+  const tudo = Promise.all([...imagens.map(umaImagem), ...videos.map(umVideo)]);
+  return Promise.race([tudo, new Promise((ok) => setTimeout(ok, 9000))]);
+}
+
+function abrir(id) {
+  const tela = $('#abertura');
+  const barra = $('#abertura-barra');
+  const pct = $('#abertura-pct');
+  let p = 0, mostrado = 0;
+  const pinta = () => {
+    mostrado += (p - mostrado) * 0.12;
+    barra.style.transform = `scaleX(${mostrado.toFixed(3)})`;
+    pct.textContent = Math.round(mostrado * 100) + '%';
+    if (mostrado < 0.999) requestAnimationFrame(pinta);
+  };
+  requestAnimationFrame(pinta);
+
+  const pronto = precarregar(id, (v) => { p = Math.max(p, v); });
+  const minimo = new Promise((ok) => setTimeout(ok, CALMO ? 300 : 2100));  // deixa a animação dos logos acontecer
+
+  return Promise.all([pronto, minimo]).then(() => {
+    p = 1;
+    document.documentElement.classList.add('pronto');
+    montar(id);
+    if (location.hash) requestAnimationFrame(() => rolarPara(location.hash.slice(1), false));
+    // a saída é por CSS: funciona mesmo com a aba em segundo plano, onde o
+    // relógio de quadros do navegador fica parado
+    return new Promise((ok) => {
+      barra.style.transform = 'scaleX(1)';
+      pct.textContent = '100%';
+      tela.classList.add('saindo');
+      const fechar = () => {
+        if (!tela.isConnected) return;
+        tela.remove();
+        document.documentElement.classList.add('aberto');
+        ok();
+      };
+      tela.addEventListener('transitionend', fechar, { once: true });
+      setTimeout(fechar, CALMO ? 250 : 1100);
+    });
+  });
+}
+
 /* ---------- partida ---------- */
 montarSeletor();
-rotaAtual = rotaDaUrl();
-history.replaceState({ rota: rotaAtual }, '', location.href);
-montar(rotaAtual);
-if (location.hash) requestAnimationFrame(() => rolarPara(location.hash.slice(1), false));
-document.documentElement.classList.add('pronto');
-document.fonts?.ready.then(() => marcarSeletor(rotaAtual));
+idAtual = null;
+const rotaInicial = rotaDaUrl();
+history.replaceState({ rota: rotaInicial }, '', location.href);
+document.documentElement.dataset.universo = chave(rotaInicial);
+idAtual = chave(rotaInicial);
 
-// o fundo WebGL entra depois, sem segurar a primeira pintura
-const fraco = (navigator.hardwareConcurrency || 4) <= 2 || navigator.connection?.saveData;
-if (!fraco) {
+abrir(idAtual).then(() => {
+  if (!COM_FX) { document.documentElement.classList.add('sem-fx'); return; }
   import('./fx.js').then((m) => {
-    fx = m.criarFx($('#fx'), { calmo: CALMO });
-    if (fx) { fx.modo(rotaAtual || 'home', true); document.documentElement.classList.add('tem-fx'); }
+    fx = m.criarFx($('#fx'), { calmo: CALMO, leve: FRACO });
+    if (fx) { fx.modo(idAtual, true); document.documentElement.classList.add('tem-fx'); }
   }).catch(() => {});
-}
+});
+document.fonts?.ready.then(() => idAtual && marcarSeletor(idAtual));
