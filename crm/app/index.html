@@ -172,6 +172,7 @@ body.real #roleSel,body.real #tUrl,body.real #lgDemoBox,body.real #genForm,body.
 .plrow{grid-template-columns:minmax(0,1fr) 64px 110px}
 .kcard .chip{height:22px;font-size:11px;padding:0 8px}
 .segchips{display:flex;flex-wrap:wrap;gap:6px}
+.rmap{height:340px;border-radius:var(--r);border:1px solid var(--line);overflow:hidden;background:var(--panel2);z-index:0}.rmap.dark .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)}.rmap .leaflet-control-attribution{font-size:10px}
 .scan{height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--accent),transparent);background-size:40% 100%;background-repeat:no-repeat;animation:scan 1.1s linear infinite}
 @keyframes scan{from{background-position:-40% 0}to{background-position:140% 0}}
 .gen{display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
@@ -1001,6 +1002,7 @@ function go(v, focus) {
 function render() {
   $('#vTitle').textContent = (NAV.find(n => n[0] === view) || NAV[0])[1];
   $('#view').innerHTML = V[view]();
+  if (view === 'radar') radarMapMount();
   renderNav();
   $('#fxBtn').setAttribute('aria-pressed', prefs.fx);
   updateBell();
@@ -1841,8 +1843,16 @@ const RADAR_PRESET = ['barbearia', 'tattoo', 'salao', 'clinica', 'restaurante', 
 const RADAR_TERMS = {barbearia:['hairdresser', 'barbearia'], tattoo:['tattoo', 'tatuagem'], salao:['beauty salon', 'salão de beleza'], clinica:['dentist', 'clinic', 'doctors'], restaurante:['restaurant', 'fast food', 'cafe'], loja:['clothes shop', 'shoe shop', 'gift shop'], academia:['fitness centre', 'academia'], pet:['pet shop', 'veterinary'], padaria:['bakery', 'padaria'], mecanica:['car repair', 'tyres'], fotografia:['photographer', 'photo shop'], evento:['events venue', 'nightclub'], contabil:['accountant', 'lawyer', 'estate agent'], escola:['language school', 'driving school', 'music school']};
 const RADAR_OSM = {barbearia:['["shop"="hairdresser"]', '["shop"="barber"]'], tattoo:['["shop"="tattoo"]'], salao:['["shop"="beauty"]', '["shop"="hairdresser"]', '["shop"="massage"]'], clinica:['["amenity"="dentist"]', '["amenity"="clinic"]', '["amenity"="doctors"]'], restaurante:['["amenity"="restaurant"]', '["amenity"="fast_food"]', '["amenity"="cafe"]'], loja:['["shop"="clothes"]', '["shop"="shoes"]', '["shop"="gift"]', '["shop"="furniture"]'], academia:['["leisure"="fitness_centre"]'], pet:['["shop"="pet"]', '["amenity"="veterinary"]'], padaria:['["shop"="bakery"]', '["shop"="pastry"]'], mecanica:['["shop"="car_repair"]', '["shop"="tyres"]'], fotografia:['["craft"="photographer"]', '["shop"="photo"]'], evento:['["amenity"="events_venue"]', '["amenity"="nightclub"]'], contabil:['["office"="accountant"]', '["office"="lawyer"]', '["office"="estate_agent"]'], escola:['["amenity"="language_school"]', '["amenity"="driving_school"]', '["amenity"="music_school"]']};
 const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
-const SOCIAL_RE = /instagram\.com|facebook\.com|fb\.com|wa\.me|whatsapp\.com|linktr\.ee|tiktok\.com/i;
-V._r = {seg:RADAR_PRESET.slice(0, 3), area:'Vila Prudente, São Paulo', km:5, conv:1, filter:'all', shown:60};
+// "Sem site profissional": vazio ou link de rede social, WhatsApp, agregador ou iFood. A mesma lista está na função radar (SOCIAL_HOSTS).
+const SOCIAL_HOSTS = ['instagram.com', 'facebook.com', 'fb.com', 'fb.me', 'wa.me', 'whatsapp.com', 'linktr.ee', 'bio.link', 'ifood.com.br', 'tiktok.com'];
+const SOCIAL_RE = /instagram\.com|facebook\.com|fb\.com|fb\.me|wa\.me|whatsapp\.com|linktr\.ee|bio\.link|ifood\.com\.br|tiktok\.com/i;
+const isSocialUrl = u => { try { const h = new URL(/^https?:\/\//i.test(u) ? u : 'https://' + u).hostname.toLowerCase(); return SOCIAL_HOSTS.some(d => h === d || h.endsWith('.' + d)); } catch (e) { return SOCIAL_RE.test(u); } };
+const siteFields = (raw, insta) => { const u = String(raw || '').trim(), soc = !!u && isSocialUrl(u); return {site:soc ? '' : u, tem_site_proprio:!!u && !soc, link_social:soc ? u : '', instagram:insta || (soc && /instagram\.com/i.test(u) ? u : '')}; };
+// Vale também para itens antigos do cache, que só têm site e instagram.
+const hasOwnSite = i => !!i.site && !isSocialUrl(i.site);
+const socialLink = i => { const u = i.link_social || i.instagram || ''; return !u ? '' : /^https?:\/\//i.test(u) ? u : 'https://' + u; };
+const socialName = u => /instagram/i.test(u) ? 'Instagram' : /wa\.me|whatsapp/i.test(u) ? 'WhatsApp' : /facebook|fb\./i.test(u) ? 'Facebook' : /ifood/i.test(u) ? 'iFood' : /tiktok/i.test(u) ? 'TikTok' : 'Link da bio';
+V._r = {seg:RADAR_PRESET.slice(0, 3), area:'Vila Prudente, São Paulo', km:5, conv:1, filter:'all', shown:60, center:null};
 V._rOut = null; let radarRun = 0;
 const rDigits = s => String(s || '').split(';')[0].replace(/\D/g, '').replace(/^55(?=\d{10,11}$)/, '');
 const fmtPhone = p => { const d = String(p || '').replace(/\D/g, ''); return d.length >= 10 ? `(${d.slice(0, 2)}) ${d.slice(2, -4)}-${d.slice(-4)}` : d; };
@@ -1852,11 +1862,11 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 async function getJson(url, init, ms) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(url, Object.assign({}, init, {signal:c.signal})); if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json(); } finally { clearTimeout(t); } }
 function osmItem(tags, id, lat, lon, map) {
   const t = tags || {}, site = t.website || t['contact:website'] || t.url || '';
-  return {id, name:t.name || '', phone:rDigits(t['contact:whatsapp'] || t['contact:mobile'] || t.phone || t['contact:phone']), email:t.email || t['contact:email'] || '', address:[t['addr:street'], t['addr:housenumber']].filter(Boolean).join(', '), suburb:t['addr:suburb'] || t['addr:neighbourhood'] || '', site:SOCIAL_RE.test(site) ? '' : site, instagram:t['contact:instagram'] || (/instagram\.com/i.test(site) ? site : ''), lat:+lat, lon:+lon, map};
+  return {id, name:t.name || '', phone:rDigits(t['contact:whatsapp'] || t['contact:mobile'] || t.phone || t['contact:phone']), email:t.email || t['contact:email'] || '', address:[t['addr:street'], t['addr:housenumber']].filter(Boolean).join(', '), suburb:t['addr:suburb'] || t['addr:neighbourhood'] || '', ...siteFields(site, t['contact:instagram']), lat:+lat, lon:+lon, map};
 }
 async function viaOverpass(seg, g) {
-  const q = `[out:json][timeout:20];(${RADAR_OSM[seg].map(t => `nwr${t}["name"](around:${g.km * 1000},${g.lat},${g.lon});`).join('')});out center tags 500;`;
-  const data = await Promise.any(OVERPASS.map(u => getJson(u + '?data=' + encodeURIComponent(q), {}, 9000)));
+  const q = `[out:json][timeout:25];(${RADAR_OSM[seg].map(t => `nwr${t}["name"](around:${g.km * 1000},${g.lat},${g.lon});`).join('')});out center tags 2000;`;
+  const data = await Promise.any(OVERPASS.map(u => getJson(u + '?data=' + encodeURIComponent(q), {}, 20000)));
   return (data.elements || []).map(e => osmItem(e.tags, `osm:${e.type}/${e.id}`, e.lat ?? (e.center && e.center.lat), e.lon ?? (e.center && e.center.lon), `https://www.openstreetmap.org/${e.type}/${e.id}`));
 }
 // Um pedido só para todos os nichos escolhidos: o servidor do mapa responde uma vez, com tempo de sobra.
@@ -1909,18 +1919,18 @@ async function ibgeContext(city, uf) {
     return {nome:m.nome, uf, pop:+serie[ano], ano};
   } catch (e) { return null; }
 }
-const leadPoints = i => (i.phone ? 35 : 0) + (isMobile(i.phone) ? 20 : 0) + (i.address ? 10 : 0) + (i.email ? 10 : 0) + (i.instagram ? 10 : 0) + Math.max(0, 15 - Math.round(i.dist || 0));
+const leadPoints = i => (i.phone ? 35 : 0) + (isMobile(i.phone) ? 20 : 0) + (i.address ? 10 : 0) + (i.email ? 10 : 0) + (i.instagram || i.link_social ? 10 : 0) + Math.max(0, 15 - Math.round(i.dist || 0));
 function radarDemo(seg) {
   const n = RADAR_SEG[seg];
   return [`${n} Boa Vista`, `${n} Central`, `Espaço ${n}`, `${n} da Praça`, `${n} Nova Era`].map((name, i) => ({id:`demo:${seg}${i}`, name, phone:i === 2 ? '' : `119000${String(seg.length).padStart(2, '0')}${i}0${i}`, email:'', address:`Rua de Exemplo, ${100 + i * 37}`, suburb:'Bairro de exemplo', site:i === 4 ? 'https://exemplo.com.br' : '', instagram:i === 1 ? 'instagram.com/exemplo' : '', lat:-23.58 + i * .004, lon:-46.58 + i * .004, map:''}));
 }
-const rShown = o => o.items.filter(i => !i.site && (V._r.filter === 'all' || (V._r.filter === 'phone' && i.phone) || (V._r.filter === 'mobile' && isMobile(i.phone)) || (V._r.filter === 'new' && !i.known)));
+const rShown = o => o.items.filter(i => !hasOwnSite(i) && (V._r.filter === 'all' || (V._r.filter === 'phone' && i.phone) || (V._r.filter === 'mobile' && isMobile(i.phone)) || (V._r.filter === 'new' && !i.known)));
 function radarChart(o) {
   const rows = Object.keys(o.bySeg).map(k => ({k, ...o.bySeg[k]})).sort((a, b) => b.semSite - a.semSite), max = Math.max(1, ...rows.map(r => r.total));
   return `<div class="legend" style="margin-bottom:10px"><span><i style="background:var(--accent)"></i>Sem site</span><span><i style="background:var(--dim)"></i>Com site</span></div><div class="rbars">${rows.map(r => `<div class="bar" title="${esc(RADAR_SEG[r.k])}: ${r.semSite} sem site, ${r.total - r.semSite} com site"><span>${esc(RADAR_SEG[r.k])}</span><div class="track rtrack"><div class="fill" style="width:${r.semSite / max * 100}%"></div><div class="fill alt" style="width:${(r.total - r.semSite) / max * 100}%"></div></div><span class="num muted">${r.semSite} de ${r.total}</span></div>`).join('')}</div>`;
 }
 function radarStudy(o) {
-  const free = o.items.filter(i => !i.site), phones = free.filter(i => i.phone), mobiles = free.filter(i => isMobile(i.phone)), pct = o.items.length ? Math.round(free.length / o.items.length * 100) : 0;
+  const free = o.items.filter(i => !hasOwnSite(i)), phones = free.filter(i => i.phone), mobiles = free.filter(i => isMobile(i.phone)), pct = o.items.length ? Math.round(free.length / o.items.length * 100) : 0;
   const conv = V._r.conv / 100, closes = free.length ? Math.max(1, Math.round(free.length * conv)) : 0, ticket = 60000, mrr = 8900;
   const hoods = {}; free.forEach(i => { if (i.suburb) hoods[i.suburb] = (hoods[i.suburb] || 0) + 1; });
   const top = Object.entries(hoods).sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -1945,8 +1955,9 @@ V.radar = () => {
   return head('Radar de leads', 'Escolha os nichos, o local e o raio. O Radar procura no mapa, separa quem não tem site e monta o estudo da região.')
   + `<section class="card" style="display:flex;flex-direction:column;gap:16px">
     <div class="field"><div class="ch" style="margin:0"><span class="flabel">Nichos</span><span class="acts"><button class="link" data-radar="preset">Nichos da Amplitude</button><button class="link" data-radar="none">Limpar</button></span></div><div class="segchips">${Object.entries(RADAR_SEG).map(([k, n]) => `<button class="pill" data-radar="seg" data-k="${k}" aria-pressed="${R.seg.includes(k)}">${n}</button>`).join('')}</div></div>
-    <div class="fg"><div class="field"><label for="rArea">Local</label><input class="inp" id="rArea" value="${esc(R.area)}" placeholder="Ex.: Sapopemba, São Paulo" autocomplete="off"></div>
+    <div class="fg"><div class="field"><label for="rArea">Local</label><div style="display:flex;gap:8px"><input class="inp" id="rArea" value="${esc(R.area)}" placeholder="Ex.: Sapopemba, São Paulo" autocomplete="off" enterkeyhint="search" style="flex:1"><button class="b3 ghost" data-radar="find" type="button">Localizar</button></div></div>
       <div class="field"><label for="rKm">Raio de busca: <b id="rKmOut">${R.km} km</b></label><input id="rKm" type="range" min="1" max="30" step="1" value="${R.km}" style="width:100%;height:46px;accent-color:var(--accent)"></div></div>
+    <div class="field"><div id="rMapSlot" class="rmap"></div><small class="muted" style="display:block;margin-top:6px">Toque no mapa ou arraste o pino para escolher o centro exato. O círculo é a área da busca.${R.center ? ` Centro: ${esc(R.center.label || R.area)}.` : ''}</small></div>
     <div class="acts"><button class="b3" data-radar="go" ${o && o.loading ? 'disabled' : ''}>${icon('radar')}${o && o.loading ? 'Procurando…' : 'Procurar leads'}</button><button class="b3 ghost" data-radar="here" ${o && o.loading ? 'disabled' : ''}>Usar minha localização</button>${o && o.loading ? '<button class="b3 ghost" data-radar="stop">Parar</button>' : ''}</div>
     ${o && o.loading ? `<div class="scan" role="status" aria-label="Procurando"></div><p class="muted" style="font-size:14px">${esc(o.step || '')}${o.items.length ? ` · ${o.items.length} encontrados até agora` : ''}</p>` : ''}
     ${o && o.error ? `<p class="err">${esc(o.error)}</p>` : ''}
@@ -1954,18 +1965,18 @@ V.radar = () => {
   ${o && o.items && !o.loading ? radarStudy(o) + `<section class="card"><div class="ch"><div><h3>${list.length} leads nesta lista</h3><p class="muted" style="font-size:13px">Fonte: ${esc(o.source)}</p>${noContact ? `<p class="muted" style="font-size:13px;white-space:normal;max-width:60ch">${noContact} sem telefone nem e-mail no mapa. Eles não entram no botão de adicionar todos: confira no Google e adicione um por um se achar o contato.</p>` : ''}${/Google/.test(o.source) ? '' : '<p class="muted" style="font-size:13px;white-space:normal;max-width:60ch">O mapa aberto (OpenStreetMap) conhece só uma parte dos comércios, e quase nenhum estúdio de tatuagem. Com o Google Maps ligado no servidor, a busca encontra muito mais.</p>'}</div><div class="acts">
       <button class="b3 sm ghost" data-radar="csv">${icon('copy')}Baixar CSV</button>${addable.length ? `<button class="b3 sm" data-radar="all">${icon('plus')}Adicionar ${addable.length} com contato ao funil</button>` : ''}</div></div>
     <div class="pills" style="margin-bottom:10px">${[['phone', 'Com telefone'], ['mobile', 'Parece celular'], ['new', 'Fora do CRM'], ['all', 'Todos sem site']].map(([k, l]) => `<button class="pill" data-radar="filter" data-k="${k}" aria-pressed="${R.filter === k}">${l}</button>`).join('')}</div>
-    <div class="rows">${list.slice(0, R.shown).map(i => `<div class="row rrow"><span class="ico" title="Pontuação do lead">${leadPoints(i)}</span><div class="grow"><p class="t">${esc(i.name)}</p><p class="s">${esc(RADAR_SEG[i.seg] || '')}${i.dist != null ? ` · ${i.dist.toFixed(1).replace('.', ',')} km` : ''}${i.suburb ? ' · ' + esc(i.suburb) : ''}${i.address ? ' · ' + esc(i.address) : ''}</p><p class="s">${i.phone ? esc(fmtPhone(i.phone)) + (isMobile(i.phone) ? ' · celular' : ' · fixo') : 'Sem telefone no mapa'}${i.instagram ? ' · tem Instagram' : ''}</p></div>
-      <div class="acts"><a class="b3 sm ghost" href="https://www.google.com/search?q=${encodeURIComponent(i.name + ' ' + (o.geo.city || o.area))}" target="_blank" rel="noopener" title="Confira se tem site antes de abordar">Conferir</a>${i.known ? '<span class="chip ok"><span class="dot"></span>No CRM</span>' : `<button class="b3 sm" data-radar="add" data-id="${esc(i.id)}">Pro funil</button>`}</div></div>`).join('') || '<p class="empty">Nenhum lead com esse filtro. Tente “Todos sem site” ou aumente o raio.</p>'}</div>
+    <div class="rows">${list.slice(0, R.shown).map(i => `<div class="row rrow"><span class="ico" title="Pontuação do lead">${leadPoints(i)}</span><div class="grow"><p class="t">${esc(i.name)}</p><p class="s">${esc(RADAR_SEG[i.seg] || '')}${i.dist != null ? ` · ${i.dist.toFixed(1).replace('.', ',')} km` : ''}${i.suburb ? ' · ' + esc(i.suburb) : ''}${i.address ? ' · ' + esc(i.address) : ''}</p><p class="s">${i.phone ? esc(fmtPhone(i.phone)) + (isMobile(i.phone) ? ' · celular' : ' · fixo') : 'Sem telefone no mapa'}${i.rating ? ` · ★ ${String(i.rating).replace('.', ',')}${i.reviews ? ` (${i.reviews})` : ''}` : ''}${i.category ? ' · ' + esc(i.category) : ''}</p></div>
+      <div class="acts">${socialLink(i) ? `<a class="b3 sm ghost" href="${esc(socialLink(i))}" target="_blank" rel="noopener" title="O link que o negócio usa no lugar de site">${socialName(socialLink(i))}</a>` : ''}<a class="b3 sm ghost" href="https://www.google.com/search?q=${encodeURIComponent(i.name + ' ' + (o.geo.city || o.area))}" target="_blank" rel="noopener" title="Confira se tem site antes de abordar">Conferir</a>${i.known ? '<span class="chip ok"><span class="dot"></span>No CRM</span>' : `<button class="b3 sm" data-radar="add" data-id="${esc(i.id)}">Pro funil</button>`}</div></div>`).join('') || '<p class="empty">Nenhum lead com esse filtro. Tente “Todos sem site” ou aumente o raio.</p>'}</div>
     ${list.length > R.shown ? `<div class="acts" style="margin-top:12px;justify-content:center"><button class="b3 sm ghost" data-radar="more">Mostrar mais ${Math.min(60, list.length - R.shown)}</button></div>` : ''}
-    <p class="muted" style="font-size:13px;margin-top:12px">“Sem site” quer dizer sem site registrado no mapa: use Conferir antes de abordar, e pare de chamar quem pedir. Dados: © colaboradores do OpenStreetMap.</p></section>` : ''}`;
+    <p class="muted" style="font-size:13px;margin-top:12px">“Sem site” quer dizer sem site próprio no mapa (link de Instagram, WhatsApp, Linktree ou iFood conta como sem site): use Conferir antes de abordar, e pare de chamar quem pedir. Dados: © colaboradores do OpenStreetMap.</p></section>` : ''}`;
 };
 function radarAdd(i) {
   if (i.known) return null;
   const seg = (RADAR_SEG[i.seg] || 'negócio').toLowerCase();
-  const l = {id:uid(), name:i.name, phone:i.phone ? fmtPhone(i.phone) : '', email:i.email || '', interest:`Site e CRM para ${seg}`, source:'radar', stage:'s1', value:0, follow:at(0, Math.min(23, new Date().getHours() + 1)), created:Date.now(), consent:null, client:null, demo:!REAL, utm:{radar:i.id, area:V._r.area, km:V._r.km, segmento:i.seg, instagram:i.instagram || '', endereco:i.address || ''}};
+  const l = {id:uid(), name:i.name, phone:i.phone ? fmtPhone(i.phone) : '', email:i.email || '', interest:`Site e CRM para ${seg}`, source:'radar', stage:'s1', value:0, follow:at(0, Math.min(23, new Date().getHours() + 1)), created:Date.now(), consent:null, client:null, demo:!REAL, utm:{radar:i.id, area:V._r.area, km:V._r.km, segmento:i.seg, instagram:i.instagram || '', link_social:i.link_social || '', endereco:i.address || '', mapa:i.map || ''}};
   if (i.instagram) l.utm.instagram = i.instagram;
   S.leads.push(l);
-  S.acts.push({id:uid(), lead:l.id, kind:'note', body:`Encontrado pelo Radar a ${i.dist != null ? i.dist.toFixed(1).replace('.', ',') + ' km de ' : ''}${V._r.area}${i.address ? ' · ' + i.address : ''}. Sem site no mapa.${i.instagram ? ' Instagram: ' + i.instagram : ''}`, at:Date.now(), by:'Radar'});
+  S.acts.push({id:uid(), lead:l.id, kind:'note', body:`Encontrado pelo Radar a ${i.dist != null ? i.dist.toFixed(1).replace('.', ',') + ' km de ' : ''}${V._r.area}${i.address ? ' · ' + i.address : ''}. Sem site próprio no mapa.${i.instagram ? ' Instagram: ' + i.instagram : ''}${i.link_social && i.link_social !== i.instagram ? ' Link: ' + i.link_social : ''}${i.rating ? ` Nota ${i.rating}${i.reviews ? ' (' + i.reviews + ' avaliações)' : ''}.` : ''}`, at:Date.now(), by:'Radar'});
   i.known = true;
   return l;
 }
@@ -1973,6 +1984,62 @@ function markKnown(items) {
   const phones = new Set(S.leads.map(l => rDigits(l.phone)).filter(Boolean)), names = new Set(S.leads.map(l => String(l.name).toLowerCase()));
   items.forEach(i => { i.known = (i.phone && phones.has(i.phone)) || names.has(String(i.name).toLowerCase()) || S.leads.some(l => l.utm && l.utm.radar === i.id); });
 }
+
+/* mapa do Radar: Leaflet carregado só quando o Radar abre; o mesmo mapa é reaproveitado a cada render */
+let rMap = null, rMapEl = null, rPin = null, rCircle = null, rLeaflet = null;
+function loadLeaflet() {
+  if (rLeaflet) return rLeaflet;
+  rLeaflet = new Promise((ok, bad) => {
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; css.crossOrigin = ''; document.head.append(css);
+    const js = document.createElement('script'); js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'; js.crossOrigin = ''; js.onload = () => ok(window.L); js.onerror = () => { rLeaflet = null; bad(new Error('mapa')); }; document.head.append(js);
+  });
+  return rLeaflet;
+}
+async function reverseLabel(lat, lon) {
+  try {
+    const a = await getJson(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=16&addressdetails=1&accept-language=pt-BR`, {}, 10000), d = a.address || {};
+    const bairro = d.suburb || d.neighbourhood || d.city_district || d.quarter || '', city = d.city || d.town || d.municipality || d.village || '';
+    return {label:[bairro, city].filter(Boolean).join(', ') || a.display_name || 'Ponto no mapa', city, uf:(d['ISO3166-2-lvl4'] || '').replace('BR-', '')};
+  } catch (e) { return {label:'Ponto no mapa', city:'', uf:''}; }
+}
+function radarFit() { if (rMap && rCircle) rMap.fitBounds(rCircle.getBounds(), {padding:[16, 16], animate:false}); }
+async function radarSetCenter(lat, lon, info, fit = true) {
+  const R = V._r;
+  R.center = Object.assign({lat, lon, label:'', city:'', uf:''}, R.center && R.center.lat === lat && R.center.lon === lon ? R.center : {}, info || {});
+  if (rPin) { rPin.setLatLng([lat, lon]); rCircle.setLatLng([lat, lon]); if (fit) radarFit(); }
+  if (!info) {   // ponto escolhido no mapa: descobre bairro e cidade para o texto e para o IBGE
+    const r = await reverseLabel(lat, lon);
+    if (R.center && R.center.lat === lat && R.center.lon === lon) { Object.assign(R.center, r); R.area = r.label; const f = $('#rArea'); if (f && document.activeElement !== f) f.value = r.label; }
+  }
+}
+async function radarMapMount() {
+  const slot = $('#rMapSlot'); if (!slot) return;
+  if (rMapEl) { slot.replaceWith(rMapEl); rMapEl.classList.toggle('dark', !isLight()); if (rMap) setTimeout(() => rMap.invalidateSize(), 0); return; }
+  rMapEl = slot; rMapEl.classList.toggle('dark', !isLight());
+  let L; try { L = await loadLeaflet(); } catch (e) { rMapEl.innerHTML = '<p class="empty" style="padding:16px">O mapa não carregou. A busca pelo nome do local continua funcionando.</p>'; return; }
+  const R = V._r, c = R.center || {lat:-23.5875, lon:-46.5825};
+  rMap = L.map(rMapEl, {zoomControl:true, attributionControl:true}).setView([c.lat, c.lon], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, subdomains:'abc', attribution:'© OpenStreetMap'}).addTo(rMap);
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#5B8CFF';
+  rCircle = L.circle([c.lat, c.lon], {radius:R.km * 1000, color:accent, weight:2, fillColor:accent, fillOpacity:.12}).addTo(rMap);
+  rPin = L.marker([c.lat, c.lon], {draggable:true, autoPan:true}).addTo(rMap);
+  rPin.on('drag', e => rCircle.setLatLng(e.target.getLatLng()));
+  rPin.on('dragend', e => { const p = e.target.getLatLng(); radarSetCenter(+p.lat.toFixed(6), +p.lng.toFixed(6), null, false); });
+  rMap.on('click', e => radarSetCenter(+e.latlng.lat.toFixed(6), +e.latlng.lng.toFixed(6), null, false));
+  radarFit();
+  // sem centro escolhido ainda: posiciona o mapa no local digitado
+  if (!R.center && String(R.area).trim().length >= 3) radarFind(true);
+}
+async function radarFind(quiet) {
+  const R = V._r;
+  if (String(R.area).trim().length < 3) return toast('Digite o bairro e a cidade.');
+  if (!quiet) toast('Procurando o local no mapa…');
+  let g = null; try { g = await geocode(R.area); } catch (e) {}
+  if (!g) return quiet ? null : toast('Não encontrei esse local. Escreva bairro e cidade, ou toque no mapa.');
+  await radarSetCenter(g.lat, g.lon, {label:R.area, city:g.city, uf:g.uf});
+  return g;
+}
+document.addEventListener('keydown', e => { if (e.target.id === 'rArea' && e.key === 'Enter') { e.preventDefault(); V._r.center = null; radarFind(); } });
 async function radarSearch(geo) {
   const R = V._r, run = ++radarRun, stop = () => run !== radarRun, res = {loading:true, step:'Localizando a região…', items:[], bySeg:{}, km:R.km, area:R.area, source:''};
   V._rOut = res; render();
@@ -1982,20 +2049,21 @@ async function radarSearch(geo) {
   } catch (e) { res.loading = false; res.error = 'O serviço de endereços não respondeu. Tente de novo em 1 minuto.'; return render(); }
   if (!res.geo) { res.loading = false; res.error = 'Não encontrei esse local. Escreva bairro e cidade, como Sapopemba, São Paulo.'; return render(); }
   const g = {lat:res.geo.lat, lon:res.geo.lon, km:R.km}, sources = new Set(), falhas = [];
-  let open = null;   // resultado do mapa aberto para todos os nichos, buscado uma vez só
+  let open = 0;   // falhas seguidas do Overpass: depois de 2, vai direto para a busca reserva
   for (const seg of R.seg) {
     if (stop()) return;
     step(`Procurando ${RADAR_SEG[seg].toLowerCase()}…`);
     let items = null;
     if (REAL) { const r = await Real.fn('radar', {tenant_id:Real.tenantId(), segment:seg, lat:g.lat, lon:g.lon, km:g.km}); if (r.upgrade) { res.loading = false; res.error = r.error; return render(); } if (r.items) { items = r.items; sources.add(r.source); } }
-    if (!items && open === null) { step('Consultando o mapa aberto para todos os nichos…'); try { open = await viaOverpassAll(R.seg, g); } catch (e) { open = false; } }
-    if (!items && open) { items = open[seg]; sources.add('OpenStreetMap'); }
+    // Um pedido por nicho: o pedido único para todos os nichos era pesado demais e os servidores públicos
+    // deixavam de responder, o que jogava a busca para o Nominatim, que traz bem menos.
+    if (!items && open !== false) { try { items = await viaOverpass(seg, g); sources.add('OpenStreetMap'); } catch (e) { open = (open || 0) + 1; if (open >= 2) open = false; } }
     if (!items) { try { items = await viaNominatim(seg, g, stop, step); sources.add('OpenStreetMap (Nominatim)'); } catch (e) { falhas.push(RADAR_SEG[seg]); items = location.protocol === 'https:' && location.hostname.includes('claude') ? radarDemo(seg) : []; } }
     if (stop()) return;
     const seen = new Set(res.items.map(i => i.id));
     const fresh = items.filter(i => i.name && !seen.has(i.id)).map(i => Object.assign(i, {seg, dist:i.lat ? distKm(g.lat, g.lon, i.lat, i.lon) : null})).filter(i => i.dist == null || i.dist <= g.km * 1.05);
     res.items.push(...fresh);
-    res.bySeg[seg] = {total:fresh.length, semSite:fresh.filter(i => !i.site).length};
+    res.bySeg[seg] = {total:fresh.length, semSite:fresh.filter(i => !hasOwnSite(i)).length};
   }
   markKnown(res.items);
   res.items.sort((a, b) => leadPoints(b) - leadPoints(a));
@@ -2008,7 +2076,7 @@ async function radarSearch(geo) {
   render();
 }
 document.addEventListener('input', e => { if (e.target.id !== 'fq') return; V._fq = e.target.value; const pos = e.target.selectionStart; render(); const f = $('#fq'); if (f) { f.focus(); try { f.setSelectionRange(pos, pos); } catch (x) {} } });
-document.addEventListener('input', e => { const t = e.target; if (t.id === 'rKm') { V._r.km = +t.value; const o = $('#rKmOut'); if (o) o.textContent = t.value + ' km'; } if (t.id === 'rArea') V._r.area = t.value; });
+document.addEventListener('input', e => { const t = e.target; if (t.id === 'rKm') { V._r.km = +t.value; const o = $('#rKmOut'); if (o) o.textContent = t.value + ' km'; if (rCircle) { rCircle.setRadius(V._r.km * 1000); radarFit(); } } if (t.id === 'rArea') { V._r.area = t.value; V._r.center = null; } });
 document.addEventListener('change', e => { if (e.target.id === 'rConv') { V._r.conv = +e.target.value; render(); } });
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-radar]'); if (!b) return;
@@ -2016,6 +2084,7 @@ document.addEventListener('click', e => {
   if (k === 'seg') { const s = b.dataset.k; R.seg = R.seg.includes(s) ? R.seg.filter(x => x !== s) : R.seg.concat(s); render(); }
   if (k === 'preset') { R.seg = RADAR_PRESET.slice(); render(); }
   if (k === 'none') { R.seg = []; render(); }
+  if (k === 'find') { R.center = null; radarFind(); }
   if (k === 'filter') { R.filter = b.dataset.k; R.shown = 60; render(); }
   if (k === 'more') { R.shown += 60; render(); }
   if (k === 'stop') { radarRun++; o.loading = false; o.source = o.source || 'busca interrompida'; markKnown(o.items); render(); }
@@ -2023,15 +2092,15 @@ document.addEventListener('click', e => {
   if (k === 'all') { const n = rShown(o).filter(i => !i.known && (i.phone || i.email)).map(radarAdd).length; audit(`Radar: ${n} negócios foram para o funil`); save(); render(); toast(`${n} leads entraram em “Novo”.`); }
   if (k === 'csv') {
     const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`, rows = rShown(o);
-    downloadText(`radar-${slugify(R.area)}-${R.km}km.csv`, '﻿' + ['Nome;Nicho;Telefone;Celular;E-mail;Endereço;Bairro;Distância km;Instagram;Pontos;No CRM'].concat(rows.map(i => [i.name, RADAR_SEG[i.seg], fmtPhone(i.phone), isMobile(i.phone) ? 'sim' : 'não', i.email, i.address, i.suburb, i.dist != null ? i.dist.toFixed(1) : '', i.instagram, leadPoints(i), i.known ? 'sim' : 'não'].map(q).join(';'))).join('\n'));
+    downloadText(`radar-${slugify(R.area)}-${R.km}km.csv`, '﻿' + ['Nome;Nicho;Telefone;Celular;E-mail;Endereço;Bairro;Distância km;Instagram;Link social;Nota;Avaliações;Categoria;Mapa;Pontos;No CRM'].concat(rows.map(i => [i.name, RADAR_SEG[i.seg], fmtPhone(i.phone), isMobile(i.phone) ? 'sim' : 'não', i.email, i.address, i.suburb, i.dist != null ? i.dist.toFixed(1) : '', i.instagram, i.link_social || '', i.rating ?? '', i.reviews ?? '', i.category || '', i.map || '', leadPoints(i), i.known ? 'sim' : 'não'].map(q).join(';'))).join('\n'));
     toast(`${rows.length} leads no CSV.`);
   }
   if (k === 'go' || k === 'here') {
     if (!R.seg.length) return toast('Escolha pelo menos um nicho.');
-    if (k === 'go') { if (String(R.area).trim().length < 3) return toast('Digite o bairro e a cidade.'); return radarSearch(); }
+    if (k === 'go') { if (R.center) return radarSearch({lat:R.center.lat, lon:R.center.lon, city:R.center.city, uf:R.center.uf, label:R.center.label}); if (String(R.area).trim().length < 3) return toast('Digite o bairro e a cidade, ou toque no mapa.'); return radarFind().then(g => g && radarSearch({lat:g.lat, lon:g.lon, city:g.city, uf:g.uf, label:R.area})); }
     if (!navigator.geolocation) return toast('Este aparelho não informa a localização.');
     toast('Pegando a sua localização…');
-    navigator.geolocation.getCurrentPosition(p => { R.area = 'Minha localização'; radarSearch({lat:p.coords.latitude, lon:p.coords.longitude, city:'', uf:'', label:'Minha localização'}); }, () => toast('Não consegui a localização. Digite o local.'), {timeout:10000});
+    navigator.geolocation.getCurrentPosition(async p => { const lat = +p.coords.latitude.toFixed(6), lon = +p.coords.longitude.toFixed(6), r = await reverseLabel(lat, lon); R.area = r.label; await radarSetCenter(lat, lon, r); radarSearch({lat, lon, city:r.city, uf:r.uf, label:r.label}); }, () => toast('Não consegui a localização. Digite o local.'), {timeout:10000});
   }
 });
 function downloadText(name, text) { if (window.AmpApp) return AmpApp.save(name, text); const u = URL.createObjectURL(new Blob([text], {type:'text/csv;charset=utf-8'})), a = document.createElement('a'); a.href = u; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); }
@@ -2741,7 +2810,7 @@ const Real = (() => {
   async function deleteMany(kind, list, reason, asked) {
     await sync(); await chain;
     toast(`Excluindo ${list.length} ${list.length === 1 ? 'lead' : 'leads'}…`);
-    // uma chamada para o lote todo: o servidor gera uma notificação só, em vez de uma por lead
+    // uma chamada para a seleção toda, sem limite de quantidade: o servidor gera uma notificação só
     const {data, error} = await sb.rpc('delete_records', {p_kind:kind, p_ids:list.map(x => x[0]), p_reason:reason, p_requested_by:asked || null});
     if (error) return toast(error.message || 'Não deu para excluir.');
     V._sel = null; await reload(); render();

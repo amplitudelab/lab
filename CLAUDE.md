@@ -141,7 +141,7 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
 - Página pública de compra: `crm/app/?empresa=<slug>#site`. Primeiro acesso: `?empresa=<slug>&convite=<token>` (uso único, 7 dias).
 - O que roda de verdade está em `crm/supabase/producao/` (migrations e funções `checkout`, `infinitepay-webhook`, `first-access`, `radar`). Os demais arquivos de `crm/supabase/` são o rascunho anterior com Asaas, não aplicado.
 - Pagamento: InfinitePay com a tag `norduk`, gravada em `tenants.payment_handle`. O aviso de pagamento não tem assinatura; o servidor sempre confere em `/payment_check`.
-- Radar de leads: roda no navegador com Overpass e, em reserva, Nominatim por quadrantes; com `GEOAPIFY_KEY` ou `GOOGLE_PLACES_KEY` usa o servidor primeiro.
+- Radar de leads: roda no navegador com Overpass e, em reserva, Nominatim por quadrantes; com `SERPER_API_KEY`, `GOOGLE_PLACES_KEY` ou `GEOAPIFY_KEY` (nessa ordem) usa o servidor primeiro. Link de rede social, WhatsApp, Linktree, bio.link ou iFood no lugar do site conta como "sem site" e fica em `link_social`.
 - Apagar venda, proposta, lead ou lançamento só por `delete_record`, com motivo e autor. Nada é removido do banco.
 - Vender para outras empresas: veja `crm/VENDER-O-CRM.md`. O plano só muda pelo servidor.
 - **Chaves de acesso (só o dono):** menu "Chaves de acesso". O dono escolhe o perfil (Vendas, Financeiro, Leitura ou Admin) e a validade; a função `first-access` (`action:'create'`) gera `AMP-XXXX-XXXX-XXXX` de uso único e guarda só o hash em `invites.code_hash` (migração `006_chaves_acesso.sql`). O colaborador toca em "Tenho uma chave de cadastro" e cria e-mail e senha. Erros de chave têm limite por endereço (`invite_attempts`). O link `?chave=` preenche a chave.
