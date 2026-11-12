@@ -120,6 +120,7 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   - Clientes de exemplo: `norte`, `okada`, `orbita`, `lab`.
   - App no celular: `crm/app/manifest.webmanifest` abre o painel da Amplitude Lab. No Supabase Auth, Site URL e Redirect URLs precisam apontar para `crm/app/`; sem isso, o link de recuperação de senha cai em `localhost`.
   - Código de acesso: a função `access-code` troca um código do dono por uma sessão. O hash fica em `access_codes`, nunca o código, e o dono troca ou desativa em Equipe e acesso. No iPhone, o app da tela de início não compartilha o login com o navegador, então o código é digitado dentro do app.
+  - Operação (010_operacao.sql): Projetos (projects), Mensalidades (subscriptions + função subscription-link; o webhook marca o mês como pago), Arquivos (bucket privado arquivos, pasta = tenant_id, tabela files), cópia semanal (função backup, bucket privado copias, 12 mais recentes, domingo 3h), lembretes diários às 9h (app.daily_reminders) e avisos no celular (função push + crm/app/sw.js; chaves VAPID e o segredo interno ficam no Vault).
   - Perfis: owner, admin, sales, finance, viewer.
   - `?t=<cliente>` escolhe o cliente e `#funil`, `#site` etc. abrem direto numa tela.
 - `crm/IMPLEMENTACAO.md`: guia de teste e implementação. `crm/guia.html` é gerado dele:
