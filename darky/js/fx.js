@@ -1,44 +1,36 @@
-/* Fundo vivo em WebGL. Um único shader com quatro "climas" que se misturam
-   na passagem entre universos, mais a geometria tridimensional do Obskurial.
-   - home: fumaça neutra, quase parada
-   - darky: fumaça violeta de alto contraste, com veios e brasas
-   - slowly: manchas translúcidas e lentas sobre fundo claro
-   - obskurial: linhas de alta frequência, interferência e travamentos */
+/* Fundo vivo em WebGL, por cima da textura e do vídeo de cada universo.
+   Um único shader com três climas que se misturam na passagem, mais a
+   geometria tridimensional do Obskurial.
+   Só é carregado em máquina que aguenta: no celular o cenário fica por conta
+   da textura e do vídeo, que custam quase nada. */
 import * as THREE from '../vendor/three.module.min.js';
 
-const MODOS = ['home', 'darky', 'slowly', 'obskurial'];
+const MODOS = ['darky', 'slowly', 'obskurial'];
 
 const FRAG = /* glsl */`
-precision highp float;
-uniform vec2 uRes; uniform float uT; uniform vec2 uM; uniform vec4 uW; // pesos: home, darky, slowly, obskurial
+precision mediump float;
+uniform vec2 uRes; uniform float uT; uniform vec2 uM; uniform vec3 uW; // pesos: darky, slowly, obskurial
 varying vec2 vUv;
 
 float hash(vec2 p){ p = fract(p*vec2(123.34, 456.21)); p += dot(p, p+45.32); return fract(p.x*p.y); }
 float noise(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
   return mix(mix(hash(i),hash(i+vec2(1,0)),f.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x), f.y); }
-float fbm(vec2 p){ float a=.5, s=0.; for(int i=0;i<5;i++){ s+=a*noise(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return s; }
+float fbm(vec2 p){ float a=.5, s=0.; for(int i=0;i<OITAVAS;i++){ s+=a*noise(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return s; }
 
-vec3 home(vec2 uv, vec2 p){
-  float n = fbm(p*1.3 + vec2(uT*.02, -uT*.015));
-  float v = smoothstep(1.25, .1, length(p));
-  return vec3(.031,.031,.039) + vec3(.10,.10,.115)*pow(n,2.2)*v;
-}
 vec3 darky(vec2 uv, vec2 p){
   vec2 q = p*1.6; q.y -= uT*.06;
   float w = fbm(q + fbm(q*1.7 + uT*.05)*1.4);
   float veio = pow(smoothstep(.42,.9,w), 2.5);
   float m = smoothstep(.9, 0., length(p - (uM-.5)*vec2(uRes.x/uRes.y,1.)*1.2));
-  vec3 c = vec3(.027,.016,.05);
-  c += vec3(.33,.12,.72)*veio*.75;
-  c += vec3(.75,.55,1.)*pow(veio,4.)*.5;
-  c += vec3(.22,.08,.5)*m*.22*w;
-  // brasas raras subindo
-  vec2 g = uv*vec2(uRes.x/uRes.y,1.)*26.; g.y -= uT*.9;
+  vec3 c = vec3(.02,.012,.04);
+  c += vec3(.3,.1,.66)*veio*.7;
+  c += vec3(.72,.52,1.)*pow(veio,4.)*.45;
+  c += vec3(.2,.07,.46)*m*.2*w;
+  vec2 g = uv*vec2(uRes.x/uRes.y,1.)*24.; g.y -= uT*.9;
   vec2 id = floor(g); float h = hash(id);
-  float s = step(.975,h)*smoothstep(.12,.0,length(fract(g)-.5-.3*vec2(sin(uT+h*40.),0.)));
+  float s = step(.978,h)*smoothstep(.12,.0,length(fract(g)-.5-.3*vec2(sin(uT+h*40.),0.)));
   c += vec3(1.,.55,.95)*s*(.5+.5*sin(uT*3.+h*60.));
-  c *= smoothstep(1.5,.2,length(p));
-  return c;
+  return c*smoothstep(1.5,.2,length(p));
 }
 vec3 slowly(vec2 uv, vec2 p){
   float t = uT*.045;
@@ -46,39 +38,35 @@ vec3 slowly(vec2 uv, vec2 p){
   float a = fbm(q + vec2(t, -t*.6));
   float b = fbm(q*1.3 - vec2(t*.7, t) + 4.);
   float d = fbm(q*.9 + vec2(-t*.4, t*.8) + 9.);
-  vec3 c = vec3(.957,.925,.882);                       // creme
-  c = mix(c, vec3(1.,.72,.56), smoothstep(.38,.8,a)*.85);   // pêssego
-  c = mix(c, vec3(.78,.70,1.), smoothstep(.45,.85,b)*.75);  // lilás
-  c = mix(c, vec3(.62,.93,.83), smoothstep(.5,.9,d)*.55);   // menta
-  c += .035*sin((a+b)*18.);                                 // brilho de película
+  vec3 c = vec3(.95,.92,.88);
+  c = mix(c, vec3(1.,.74,.58), smoothstep(.38,.8,a)*.8);
+  c = mix(c, vec3(.8,.72,1.), smoothstep(.45,.85,b)*.7);
+  c = mix(c, vec3(.66,.94,.85), smoothstep(.5,.9,d)*.5);
   return c;
 }
 vec3 obsk(vec2 uv, vec2 p){
   float tt = floor(uT*9.)/9.;
-  // travamento: faixas horizontais deslocadas de vez em quando
-  float faixa = floor(uv.y*28.);
+  float faixa = floor(uv.y*26.);
   float trava = step(.93, hash(vec2(faixa, floor(uT*3.))));
   p.x += trava*(hash(vec2(faixa,tt))-.5)*.25;
   float r = length(p), a = atan(p.y,p.x);
   float n = fbm(vec2(a*2.2, r*3.-uT*.08));
-  float linhas = abs(sin((r*46. + n*9.) - uT*.5));
+  float linhas = abs(sin((r*44. + n*9.) - uT*.5));
   linhas = smoothstep(.985,1.,linhas);
   float crista = 1.-abs(fbm(p*5.+uT*.04)*2.-1.); crista = pow(crista,9.);
-  vec3 c = vec3(.027,.008,.012);
-  c += vec3(.75,.05,.09)*linhas*.55*smoothstep(1.3,.2,r);
-  c += vec3(.55,.03,.06)*crista*.6;
-  c += vec3(.9,.9,.95)*pow(crista,3.)*.12;
-  c += (hash(uv*uRes + tt)-.5)*.035;                        // chuvisco
-  c *= .85 + .15*step(.5, fract(uv.y*uRes.y*.5));          // linhas de varredura
+  vec3 c = vec3(.02,.006,.01);
+  c += vec3(.72,.05,.09)*linhas*.5*smoothstep(1.3,.2,r);
+  c += vec3(.52,.03,.06)*crista*.55;
+  c += vec3(.9,.9,.95)*pow(crista,3.)*.1;
+  c += (hash(uv*uRes + tt)-.5)*.03;
   return c;
 }
 void main(){
   vec2 p = (vUv-.5)*vec2(uRes.x/uRes.y, 1.)*2.;
   vec3 c = vec3(0.);
-  if(uW.x>.001) c += uW.x*home(vUv,p);
-  if(uW.y>.001) c += uW.y*darky(vUv,p);
-  if(uW.z>.001) c += uW.z*slowly(vUv,p);
-  if(uW.w>.001) c += uW.w*obsk(vUv,p);
+  if(uW.x>.001) c += uW.x*darky(vUv,p);
+  if(uW.y>.001) c += uW.y*slowly(vUv,p);
+  if(uW.z>.001) c += uW.z*obsk(vUv,p);
   gl_FragColor = vec4(c,1.);
 }`;
 
@@ -103,29 +91,28 @@ void main(){
   float d = snoise(normal*1.6 + uT*.18) * .34 + snoise(normal*5. - uT*.3)*.07;
   d = floor(d*9.)/9.;                         // degraus: facetas em vez de onda lisa
   vD = d;
-  vec3 pos = position + normal*d*uAmp;
-  gl_Position = projectionMatrix*modelViewMatrix*vec4(pos,1.);
+  gl_Position = projectionMatrix*modelViewMatrix*vec4(position + normal*d*uAmp,1.);
   gl_PointSize = 2.2;
 }`;
 const FRAG_GEO = /* glsl */`
-precision highp float; uniform float uO; uniform vec3 uCor; varying float vD;
+precision mediump float; uniform float uO; uniform vec3 uCor; varying float vD;
 void main(){ vec3 c = mix(uCor*.55, vec3(1.,.86,.86), smoothstep(.12,.38,vD)); gl_FragColor = vec4(c, uO*(.35+.65*smoothstep(-.3,.35,vD))); }`;
 
-export function criarFx(canvas, { calmo = false } = {}) {
+export function criarFx(canvas, { calmo = false, leve = false } = {}) {
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'low-power' });
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'low-power', failIfMajorPerformanceCaveat: true });
   } catch { return null; }
-  const movel = matchMedia('(max-width: 760px)').matches;
-  const DPR = Math.min(devicePixelRatio || 1, movel ? 1 : 1.5) * (movel ? 0.75 : 1);
+  const DPR = Math.min(devicePixelRatio || 1, leve ? 1 : 1.5) * (leve ? 0.6 : 0.85);
   renderer.setPixelRatio(DPR);
   renderer.autoClear = false;
 
-  // fundo
   const cenaF = new THREE.Scene(), camF = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-  const uni = { uRes: { value: new THREE.Vector2(1, 1) }, uT: { value: 0 }, uM: { value: new THREE.Vector2(.5, .5) }, uW: { value: new THREE.Vector4(1, 0, 0, 0) } };
+  const uni = { uRes: { value: new THREE.Vector2(1, 1) }, uT: { value: 0 }, uM: { value: new THREE.Vector2(.5, .5) }, uW: { value: new THREE.Vector3(1, 0, 0) } };
   cenaF.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
-    uniforms: uni, fragmentShader: FRAG, depthTest: false, depthWrite: false,
+    uniforms: uni,
+    fragmentShader: `#define OITAVAS ${leve ? 3 : 5}\n` + FRAG,
+    depthTest: false, depthWrite: false,
     vertexShader: 'varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.,1.); }',
   })));
 
@@ -134,15 +121,18 @@ export function criarFx(canvas, { calmo = false } = {}) {
   cam.position.z = 6;
   const grupo = new THREE.Group(); cena.add(grupo);
   const ug = { uT: uni.uT, uAmp: { value: 1 }, uO: { value: 0 }, uCor: { value: new THREE.Color('#d1121f') } };
-  const mk = (extra) => new THREE.ShaderMaterial({ uniforms: ug, vertexShader: VERT_GEO, fragmentShader: FRAG_GEO, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, ...extra });
-  const geo = new THREE.IcosahedronGeometry(1.7, movel ? 5 : 9);
-  grupo.add(new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.7, 3)), mk({})));
-  grupo.add(new THREE.Points(geo, mk({})));
-  const anel = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(Array.from({ length: 6 }, (_, i) => new THREE.Vector3(Math.cos(i * Math.PI / 3) * 2.6, Math.sin(i * Math.PI / 3) * 2.6, 0))),new THREE.LineBasicMaterial({ color: '#7a0d14', transparent: true, opacity: 0 }));
+  const mk = () => new THREE.ShaderMaterial({ uniforms: ug, vertexShader: VERT_GEO, fragmentShader: FRAG_GEO, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+  grupo.add(new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.7, 3)), mk()));
+  grupo.add(new THREE.Points(new THREE.IcosahedronGeometry(1.7, leve ? 5 : 8), mk()));
+  const anel = new THREE.LineLoop(
+    new THREE.BufferGeometry().setFromPoints(Array.from({ length: 6 }, (_, i) => new THREE.Vector3(Math.cos(i * Math.PI / 3) * 2.6, Math.sin(i * Math.PI / 3) * 2.6, 0))),
+    new THREE.LineBasicMaterial({ color: '#7a0d14', transparent: true, opacity: 0 }));
   grupo.add(anel);
 
-  const pesos = { home: 1, darky: 0, slowly: 0, obskurial: 0 };
-  let alvoM = new THREE.Vector2(.5, .5), rodando = false, t0 = performance.now(), visivel = true;
+  const pesos = { darky: 1, slowly: 0, obskurial: 0 };
+  const alvoM = new THREE.Vector2(.5, .5);
+  let rodando = false, t0 = performance.now(), visivel = true, ultimo = 0;
+  const INTERVALO = leve ? 1000 / 30 : 0;                // em máquina fraca, 30 quadros bastam
 
   function tam() {
     const w = innerWidth, h = innerHeight;
@@ -156,7 +146,7 @@ export function criarFx(canvas, { calmo = false } = {}) {
     const t = (performance.now() - t0) / 1000;
     uni.uT.value = t;
     uni.uM.value.lerp(alvoM, .04);
-    uni.uW.value.set(pesos.home, pesos.darky, pesos.slowly, pesos.obskurial);
+    uni.uW.value.set(pesos.darky, pesos.slowly, pesos.obskurial);
     renderer.clear();
     renderer.render(cenaF, camF);
     if (pesos.obskurial > .01) {
@@ -168,9 +158,9 @@ export function criarFx(canvas, { calmo = false } = {}) {
       renderer.render(cena, cam);
     }
   }
-  function laco() {
+  function laco(ts) {
     if (!rodando) return;
-    quadro();
+    if (!INTERVALO || ts - ultimo >= INTERVALO) { ultimo = ts; quadro(); }
     requestAnimationFrame(laco);
   }
   function ligar(sim) {
@@ -188,10 +178,14 @@ export function criarFx(canvas, { calmo = false } = {}) {
 
   return {
     modo(nome, direto = false) {
-      if (!MODOS.includes(nome)) nome = 'home';
+      if (!MODOS.includes(nome)) nome = 'darky';
       const alvo = Object.fromEntries(MODOS.map((m) => [m, m === nome ? 1 : 0]));
       if (direto || calmo) { Object.assign(pesos, alvo); quadro(); return; }
-      window.gsap.to(pesos, { ...alvo, duration: nome === 'slowly' ? 1.6 : nome === 'obskurial' ? .35 : .7, ease: nome === 'obskurial' ? 'steps(4)' : 'power2.inOut', overwrite: true });
+      window.gsap.to(pesos, {
+        ...alvo,
+        duration: nome === 'slowly' ? 1.4 : nome === 'obskurial' ? .35 : .7,
+        ease: nome === 'obskurial' ? 'steps(4)' : 'power2.inOut', overwrite: true,
+      });
     },
     ponteiro(x, y) { alvoM.set(x, y); },
   };
