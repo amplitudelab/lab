@@ -247,6 +247,9 @@ body.real #roleSel,body.real #tUrl,body.real #lgDemoBox,body.real #genForm,body.
 .kchk{width:22px;height:22px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
 .kchk svg{width:14px;height:14px}
 .kcard.sel .kchk{background:var(--accent);border-color:var(--accent);color:#fff}
+.fbar{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-end}
+.recent{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.recent .pill{white-space:nowrap;flex:0 0 auto}
 .selbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .kcard .t{font-weight:600;font-size:15px;line-height:1.25}
 .kcard .m{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
@@ -1067,8 +1070,9 @@ function cashChart() {
 }
 
 V.funil = () => {
-  const sel = V._sel;
-  const cols = STAGES.map(s => { const ls = S.leads.filter(l => l.stage === s.id).sort((a, b) => (a.follow || 9e15) - (b.follow || 9e15));
+  const sel = V._sel, rec = recentMap(), fq = (V._fq || '').trim().toLowerCase();
+  const recent = S.leads.filter(l => rec[l.id]).sort((a, b) => rec[b.id] - rec[a.id]).slice(0, 8);
+  const cols = STAGES.map(s => { const ls = S.leads.filter(l => l.stage === s.id && (!fq || leadText(l).includes(fq))).sort((a, b) => (rec[b.id] || b.created || 0) - (rec[a.id] || a.created || 0));
     return `<section class="kcol" data-stage="${s.id}" aria-label="${s.n}"><div class="kh"><b>${s.n}</b><small>${ls.length} · ${money(ls.reduce((a, l) => a + l.value, 0)).replace(',00', '')}</small></div>
     ${ls.map(l => `<button class="kcard${sel && sel.has(l.id) ? ' sel' : ''}" draggable="${can('edit') && !sel}" data-act="${sel ? 'selLead' : 'openLead'}" data-id="${l.id}"${sel ? ` aria-pressed="${sel.has(l.id)}"` : ''}>
       ${sel ? `<span style="display:flex;gap:10px;align-items:flex-start"><span class="kchk" aria-hidden="true">${sel.has(l.id) ? icon('check') : ''}</span><span class="t">${esc(l.name)}</span></span>` : `<span class="t">${esc(l.name)}</span>`}<span class="m"><span>${esc(l.interest)}</span></span>
@@ -1078,10 +1082,15 @@ V.funil = () => {
     </button>`).join('') || '<p class="empty">Nenhum lead nesta etapa</p>'}</section>`; }).join('');
   const delBtn = can('del') && S.leads.length ? `<button class="b3 ghost" data-act="selMode">${sel ? 'Cancelar' : 'Selecionar'}</button>` : '';
   return head('Funil de vendas', sel ? 'Toque nos cartões para marcar os leads que vão ser excluídos.' : can('edit') ? `Arraste os cartões entre as colunas no computador. No celular, toque no cartão e escolha a etapa.${can('del') ? ' Para excluir, segure um cartão.' : ''}` : 'Seu perfil vê o funil, mas não altera.', `<div class="acts">${delBtn}${sel ? '' : leadBtn(can('edit'))}</div>`)
-    + (sel ? `<section class="card selbar"><b id="selN">${selCount(sel)}</b><div class="acts"><button class="b3 sm ghost" data-act="selAll" id="selAllBtn">${S.leads.every(l => sel.has(l.id)) ? 'Desmarcar todos' : 'Selecionar todos'}</button><button class="b3 sm danger" data-act="selDel" id="selDel" ${sel.size ? '' : 'disabled'}>${icon('x')}Excluir</button></div></section>` : '')
+    + (sel ? `<section class="card selbar"><b id="selN">${selCount(sel)}</b><div class="acts"><button class="b3 sm ghost" data-act="selAll" id="selAllBtn" ${sel.size ? '' : 'disabled'}>${selAllLabel(sel)}</button><button class="b3 sm danger" data-act="selDel" id="selDel" ${sel.size ? '' : 'disabled'}>${icon('x')}Excluir</button></div></section>` : '')
+    + `<div class="fbar"><div class="field" style="flex:1 1 240px;max-width:420px"><label for="fq">Buscar lead</label><input class="inp" id="fq" type="search" value="${esc(V._fq || '')}" placeholder="Nome, telefone, e-mail ou interesse" autocomplete="off"></div>
+      ${recent.length && !fq ? `<div class="field" style="flex:1 1 320px;min-width:0"><span class="flabel">Recentes</span><div class="recent">${recent.map(l => `<button class="pill" data-act="${sel ? 'selLead' : 'openLead'}" data-id="${l.id}">${esc(l.name)}</button>`).join('')}</div></div>` : ''}</div>
+      ${fq ? `<p class="muted" style="font-size:13px">${S.leads.filter(l => leadText(l).includes(fq)).length} leads com “${esc(V._fq.trim())}”.</p>` : ''}`
     + `<div class="kwrap"><div class="kanban">${cols}</div></div>`;
 };
 
+const selGroup = s => { const f = S.leads.find(l => l.id === [...s][0]); return f ? {st:stageOf(f.stage), ids:S.leads.filter(l => l.stage === f.stage).map(l => l.id)} : null; };
+const selAllLabel = s => { const g = selGroup(s); return !g ? 'Marque um lead primeiro' : g.ids.every(x => s.has(x)) ? 'Desmarcar todos' : `Selecionar todos de ${g.st.n}`; };
 const selCount = s => s.size === 1 ? '1 lead marcado' : `${s.size} leads marcados`;
 // atualiza só o cartão e a barra, para o funil não voltar ao começo no celular
 function selPaint(card) {
@@ -1089,7 +1098,7 @@ function selPaint(card) {
   if (card) { const on = s.has(card.dataset.id); card.classList.toggle('sel', on); card.setAttribute('aria-pressed', on); const c = card.querySelector('.kchk'); if (c) c.innerHTML = on ? icon('check') : ''; }
   else document.querySelectorAll('.kcard[data-act="selLead"]').forEach(selPaint);
   $('#selN').textContent = selCount(s); $('#selDel').disabled = !s.size;
-  $('#selAllBtn').textContent = S.leads.every(l => s.has(l.id)) ? 'Desmarcar todos' : 'Selecionar todos';
+  $('#selAllBtn').textContent = selAllLabel(s); $('#selAllBtn').disabled = !s.size;
 }
 function modalDeleteMany(ids) {
   const ls = S.leads.filter(l => ids.includes(l.id)), total = ls.reduce((a, l) => a + (l.value || 0), 0), names = ls.slice(0, 5).map(l => esc(l.name)).join(', ') + (ls.length > 5 ? ` e mais ${ls.length - 5}` : '');
@@ -1255,7 +1264,13 @@ V.equipe = () => {
 
 /* ============ drawer do lead ============ */
 let openId = null, lastFocus = null;
+// o que foi aberto ou movido por último sobe para o topo da coluna e para a faixa de recentes (só neste aparelho)
+const recentKey = () => 'amp-crm:recent:' + (T.slug || T.id);
+const recentMap = () => store.get(recentKey(), {});
+function touchLead(id) { const m = recentMap(); m[id] = Date.now(); const keep = Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, 200); store.set(recentKey(), Object.fromEntries(keep)); }
+const leadText = l => [l.name, l.phone, l.email, l.interest, (l.utm && l.utm.negocio) || ''].join(' ').toLowerCase();
 function openLead(id) {
+  touchLead(id);
   const l = S.leads.find(x => x.id === id); if (!l) return;
   openId = id; lastFocus = document.activeElement;
   const acts = S.acts.filter(a => a.lead === id).sort((a, b) => b.at - a.at);
@@ -1542,7 +1557,7 @@ document.addEventListener('click', e => {
     case 'addItem': $('#mItems').insertAdjacentHTML('beforeend', itemRow()); $('#mItems .item:last-child input').focus(); break;
     case 'selMode': V._sel = V._sel ? null : new Set(); render(); break;
     case 'selLead': if (V._sel) { V._sel.has(id) ? V._sel.delete(id) : V._sel.add(id); selPaint(a); } break;
-    case 'selAll': if (V._sel) { const s = V._sel, all = S.leads.map(l => l.id); if (all.every(x => s.has(x))) s.clear(); else all.forEach(x => s.add(x)); selPaint(); } break;
+    case 'selAll': if (V._sel) { const s = V._sel, g = selGroup(s); if (!g) break; if (g.ids.every(x => s.has(x))) s.clear(); else g.ids.forEach(x => s.add(x)); selPaint(); } break;
     case 'selDel': if (V._sel && V._sel.size) modalDeleteMany([...V._sel]); break;
     case 'openLead': if (!a.classList.contains('kcard') || !dragMoved) openLead(id); break;
     case 'stage': moveLead(openId, a.dataset.s, a); break;
@@ -1610,7 +1625,7 @@ document.addEventListener('contextmenu', e => { if (e.target.closest && e.target
 document.addEventListener('dragstart', e => { const c = e.target.closest && e.target.closest('.kcard'); if (!c || !can('edit')) return; dragMoved = true; e.dataTransfer.setData('text/plain', c.dataset.id); e.dataTransfer.effectAllowed = 'move'; c.classList.add('dragging'); });
 document.addEventListener('dragend', e => { $$('.kcard.dragging').forEach(c => c.classList.remove('dragging')); $$('.kcol.over').forEach(c => c.classList.remove('over')); setTimeout(() => dragMoved = false, 50); });
 document.addEventListener('dragover', e => { const col = e.target.closest && e.target.closest('.kcol'); if (!col) return; e.preventDefault(); $$('.kcol.over').forEach(c => c !== col && c.classList.remove('over')); col.classList.add('over'); });
-document.addEventListener('drop', e => { const col = e.target.closest && e.target.closest('.kcol'); if (!col) return; e.preventDefault(); col.classList.remove('over'); const id = e.dataTransfer.getData('text/plain'); if (id) moveLead(id, col.dataset.stage, col); });
+document.addEventListener('drop', e => { const col = e.target.closest && e.target.closest('.kcol'); if (!col) return; e.preventDefault(); col.classList.remove('over'); const id = e.dataTransfer.getData('text/plain'); if (id) { touchLead(id); moveLead(id, col.dataset.stage, col); } });
 
 /* formulários e campos vivos */
 document.addEventListener('submit', e => {
@@ -1823,6 +1838,22 @@ async function viaOverpass(seg, g) {
   const data = await Promise.any(OVERPASS.map(u => getJson(u + '?data=' + encodeURIComponent(q), {}, 9000)));
   return (data.elements || []).map(e => osmItem(e.tags, `osm:${e.type}/${e.id}`, e.lat ?? (e.center && e.center.lat), e.lon ?? (e.center && e.center.lon), `https://www.openstreetmap.org/${e.type}/${e.id}`));
 }
+// Um pedido só para todos os nichos escolhidos: o servidor do mapa responde uma vez, com tempo de sobra.
+const osmTag = f => { const m = f.match(/\["([^"]+)"="([^"]+)"\]/); return m ? [m[1], m[2]] : null; };
+async function viaOverpassAll(segs, g) {
+  const filters = [...new Set(segs.flatMap(s => RADAR_OSM[s]))];
+  const q = `[out:json][timeout:45];(${filters.map(f => `nwr${f}["name"](around:${g.km * 1000},${g.lat},${g.lon});`).join('')});out center tags 4000;`;
+  let data;
+  // servidores públicos lotados costumam nem responder: 25 s e cai para a busca reserva
+  data = await Promise.any(OVERPASS.map(u => getJson(u + '?data=' + encodeURIComponent(q), {}, 25000)));
+  const out = Object.fromEntries(segs.map(s => [s, []]));
+  for (const e of data.elements || []) {
+    const tags = e.tags || {}, it = osmItem(tags, `osm:${e.type}/${e.id}`, e.lat ?? (e.center && e.center.lat), e.lon ?? (e.center && e.center.lon), `https://www.openstreetmap.org/${e.type}/${e.id}`);
+    const seg = segs.find(s => RADAR_OSM[s].some(f => { const kv = osmTag(f); return kv && tags[kv[0]] === kv[1]; }));
+    if (seg) out[seg].push(it);
+  }
+  return out;
+}
 async function viaNominatim(seg, g, stop, step) {
   const n = g.km <= 2 ? 1 : g.km <= 6 ? 2 : g.km <= 12 ? 3 : 4, dLat = g.km / 111, dLon = g.km / (111 * Math.cos(g.lat * Math.PI / 180)), out = new Map();
   const terms = RADAR_TERMS[seg], total = n * n * terms.length; let done = 0, ok = 0;
@@ -1889,7 +1920,7 @@ function radarStudy(o) {
       ${rUrl ? `<a class="b3 sm ghost" href="${esc(rUrl)}" target="_blank" rel="noopener">${icon('radar')}Rota de campo: ${route.length} mais próximos</a>` : ''}</section></div>`;
 }
 V.radar = () => {
-  const o = V._rOut, R = V._r, list = o && o.items ? rShown(o) : [], addable = list.filter(i => !i.known);
+  const o = V._rOut, R = V._r, list = o && o.items ? rShown(o) : [], addable = list.filter(i => !i.known && (i.phone || i.email)), noContact = list.filter(i => !i.known && !i.phone && !i.email).length;
   return head('Radar de leads', 'Escolha os nichos, o local e o raio. O Radar procura no mapa, separa quem não tem site e monta o estudo da região.')
   + `<section class="card" style="display:flex;flex-direction:column;gap:16px">
     <div class="field"><div class="ch" style="margin:0"><span class="flabel">Nichos</span><span class="acts"><button class="link" data-radar="preset">Nichos da Amplitude</button><button class="link" data-radar="none">Limpar</button></span></div><div class="segchips">${Object.entries(RADAR_SEG).map(([k, n]) => `<button class="pill" data-radar="seg" data-k="${k}" aria-pressed="${R.seg.includes(k)}">${n}</button>`).join('')}</div></div>
@@ -1899,8 +1930,8 @@ V.radar = () => {
     ${o && o.loading ? `<div class="scan" role="status" aria-label="Procurando"></div><p class="muted" style="font-size:14px">${esc(o.step || '')}${o.items.length ? ` · ${o.items.length} encontrados até agora` : ''}</p>` : ''}
     ${o && o.error ? `<p class="err">${esc(o.error)}</p>` : ''}
   </section>
-  ${o && o.items && !o.loading ? radarStudy(o) + `<section class="card"><div class="ch"><div><h3>${list.length} leads nesta lista</h3><p class="muted" style="font-size:13px">Fonte: ${esc(o.source)}</p>${/Google/.test(o.source) ? '' : '<p class="muted" style="font-size:13px;white-space:normal;max-width:60ch">O mapa aberto (OpenStreetMap) conhece só uma parte dos comércios, e quase nenhum estúdio de tatuagem. Com o Google Maps ligado no servidor, a busca encontra muito mais.</p>'}</div><div class="acts">
-      <button class="b3 sm ghost" data-radar="csv">${icon('copy')}Baixar CSV</button>${addable.length ? `<button class="b3 sm" data-radar="all">${icon('plus')}Adicionar ${addable.length} ao funil</button>` : ''}</div></div>
+  ${o && o.items && !o.loading ? radarStudy(o) + `<section class="card"><div class="ch"><div><h3>${list.length} leads nesta lista</h3><p class="muted" style="font-size:13px">Fonte: ${esc(o.source)}</p>${noContact ? `<p class="muted" style="font-size:13px;white-space:normal;max-width:60ch">${noContact} sem telefone nem e-mail no mapa. Eles não entram no botão de adicionar todos: confira no Google e adicione um por um se achar o contato.</p>` : ''}${/Google/.test(o.source) ? '' : '<p class="muted" style="font-size:13px;white-space:normal;max-width:60ch">O mapa aberto (OpenStreetMap) conhece só uma parte dos comércios, e quase nenhum estúdio de tatuagem. Com o Google Maps ligado no servidor, a busca encontra muito mais.</p>'}</div><div class="acts">
+      <button class="b3 sm ghost" data-radar="csv">${icon('copy')}Baixar CSV</button>${addable.length ? `<button class="b3 sm" data-radar="all">${icon('plus')}Adicionar ${addable.length} com contato ao funil</button>` : ''}</div></div>
     <div class="pills" style="margin-bottom:10px">${[['phone', 'Com telefone'], ['mobile', 'Parece celular'], ['new', 'Fora do CRM'], ['all', 'Todos sem site']].map(([k, l]) => `<button class="pill" data-radar="filter" data-k="${k}" aria-pressed="${R.filter === k}">${l}</button>`).join('')}</div>
     <div class="rows">${list.slice(0, R.shown).map(i => `<div class="row rrow"><span class="ico" title="Pontuação do lead">${leadPoints(i)}</span><div class="grow"><p class="t">${esc(i.name)}</p><p class="s">${esc(RADAR_SEG[i.seg] || '')}${i.dist != null ? ` · ${i.dist.toFixed(1).replace('.', ',')} km` : ''}${i.suburb ? ' · ' + esc(i.suburb) : ''}${i.address ? ' · ' + esc(i.address) : ''}</p><p class="s">${i.phone ? esc(fmtPhone(i.phone)) + (isMobile(i.phone) ? ' · celular' : ' · fixo') : 'Sem telefone no mapa'}${i.instagram ? ' · tem Instagram' : ''}</p></div>
       <div class="acts"><a class="b3 sm ghost" href="https://www.google.com/search?q=${encodeURIComponent(i.name + ' ' + (o.geo.city || o.area))}" target="_blank" rel="noopener" title="Confira se tem site antes de abordar">Conferir</a>${i.known ? '<span class="chip ok"><span class="dot"></span>No CRM</span>' : `<button class="b3 sm" data-radar="add" data-id="${esc(i.id)}">Pro funil</button>`}</div></div>`).join('') || '<p class="empty">Nenhum lead com esse filtro. Tente “Todos sem site” ou aumente o raio.</p>'}</div>
@@ -1911,6 +1942,7 @@ function radarAdd(i) {
   if (i.known) return null;
   const seg = (RADAR_SEG[i.seg] || 'negócio').toLowerCase();
   const l = {id:uid(), name:i.name, phone:i.phone ? fmtPhone(i.phone) : '', email:i.email || '', interest:`Site e CRM para ${seg}`, source:'radar', stage:'s1', value:0, follow:at(0, Math.min(23, new Date().getHours() + 1)), created:Date.now(), consent:null, client:null, demo:!REAL, utm:{radar:i.id, area:V._r.area, km:V._r.km, segmento:i.seg, instagram:i.instagram || '', endereco:i.address || ''}};
+  if (i.instagram) l.utm.instagram = i.instagram;
   S.leads.push(l);
   S.acts.push({id:uid(), lead:l.id, kind:'note', body:`Encontrado pelo Radar a ${i.dist != null ? i.dist.toFixed(1).replace('.', ',') + ' km de ' : ''}${V._r.area}${i.address ? ' · ' + i.address : ''}. Sem site no mapa.${i.instagram ? ' Instagram: ' + i.instagram : ''}`, at:Date.now(), by:'Radar'});
   i.known = true;
@@ -1929,13 +1961,14 @@ async function radarSearch(geo) {
   } catch (e) { res.loading = false; res.error = 'O serviço de endereços não respondeu. Tente de novo em 1 minuto.'; return render(); }
   if (!res.geo) { res.loading = false; res.error = 'Não encontrei esse local. Escreva bairro e cidade, como Sapopemba, São Paulo.'; return render(); }
   const g = {lat:res.geo.lat, lon:res.geo.lon, km:R.km}, sources = new Set(), falhas = [];
-  let overpassOk = true;
+  let open = null;   // resultado do mapa aberto para todos os nichos, buscado uma vez só
   for (const seg of R.seg) {
     if (stop()) return;
     step(`Procurando ${RADAR_SEG[seg].toLowerCase()}…`);
     let items = null;
     if (REAL) { const r = await Real.fn('radar', {tenant_id:Real.tenantId(), segment:seg, lat:g.lat, lon:g.lon, km:g.km}); if (r.upgrade) { res.loading = false; res.error = r.error; return render(); } if (r.items) { items = r.items; sources.add(r.source); } }
-    if (!items && overpassOk) { try { items = await viaOverpass(seg, g); sources.add('OpenStreetMap'); } catch (e) { overpassOk = false; } }
+    if (!items && open === null) { step('Consultando o mapa aberto para todos os nichos…'); try { open = await viaOverpassAll(R.seg, g); } catch (e) { open = false; } }
+    if (!items && open) { items = open[seg]; sources.add('OpenStreetMap'); }
     if (!items) { try { items = await viaNominatim(seg, g, stop, step); sources.add('OpenStreetMap (Nominatim)'); } catch (e) { falhas.push(RADAR_SEG[seg]); items = location.protocol === 'https:' && location.hostname.includes('claude') ? radarDemo(seg) : []; } }
     if (stop()) return;
     const seen = new Set(res.items.map(i => i.id));
@@ -1953,6 +1986,7 @@ async function radarSearch(geo) {
   audit(`Radar: ${res.items.length} negócios em ${R.km} km de ${R.area}`);
   render();
 }
+document.addEventListener('input', e => { if (e.target.id !== 'fq') return; V._fq = e.target.value; const pos = e.target.selectionStart; render(); const f = $('#fq'); if (f) { f.focus(); try { f.setSelectionRange(pos, pos); } catch (x) {} } });
 document.addEventListener('input', e => { const t = e.target; if (t.id === 'rKm') { V._r.km = +t.value; const o = $('#rKmOut'); if (o) o.textContent = t.value + ' km'; } if (t.id === 'rArea') V._r.area = t.value; });
 document.addEventListener('change', e => { if (e.target.id === 'rConv') { V._r.conv = +e.target.value; render(); } });
 document.addEventListener('click', e => {
@@ -1965,7 +1999,7 @@ document.addEventListener('click', e => {
   if (k === 'more') { R.shown += 60; render(); }
   if (k === 'stop') { radarRun++; o.loading = false; o.source = o.source || 'busca interrompida'; markKnown(o.items); render(); }
   if (k === 'add') { const it = o.items.find(x => x.id === b.dataset.id), l = it && radarAdd(it); if (l) { audit(`Radar: “${l.name}” foi para o funil`); save(); render(); toast(`${l.name} entrou em “Novo”.`, {label:'Abrir', run:() => openLead(l.id)}); } }
-  if (k === 'all') { const n = rShown(o).filter(i => !i.known).map(radarAdd).length; audit(`Radar: ${n} negócios foram para o funil`); save(); render(); toast(`${n} leads entraram em “Novo”.`); }
+  if (k === 'all') { const n = rShown(o).filter(i => !i.known && (i.phone || i.email)).map(radarAdd).length; audit(`Radar: ${n} negócios foram para o funil`); save(); render(); toast(`${n} leads entraram em “Novo”.`); }
   if (k === 'csv') {
     const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`, rows = rShown(o);
     downloadText(`radar-${slugify(R.area)}-${R.km}km.csv`, '﻿' + ['Nome;Nicho;Telefone;Celular;E-mail;Endereço;Bairro;Distância km;Instagram;Pontos;No CRM'].concat(rows.map(i => [i.name, RADAR_SEG[i.seg], fmtPhone(i.phone), isMobile(i.phone) ? 'sim' : 'não', i.email, i.address, i.suburb, i.dist != null ? i.dist.toFixed(1) : '', i.instagram, leadPoints(i), i.known ? 'sim' : 'não'].map(q).join(';'))).join('\n'));
@@ -2540,10 +2574,11 @@ const Real = (() => {
   async function deleteMany(kind, list, reason, asked) {
     await sync(); await chain;
     toast(`Excluindo ${list.length} ${list.length === 1 ? 'lead' : 'leads'}…`);
-    let fail = 0;
-    for (const [id, title] of list) { const {error} = await sb.rpc('delete_record', {p_kind:kind, p_id:id, p_reason:reason, p_requested_by:asked || null}); if (error) { fail++; console.error(title, error); } }
+    // uma chamada para o lote todo: o servidor gera uma notificação só, em vez de uma por lead
+    const {data, error} = await sb.rpc('delete_records', {p_kind:kind, p_ids:list.map(x => x[0]), p_reason:reason, p_requested_by:asked || null});
+    if (error) return toast(error.message || 'Não deu para excluir.');
     V._sel = null; await reload(); render();
-    const ok = list.length - fail;
+    const ok = data.deleted, fail = data.failed.length;
     toast(fail ? `${ok} excluídos. ${fail} não puderam ser excluídos: confira o seu perfil de acesso.` : `${ok === 1 ? '1 lead excluído' : ok + ' leads excluídos'}. Motivo registrado no histórico.`);
   }
   async function savePay(tag, rows) {
