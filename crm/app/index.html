@@ -250,6 +250,9 @@ body.real #roleSel,body.real #tUrl,body.real #lgDemoBox,body.real #genForm,body.
 .fbar{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-end}
 .recent{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
 .recent .pill{white-space:nowrap;flex:0 0 auto}
+.gstat{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gstat b{font-variant-numeric:tabular-nums}
+.gauto{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
 .selbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .kcard .t{font-weight:600;font-size:15px;line-height:1.25}
 .kcard .m{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
@@ -596,8 +599,8 @@ const ROLES = {
 };
 const NAV = [
   ['painel','Painel','home',null], ['funil','Funil','kanban','crm'], ['clientes','Clientes','users','crm'],
-  ['propostas','Propostas','file','crm'], ['agenda','Agenda','cal','crm'], ['financeiro','Financeiro','wallet','fin'],
-  ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['equipe','Equipe e acesso','shield','team'], ['chaves','Chaves de acesso','key','team'], ['fichas','Fichas de anamnese','file','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
+  ['propostas','Propostas','file','crm'], ['agenda','Agenda','cal','crm'], ['projetos','Projetos','check','crm'], ['financeiro','Financeiro','wallet','fin'], ['mensalidades','Mensalidades','card','fin'],
+  ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['arquivos','Arquivos','file','crm'], ['equipe','Equipe e acesso','shield','team'], ['chaves','Chaves de acesso','key','team'], ['fichas','Fichas de anamnese','file','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
 ];
 const NICHE = {
   norte: {people:['Rafael Lima','Diego Martins','Caio Souza','Lucas Prado','Bruno Teles','Igor Nunes','Thiago Reis','Mateus Alves','Henrique Dias','Pedro Lopes','André Kato','Vitor Hugo'],
@@ -1591,6 +1594,24 @@ Válida até ${fdate(p.valid)}`, 'Proposta copiada para colar no WhatsApp'); bre
       break; }
     case 'accessCodeOff': Real.accessCodeOff(); break;
     case 'changePass': Real.changePass(); break;
+    case 'projNew': modalProject(); break;
+    case 'projEdit': { ensureOps(); const p = S.projects.find(x => x.id === id); if (p) modalProject(p); break; }
+    case 'projNext': { ensureOps(); const p = S.projects.find(x => x.id === id); if (!p) break; const i = PSTG.findIndex(x => x[0] === p.stage), nx = PSTG[i + 1]; if (!nx) break;
+      p.stage = nx[0]; if (nx[0] === 'entregue') p.delivered = Date.now(); audit(`Projeto “${p.title}” foi para ${nx[1]}`); save(); render(); toast(nx[0] === 'entregue' ? 'Projeto entregue.' : `Projeto em ${nx[1]}.`); break; }
+    case 'projDel': { if (!can('del')) return toast('Só dono e admin excluem projetos.'); ensureOps(); const p = S.projects.find(x => x.id === id); if (!p) break; S.projects = S.projects.filter(x => x.id !== id); audit(`Projeto “${p.title}” excluído`); save(); closeLayers(); render(); toast('Projeto excluído.'); break; }
+    case 'subNew': modalSub(); break;
+    case 'subEdit': { ensureOps(); const s = S.subs.find(x => x.id === id); if (s) modalSub(s); break; }
+    case 'subPaid': { ensureOps(); const s = S.subs.find(x => x.id === id); if (s) subPaid(s); break; }
+    case 'subLink': { ensureOps(); const s = S.subs.find(x => x.id === id); if (s && REAL) Real.subLink(s); break; }
+    case 'subDel': { if (!can('del')) return toast('Só dono e admin excluem mensalidades.'); ensureOps(); const s = S.subs.find(x => x.id === id); if (!s) break; S.subs = S.subs.filter(x => x.id !== id); audit(`Mensalidade “${s.name}” excluída`); save(); closeLayers(); render(); toast('Mensalidade excluída.'); break; }
+    case 'fileOpen': { ensureOps(); const f = S.files.find(x => x.id === id); if (f) fileOpen(f); break; }
+    case 'fileDel': { if (!can('del')) return toast('Só dono e admin apagam arquivos.'); ensureOps(); const f = S.files.find(x => x.id === id); if (!f) break;
+      if (REAL) Real.fileDelete(f).then(r => { if (r.error) return toast(r.error); render(); toast('Arquivo apagado.'); });
+      else { S.files = S.files.filter(x => x.id !== id); save(); render(); toast('Arquivo apagado.'); }
+      audit(`Arquivo “${f.name}” apagado`); break; }
+    case 'backupList': Real.backups(false); break;
+    case 'backupNow': Real.backups(true); break;
+    case 'pushOn': Real.pushOn(); break;
     case 'invite': if (REAL) { Real.invite(); break; } modal('Convidar pessoa', `<div class="fg">${inp('n', 'Nome', 'required')}${inp('e', 'E-mail', 'type="email" required')}${sel('r', 'Perfil', Object.entries(ROLES).map(([k, r]) => [k, r.n]).slice(1), 'full')}</div><p class="note">A pessoa recebe um link de acesso por e-mail e entra só neste painel.</p>`,
       fd => { const n = String(fd.get('n') || '').trim(), em = String(fd.get('e') || '').trim(); if (!n || !/^\S+@\S+\.\S+$/.test(em)) return 'Preencha nome e um e-mail válido.'; S.members.push({n, e:em, r:fd.get('r')}); audit(`${n} convidado(a) como ${ROLES[fd.get('r')].n}`); save(); toast('Convite registrado.'); }, 'Convidar'); break;
     case 'resetBrand': S.brand = {name:'', color:'', hide:false, domain:''}; audit('Marca restaurada'); save(); applyBrand(); renderChrome(); render(); break;
@@ -2253,6 +2274,147 @@ document.addEventListener('submit', async e => {
   } finally { go.disabled = false; }
 });
 
+/* ============ projetos e entregas ============ */
+// Cada site vendido vira um projeto que anda por cinco etapas até a entrega.
+const PSTG = [['briefing', 'Briefing'], ['criacao', 'Criação'], ['aprovacao', 'Aprovação'], ['ajustes', 'Ajustes'], ['entregue', 'Entregue']];
+const ensureOps = () => { S.projects = S.projects || []; S.subs = S.subs || []; S.files = S.files || []; };
+const pstgName = k => (PSTG.find(x => x[0] === k) || PSTG[0])[1];
+const whoOf = o => clientName(o.client) || leadName(o.lead) || '';
+V.projetos = () => {
+  ensureOps();
+  const ed = can('edit'), open = S.projects.filter(p => p.stage !== 'entregue'), late = open.filter(p => p.due && dayOf(p.due) < d0());
+  const card = p => {
+    const i = PSTG.findIndex(x => x[0] === p.stage), next = PSTG[i + 1];
+    const due = p.due ? `<span class="chip ${p.stage !== 'entregue' && dayOf(p.due) < d0() ? 'bad' : p.stage !== 'entregue' && dayOf(p.due) <= d0() + DAY ? 'warn' : ''}">${icon('clock', 'i')}${fdate(p.due)}</span>` : '';
+    return `<article class="card" style="display:flex;flex-direction:column;gap:10px"><div class="ch" style="margin:0"><h3 style="white-space:normal">${esc(p.title)}</h3>${due}</div>
+      <p class="muted" style="font-size:13px">${esc(whoOf(p) || 'Sem cliente')}${p.value ? ' · ' + money(p.value) : ''}${p.stage === 'entregue' && p.delivered ? ' · entregue em ' + fdate(p.delivered) : ''}</p>
+      ${p.notes ? `<p style="font-size:14px;white-space:pre-wrap">${esc(p.notes)}</p>` : ''}
+      ${ed ? `<div class="acts">${next ? `<button class="b3 sm" data-act="projNext" data-id="${p.id}">${icon('check')}${next[0] === 'entregue' ? 'Marcar entregue' : 'Ir para ' + next[1]}</button>` : ''}<button class="b3 sm ghost" data-act="projEdit" data-id="${p.id}">Editar</button></div>` : ''}</article>`;
+  };
+  return head('Projetos e entregas', 'Cada venda vira um projeto: briefing, criação, aprovação, ajustes e entrega. O CRM avisa um dia antes do prazo e quando atrasa.', ed ? `<button class="b3" data-act="projNew">${icon('plus')}Novo projeto</button>` : '')
+    + `<div class="grid gstat"><section class="card"><p class="muted">Em andamento</p><b style="font-size:28px">${open.length}</b></section><section class="card"><p class="muted">Atrasados</p><b style="font-size:28px">${late.length}</b></section><section class="card"><p class="muted">Valor em produção</p><b style="font-size:28px">${money(open.reduce((a, p) => a + (p.value || 0), 0)).replace(',00', '')}</b></section></div>`
+    + PSTG.map(([k, n]) => { const ls = S.projects.filter(p => p.stage === k).sort((a, b) => (a.due || 9e15) - (b.due || 9e15));
+      return `<section style="display:flex;flex-direction:column;gap:10px"><div class="ch" style="margin:0"><h3>${n}</h3><span class="chip">${ls.length}</span></div>${ls.length ? `<div class="grid gauto">${(k === 'entregue' ? ls.slice(-6).reverse() : ls).map(card).join('')}</div>` : '<p class="empty">Nada nesta etapa.</p>'}</section>`; }).join('');
+};
+function modalProject(p) {
+  ensureOps();
+  const cl = [['', 'Sem cliente']].concat(S.clients.map(c => ['c:' + c.id, c.name, p && p.client === c.id]), S.leads.filter(l => stageOf(l.stage).k === 'won').map(l => ['l:' + l.id, l.name + ' (lead fechado)', p && p.lead === l.id]));
+  modal(p ? 'Editar projeto' : 'Novo projeto', `<div class="fg">${inp('title', 'Projeto', `full required autocomplete="off" placeholder="Site completo da Barbearia Norte" value="${esc(p ? p.title : '')}"`)}
+    ${sel('who', 'Cliente', cl, 'full')}${sel('stage', 'Etapa', PSTG.map(x => [x[0], x[1], p ? p.stage === x[0] : x[0] === 'briefing']))}${inp('due', 'Prazo de entrega', `type="date" value="${p && p.due ? ymd(p.due) : ymd(at(7))}"`)}
+    ${inp('value', 'Valor (R$)', `inputmode="decimal" value="${p && p.value ? reais(p.value) : ''}"`)}<div class="field full"><label for="m_notes">Observações</label><textarea class="inp" id="m_notes" name="notes" rows="3">${esc(p ? p.notes || '' : '')}</textarea></div></div>
+    ${p && can('del') ? `<div class="acts"><button class="b3 sm danger" type="button" data-act="projDel" data-id="${p.id}">${icon('x')}Excluir projeto</button></div>` : ''}`,
+  fd => {
+    const title = String(fd.get('title') || '').trim(); if (!title) return 'Escreva o nome do projeto.';
+    const w = String(fd.get('who') || ''), o = p || {id:uid(), created:Date.now()};
+    Object.assign(o, {title, client:w.startsWith('c:') ? w.slice(2) : null, lead:w.startsWith('l:') ? w.slice(2) : null, stage:fd.get('stage'), due:fd.get('due') ? fromYmd(fd.get('due'), '12:00') : null, value:cents(fd.get('value')), notes:String(fd.get('notes') || '').trim()});
+    if (o.stage === 'entregue' && !o.delivered) o.delivered = Date.now();
+    if (!p) S.projects.push(o);
+    audit(`Projeto “${title}” ${p ? 'alterado' : 'criado'}`); save(); toast(p ? 'Projeto salvo.' : 'Projeto criado.');
+  }, p ? 'Salvar' : 'Criar projeto');
+}
+
+/* ============ mensalidades ============ */
+// Planos que o cliente paga todo mês (site, CRM). O CRM gera o link do mês e avisa antes de vencer e quando atrasa.
+function subState(s) {
+  const now = new Date(), paidMonth = s.paid && s.paid >= monthStart(), due = new Date(now.getFullYear(), now.getMonth(), s.day).getTime();
+  if (s.status === 'paused') return ['Pausada', ''];
+  if (s.status === 'canceled') return ['Cancelada', ''];
+  if (paidMonth) return ['Paga este mês', 'ok'];
+  const days = Math.round((dayOf(due) - d0()) / DAY);
+  return days < 0 ? [`Atrasada há ${-days} ${-days === 1 ? 'dia' : 'dias'}`, 'bad'] : days === 0 ? ['Vence hoje', 'warn'] : [`Vence em ${days} ${days === 1 ? 'dia' : 'dias'}`, days <= 3 ? 'warn' : 'acc'];
+}
+V.mensalidades = () => {
+  ensureOps();
+  const act = S.subs.filter(s => s.status === 'active'), late = act.filter(s => subState(s)[1] === 'bad'), mrr = act.reduce((a, s) => a + s.amount, 0), ed = can('fin');
+  const row = s => { const st = subState(s);
+    return `<div class="row" style="flex-wrap:wrap"><span class="ico ${st[1] === 'ok' ? 'ok' : st[1] === 'bad' ? 'bad' : ''}">${icon('card')}</span><div class="grow" style="flex:1 1 55%"><p class="t">${esc(s.name)}</p><p class="s">${esc(clientName(s.client) || 'Sem cliente')} · ${money(s.amount)} todo dia ${s.day}</p></div>
+      <span class="chip ${st[1]}">${st[0]}</span>${ed ? `<div class="acts" style="margin-left:auto">${s.status === 'active' && st[1] !== 'ok' ? `${REAL ? `<button class="b3 sm" data-act="subLink" data-id="${s.id}">${icon('copy')}Gerar link</button>` : ''}<button class="b3 sm ghost" data-act="subPaid" data-id="${s.id}">Recebido</button>` : ''}<button class="b3 sm ghost" data-act="subEdit" data-id="${s.id}">Editar</button></div>` : ''}</div>`; };
+  return head('Mensalidades', 'Planos mensais dos clientes. O CRM avisa 3 dias antes do vencimento e no dia seguinte, se não foi pago. Pelo link da InfinitePay, o pagamento dá baixa sozinho.', ed ? `<button class="b3" data-act="subNew">${icon('plus')}Nova mensalidade</button>` : '')
+    + `<div class="grid gstat"><section class="card"><p class="muted">Receita mensal</p><b style="font-size:28px">${money(mrr).replace(',00', '')}</b></section><section class="card"><p class="muted">Clientes ativos</p><b style="font-size:28px">${act.length}</b></section><section class="card"><p class="muted">Em atraso</p><b style="font-size:28px">${late.length}</b></section></div>`
+    + `<section class="card"><div class="ch"><h3>Todas</h3><span class="chip">${S.subs.length}</span></div><div class="rows">${S.subs.slice().sort((a, b) => (a.status !== 'active') - (b.status !== 'active') || a.day - b.day).map(row).join('') || '<p class="empty">Nenhuma mensalidade ainda. Cadastre o plano do site ou do CRM de cada cliente.</p>'}</div></section>`;
+};
+function modalSub(s) {
+  ensureOps();
+  const cl = [['', 'Sem cliente']].concat(S.clients.map(c => [c.id, c.name, s && s.client === c.id]));
+  modal(s ? 'Editar mensalidade' : 'Nova mensalidade', `<div class="fg">${inp('name', 'Plano', `full required autocomplete="off" placeholder="Plano Completo do site" value="${esc(s ? s.name : '')}"`)}
+    ${sel('client', 'Cliente', cl, 'full')}${inp('amount', 'Valor por mês (R$)', `required inputmode="decimal" value="${s ? reais(s.amount) : ''}"`)}${inp('day', 'Dia do vencimento (1 a 28)', `type="number" min="1" max="28" required value="${s ? s.day : 10}"`)}
+    ${s ? sel('status', 'Situação', [['active', 'Ativa', s.status === 'active'], ['paused', 'Pausada', s.status === 'paused'], ['canceled', 'Cancelada', s.status === 'canceled']], 'full') : ''}</div>
+    ${s && can('del') ? `<div class="acts"><button class="b3 sm danger" type="button" data-act="subDel" data-id="${s.id}">${icon('x')}Excluir mensalidade</button></div>` : ''}`,
+  fd => {
+    const name = String(fd.get('name') || '').trim(), amount = cents(fd.get('amount')), day = Math.round(+fd.get('day'));
+    if (!name) return 'Escreva o nome do plano.'; if (amount < 100) return 'O valor mínimo é R$ 1,00.'; if (!(day >= 1 && day <= 28)) return 'Escolha um dia de 1 a 28.';
+    const o = s || {id:uid(), start:Date.now(), paid:null, status:'active'};
+    Object.assign(o, {name, client:fd.get('client') || null, amount, day, status:s ? fd.get('status') : 'active'});
+    if (!s) S.subs.push(o);
+    audit(`Mensalidade “${name}” ${s ? 'alterada' : 'criada'}`); save(); toast(s ? 'Mensalidade salva.' : 'Mensalidade criada.');
+  }, s ? 'Salvar' : 'Criar mensalidade');
+}
+function subPaid(s) {
+  s.paid = Date.now();
+  S.cash.push({id:uid(), charge:null, dir:'in', cat:'Mensalidades', desc:`${s.name} · ${String(new Date().getMonth() + 1).padStart(2, '0')}/${new Date().getFullYear()}`, amount:s.amount, date:Date.now()});
+  audit(`Mensalidade “${s.name}” recebida`); save(); render(); toast('Mês marcado como pago e lançado no caixa.');
+}
+
+/* ============ arquivos da empresa ============ */
+// Contratos, briefings, logos e fotos de cada cliente. No painel real ficam numa área privada do Supabase.
+const FOLDERS = ['Geral', 'Contratos', 'Briefings', 'Logos e marca', 'Fotos e vídeos', 'Financeiro'];
+const fsize = b => !b ? '0 KB' : b >= 1048576 ? (b / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+V._fileq = '';
+V.arquivos = () => {
+  ensureOps();
+  const q = V._fileq.trim().toLowerCase(), ls = S.files.filter(f => !q || [f.name, f.folder, clientName(f.client)].join(' ').toLowerCase().includes(q)).sort((a, b) => b.created - a.created);
+  const used = S.files.reduce((a, f) => a + (f.size || 0), 0), up = can('crm') && role !== 'viewer';
+  return head('Arquivos', REAL ? 'Contratos, briefings, logos e fotos de cada cliente, numa área privada do Supabase. Só quem é da equipe abre.' : 'Na demonstração, os arquivos ficam só neste navegador, até 1 MB cada.', '')
+    + (up ? `<form class="card" id="fileForm" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Enviar arquivos</h3><span class="muted" style="font-size:13px">${fsize(used)} usados${REAL ? ' de 1 GB' : ''}</span></div>
+      <div class="fg"><div class="field full"><label for="fileIn">Arquivos</label><input class="inp" id="fileIn" type="file" multiple required></div>
+      <div class="field"><label for="fileFolder">Pasta</label><select class="inp" id="fileFolder">${FOLDERS.map(f => `<option>${esc(f)}</option>`).join('')}</select></div>
+      <div class="field"><label for="fileClient">Cliente</label><select class="inp" id="fileClient"><option value="">Nenhum</option>${S.clients.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></div></div>
+      <p class="err" id="fileErr" hidden></p><div class="acts"><button class="b3" type="submit" id="fileGo">${icon('plus')}Enviar</button></div></form>` : '')
+    + `<section class="card"><div class="ch"><h3>Todos os arquivos</h3><span class="chip">${S.files.length}</span></div>
+      <div class="field" style="max-width:420px;margin-bottom:12px"><label for="fileQ">Buscar</label><input class="inp" id="fileQ" type="search" value="${esc(V._fileq)}" placeholder="Nome, pasta ou cliente" autocomplete="off"></div>
+      <div class="rows">${ls.map(f => `<div class="row" style="flex-wrap:wrap"><span class="ico">${icon('file')}</span><div class="grow" style="flex:1 1 55%"><p class="t" style="white-space:normal;overflow-wrap:anywhere">${esc(f.name)}</p><p class="s">${esc(f.folder)}${f.client ? ' · ' + esc(clientName(f.client)) : ''} · ${fsize(f.size || 0)} · ${fdate(f.created)}</p></div>
+        <div class="acts" style="margin-left:auto"><button class="b3 sm ghost" data-act="fileOpen" data-id="${f.id}">${icon('eye')}Abrir</button>${can('del') ? `<button class="b3 sm ghost" data-act="fileDel" data-id="${f.id}">${icon('x')}Apagar</button>` : ''}</div></div>`).join('') || `<p class="empty">${q ? 'Nenhum arquivo com esse nome.' : 'Nenhum arquivo ainda.'}</p>`}</div></section>`;
+};
+document.addEventListener('input', e => { if (e.target.id !== 'fileQ') return; V._fileq = e.target.value; const pos = e.target.selectionStart; render(); const f = $('#fileQ'); if (f) { f.focus(); try { f.setSelectionRange(pos, pos); } catch (x) {} } });
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'fileForm') return; e.preventDefault(); ensureOps();
+  const files = [...$('#fileIn').files], folder = $('#fileFolder').value, client = $('#fileClient').value || null, err = $('#fileErr'), go = $('#fileGo');
+  const fail = m => { err.textContent = m; err.hidden = false; };
+  if (!files.length) return fail('Escolha pelo menos um arquivo.');
+  const max = REAL ? 50 * 1048576 : 1048576, big = files.find(f => f.size > max);
+  if (big) return fail(`“${big.name}” passa de ${REAL ? '50 MB' : '1 MB'}.`);
+  go.disabled = true; err.hidden = true;
+  try {
+    if (REAL) { const r = await Real.filesUpload(files, folder, client); if (r.error) return fail(r.error); toast(`${files.length === 1 ? '1 arquivo enviado' : files.length + ' arquivos enviados'}.`); }
+    else {
+      for (const f of files) { const data = await new Promise((ok, no) => { const rd = new FileReader(); rd.onload = () => ok(rd.result); rd.onerror = no; rd.readAsDataURL(f); });
+        S.files.push({id:uid(), name:f.name, size:f.size, mime:f.type, folder, client, created:Date.now(), data}); }
+      save(); toast('Arquivos guardados neste navegador.');
+    }
+    audit(`${files.length} arquivo(s) enviado(s) para ${folder}`); render();
+  } finally { if ($('#fileGo')) $('#fileGo').disabled = false; }
+});
+async function fileOpen(f) {
+  if (!REAL) { const w = window.open(); if (w) w.location = f.data; return; }
+  const w = window.open('', '_blank'), r = await Real.fileUrl(f);
+  if (r.error) { if (w) w.close(); return toast(r.error); }
+  if (w) w.location = r.url; else location.href = r.url;
+}
+
+/* ============ cópia de segurança e avisos no celular (cartões de Equipe e acesso) ============ */
+function opsCards() {
+  const owner = role === 'owner';
+  return `<div class="grid g2">
+    <section class="card"><div class="ch"><h3>Cópia de segurança</h3><span class="chip ${REAL ? 'ok' : ''}"><span class="dot"></span>${REAL ? 'Todo domingo' : 'Só no painel real'}</span></div>
+      <p class="muted" style="font-size:14px">${REAL ? 'Todo domingo, às 3h, o CRM guarda uma cópia de todos os dados numa área privada do Supabase. Ficam as 12 mais recentes.' : 'No painel real, o CRM guarda uma cópia de todos os dados todo domingo.'}</p>
+      ${REAL && owner ? `<div class="acts" style="margin-top:12px"><button class="b3 sm" data-act="backupList">${icon('copy')}Ver e baixar cópias</button><button class="b3 sm ghost" data-act="backupNow">Fazer cópia agora</button></div>` : ''}</section>
+    <section class="card"><div class="ch"><h3>Avisos no celular</h3><span class="chip" id="pushChip">Neste aparelho</span></div>
+      <p class="muted" style="font-size:14px">Receba um aviso quando entrar lead, pagamento, mensalidade atrasada ou prazo de entrega. No iPhone, funciona com o app instalado na tela de início.</p>
+      ${REAL ? `<div class="acts" style="margin-top:12px"><button class="b3 sm" data-act="pushOn">${icon('bell')}Ativar neste aparelho</button></div>` : ''}</section>
+  </div>`;
+}
+{ const fn = V.equipe; V.equipe = () => fn() + opsCards(); }
+
 /* ============ chaves de acesso (só o dono) ============ */
 // O dono escolhe o perfil, o servidor gera AMP-XXXX-XXXX-XXXX de uso único e o colaborador cria
 // o próprio e-mail e senha com ela, no app Android ou no navegador.
@@ -2377,6 +2539,10 @@ const Real = (() => {
       from:r => ({id:r.id, client:r.client_id, lead:r.lead_id, desc:r.description, amount:Number(r.amount_cents), due:fromDay(r.due_date), method:r.method, status:r.status, paid:ms(r.paid_at), url:r.checkout_url, gateway:r.gateway})},
     cash:{table:'cash_entries', to:c => ({id:c.id, tenant_id:tid, charge_id:c.charge || null, direction:c.dir, category:c.cat, description:c.desc, amount_cents:c.amount, occurred_on:day(c.date)}),
       from:r => ({id:r.id, charge:r.charge_id, dir:r.direction, cat:r.category, desc:r.description || r.category, amount:Number(r.amount_cents), date:fromDay(r.occurred_on)})},
+    projects:{table:'projects', to:p => ({id:p.id, tenant_id:tid, client_id:p.client || null, lead_id:p.lead || null, title:p.title, stage:p.stage, due_date:day(p.due), value_cents:p.value || 0, notes:p.notes || null, delivered_at:iso(p.delivered), created_at:iso(p.created)}),
+      from:r => ({id:r.id, client:r.client_id, lead:r.lead_id, title:r.title, stage:r.stage, due:fromDay(r.due_date), value:Number(r.value_cents), notes:r.notes || '', delivered:ms(r.delivered_at), created:ms(r.created_at)})},
+    subs:{table:'subscriptions', to:s => ({id:s.id, tenant_id:tid, client_id:s.client || null, name:s.name, amount_cents:s.amount, due_day:s.day, status:s.status, started_on:day(s.start), last_paid_on:day(s.paid)}),
+      from:r => ({id:r.id, client:r.client_id, name:r.name, amount:Number(r.amount_cents), day:r.due_day, status:r.status, start:fromDay(r.started_on), paid:fromDay(r.last_paid_on)})},
     notes:{table:'notifications', to:n => ({id:n.id, tenant_id:tid, lead_id:n.lead || null, kind:n.kind || 'paid', title:n.title, body:n.body, read_at:n.read ? (n.readAt = n.readAt || new Date().toISOString()) : null, created_at:iso(n.at)}),
       from:r => ({id:r.id, lead:r.lead_id, kind:r.kind, title:r.title, body:r.body || '', read:!!r.read_at, readAt:r.read_at, at:ms(r.created_at)})}
   };
@@ -2411,7 +2577,7 @@ const Real = (() => {
     const {data:st} = await sb.from('pipeline_stages').select('id, position').eq('tenant_id', tid);
     (st || []).forEach(x => { stageId['s' + x.position] = x.id; stageKey[x.id] = 's' + x.position; });
     const q = t => sb.from(t).select('*').eq('tenant_id', tid), live = t => q(t).is('deleted_at', null);
-    const [cl, ct, ld, ac, pr, ta, ch, ca, no, pl, au, te, de, ten] = await Promise.all([q('clients'), q('contacts'), live('leads'), q('activities'), live('proposals'), q('tasks'), live('charges').in('status', ['pending', 'paid']), live('cash_entries'), q('notifications').order('created_at', {ascending:false}).limit(60), q('plans').eq('active', true).order('position'), q('audit_log').order('at', {ascending:false}).limit(30), sb.rpc('team_list', {p_tenant:tid}), q('deletions').order('created_at', {ascending:false}).limit(100), sb.from('tenants').select('payment_handle, plan').eq('id', tid).maybeSingle()]);
+    const [cl, ct, ld, ac, pr, ta, ch, ca, no, pl, au, te, de, ten, pj, sbs, fl] = await Promise.all([q('clients'), q('contacts'), live('leads'), q('activities'), live('proposals'), q('tasks'), live('charges').in('status', ['pending', 'paid']), live('cash_entries'), q('notifications').order('created_at', {ascending:false}).limit(60), q('plans').eq('active', true).order('position'), q('audit_log').order('at', {ascending:false}).limit(30), sb.rpc('team_list', {p_tenant:tid}), q('deletions').order('created_at', {ascending:false}).limit(100), sb.from('tenants').select('payment_handle, plan').eq('id', tid).maybeSingle(), q('projects'), q('subscriptions'), q('files').order('created_at', {ascending:false}).limit(500)]);
     const people = {}; (te.data || []).forEach(m => { people[m.user_id] = m.email; });
     if (ld.error) throw ld.error;
     const pick = (k, r) => (r.data || []).map(MAP[k].from);
@@ -2424,6 +2590,7 @@ const Real = (() => {
       audit:(au.data || []).map(a => ({at:ms(a.at), who:people[a.actor_id] || (a.actor_id ? 'Equipe' : 'Sistema'), a:`${TBL[a.table_name] || a.table_name} ${VERB[a.action] || a.action}`})),
       form:Object.assign({title:'Quero minha página', email:true, interest:true, msg:false, wa:'', consent:'Autorizo o contato por WhatsApp e e-mail sobre este pedido.'}, crm.form),
       brand:Object.assign({name:'', color:'', hide:false, domain:''}, crm.brand), pay:{gateway:'infinitepay', tag:(ten.data && ten.data.payment_handle) || ''}, deletions:(de.data || []).map(d => ({id:d.id, kind:d.kind, title:d.title, amount:Number(d.amount_cents), reason:d.reason, asked:d.requested_by, who:d.actor_email || 'Equipe', at:ms(d.created_at)})),
+      projects:pick('projects', pj), subs:pick('subs', sbs), files:(fl.data || []).map(f => ({id:f.id, path:f.path, name:f.name, size:Number(f.size_bytes), mime:f.mime, folder:f.folder, client:f.client_id, created:ms(f.created_at)})),
       members:(te.data || []).map(m => ({n:m.email.split('@')[0], e:m.email, r:ROLES[m.role] ? m.role : 'viewer'}))};
     if (ten.data && ten.data.plan) T.planKey = ten.data.plan;
     remember();
@@ -2581,6 +2748,58 @@ const Real = (() => {
     const ok = data.deleted, fail = data.failed.length;
     toast(fail ? `${ok} excluídos. ${fail} não puderam ser excluídos: confira o seu perfil de acesso.` : `${ok === 1 ? '1 lead excluído' : ok + ' leads excluídos'}. Motivo registrado no histórico.`);
   }
+  // arquivos: o conteúdo vai para o bucket privado "arquivos" (pasta = empresa) e a lista fica na tabela files
+  async function filesUpload(list, folder, client) {
+    for (const f of list) {
+      const path = `${tid}/${crypto.randomUUID()}-${f.name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w.-]+/g, '_').slice(-80)}`;
+      const {error} = await sb.storage.from('arquivos').upload(path, f, {contentType:f.type || 'application/octet-stream'});
+      if (error) return {error:`Não deu para enviar “${f.name}”. Confira a internet e o seu perfil de acesso.`};
+      const {error:e2} = await sb.from('files').insert({tenant_id:tid, path, name:f.name, size_bytes:f.size, mime:f.type || null, folder, client_id:client});
+      if (e2) { await sb.storage.from('arquivos').remove([path]); return {error:'Não deu para registrar o arquivo.'}; }
+    }
+    await reload(); return {ok:true};
+  }
+  async function fileUrl(f) { const {data, error} = await sb.storage.from('arquivos').createSignedUrl(f.path, 600); return error ? {error:'Não deu para abrir o arquivo.'} : {url:data.signedUrl}; }
+  async function fileDelete(f) {
+    const {error} = await sb.from('files').delete().eq('id', f.id);
+    if (error) return {error:'Só dono e admin apagam arquivos.'};
+    await sb.storage.from('arquivos').remove([f.path]); await reload(); return {ok:true};
+  }
+  async function subLink(s) {
+    toast('Gerando o link na InfinitePay…');
+    const r = await fn('subscription-link', {subscription_id:s.id});
+    if (r.error) return toast(r.error);
+    await reload(); render();
+    const c = S.clients.find(x => x.id === s.client), dg = rDigits(c && c.phone), msg = `Olá${c ? ', ' + first(c.name) : ''}! Segue o link da mensalidade de ${s.name} (${money(s.amount)}):\n\n${r.url}\n\nPode pagar por Pix ou cartão. Qualquer dúvida, estou por aqui.`;
+    modal('Link da mensalidade', `<p>${esc(r.description)} · <b>${money(r.amount_cents)}</b></p><pre class="code" style="white-space:pre-wrap;word-break:break-all">${esc(r.url)}</pre>
+      <div class="acts"><button class="b3 sm" type="button" data-copy="${esc(r.url)}">${icon('copy')}Copiar link</button><a class="b3 sm ghost" href="https://wa.me/${dg.length >= 10 ? '55' + dg : ''}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${icon('wa')}Mandar no WhatsApp</a></div>
+      <p class="note">Quando o cliente pagar, o mês fica marcado como pago e o valor entra no caixa.</p>`, null);
+  }
+  async function backups(now) {
+    toast(now ? 'Fazendo a cópia… pode levar alguns segundos.' : 'Buscando as cópias…');
+    const r = await fn('backup', {tenant_id:tid, action:now ? 'now' : 'list'});
+    if (r.error) return toast(r.error);
+    modal('Cópias de segurança', `<p class="muted" style="font-size:14px">Cada cópia é um arquivo com todos os dados do CRM: leads, clientes, propostas, financeiro, projetos, mensalidades e histórico. Os links valem por 1 hora.</p>
+      <div class="rows">${r.copies.map(c => { const d = c.name.replace(/T(\d\d)-(\d\d).*/, ' $1:$2').replace(/^(\d{4})-(\d\d)-(\d\d)/, '$3/$2/$1'); return `<div class="row"><span class="ico ok">${icon('copy')}</span><div class="grow"><p class="t">${esc(d)}</p><p class="s">${fsize(c.size || 0)}</p></div><a class="b3 sm ghost" href="${esc(c.url)}" target="_blank" rel="noopener">Baixar</a></div>`; }).join('') || '<p class="empty">Nenhuma cópia ainda.</p>'}</div>`, null);
+  }
+  // avisos no celular: o servidor guarda a inscrição deste aparelho e manda um aviso a cada notificação nova
+  async function pushOn() {
+    const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent), app = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    if (ios && !app) return toast('No iPhone, instale o app primeiro: Compartilhar → Adicionar à Tela de Início. Depois ative por lá.');
+    if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return toast('Este navegador não recebe avisos. Use o Chrome no Android ou o app instalado no iPhone.');
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') return toast('Os avisos foram bloqueados. Libere nas configurações do navegador para este site.');
+    try {
+      const reg = await navigator.serviceWorker.register('sw.js'); await navigator.serviceWorker.ready;
+      const {publicKey} = await fetch(`${SB}/functions/v1/push`, {headers:{apikey:KEY}}).then(x => x.json());
+      const raw = Uint8Array.from(atob(publicKey.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - publicKey.length % 4) % 4)), c => c.charCodeAt(0));
+      const sub = (await reg.pushManager.getSubscription()) || await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:raw});
+      const j = sub.toJSON();
+      const {error} = await sb.from('push_subscriptions').insert({tenant_id:tid, endpoint:j.endpoint, p256dh:j.keys.p256dh, auth:j.keys.auth, device:(navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || ''});
+      if (error && error.code !== '23505') return toast('Não deu para ativar os avisos. Tente de novo.');
+      toast('Pronto: este aparelho vai receber os avisos do CRM.');
+    } catch (e) { console.error(e); toast('Não deu para ativar os avisos neste aparelho.'); }
+  }
   async function savePay(tag, rows) {
     const {error:e1} = await sb.from('tenants').update({payment_handle:tag || null}).eq('id', tid);
     if (e1) return 'Só o dono ou admin muda o pagamento.';
@@ -2680,7 +2899,7 @@ const Real = (() => {
     const {data:{session}} = await sb.auth.getSession();
     if (session) await openApp();
   }
-  return {boot, sync, fn, reload, fichasLoad, fichaLink, fichaDrop, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, deleteMany, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
+  return {filesUpload, fileUrl, fileDelete, subLink, backups, pushOn, boot, sync, fn, reload, fichasLoad, fichaLink, fichaDrop, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, deleteMany, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
 })();
 
 /* tema do sistema mudou ou o host trocou data-theme */
