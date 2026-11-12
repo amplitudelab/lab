@@ -624,7 +624,19 @@ function animar(id) {
     if (!FRACO) gsap.to('.o-geo', { rotate: 110, ease: 'none', scrollTrigger: { trigger: '.o-artes', start: 'top bottom', end: 'bottom top', scrub: 1 } });
   }
   requestAnimationFrame(() => ScrollTrigger.refresh());
+
+  /* Rede de segurança: as entradas acima partem de opacidade zero. Se o
+     navegador congelar o relógio de quadros (aba em segundo plano, economia de
+     bateria), elas nunca terminariam e o logo ficaria invisível. Passados uns
+     segundos, o que não acabou vai direto para o estado final. */
+  clearTimeout(seguro);
+  seguro = setTimeout(() => {
+    gsap.globalTimeline.getChildren(true, true, false).forEach((t) => {
+      if (!t.scrollTrigger && t.duration() < 20 && t.progress() < 1) t.progress(1);
+    });
+  }, 5000);
 }
+let seguro;
 
 /* ---------- vídeos ---------- */
 function tocar(v) {
