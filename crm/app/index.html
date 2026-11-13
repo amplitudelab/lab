@@ -254,6 +254,19 @@ body.real #roleSel,body.real #tUrl,body.real #lgDemoBox,body.real #genForm,body.
 .gstat{grid-template-columns:repeat(3,minmax(0,1fr))}
 .gstat b{font-variant-numeric:tabular-nums}
 .gauto{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
+.aitabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}.aitabs .pill{white-space:nowrap;flex:0 0 auto}
+.aistats{grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr))}.aitile{display:flex;flex-direction:column;gap:4px}.aitile b{font-size:24px;font-variant-numeric:tabular-nums;line-height:1.1}.aitile small{font-size:12px}
+.aibars{display:flex;flex-direction:column;gap:10px}.aibar{display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13px}.aibar>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.aibar .track{height:10px;border-radius:5px;background:var(--panel2);overflow:hidden}.aibar .track i{display:block;height:100%;border-radius:5px;background:var(--accent)}.aibar b{font-variant-numeric:tabular-nums}
+.aicols{display:flex;align-items:flex-end;gap:3px;height:150px;border-bottom:1px solid var(--line)}.aicol{flex:1;display:flex;align-items:flex-end;gap:1px;height:100%;min-width:0}.aicol i{flex:1;border-radius:3px 3px 0 0;min-height:1px}.aiaxis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+.aiinbox{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr) minmax(0,300px);gap:12px;align-items:start}.ailist,.aithread,.aiside{display:flex;flex-direction:column;gap:10px;min-width:0}
+.aiitems{display:flex;flex-direction:column;max-height:62vh;overflow-y:auto}.aiitem{display:flex;gap:10px;align-items:flex-start;text-align:left;padding:10px 6px;border:0;border-top:1px solid var(--line);background:none;color:inherit;cursor:pointer;border-radius:8px;width:100%}
+.aiitem[aria-current="true"]{background:var(--panel2)}.aiitem .t{display:block;font-weight:600;font-size:14px}.aiitem .s{display:block;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.aichips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.aichips .chip{height:20px;font-size:11px;padding:0 7px}
+.aimsgs{display:flex;flex-direction:column;gap:8px;max-height:58vh;min-height:220px;overflow-y:auto;padding:4px}.aimsg{max-width:82%;padding:9px 12px;border-radius:14px;background:var(--panel2);font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.aimsg.out{align-self:flex-end;background:color-mix(in srgb,var(--accent) 16%,var(--panel))}.aimsg.out.human{background:color-mix(in srgb,var(--ok) 16%,var(--panel))}.aimsg.system{opacity:.85}.aimsg small{display:block;margin-top:4px;font-size:11px;color:var(--muted)}
+.aicompose{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:10px}.airow{width:100%;text-align:left;background:none;border-left:0;border-right:0;border-bottom:0;color:inherit;cursor:pointer}.aiback{display:none}
+@media (max-width:1180px){.aiinbox{grid-template-columns:minmax(0,280px) minmax(0,1fr)}.aiside{grid-column:1/-1}}
+@media (max-width:760px){.aiinbox{grid-template-columns:minmax(0,1fr)}.aiinbox.has .ailist{display:none}.aiinbox:not(.has) .aithread{display:none}.aiback{display:inline}.aimsg{max-width:92%}}
 .selbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .kcard .t{font-weight:600;font-size:15px;line-height:1.25}
 .kcard .m{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
@@ -601,7 +614,7 @@ const ROLES = {
 const NAV = [
   ['painel','Painel','home',null], ['funil','Funil','kanban','crm'], ['clientes','Clientes','users','crm'],
   ['propostas','Propostas','file','crm'], ['agenda','Agenda','cal','crm'], ['projetos','Projetos','check','crm'], ['financeiro','Financeiro','wallet','fin'], ['mensalidades','Mensalidades','card','fin'],
-  ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['arquivos','Arquivos','file','crm'], ['equipe','Equipe e acesso','shield','team'], ['chaves','Chaves de acesso','key','team'], ['fichas','Fichas de anamnese','file','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
+  ['aisales','AI Sales','spark','crm'], ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['arquivos','Arquivos','file','crm'], ['equipe','Equipe e acesso','shield','team'], ['chaves','Chaves de acesso','key','team'], ['fichas','Fichas de anamnese','file','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
 ];
 const NICHE = {
   norte: {people:['Rafael Lima','Diego Martins','Caio Souza','Lucas Prado','Bruno Teles','Igor Nunes','Thiago Reis','Mateus Alves','Henrique Dias','Pedro Lopes','André Kato','Vitor Hugo'],
@@ -982,7 +995,7 @@ function nextSteps() {
 }
 
 /* ============ navegação ============ */
-const allowed = v => { const n = NAV.find(x => x[0] === v); if (v === 'chaves' && role !== 'owner') return false; if (v === 'fichas' && (T.slug === 'amplitudelab' || T.id === 'lab')) return false; if (v === 'empresas' && !(REAL && T.slug === 'amplitudelab' && role === 'owner')) return false; return n && (!n[3] || can(n[3])); };
+const allowed = v => { const n = NAV.find(x => x[0] === v); if (v === 'chaves' && role !== 'owner') return false; if (v === 'aisales' && !(REAL && AI.enabled && ['owner', 'admin', 'sales'].includes(role))) return false; if (v === 'fichas' && (T.slug === 'amplitudelab' || T.id === 'lab')) return false; if (v === 'empresas' && !(REAL && T.slug === 'amplitudelab' && role === 'owner')) return false; return n && (!n[3] || can(n[3])); };
 function badgeFor(v) { if (v === 'funil') { const n = S.leads.filter(l => l.stage === 's1').length; return n || ''; } if (v === 'agenda') { const n = nextSteps().filter(x => x.k !== 'charge').length; return n || ''; } return ''; }
 function renderNav() {
   $('#sNav').innerHTML = NAV.filter(n => allowed(n[0])).map(n => `<button class="nv" data-go="${n[0]}" ${view === n[0] ? 'aria-current="page"' : ''}>${icon(n[2])}${n[1]}${badgeFor(n[0]) ? `<span class="badge">${badgeFor(n[0])}</span>` : ''}</button>`).join('');
@@ -2484,6 +2497,317 @@ function opsCards() {
 }
 { const fn = V.equipe; V.equipe = () => fn() + opsCards(); }
 
+/* ============ AI Sales: agente comercial no WhatsApp (só na instalação do dono) ============ */
+// A aba só existe quando o servidor confirma (ai_sales_status) que esta empresa está liberada; os dados
+// também passam pelas regras de acesso do banco, então esconder ou mostrar a aba não é a proteção.
+let AI = {enabled:false, admin:false};
+const aiT = v => v ? new Date(v).getTime() : null;
+const AI_TABS = [['overview', 'Visão geral', 0], ['inbox', 'Conversas', 0], ['agent', 'Agente', 1], ['qual', 'Qualificação', 0], ['followups', 'Follow-ups', 0], ['handoff', 'Transferências', 0], ['kb', 'Conhecimento', 0], ['integrations', 'Integrações', 1], ['analytics', 'Métricas', 0], ['settings', 'Configurações', 1]];
+const AI_STATUS = {ai_active:['IA atendendo', 'acc'], human_requested:['Pediu um vendedor', 'warn'], human_assigned:['Com vendedor', 'ok'], waiting_customer:['Aguardando cliente', ''], closed:['Encerrada', '']};
+const AI_QUAL = {cold:['Frio', ''], warm:['Morno', 'warn'], hot:['Quente', 'bad'], qualified:['Qualificado', 'ok'], unqualified:['Não qualificado', '']};
+const AI_MSG = {queued:'na fila', sent:'enviada', delivered:'entregue', read:'lida', failed:'falhou', simulated:'simulada', blocked:'não enviada', received:''};
+const AI_MODES = {simulation:['Simulação', 'Conversas de teste. Nada é enviado pelo WhatsApp.'], development:['Desenvolvimento', 'Envia de verdade só para os números de teste da lista.'], production:['Produção', 'Atende os clientes reais pelo WhatsApp.']};
+const AI_KB_KINDS = [['empresa', 'Empresa'], ['produto', 'Produto'], ['servico', 'Serviço'], ['preco', 'Preço'], ['faq', 'Pergunta frequente'], ['politica', 'Política comercial'], ['diferencial', 'Diferencial'], ['processo', 'Processo de venda'], ['pagamento', 'Pagamento'], ['institucional', 'Institucional'], ['objecao', 'Resposta para objeção']];
+const AI_DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+V._ai = null;
+const aiState = () => (V._ai = V._ai || {tab:'overview', days:30, tests:false, conv:null, data:null, msgs:{}, mem:{}, q:'', st:'', draft:{}});
+const aiChip = (map, k) => { const v = map[k] || [k, '']; return `<span class="chip ${v[1]}"><span class="dot"></span>${esc(v[0])}</span>`; };
+const aiName = c => c.contact_name || (c.is_test ? 'Cliente de teste' : '+' + c.wa_id);
+const aiWhen = t => t ? `${fdate(t)} ${ftime(t)}` : '—';
+const aiTA = (n, l, v, rows = 3, ph = '') => `<div class="field full"><label for="ai_${n}">${l}</label><textarea class="inp" id="ai_${n}" name="${n}" rows="${rows}" placeholder="${esc(ph)}">${esc(v ?? '')}</textarea></div>`;
+const aiIn = (n, l, v, a = '') => `<div class="field ${a.includes('full') ? 'full' : ''}"><label for="ai_${n}">${l}</label><input class="inp" id="ai_${n}" name="${n}" value="${esc(v ?? '')}" ${a.replace('full', '')}></div>`;
+const aiSel = (n, l, opts, v) => `<div class="field"><label for="ai_${n}">${l}</label><select class="inp" id="ai_${n}" name="${n}">${opts.map(o => `<option value="${esc(o[0])}" ${String(o[0]) === String(v) ? 'selected' : ''}>${esc(o[1])}</option>`).join('')}</select></div>`;
+const aiSave = (sec, label = 'Salvar') => AI.admin ? `<div class="acts"><button class="b3" type="submit">${label}</button></div>` : '<p class="muted" style="font-size:13px">Só dono e admin mudam estas configurações.</p>';
+function aiBars(rows, fmt = v => v) {
+  const max = Math.max(1, ...rows.map(r => r[1]));
+  return rows.length ? `<div class="aibars">${rows.map(r => `<div class="aibar"><span title="${esc(r[0])}">${esc(r[0])}</span><span class="track"><i style="width:${r[1] / max * 100}%"></i></span><b class="num">${fmt(r[1])}</b></div>`).join('')}</div>` : '<p class="empty">Sem dados no período.</p>';
+}
+function aiCols(days, series) {   // colunas por dia: series = [[nome, cor, Map(dia -> n)]]
+  const keys = []; for (let i = days - 1; i >= 0; i--) keys.push(dayOf(Date.now() - i * DAY));
+  const max = Math.max(1, ...keys.map(k => Math.max(...series.map(s => s[2].get(k) || 0))));
+  return `<div class="legend" style="margin-bottom:8px">${series.map(s => `<span><i style="background:${s[1]}"></i>${esc(s[0])}</span>`).join('')}</div>
+    <div class="aicols" role="img" aria-label="${esc(series.map(s => s[0]).join(', '))} por dia">${keys.map(k => `<div class="aicol" title="${fdate(k)}: ${series.map(s => s[0] + ' ' + (s[2].get(k) || 0)).join(', ')}">${series.map(s => `<i style="height:${(s[2].get(k) || 0) / max * 100}%;background:${s[1]}"></i>`).join('')}</div>`).join('')}</div>
+    <div class="aiaxis"><span>${fdate(keys[0])}</span><span>${fdate(keys[keys.length - 1])}</span></div>`;
+}
+const aiCount = (list, f) => { const m = new Map(); list.forEach(x => { const t = f(x); if (t) { const k = dayOf(t); m.set(k, (m.get(k) || 0) + 1); } }); return m; };
+
+// Indicadores a partir dos dados reais do banco, no período escolhido. Testes só entram quando o filtro pede.
+function aiMetrics(A) {
+  const d = A.data, since = Date.now() - A.days * DAY, ok = x => (A.tests || !x.is_test);
+  const convs = d.convs.filter(ok), inP = convs.filter(c => aiT(c.created_at) >= since);
+  const msgs = d.msgs.filter(x => ok(x) && aiT(x.created_at) >= since), usage = d.usage.filter(x => ok(x) && aiT(x.created_at) >= since);
+  const fus = d.followups.filter(ok), hos = d.handoffs.filter(ok), hoP = hos.filter(h => aiT(h.created_at) >= since);
+  const withHo = new Set(hos.map(h => h.conversation_id));
+  const lead = id => S.leads.find(l => l.id === id), won = inP.filter(c => c.lead_id && lead(c.lead_id) && lead(c.lead_id).paidAt);
+  // tempo de resposta: da mensagem do cliente até a próxima mensagem enviada na mesma conversa
+  const byConv = new Map(); msgs.forEach(m => { if (!byConv.has(m.conversation_id)) byConv.set(m.conversation_id, []); byConv.get(m.conversation_id).push(m); });
+  const waits = []; byConv.forEach(list => { let pend = null; list.forEach(m => { if (m.direction === 'in') { if (pend == null) pend = aiT(m.created_at); } else if (pend != null) { waits.push(aiT(m.created_at) - pend); pend = null; } }); });
+  const fuSent = fus.filter(f => f.status === 'sent' && aiT(f.processed_at) >= since);
+  const fuAnswered = fuSent.filter(f => msgs.some(m => m.conversation_id === f.conversation_id && m.direction === 'in' && aiT(m.created_at) > aiT(f.processed_at) && aiT(m.created_at) - aiT(f.processed_at) < 3 * DAY));
+  const tokens = usage.reduce((a, u) => a + (u.input_tokens || 0) + (u.output_tokens || 0) + (u.cache_read_tokens || 0), 0), cost = usage.reduce((a, u) => a + Number(u.cost_usd || 0), 0);
+  return {convs, inP, msgs, usage, fus, hos, hoP, won, waits, fuSent, fuAnswered, tokens, cost,
+    total:inP.length, active:convs.filter(c => c.status !== 'closed').length, byAi:inP.filter(c => !withHo.has(c.id)).length,
+    qualified:inP.filter(c => c.qualification === 'qualified').length, unq:inP.filter(c => c.qualification === 'unqualified').length,
+    waiting:convs.filter(c => c.status !== 'closed' && c.last_inbound_at && (!c.last_outbound_at || aiT(c.last_inbound_at) > aiT(c.last_outbound_at))).length,
+    pending:fus.filter(f => f.status === 'pending').length, rate:inP.length ? won.length / inP.length : 0,
+    avgWait:waits.length ? waits.reduce((a, b) => a + b, 0) / waits.length : null};
+}
+const aiDur = v => v == null ? '—' : v < 60000 ? Math.round(v / 1000) + ' s' : v < 3600000 ? Math.round(v / 60000) + ' min' : (v / 3600000).toFixed(1).replace('.', ',') + ' h';
+const aiUsd = v => 'US$ ' + v.toFixed(v < 1 ? 3 : 2).replace('.', ',');
+const aiFilter = A => `<div class="pills">${[[7, '7 dias'], [30, '30 dias'], [90, '90 dias']].map(([d, l]) => `<button class="pill" data-ai="days" data-k="${d}" aria-pressed="${A.days === d}">${l}</button>`).join('')}<button class="pill" data-ai="tests" aria-pressed="${A.tests}">Incluir testes</button></div>`;
+const aiTile = (l, v, s = '') => `<section class="card aitile"><p class="muted">${l}</p><b>${v}</b>${s ? `<small class="muted">${s}</small>` : ''}</section>`;
+
+const AI_VIEWS = {
+  overview(A) {
+    const m = aiMetrics(A), d = A.data;
+    const origin = {}; m.inP.forEach(c => { const l = c.lead_id && S.leads.find(x => x.id === c.lead_id); const k = l ? (SRC[l.source] || l.source) : (c.is_test ? 'Teste' : 'WhatsApp'); origin[k] = (origin[k] || 0) + 1; });
+    const perf = [['IA', m.msgs.filter(x => x.author === 'ai').length], ['Vendedor', m.msgs.filter(x => x.author === 'human').length], ['Avisos automáticos', m.msgs.filter(x => x.author === 'system').length]];
+    const funnel = [['Conversas', m.total], ['Mornas ou mais', m.inP.filter(c => ['warm', 'hot', 'qualified'].includes(c.qualification)).length], ['Quentes ou qualificadas', m.inP.filter(c => ['hot', 'qualified'].includes(c.qualification)).length], ['Qualificadas', m.qualified], ['Convertidas', m.won.length]];
+    return `<div class="ch" style="margin:0"><span class="muted" style="font-size:13px">${A.tests ? 'Inclui conversas de teste' : 'Só conversas reais'} · modo ${esc(AI_MODES[d.status.settings.mode][0].toLowerCase())}${d.status.settings.active ? ' · agente ligado' : ' · agente desligado'}</span>${aiFilter(A)}</div>
+      <div class="grid aistats">${aiTile('Conversas no período', m.total)}${aiTile('Ativas agora', m.active)}${aiTile('Só com a IA', m.byAi)}${aiTile('Qualificadas', m.qualified)}${aiTile('Não qualificadas', m.unq)}${aiTile('Aguardando resposta', m.waiting)}
+        ${aiTile('Transferidas', m.hoP.length)}${aiTile('Convertidas', m.won.length)}${aiTile('Taxa de conversão', Math.round(m.rate * 100) + '%')}${aiTile('Follow-ups na fila', m.pending)}${aiTile('Follow-ups enviados', m.fuSent.length)}${aiTile('Tempo médio de resposta', aiDur(m.avgWait))}
+        ${AI.admin ? aiTile('Custo da IA', aiUsd(m.cost), `este mês: ${aiUsd(d.status.month_cost || 0)}`) + aiTile('Tokens', m.tokens.toLocaleString('pt-BR')) : ''}</div>
+      <div class="grid g2"><section class="card"><div class="ch"><h3>Conversas, qualificadas e convertidas</h3></div>${aiCols(Math.min(A.days, 30), [['Conversas', 'var(--accent)', aiCount(m.inP, c => aiT(c.created_at))], ['Qualificadas', 'var(--ok)', aiCount(m.inP.filter(c => c.qualification === 'qualified'), c => aiT(c.created_at))], ['Convertidas', 'var(--warn)', aiCount(m.won, c => S.leads.find(l => l.id === c.lead_id).paidAt)]])}</section>
+        <section class="card"><div class="ch"><h3>Funil das conversas</h3></div>${aiBars(funnel)}</section>
+        <section class="card"><div class="ch"><h3>Origem dos leads</h3></div>${aiBars(Object.entries(origin).sort((a, b) => b[1] - a[1]))}</section>
+        <section class="card"><div class="ch"><h3>Quem respondeu</h3></div>${aiBars(perf)}</section></div>`;
+  },
+  inbox(A) {
+    const d = A.data, q = A.q.trim().toLowerCase();
+    const list = d.convs.filter(c => (!A.st || c.status === A.st) && (!q || (aiName(c) + ' ' + c.wa_id + ' ' + (c.summary || '')).toLowerCase().includes(q)));
+    const c = d.convs.find(x => x.id === A.conv), msgs = c ? A.msgs[c.id] : null, mem = c ? A.mem[c.id] : null;
+    const items = list.map(x => `<button class="aiitem" data-ai="conv" data-k="${x.id}" aria-current="${x.id === A.conv}">
+        <span class="logo sm" style="background:var(--panel2);color:var(--accent);box-shadow:none">${esc(initials(aiName(x)))}</span>
+        <span class="grow" style="min-width:0"><span class="t">${esc(aiName(x))}${x.is_test ? ' <small class="muted">teste</small>' : ''}</span><span class="s">${esc(x.summary || '+' + x.wa_id)}</span>
+        <span class="aichips">${aiChip(AI_STATUS, x.status)}${aiChip(AI_QUAL, x.qualification)}</span></span><small class="muted">${x.last_message_at ? rel(aiT(x.last_message_at)) + ' ' + ftime(aiT(x.last_message_at)) : ''}</small></button>`).join('') || '<p class="empty">Nenhuma conversa ainda.</p>';
+    const canHuman = c && (c.is_test || c.status === 'human_assigned') && !c.opted_out;
+    const thread = !c ? '<p class="empty">Escolha uma conversa.</p>' : !msgs ? '<p class="empty">Carregando…</p>' : (msgs.map(x => `<div class="aimsg ${x.direction === 'in' ? 'in' : 'out'} ${x.author}"><p>${esc(x.body)}</p><small>${x.author === 'ai' ? 'IA · ' : x.author === 'human' ? 'Vendedor · ' : x.author === 'system' ? 'Aviso automático · ' : ''}${aiWhen(aiT(x.created_at))}${AI_MSG[x.status] ? ' · ' + AI_MSG[x.status] : ''}${x.error ? ' · ' + esc(x.error) : ''}</small></div>`).join('') || '<p class="empty">Sem mensagens.</p>');
+    const composer = !c ? '' : `<form id="aiSend" class="aicompose" novalidate>
+        ${c.is_test ? `<label class="muted" for="aiSimText" style="font-size:12px">Escreva como se fosse o cliente (simulação, nada vai para o WhatsApp)</label><textarea class="inp" id="aiSimText" rows="2" placeholder="Mensagem do cliente">${esc(A.draft['sim' + c.id] || '')}</textarea><div class="acts"><button class="b3" type="submit" data-kind="sim">${icon('spark')}Enviar como cliente</button>${canHuman ? `<button class="b3 ghost" type="submit" data-kind="human">Responder como vendedor</button>` : ''}</div>`
+          : canHuman ? `<label class="muted" for="aiHumanText" style="font-size:12px">Você está atendendo: a IA não responde nesta conversa</label><textarea class="inp" id="aiHumanText" rows="2" placeholder="Sua resposta">${esc(A.draft['h' + c.id] || '')}</textarea><div class="acts"><button class="b3" type="submit" data-kind="human">${icon('wa')}Enviar</button></div>`
+          : `<p class="muted" style="font-size:13px">${c.opted_out ? 'O contato pediu para não receber mensagens.' : c.status === 'ai_active' ? 'A IA está atendendo. Assuma a conversa para responder você mesmo.' : 'Assuma a conversa para responder.'}</p>`}</form>`;
+    const prof = mem ? Object.entries(mem.profile || {}).filter(([, v]) => v) : [];
+    const LBL = {need:'Necessidade', problem:'Problema', urgency:'Urgência', budget:'Orçamento', decision_maker:'Quem decide', timeline:'Prazo', product:'Produto', interest:'Interesse'};
+    const side = !c ? '' : `<section class="card aiside"><div class="ch" style="margin:0"><h3 style="white-space:normal">${esc(aiName(c))}</h3>${c.is_test ? '<span class="chip">Teste</span>' : ''}</div>
+      <dl class="kv"><dt>WhatsApp</dt><dd class="sel-text">${c.is_test ? '—' : '+' + esc(c.wa_id)}</dd><dt>Situação</dt><dd>${aiChip(AI_STATUS, c.status)}</dd><dt>IA</dt><dd>${c.status === 'ai_active' && !c.opted_out ? 'ativa' : 'parada'}</dd>
+        <dt>Qualificação</dt><dd>${aiChip(AI_QUAL, c.qualification)} ${c.score}/100</dd><dt>Chance de fechar</dt><dd>${c.probability}%</dd>${c.next_action ? `<dt>Próxima ação</dt><dd>${esc(c.next_action)}</dd>` : ''}</dl>
+      ${c.summary ? `<p style="font-size:14px">${esc(c.summary)}</p>` : ''}
+      ${prof.length ? `<dl class="kv">${prof.map(([k, v]) => `<dt>${esc(LBL[k] || k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` : ''}
+      ${mem && mem.objections && mem.objections.length ? `<p class="flabel">Objeções</p><p style="font-size:14px">${mem.objections.map(esc).join(' · ')}</p>` : ''}
+      ${mem && mem.facts && mem.facts.length ? `<p class="flabel">Fatos</p><p style="font-size:14px">${mem.facts.map(esc).join(' · ')}</p>` : ''}
+      <div class="acts">${c.status !== 'human_assigned' ? `<button class="b3 sm" data-ai="takeover">${icon('users')}Assumir</button>` : ''}${c.status !== 'ai_active' && !c.opted_out ? `<button class="b3 sm ghost" data-ai="release">Devolver para a IA</button>` : ''}
+        ${c.status === 'ai_active' ? `<button class="b3 sm ghost" data-ai="handoff">Transferir</button>` : ''}<button class="b3 sm ghost" data-ai="followup">${icon('clock')}Follow-up</button>${c.status !== 'closed' ? `<button class="b3 sm ghost" data-ai="close">Encerrar</button>` : ''}
+        ${c.lead_id && S.leads.some(l => l.id === c.lead_id) ? `<button class="b3 sm ghost" data-act="openLead" data-id="${c.lead_id}">Abrir lead</button>` : ''}</div></section>`;
+    return `<div class="aiinbox ${c ? 'has' : ''}"><section class="card ailist"><div class="ch" style="margin:0"><h3>Conversas</h3><button class="b3 sm" data-ai="simNew">${icon('plus')}Simular conversa</button></div>
+        <div class="field"><label for="aiQ">Buscar</label><input class="inp" id="aiQ" type="search" value="${esc(A.q)}" placeholder="Nome, número ou resumo" autocomplete="off"></div>
+        <div class="pills">${[['', 'Todas'], ['ai_active', 'IA'], ['human_requested', 'Pediu vendedor'], ['human_assigned', 'Com vendedor'], ['closed', 'Encerradas']].map(([k, l]) => `<button class="pill" data-ai="st" data-k="${k}" aria-pressed="${A.st === k}">${l}</button>`).join('')}</div>
+        <div class="aiitems">${items}</div></section>
+      <section class="card aithread">${c ? `<div class="ch" style="margin:0"><button class="link aiback" data-ai="back">← Conversas</button><h3 style="white-space:normal">${esc(aiName(c))}</h3></div>` : ''}<div class="aimsgs" id="aiMsgs">${thread}</div>${composer}</section>${side}</div>`;
+  },
+  agent(A) {
+    const s = A.data.status.settings, p = s.persona, v = s.sales;
+    return `<form class="card" data-aiform="persona" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Personalidade</h3></div>
+      <div class="fg">${aiIn('name', 'Nome do agente', p.name)}${aiIn('language', 'Idioma', p.language)}${aiIn('personality', 'Personalidade', p.personality, 'full')}${aiIn('tone', 'Tom', p.tone)}
+        ${aiSel('formality', 'Formalidade', [['informal', 'Informal'], ['equilibrado', 'Equilibrado'], ['formal', 'Formal']], p.formality)}${aiSel('objectivity', 'Objetividade', [['objetiva', 'Objetiva'], ['equilibrada', 'Equilibrada'], ['detalhista', 'Detalhista']], p.objectivity)}
+        ${aiSel('emojis', 'Emojis', [['nenhum', 'Nenhum'], ['pouco', 'Pouco'], ['moderado', 'Moderado']], p.emojis)}${aiIn('approach', 'Estilo de abordagem', p.approach, 'full')}
+        ${aiTA('greeting', 'Saudação inicial', p.greeting, 2, 'Olá! Aqui é a Ana, da Amplitude Lab.')}${aiTA('pitch', 'Apresentação comercial', p.pitch, 3)}</div>${aiSave('persona')}</form>
+    <form class="card" data-aiform="sales" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Objetivos comerciais</h3></div>
+      <p class="muted" style="font-size:13px">Preços, prazos e políticas ficam na aba Conhecimento: o agente só usa o que estiver lá e não inventa.</p>
+      <div class="fg">${aiTA('products', 'Produtos e serviços', v.products, 3)}${aiTA('audience', 'Público-alvo', v.audience, 2)}${aiTA('pains', 'Principais dores dos clientes', v.pains, 3)}${aiTA('differentials', 'Diferenciais', v.differentials, 3)}
+        ${aiTA('prices', 'Preços e condições (resumo)', v.prices, 3)}${aiTA('objections', 'Objeções frequentes', v.objections, 3)}${aiTA('arguments', 'Argumentos de venda', v.arguments, 3)}${aiTA('goals', 'Objetivo da conversa', v.goals, 2)}</div>${aiSave('sales')}</form>`;
+  },
+  qual(A) {
+    const s = A.data.status.settings.qualification, convs = A.data.convs.filter(c => A.tests || !c.is_test);
+    return `<form class="card" data-aiform="qualification" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Critérios de qualificação</h3></div>
+      <div class="fg">${aiTA('criteria', 'Quando um lead é qualificado', s.criteria, 3, 'Ex.: tem negócio aberto, precisa de site em até 60 dias e orçamento a partir de R$ 600.')}${aiIn('hot_score', 'Pontuação para quente', s.hot_score, 'type="number" min="0" max="100"')}${aiIn('qualified_score', 'Pontuação para qualificado', s.qualified_score, 'type="number" min="0" max="100"')}</div>${aiSave('qualification')}</form>
+      <div class="ch" style="margin:0"><span class="muted" style="font-size:13px">Leads pela qualificação que a IA registrou</span><button class="pill" data-ai="tests" aria-pressed="${A.tests}">Incluir testes</button></div>
+      <div class="grid g2">${Object.keys(AI_QUAL).map(k => { const ls = convs.filter(c => c.qualification === k).sort((a, b) => b.score - a.score);
+        return `<section class="card"><div class="ch"><h3>${AI_QUAL[k][0]}</h3><span class="chip ${AI_QUAL[k][1]}">${ls.length}</span></div><div class="rows">${ls.slice(0, 12).map(c => `<button class="row airow" data-ai="open" data-k="${c.id}"><span class="ico">${c.score}</span><span class="grow"><span class="t">${esc(aiName(c))}</span><span class="s" style="white-space:normal">${esc(c.summary || 'Sem resumo ainda')}${c.next_action ? ' · Próximo: ' + esc(c.next_action) : ''}</span></span><small class="muted">${c.probability}%</small></button>`).join('') || '<p class="empty">Nenhum.</p>'}</div></section>`; }).join('')}</div>`;
+  },
+  followups(A) {
+    const s = A.data.status.settings.followup, h = A.data.status.settings.hours, fus = A.data.followups.filter(f => A.tests || !f.is_test), conv = id => A.data.convs.find(c => c.id === id);
+    const pend = fus.filter(f => f.status === 'pending').sort((a, b) => aiT(a.due_at) - aiT(b.due_at)), done = fus.filter(f => f.status !== 'pending').slice(0, 30);
+    const ST = {sent:['Enviado', 'ok'], canceled:['Cancelado', ''], skipped:['Pulado', ''], failed:['Falhou', 'bad'], needs_template:['Precisa de template', 'warn']};
+    return `<form class="card" data-aiform="followup" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Regras de follow-up</h3></div>
+      <label class="switch"><input type="checkbox" name="enabled" ${s.enabled ? 'checked' : ''}> Retomar o contato quando o cliente não responde</label>
+      <div class="fg">${aiIn('intervals_hours', 'Intervalos entre tentativas (horas, separados por vírgula)', (s.intervals_hours || []).join(', '))}${aiIn('max_attempts', 'Tentativas no máximo', s.max_attempts, 'type="number" min="0" max="10"')}
+        ${aiIn('daily_limit', 'Envios por dia no máximo', s.daily_limit, 'type="number" min="1" max="1000"')}${aiIn('template_name', 'Template aprovado para depois de 24 h', s.template_name, 'placeholder="nome do template na Meta"')}
+        ${aiTA('messages', 'Mensagens próprias (uma por tentativa, por linha; vazio = a IA escreve)', (s.messages || []).join('\n'), 3, 'Oi, {nome}! Conseguiu ver o que conversamos?')}</div>
+      <p class="muted" style="font-size:13px">Os horários e os dias de envio ficam em Configurações (${esc(h.start)} às ${esc(h.end)}, ${(h.days || []).map(x => AI_DAYS[x]).join(', ')}). O follow-up é cancelado quando o cliente responde, um vendedor assume, a conversa é encerrada, o cliente pede para parar ou vira não qualificado.</p>
+      ${aiSave('followup')}</form>
+      <section class="card"><div class="ch"><h3>Na fila</h3><span class="acts"><span class="chip">${pend.length}</span>${AI.admin ? '<button class="b3 sm ghost" data-ai="runFu">Processar agora</button>' : ''}</span></div><div class="rows">${pend.map(f => { const c = conv(f.conversation_id);
+        return `<div class="row"><span class="ico">${f.attempt}</span><div class="grow"><p class="t">${esc(c ? aiName(c) : 'Conversa')}</p><p class="s">${aiWhen(aiT(f.due_at))} · ${esc(f.note || '')} · ${f.created_by === 'ai' ? 'pedido pela IA' : f.created_by === 'human' ? 'agendado por você' : 'regra automática'}</p></div><button class="b3 sm ghost" data-ai="cancelFu" data-k="${f.id}">Cancelar</button></div>`; }).join('') || '<p class="empty">Nada na fila.</p>'}</div></section>
+      <section class="card"><div class="ch"><h3>Últimos</h3></div><div class="rows">${done.map(f => { const c = conv(f.conversation_id);
+        return `<div class="row"><div class="grow"><p class="t">${esc(c ? aiName(c) : 'Conversa')}</p><p class="s" style="white-space:normal">${aiWhen(aiT(f.processed_at || f.due_at))} · ${esc(f.reason || '')}</p></div>${aiChip(ST, f.status)}</div>`; }).join('') || '<p class="empty">Nenhum ainda.</p>'}</div></section>`;
+  },
+  handoff(A) {
+    const s = A.data.status.settings.handoff, hos = A.data.handoffs.filter(x => A.tests || !x.is_test), conv = id => A.data.convs.find(c => c.id === id);
+    const open = hos.filter(x => !x.resolved_at), past = hos.filter(x => x.resolved_at).slice(0, 20);
+    const card = x => { const c = conv(x.conversation_id);
+      return `<article class="card" style="display:flex;flex-direction:column;gap:8px"><div class="ch" style="margin:0"><h3 style="white-space:normal">${esc(c ? aiName(c) : 'Conversa')}</h3>${c ? aiChip(AI_STATUS, c.status) : ''}</div>
+        <p style="font-size:14px"><b>Motivo:</b> ${esc(x.reason)}</p>${x.summary ? `<p style="font-size:14px">${esc(x.summary)}</p>` : ''}
+        <dl class="kv">${x.needs ? `<dt>Necessidades</dt><dd>${esc(x.needs)}</dd>` : ''}${x.objections ? `<dt>Objeções</dt><dd>${esc(x.objections)}</dd>` : ''}${x.next_step ? `<dt>Próximo passo</dt><dd>${esc(x.next_step)}</dd>` : ''}<dt>Quando</dt><dd>${aiWhen(aiT(x.created_at))} · ${x.requested_by === 'ai' ? 'pela IA' : x.requested_by === 'customer' ? 'pedido do cliente' : 'pelo vendedor'}</dd>${x.resolution ? `<dt>Resultado</dt><dd>${esc(x.resolution)}</dd>` : ''}</dl>
+        ${c ? `<div class="acts"><button class="b3 sm" data-ai="open" data-k="${c.id}">Abrir conversa</button></div>` : ''}</article>`; };
+    return `<div class="grid gauto">${open.map(card).join('') || '<section class="card"><p class="empty">Nenhuma transferência aberta.</p></section>'}</div>
+      <form class="card" data-aiform="handoff" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Regras de transferência</h3></div>
+        <div class="fg">${aiTA('rules', 'Quando a IA chama uma pessoa', s.rules, 3)}${aiTA('message', 'Mensagem para o cliente na transferência', s.message, 2)}</div>
+        <p class="muted" style="font-size:13px">Na transferência a IA para de responder, os follow-ups são cancelados, o motivo e o resumo ficam registrados e o time recebe um aviso no CRM e no celular. Ela só volta quando alguém toca em “Devolver para a IA”.</p>${aiSave('handoff')}</form>
+      ${past.length ? `<div class="ch" style="margin:0"><h3>Resolvidas</h3></div><div class="grid gauto">${past.map(card).join('')}</div>` : ''}`;
+  },
+  kb(A) {
+    const kb = A.data.kb, ed = AI.admin, e = A.kbEdit && kb.find(k => k.id === A.kbEdit);
+    return `${ed ? `<form class="card" id="aiKbForm" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>${e ? 'Editar item' : 'Novo item'}</h3>${e ? '<button class="link" type="button" data-ai="kbNew">Cancelar edição</button>' : ''}</div>
+        <div class="fg">${aiSel('kind', 'Tipo', AI_KB_KINDS, e ? e.kind : 'faq')}${aiIn('title', 'Título', e ? e.title : '', 'required placeholder="Ex.: Quanto custa um site completo?"')}${aiTA('body', 'Conteúdo', e ? e.body : '', 5, 'Escreva como você responderia a um cliente.')}</div>
+        <div class="acts"><button class="b3" type="submit">${e ? 'Salvar' : 'Adicionar'}</button><label class="b3 ghost" for="aiKbFile" style="cursor:pointer">${icon('file')}Importar .txt ou .md</label><input id="aiKbFile" type="file" accept=".txt,.md,text/plain,text/markdown" multiple hidden></div>
+        <p class="muted" style="font-size:13px">O agente usa só o que está aqui para preços, condições e políticas. Para PDF, cole o texto no conteúdo.</p></form>` : ''}
+      <section class="card"><div class="ch"><h3>Base de conhecimento</h3><span class="chip">${kb.length}</span></div><div class="rows">${kb.map(k => `<div class="row" style="flex-wrap:wrap"><span class="chip">${esc((AI_KB_KINDS.find(x => x[0] === k.kind) || [0, k.kind])[1])}</span><div class="grow" style="flex:1 1 50%"><p class="t" style="white-space:normal">${esc(k.title)}${k.active ? '' : ' <small class="muted">(desligado)</small>'}</p><p class="s" style="white-space:normal">${esc(k.body.slice(0, 220))}${k.body.length > 220 ? '…' : ''}</p></div>
+        ${ed ? `<div class="acts" style="margin-left:auto"><button class="b3 sm ghost" data-ai="kbEdit" data-k="${k.id}">Editar</button><button class="b3 sm ghost" data-ai="kbToggle" data-k="${k.id}">${k.active ? 'Desligar' : 'Ligar'}</button><button class="b3 sm ghost" data-ai="kbDel" data-k="${k.id}">${icon('x')}Apagar</button></div>` : ''}</div>`).join('') || '<p class="empty">Ainda vazia. Comece pela descrição da empresa, os serviços e os preços.</p>'}</div></section>`;
+  },
+  integrations(A) {
+    const st = A.data.status, w = st.settings.whatsapp, k = st.secrets || {}, s = st.settings;
+    const ready = w.phone_number_id && k.wa_access_token && k.wa_app_secret && k.wa_verify_token;
+    const sec = (n, l, ph) => `<div class="field"><label for="ai_sec_${n}">${l} ${k[n] ? '<span class="chip ok">Gravado</span>' : '<span class="chip">Vazio</span>'}</label><div style="display:flex;gap:8px"><input class="inp" id="ai_sec_${n}" type="password" autocomplete="off" placeholder="${k[n] ? 'Digite para trocar' : esc(ph)}" style="flex:1"><button class="b3 sm" type="button" data-ai="secret" data-k="${n}">Gravar</button></div></div>`;
+    return `<section class="card" style="display:flex;flex-direction:column;gap:12px"><div class="ch" style="margin:0"><h3>WhatsApp Business Cloud API</h3><span class="chip ${ready ? 'ok' : 'warn'}"><span class="dot"></span>${ready ? 'Credenciais prontas' : 'Aguardando a aprovação da Meta'}</span></div>
+        <p class="muted" style="font-size:13px">Integração oficial da Meta. Os tokens ficam guardados no cofre do servidor: o navegador só fica sabendo se existem.</p>
+        <form data-aiform="whatsapp" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="fg">${aiIn('phone_number_id', 'Phone Number ID', w.phone_number_id)}${aiIn('waba_id', 'WhatsApp Business Account ID', w.waba_id)}
+          ${aiIn('api_version', 'Versão da API', w.api_version, 'placeholder="v26.0"')}${aiIn('test_numbers', 'Números de teste (modo desenvolvimento)', (w.test_numbers || []).join(', '), 'placeholder="5511999990000, 5511988887777"')}</div>${aiSave('whatsapp')}</form>
+        ${AI.admin ? `<div class="fg">${sec('wa_access_token', 'Access Token', 'Token permanente do usuário do sistema')}${sec('wa_app_secret', 'App Secret', 'Chave secreta do app')}${sec('wa_verify_token', 'Verify Token', 'Uma frase longa que você inventa')}</div>` : ''}
+        <div class="field"><span class="flabel">Endereço do webhook (cole na Meta)</span><pre class="code">${esc(st.webhook_url)}</pre><div class="acts"><button class="b3 sm ghost" data-copy="${esc(st.webhook_url)}">${icon('copy')}Copiar</button></div></div>
+        <p class="muted" style="font-size:13px">Depende da Meta: aprovação da conta comercial, número verificado, token permanente, assinatura do webhook nos campos <b>messages</b> e templates aprovados para falar depois de 24 horas.</p></section>
+      <section class="card" style="display:flex;flex-direction:column;gap:12px"><div class="ch" style="margin:0"><h3>Provedor de IA</h3><span class="chip ${k.anthropic_api_key ? 'ok' : 'warn'}"><span class="dot"></span>${k.anthropic_api_key ? 'Chave gravada' : 'Sem chave'}</span></div>
+        <form data-aiform="agent" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="fg">${aiSel('provider', 'Provedor', [['anthropic', 'Claude (Anthropic)'], ['meta', 'Meta (ainda indisponível)']], s.provider)}${aiIn('model', 'Modelo', s.model)}
+          ${aiSel('effort', 'Esforço de raciocínio', [['low', 'Baixo (mais rápido e barato)'], ['medium', 'Médio'], ['high', 'Alto']], s.effort)}</div>${aiSave('agent')}</form>
+        ${AI.admin ? `<div class="fg">${sec('anthropic_api_key', 'Chave da API do Claude', 'sk-ant-…')}</div><div class="acts"><button class="b3 sm ghost" data-ai="testAi">${icon('spark')}Testar conexão</button></div>` : ''}
+        <p class="muted" style="font-size:13px">Padrão: ${esc('claude-opus-5-5')}, US$ 4 por milhão de tokens de entrada e US$ 20 de saída. Se o modelo recusar uma mensagem por política, a própria API tenta um modelo reserva. Custo deste mês: ${aiUsd(st.month_cost || 0)}.</p></section>`;
+  },
+  analytics(A) {
+    const m = aiMetrics(A), d = A.data, ho = m.total ? m.hoP.length / m.total : 0, closedAi = m.inP.filter(c => c.status === 'closed' && !m.hos.some(h => h.conversation_id === c.id)).length;
+    const rows = [['Conversas iniciadas', m.total], ['Conversas concluídas', m.inP.filter(c => c.status === 'closed').length], ['Leads qualificados', m.qualified], ['Leads convertidos', m.won.length],
+      ['Taxa de transferência para humanos', Math.round(ho * 100) + '%'], ['Taxa de resolução pela IA', m.total ? Math.round(closedAi / m.total * 100) + '%' : '—'], ['Tempo médio de resposta', aiDur(m.avgWait)],
+      ['Follow-ups enviados', m.fuSent.length], ['Follow-ups que tiveram resposta', m.fuSent.length ? `${m.fuAnswered.length} (${Math.round(m.fuAnswered.length / m.fuSent.length * 100)}%)` : '0'],
+      ...(AI.admin ? [['Tokens consumidos', m.tokens.toLocaleString('pt-BR')], ['Custo por conversa', m.total ? aiUsd(m.cost / m.total) : '—'], ['Custo total de IA', aiUsd(m.cost)]] : [])];
+    const stage = Object.keys(AI_QUAL).map(k => [AI_QUAL[k][0], m.inP.filter(c => c.qualification === k).length]);
+    return `<div class="ch" style="margin:0"><span class="muted" style="font-size:13px">${A.tests ? 'Dados reais e de teste' : 'Só dados reais'}</span>${aiFilter(A)}</div>
+      <section class="card"><div class="tbl"><table><tbody>${rows.map(r => `<tr><td>${r[0]}</td><td class="num" style="text-align:right"><b>${r[1]}</b></td></tr>`).join('')}</tbody></table></div></section>
+      <div class="grid g2"><section class="card"><div class="ch"><h3>Tendência</h3></div>${aiCols(Math.min(A.days, 30), [['Conversas', 'var(--accent)', aiCount(m.inP, c => aiT(c.created_at))], ['Transferências', 'var(--warn)', aiCount(m.hoP, h => aiT(h.created_at))]])}</section>
+        <section class="card"><div class="ch"><h3>Desempenho por etapa</h3></div>${aiBars(stage)}</section>
+        ${AI.admin ? `<section class="card"><div class="ch"><h3>Custo por dia</h3></div>${aiBars((() => { const g = {}; m.usage.forEach(u => { const k = fdate(aiT(u.created_at)); g[k] = (g[k] || 0) + Number(u.cost_usd || 0); }); return Object.entries(g).slice(-14); })(), aiUsd)}</section>` : ''}</div>`;
+  },
+  settings(A) {
+    const s = A.data.status.settings, h = s.hours, l = s.limits;
+    return `<form class="card" data-aiform="agent" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Agente</h3>${aiChip({on:['Ligado', 'ok'], off:['Desligado', '']}, s.active ? 'on' : 'off')}</div>
+        <label class="switch"><input type="checkbox" name="active" ${s.active ? 'checked' : ''}> Agente ligado: responde as conversas reais e envia follow-ups</label>
+        <div class="fg">${aiSel('mode', 'Modo de execução', Object.entries(AI_MODES).map(([k, v]) => [k, v[0]]), s.mode)}<div class="field"><span class="flabel">O que muda</span><p class="muted" style="font-size:14px">${Object.entries(AI_MODES).map(([k, v]) => `<b>${v[0]}:</b> ${v[1]}`).join('<br>')}</p></div></div>
+        <p class="muted" style="font-size:13px">A produção só liga com Phone Number ID, Access Token, App Secret, Verify Token e a chave da IA gravados. A simulação funciona com o agente desligado.</p>${aiSave('agent')}</form>
+      <form class="card" data-aiform="hours" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Horário de atendimento</h3></div>
+        <div class="fg">${aiIn('start', 'Começa', h.start, 'type="time"')}${aiIn('end', 'Termina', h.end, 'type="time"')}</div>
+        <div class="pills">${AI_DAYS.map((d, i) => `<label class="pill" style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" name="days" value="${i}" ${(h.days || []).includes(i) ? 'checked' : ''}>${d}</label>`).join('')}</div>
+        <label class="switch"><input type="checkbox" name="reply_off_hours" ${h.reply_off_hours ? 'checked' : ''}> A IA responde fora do horário (follow-ups saem só dentro dele)</label>${aiSave('hours')}</form>
+      <form class="card" data-aiform="limits" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Limites de consumo</h3></div>
+        <div class="fg">${aiIn('monthly_usd', 'Teto de custo de IA por mês (US$)', l.monthly_usd, 'type="number" min="1" step="1"')}${aiIn('max_ai_replies_per_day', 'Respostas da IA por conversa em 24 h', l.max_ai_replies_per_day, 'type="number" min="1" max="500"')}</div>
+        <p class="muted" style="font-size:13px">Ao bater o teto, a IA para e transfere a conversa para o time.</p>${aiSave('limits')}</form>
+      <form class="card" data-aiform="prompt" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Prompt principal</h3></div>
+        ${aiTA('prompt', 'Instruções extras para o agente', s.prompt, 5, 'Ex.: Sempre ofereça a demonstração do CRM depois que o cliente contar como atende hoje.')}${aiSave('prompt')}</form>
+      ${AI.admin ? `<section class="card"><div class="ch"><h3>Logs e diagnóstico</h3><button class="b3 sm ghost" data-ai="reload">Atualizar</button></div><div class="tbl"><table><thead><tr><th>Quando</th><th>Nível</th><th>Área</th><th>Mensagem</th></tr></thead><tbody>
+        ${[...A.data.logs.map(x => [x.created_at, x.level, x.scope, x.message]), ...A.data.events.map(x => [x.created_at, 'error', 'webhook', x.error])].sort((a, b) => aiT(b[0]) - aiT(a[0])).slice(0, 60).map(r => `<tr><td>${aiWhen(aiT(r[0]))}</td><td>${aiChip({info:['info', ''], warn:['aviso', 'warn'], error:['erro', 'bad']}, r[1])}</td><td>${esc(r[2])}</td><td style="white-space:normal">${esc(r[3])}</td></tr>`).join('') || '<tr><td colspan="4" class="muted">Sem registros.</td></tr>'}</tbody></table></div></section>` : ''}`;
+  },
+};
+V.aisales = () => {
+  const A = aiState();
+  if (!REAL || !AI.enabled) return head('AI Sales', 'Módulo indisponível nesta instalação.');
+  if (!A.data && !A.loading) { A.loading = true; Real.aiLoad(A).then(() => { A.loading = false; if (view === 'aisales') { render(); if (A.conv) aiOpen(A.conv, true); } }); }
+  const tabs = AI_TABS.filter(t => AI.admin || !t[2]);
+  if (!tabs.some(t => t[0] === A.tab)) A.tab = 'overview';
+  return head('AI Sales', 'Seu vendedor de IA no WhatsApp: qualifica, faz follow-up e chama o time na hora certa.', `<span class="chip ${A.data && A.data.status.settings.active ? 'ok' : ''}"><span class="dot"></span>${A.data ? (A.data.status.settings.active ? 'Agente ligado' : 'Agente desligado') + ' · ' + AI_MODES[A.data.status.settings.mode][0] : 'Carregando…'}</span>`)
+    + `<nav class="aitabs" aria-label="Seções do AI Sales">${tabs.map(t => `<button class="pill" data-ai="tab" data-k="${t[0]}" aria-pressed="${A.tab === t[0]}">${t[1]}</button>`).join('')}</nav>`
+    + (A.data ? `<div class="aiview" style="display:flex;flex-direction:column;gap:16px">${AI_VIEWS[A.tab](A)}</div>` : A.error ? `<p class="err">${esc(A.error)}</p>` : '<div class="scan" role="status" aria-label="Carregando"></div>');
+};
+async function aiOpen(id, quiet) {
+  const A = aiState(); A.conv = id;
+  if (!quiet) render();
+  const r = await Real.aiThread(id); A.msgs[id] = r.msgs; A.mem[id] = r.mem;
+  if (view === 'aisales' && A.tab === 'inbox' && A.conv === id) { render(); const box = $('#aiMsgs'); if (box) box.scrollTop = box.scrollHeight; }
+}
+async function aiDo(action, o, msg) {
+  const r = await Real.aiAct(action, o);
+  if (r.error) { toast(r.error); return r; }
+  if (msg) toast(msg);
+  const A = aiState(); await Real.aiLoad(A); if (A.conv) await aiOpen(A.conv, true); else render();
+  return r;
+}
+// Formulários das seções: cada um grava só a sua parte das configurações, sempre pelo servidor.
+function aiFormData(sec, f) {
+  const fd = new FormData(f), g = k => String(fd.get(k) ?? '').trim(), n = k => Number(fd.get(k));
+  if (sec === 'persona') return Object.fromEntries(['name', 'language', 'personality', 'tone', 'formality', 'objectivity', 'emojis', 'approach', 'greeting', 'pitch'].map(k => [k, g(k)]));
+  if (sec === 'sales') return Object.fromEntries(['products', 'audience', 'pains', 'differentials', 'prices', 'objections', 'arguments', 'goals'].map(k => [k, g(k)]));
+  if (sec === 'qualification') return {criteria:g('criteria'), hot_score:n('hot_score'), qualified_score:n('qualified_score')};
+  if (sec === 'followup') return {enabled:fd.get('enabled') === 'on', intervals_hours:g('intervals_hours').split(/[,; ]+/).map(Number).filter(x => x > 0), max_attempts:n('max_attempts'), daily_limit:n('daily_limit'), template_name:g('template_name'), messages:g('messages').split('\n').map(x => x.trim()).filter(Boolean)};
+  if (sec === 'handoff') return {rules:g('rules'), message:g('message')};
+  if (sec === 'hours') return {start:g('start'), end:g('end'), days:fd.getAll('days').map(Number), reply_off_hours:fd.get('reply_off_hours') === 'on'};
+  if (sec === 'limits') return {monthly_usd:n('monthly_usd'), max_ai_replies_per_day:n('max_ai_replies_per_day')};
+  if (sec === 'whatsapp') return {phone_number_id:g('phone_number_id').replace(/\D/g, ''), waba_id:g('waba_id').replace(/\D/g, ''), api_version:g('api_version') || 'v26.0', test_numbers:g('test_numbers').split(/[,; ]+/).map(x => x.replace(/\D/g, '')).filter(Boolean)};
+  if (sec === 'prompt') return {prompt:g('prompt')};
+  if (sec === 'agent') { const o = {}; if (f.querySelector('[name=active]')) o.active = fd.get('active') === 'on'; ['mode', 'provider', 'model', 'effort'].forEach(k => { if (fd.get(k) != null) o[k] = g(k); }); return o; }
+  return {};
+}
+document.addEventListener('submit', async e => {
+  const f = e.target, sec = f.dataset && f.dataset.aiform; if (!sec && f.id !== 'aiSend' && f.id !== 'aiKbForm') return;
+  e.preventDefault(); const A = aiState();
+  if (sec) { const b = f.querySelector('[type=submit]'); if (b) b.disabled = true; await aiDo('save', {section:sec, data:aiFormData(sec, f)}, 'Configuração salva.'); return; }
+  if (f.id === 'aiKbForm') {
+    const fd = new FormData(f), title = String(fd.get('title') || '').trim(), body = String(fd.get('body') || '').trim();
+    if (!title || !body) return toast('Escreva o título e o conteúdo.');
+    const r = await Real.aiKb(A.kbEdit ? 'update' : 'insert', {id:A.kbEdit, kind:fd.get('kind'), title, body});
+    if (r.error) return toast(r.error); A.kbEdit = null; await Real.aiLoad(A); render(); return toast('Base de conhecimento atualizada.');
+  }
+  const kind = e.submitter && e.submitter.dataset.kind, c = A.conv;
+  if (kind === 'sim') { const t = $('#aiSimText').value.trim(); if (!t) return; delete A.draft['sim' + c]; e.submitter.disabled = true; toast('A IA está respondendo…'); await aiDo('simulate', {conversation_id:c, text:t}); }
+  if (kind === 'human') { const el = $('#aiHumanText') || $('#aiSimText'), t = el.value.trim(); if (!t) return; delete A.draft['h' + c]; delete A.draft['sim' + c]; e.submitter.disabled = true; await aiDo('send', {conversation_id:c, text:t}); }
+});
+document.addEventListener('input', e => {
+  const A = V._ai; if (!A) return;
+  if (e.target.id === 'aiQ') { A.q = e.target.value; const pos = e.target.selectionStart; render(); const q = $('#aiQ'); if (q) { q.focus(); try { q.setSelectionRange(pos, pos); } catch (x) {} } }
+  if (e.target.id === 'aiSimText' && A.conv) A.draft['sim' + A.conv] = e.target.value;
+  if (e.target.id === 'aiHumanText' && A.conv) A.draft['h' + A.conv] = e.target.value;
+});
+document.addEventListener('change', async e => {
+  if (e.target.id !== 'aiKbFile') return;
+  const files = [...e.target.files]; let n = 0;
+  for (const f of files) { if (f.size > 400000) { toast(`“${f.name}” passa de 400 KB.`); continue; } const r = await Real.aiKb('insert', {kind:'institucional', title:f.name.replace(/\.(txt|md)$/i, ''), body:(await f.text()).slice(0, 60000)}); if (!r.error) n++; }
+  const A = aiState(); await Real.aiLoad(A); render(); toast(`${n} ${n === 1 ? 'arquivo importado' : 'arquivos importados'}.`);
+});
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-ai]'); if (!b) return;
+  const A = aiState(), k = b.dataset.ai, v = b.dataset.k;
+  if (k === 'tab') { A.tab = v; render(); if (v === 'inbox' && A.conv) aiOpen(A.conv, true); }
+  if (k === 'days') { A.days = +v; render(); }
+  if (k === 'tests') { A.tests = !A.tests; render(); }
+  if (k === 'st') { A.st = v; render(); }
+  if (k === 'conv') aiOpen(v);
+  if (k === 'open') { A.tab = 'inbox'; aiOpen(v); }
+  if (k === 'back') { A.conv = null; render(); }
+  if (k === 'reload') { await Real.aiLoad(A); render(); }
+  if (k === 'simNew') modal('Simular conversa', `<p class="muted">A conversa fica marcada como teste: não cria lead no funil e nada vai para o WhatsApp. A IA responde de verdade, usando a chave configurada.</p><div class="fg">${inp('n', 'Nome do cliente de teste', 'value="Cliente de teste" autocomplete="off"')}${inp('t', 'Primeira mensagem do cliente', 'full required autocomplete="off" placeholder="Oi, vi o Instagram de vocês. Quanto custa um site?"')}</div>`,
+    fd => { const t = String(fd.get('t') || '').trim(); if (!t) return 'Escreva a primeira mensagem.'; toast('A IA está respondendo…');
+      Real.aiAct('simulate', {contact_name:String(fd.get('n') || 'Cliente de teste'), text:t}).then(async r => { if (r.error) return toast(r.error); A.tab = 'inbox'; await Real.aiLoad(A); aiOpen(r.conversation_id); }); }, 'Começar');
+  const c = A.conv;
+  if (k === 'takeover') aiDo('takeover', {conversation_id:c}, 'Você assumiu a conversa. A IA parou de responder.');
+  if (k === 'release') aiDo('release', {conversation_id:c}, 'A IA voltou a atender esta conversa.');
+  if (k === 'close') aiDo('close', {conversation_id:c}, 'Conversa encerrada.');
+  if (k === 'handoff') modal('Transferir para o time', inp('r', 'Motivo', 'full required autocomplete="off" placeholder="Ex.: negociação de valor"'), fd => { const r = String(fd.get('r') || '').trim(); if (!r) return 'Escreva o motivo.'; aiDo('handoff', {conversation_id:c, reason:r}, 'Conversa transferida.'); }, 'Transferir');
+  if (k === 'followup') modal('Agendar follow-up', `<div class="fg">${sel('h', 'Quando', [['4', 'Em 4 horas'], ['24', 'Amanhã', 1], ['72', 'Em 3 dias'], ['168', 'Em 1 semana']])}${inp('n', 'Observação', 'autocomplete="off"')}</div>`, fd => { aiDo('followup', {conversation_id:c, hours:+fd.get('h'), note:String(fd.get('n') || '')}, 'Follow-up agendado.'); }, 'Agendar');
+  if (k === 'cancelFu') aiDo('cancelFollowup', {id:v}, 'Follow-up cancelado.');
+  if (k === 'runFu') aiDo('runFollowups', {}, 'Fila processada.');
+  if (k === 'secret') { const el = $('#ai_sec_' + v); const val = el.value.trim(); if (!val) return toast('Digite o valor antes de gravar.'); el.value = ''; aiDo('secret', {name:v, value:val}, 'Credencial gravada no cofre do servidor.'); }
+  if (k === 'testAi') { toast('Testando a conexão…'); const r = await Real.aiAct('testProvider'); toast(r.error || `Conectado: ${r.model} respondeu “${r.reply}”.`); }
+  if (k === 'kbNew') { A.kbEdit = null; render(); }
+  if (k === 'kbEdit') { A.kbEdit = v; render(); window.scrollTo({top:0, behavior:'smooth'}); }
+  if (k === 'kbToggle') { const it = A.data.kb.find(x => x.id === v); const r = await Real.aiKb('update', {id:v, active:!it.active}); if (r.error) return toast(r.error); await Real.aiLoad(A); render(); }
+  if (k === 'kbDel') { const it = A.data.kb.find(x => x.id === v); modal('Apagar item', `<p>Apagar “${esc(it.title)}” da base de conhecimento?</p>`, () => { Real.aiKb('delete', {id:v}).then(async r => { if (r.error) return toast(r.error); await Real.aiLoad(A); render(); toast('Item apagado.'); }); }, 'Apagar'); }
+});
+// Conversas abertas atualizam sozinhas a cada 10 s enquanto a aba está na tela.
+setInterval(() => { const A = V._ai; if (REAL && AI.enabled && view === 'aisales' && A && A.data && !document.hidden && !$('#scrim').classList.contains('on')) { const typing = document.activeElement && /^ai(SimText|HumanText|Q)$/.test(document.activeElement.id); if (typing) return; Real.aiLoad(A).then(() => { if (A.conv && A.tab === 'inbox') aiOpen(A.conv, true); else render(); }); } }, 10000);
+
 /* ============ chaves de acesso (só o dono) ============ */
 // O dono escolhe o perfil, o servidor gera AMP-XXXX-XXXX-XXXX de uso único e o colaborador cria
 // o próprio e-mail e senha com ela, no app Android ou no navegador.
@@ -2776,6 +3100,7 @@ const Real = (() => {
     const {data:me} = row ? await sb.from('memberships').select('role').eq('tenant_id', row.id).eq('user_id', session.user.id).maybeSingle() : {data:null};
     if (!row || !me) { await sb.auth.signOut(); mode = 'login'; paintLogin(); return say('Esta conta não tem acesso a este painel.'); }
     tid = row.id; role = ROLES[me.role] ? me.role : 'viewer'; setTenant(row); await reload();
+    { const {data:ai} = await sb.rpc('ai_sales_status', {p_tenant:tid}); AI = {enabled:!!(ai && ai.enabled), admin:!!(ai && ai.admin)}; }
     $('#login').hidden = true; $('#site').hidden = true; $('#app').hidden = false; document.body.classList.add('in-app'); FX.mode('app');
     const h = (location.hash || '').slice(1); view = allowed(h) ? h : 'painel';
     renderChrome(); render(); armLock(); listen();
@@ -2868,6 +3193,26 @@ const Real = (() => {
       if (error && error.code !== '23505') return toast('Não deu para ativar os avisos. Tente de novo.');
       toast('Pronto: este aparelho vai receber os avisos do CRM.');
     } catch (e) { console.error(e); toast('Não deu para ativar os avisos neste aparelho.'); }
+  }
+  // AI Sales: leitura direta (as regras do banco só liberam a empresa autorizada) e ações pela função ai-sales
+  const aiAct = (action, o = {}) => fn('ai-sales', Object.assign({action, tenant_id:tid}, o));
+  async function aiLoad(A) {
+    const since = new Date(Date.now() - 95 * DAY).toISOString(), q = t => sb.from(t).select('*').eq('tenant_id', tid);
+    const [st, cv, fu, ho, us, kb, lg, ev, mg] = await Promise.all([aiAct('status'), q('ai_conversations').order('last_message_at', {ascending:false, nullsFirst:false}).limit(500),
+      q('ai_followups').order('due_at', {ascending:false}).limit(400), q('ai_handoffs').order('created_at', {ascending:false}).limit(200), q('ai_usage').gte('created_at', since).limit(5000),
+      q('ai_knowledge').order('kind').order('title'), q('ai_logs').order('created_at', {ascending:false}).limit(60), q('ai_wa_events').not('error', 'is', null).order('created_at', {ascending:false}).limit(30),
+      sb.from('ai_messages').select('conversation_id, direction, author, status, is_test, created_at').eq('tenant_id', tid).gte('created_at', since).order('created_at').limit(10000)]);
+    if (st.error) { A.error = st.error; return; }
+    A.error = ''; A.data = {status:st, convs:cv.data || [], followups:fu.data || [], handoffs:ho.data || [], usage:us.data || [], kb:kb.data || [], logs:lg.data || [], events:ev.data || [], msgs:mg.data || []};
+  }
+  async function aiThread(id) {
+    const [m, mem] = await Promise.all([sb.from('ai_messages').select('*').eq('conversation_id', id).order('created_at').limit(500), sb.from('ai_memory').select('*').eq('conversation_id', id).maybeSingle()]);
+    return {msgs:m.data || [], mem:mem.data || null};
+  }
+  async function aiKb(op, o) {
+    const row = {kind:o.kind, title:o.title, body:o.body, active:o.active, updated_at:new Date().toISOString()}; Object.keys(row).forEach(k => row[k] === undefined && delete row[k]);
+    const {error} = op === 'insert' ? await sb.from('ai_knowledge').insert(Object.assign({tenant_id:tid}, row)) : op === 'update' ? await sb.from('ai_knowledge').update(row).eq('id', o.id) : await sb.from('ai_knowledge').delete().eq('id', o.id);
+    return error ? {error:'Só dono e admin mudam a base de conhecimento.'} : {ok:true};
   }
   async function savePay(tag, rows) {
     const {error:e1} = await sb.from('tenants').update({payment_handle:tag || null}).eq('id', tid);
@@ -2968,7 +3313,7 @@ const Real = (() => {
     const {data:{session}} = await sb.auth.getSession();
     if (session) await openApp();
   }
-  return {filesUpload, fileUrl, fileDelete, subLink, backups, pushOn, boot, sync, fn, reload, fichasLoad, fichaLink, fichaDrop, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, deleteMany, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
+  return {aiAct, aiLoad, aiThread, aiKb, filesUpload, fileUrl, fileDelete, subLink, backups, pushOn, boot, sync, fn, reload, fichasLoad, fichaLink, fichaDrop, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, deleteMany, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
 })();
 
 /* tema do sistema mudou ou o host trocou data-theme */
