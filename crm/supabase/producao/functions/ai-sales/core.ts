@@ -74,7 +74,7 @@ export const within24h = (lastInbound: string | number | Date | null | undefined
   !!lastInbound && now - new Date(lastInbound).getTime() < 24 * 3600 * 1000;
 
 // ---------- sinais na mensagem do cliente ----------
-const norm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+const norm = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().trim();
 export function isOptOut(text: string): boolean {
   const t = norm(text);
   return /^(parar|pare|sair|stop|cancelar|descadastrar)[.!]*$/.test(t)

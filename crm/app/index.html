@@ -256,6 +256,19 @@ body.real #roleSel,body.real #tUrl,body.real #lgDemoBox,body.real #genForm,body.
 .gauto{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
 .aitabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}.aitabs .pill{white-space:nowrap;flex:0 0 auto}
 .aistats{grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr))}.aitile{display:flex;flex-direction:column;gap:4px}.aitile b{font-size:24px;font-variant-numeric:tabular-nums;line-height:1.1}.aitile small{font-size:12px}
+.cmdlist{display:flex;flex-direction:column;gap:10px}
+.cmdpri{border-left:4px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.cmdpri.p-critical{border-left-color:var(--bad)}.cmdpri.p-high{border-left-color:var(--warn)}.cmdpri.p-medium{border-left-color:var(--accent)}
+.cmdpri h4{margin:0;font-size:15px}.cmdpri p{margin:0}
+.cmdtop{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}
+.cmdrec{font-size:14px}.cmdmeta{font-size:12px}
+.cmdul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.cmdprog{display:inline-block;width:70px;height:6px;border-radius:3px;background:var(--panel2);overflow:hidden;vertical-align:middle}.cmdprog i{display:block;height:100%;background:var(--accent)}
+.cmdchecks{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:8px}
+.cmdav{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:18px;overflow:hidden;flex:0 0 auto}.cmdav img{width:100%;height:100%;object-fit:cover}
+.cmdagent .ch{gap:12px;align-items:center;justify-content:flex-start}
+.cmddl{display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:6px 12px;margin:0;font-size:14px}.cmddl dt{color:var(--muted)}.cmddl dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
+@media (max-width:560px){.cmddl{grid-template-columns:1fr}.cmddl dd{margin-bottom:6px}}
 .aibars{display:flex;flex-direction:column;gap:10px}.aibar{display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13px}.aibar>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
 .aibar .track{height:10px;border-radius:5px;background:var(--panel2);overflow:hidden}.aibar .track i{display:block;height:100%;border-radius:5px;background:var(--accent)}.aibar b{font-variant-numeric:tabular-nums}
 .aicols{display:flex;align-items:flex-end;gap:3px;height:150px;border-bottom:1px solid var(--line)}.aicol{flex:1;display:flex;align-items:flex-end;gap:1px;height:100%;min-width:0}.aicol i{flex:1;border-radius:3px 3px 0 0;min-height:1px}.aiaxis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
@@ -457,6 +470,7 @@ pre.code{margin:0;padding:12px;border-radius:10px;background:var(--bg2);border:1
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
     <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
     <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3M16.5 6.5l2.5 2.5M14 9l2 2"/></symbol>
+    <symbol id="i-cmd" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/><path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
   </defs>
 </svg>
@@ -614,7 +628,7 @@ const ROLES = {
 const NAV = [
   ['painel','Painel','home',null], ['funil','Funil','kanban','crm'], ['clientes','Clientes','users','crm'],
   ['propostas','Propostas','file','crm'], ['agenda','Agenda','cal','crm'], ['projetos','Projetos','check','crm'], ['financeiro','Financeiro','wallet','fin'], ['mensalidades','Mensalidades','card','fin'],
-  ['aisales','AI Sales','spark','crm'], ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['arquivos','Arquivos','file','crm'], ['equipe','Equipe e acesso','shield','team'], ['chaves','Chaves de acesso','key','team'], ['fichas','Fichas de anamnese','file','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
+  ['commander','AI Commander','cmd','crm'], ['aisales','AI Sales','spark','crm'], ['radar','Radar de leads','radar','edit'], ['relatorios','Relatórios','chart','crm'],   ['captacao','Captação','magnet','edit'], ['arquivos','Arquivos','file','crm'], ['equipe','Equipe e acesso','shield','team'], ['chaves','Chaves de acesso','key','team'], ['fichas','Fichas de anamnese','file','team'], ['planos','Planos','bolt',null], ['empresas','Empresas','users','team']
 ];
 const NICHE = {
   norte: {people:['Rafael Lima','Diego Martins','Caio Souza','Lucas Prado','Bruno Teles','Igor Nunes','Thiago Reis','Mateus Alves','Henrique Dias','Pedro Lopes','André Kato','Vitor Hugo'],
@@ -995,7 +1009,7 @@ function nextSteps() {
 }
 
 /* ============ navegação ============ */
-const allowed = v => { const n = NAV.find(x => x[0] === v); if (v === 'chaves' && role !== 'owner') return false; if (v === 'aisales' && !(REAL && AI.enabled && ['owner', 'admin', 'sales'].includes(role))) return false; if (v === 'fichas' && (T.slug === 'amplitudelab' || T.id === 'lab')) return false; if (v === 'empresas' && !(REAL && T.slug === 'amplitudelab' && role === 'owner')) return false; return n && (!n[3] || can(n[3])); };
+const allowed = v => { const n = NAV.find(x => x[0] === v); if (v === 'chaves' && role !== 'owner') return false; if (v === 'aisales' && !(REAL && AI.enabled && ['owner', 'admin', 'sales'].includes(role))) return false; if (v === 'commander' && !(REAL && CMD.enabled && ['owner', 'admin'].includes(role))) return false; if (v === 'fichas' && (T.slug === 'amplitudelab' || T.id === 'lab')) return false; if (v === 'empresas' && !(REAL && T.slug === 'amplitudelab' && role === 'owner')) return false; return n && (!n[3] || can(n[3])); };
 function badgeFor(v) { if (v === 'funil') { const n = S.leads.filter(l => l.stage === 's1').length; return n || ''; } if (v === 'agenda') { const n = nextSteps().filter(x => x.k !== 'charge').length; return n || ''; } return ''; }
 function renderNav() {
   $('#sNav').innerHTML = NAV.filter(n => allowed(n[0])).map(n => `<button class="nv" data-go="${n[0]}" ${view === n[0] ? 'aria-current="page"' : ''}>${icon(n[2])}${n[1]}${badgeFor(n[0]) ? `<span class="badge">${badgeFor(n[0])}</span>` : ''}</button>`).join('');
@@ -2808,6 +2822,535 @@ document.addEventListener('click', async e => {
 // Conversas abertas atualizam sozinhas a cada 10 s enquanto a aba está na tela.
 setInterval(() => { const A = V._ai; if (REAL && AI.enabled && view === 'aisales' && A && A.data && !document.hidden && !$('#scrim').classList.contains('on')) { const typing = document.activeElement && /^ai(SimText|HumanText|Q)$/.test(document.activeElement.id); if (typing) return; Real.aiLoad(A).then(() => { if (A.conv && A.tab === 'inbox') aiOpen(A.conv, true); else render(); }); } }, 10000);
 
+/* ============ AI Commander (só dono e admin da instalação liberada) ============ */
+// A aba só aparece quando o servidor confirma (commander_status) que esta empresa tem o Commander e o perfil é dono ou admin.
+// Os dados passam pelas regras de acesso do banco e toda ação passa pela função ai-commander, que confere tudo de novo.
+let CMD = {enabled:false};
+V._cmd = null;
+const CMD_TABS = [['central', 'Central'], ['chat', 'Chat'], ['leads', 'Leads'], ['intel', 'Inteligência comercial'], ['delivery', 'Entregas'], ['finance', 'Financeiro'], ['subs', 'Assinaturas'],
+  ['tasks', 'Tarefas e alertas'], ['approvals', 'Aprovações'], ['reports', 'Relatórios'], ['activity', 'Atividade dos agentes'], ['squad', 'AI Squad'], ['settings', 'Configurações']];
+const CMD_PRI = {critical:['Crítica', 'bad'], high:['Alta', 'warn'], medium:['Média', 'acc'], low:['Baixa', '']};
+const CMD_CAT = {sales:'Comercial', finance:'Financeiro', delivery:'Entregas', subscription:'Assinaturas', operations:'Operação', ai:'Agentes de IA', security:'Segurança'};
+const CMD_TASK = {pending:['Pendente', ''], in_progress:['Em andamento', 'acc'], awaiting_approval:['Aguardando aprovação', 'warn'], completed:['Concluída', 'ok'], failed:['Falhou', 'bad'], cancelled:['Cancelada', ''], overdue:['Atrasada', 'bad']};
+const CMD_DISP = {pending:['Aguardando aprovação', 'warn'], approved:['Na fila', 'acc'], dispatched:['Com o AI Sales', 'acc'], in_progress:['Em andamento', 'acc'], completed:['Concluída', 'ok'], failed:['Falhou', 'bad'], cancelled:['Cancelada', ''], awaiting_human:['Precisa de uma pessoa', 'warn']};
+const CMD_OUT = {sent:'mensagem enviada, aguardando resposta', simulated:'simulação: nada foi enviado', replied:'o cliente respondeu', converted:'virou venda', needs_template:'fora da janela de 24 h, sem template', human:'conversa com uma pessoa do time', opted_out:'contato pediu para não receber', not_sent:'mensagem não enviada'};
+const CMD_TT = {recover_lead:'Recuperar lead', renewal:'Renovação', follow_up:'Follow-up', qualify:'Qualificar'};
+const CMD_APS = {pending:['Pendente', 'warn'], approved:['Aprovada', 'acc'], rejected:['Recusada', ''], executed:['Executada', 'ok'], failed:['Falhou', 'bad'], expired:['Expirou', '']};
+const CMD_ACT = {audit:'Auditoria', audit_request:'Auditoria pedida', query:'Consulta', chat:'Chat', task_created:'Tarefa criada', task_updated:'Tarefa atualizada', alert_resolved:'Alerta resolvido', alert_dismissed:'Alerta dispensado',
+  record_updated:'Registro alterado', dispatch:'Tarefa enviada ao AI Sales', dispatch_result:'Resultado do AI Sales', dispatch_cancelled:'Tarefa cancelada', dispatch_retry:'Tarefa reenviada', approval_requested:'Aprovação pedida',
+  approval_granted:'Aprovação concedida', approval_rejected:'Aprovação recusada', approval_executed:'Ação aprovada executada', report:'Relatório gerado', settings:'Configuração alterada', identity:'Identidade alterada',
+  tool_denied:'Ação bloqueada pela autonomia', delinquency_confirmed:'Inadimplência confirmada', delinquency_cleared:'Inadimplência desfeita'};
+const CMD_RES = {ok:['ok', 'ok'], failed:['falhou', 'bad'], denied:['bloqueada', 'warn']};
+const CMD_AUTON = {analysis:['Somente análise', 'Consulta, audita, analisa e recomenda. Não altera nada no CRM.'], assisted:['Assistido', 'Cria e organiza tarefas e alertas. Alterar registros e acionar o AI Sales pedem sua aprovação.'],
+  controlled:['Autonomia controlada', 'Executa as ações permitidas dentro dos limites. Operações financeiras e fechar ou perder uma venda continuam pedindo aprovação.']};
+const CMD_STAGE = {briefing:'Planejamento', criacao:'Em andamento', aprovacao:'Aguardando aprovação do cliente', ajustes:'Revisão', entregue:'Concluído'};
+const CMD_KIND = {site:'Site', crm:'Implantação de CRM', automacao:'Automação', outro:'Outro'};
+const CMD_PERM = {read_leads:'Consultar leads', read_sales:'Consultar vendas', read_clients:'Consultar clientes', read_charges:'Consultar cobranças', read_subscriptions:'Consultar assinaturas', read_projects:'Consultar projetos',
+  create_tasks:'Criar tarefas', update_records:'Atualizar registros autorizados', dispatch_sales:'Acionar AI Sales', reports:'Gerar relatórios', approvals:'Solicitar aprovações'};
+const CMD_FIN = {issue_charge:'Emitir cobrança', cancel_charge:'Cancelar cobrança', change_amount:'Alterar valor', register_payment:'Registrar pagamento manualmente', grant_discount:'Conceder desconto', change_terms:'Alterar condições comerciais',
+  refund:'Executar reembolso', confirm_delinquency:'Confirmar inadimplência', dispatch_sales:'Acionar AI Sales', update_record:'Alterar registro'};
+const CMD_REPORT = [['monthly', 'Mensal completo'], ['weekly', 'Semanal'], ['daily', 'Diário'], ['commercial', 'Comercial'], ['financial', 'Financeiro'], ['operational', 'Operacional'], ['delivery', 'Entregas'], ['agents', 'Performance dos agentes']];
+const CMD_TOOL = {get_crm_overview:'indicadores', get_leads:'leads', get_lead_details:'detalhe do lead', get_sales_metrics:'inteligência comercial', get_payments:'cobranças', get_subscriptions:'assinaturas', get_delivery_projects:'projetos',
+  get_clients:'clientes', get_tasks:'tarefas', get_alerts:'alertas', get_team:'equipe', get_agent_status:'agentes', get_dispatches:'tarefas do AI Sales', run_audit:'auditoria', generate_report:'relatório',
+  create_commander_task:'criou tarefa', update_task:'atualizou tarefa', update_alert:'atualizou alerta', update_authorized_record:'alterou registro', dispatch_agent_task:'acionou o AI Sales', cancel_dispatch:'cancelou tarefa', request_approval:'pediu aprovação'};
+const CMD_REF = {lead:'Abrir lead', project:'Abrir projetos', charge:'Abrir financeiro', subscription:'Abrir mensalidades', proposal:'Abrir propostas', conversation:'Abrir conversa', task:'Ver tarefas', dispatch:'Ver no histórico', approval:'Ver aprovações', client:'Abrir clientes', alert:'Ver alertas', audit:'Ver auditorias', report:'Ver relatórios'};
+const CMD_ASK = ['Faça uma auditoria completa do CRM.', 'Quais leads estão esquecidos?', 'Quais leads quentes não receberam follow-up?', 'Quais propostas estão paradas?', 'Quais clientes ainda não receberam seus sites?',
+  'Quais projetos estão atrasados?', 'Quem precisa receber uma cobrança?', 'Quais assinaturas vencem nos próximos sete dias?', 'Qual foi nosso faturamento neste mês?', 'Compare as vendas deste mês com o anterior.',
+  'Quais são os cinco maiores problemas da operação?', 'Organize as prioridades de amanhã.', 'Gere um relatório completo da empresa.'];
+const cmdState = () => (V._cmd = V._cmd || {tab:'central', period:'this_month', data:null, loading:false, error:'', intel:null, intelDays:90, intelLoading:false, lf:'open', lq:'', lp:0, pick:[],
+  pc:'', pp:'', tf:'open', af:'open', ac:'', pjf:'open', sf:'all', actAgent:'', actRes:'', report:null, busy:false, draft:''});
+const cmdT = v => v ? new Date(v).getTime() : null;
+const cmdToday = () => new Date(Date.now() - 3 * 3600000).toISOString().slice(0, 10);
+const cmdPct = v => v === null || v === undefined ? 'sem dado' : (Number(v) * 100).toFixed(1).replace('.', ',') + '%';
+const cmdUsd = v => 'US$ ' + Number(v || 0).toFixed(2).replace('.', ',');
+const cmdDate = v => v ? fdate(cmdT(v.length === 10 ? v + 'T12:00:00' : v)) : '—';
+const cmdMd = t => esc(t || '').replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/^[-*] /gm, '• ').replace(/^#{1,4} (.*)$/gm, '<b>$1</b>');
+function cmdRange(p) {
+  const now = Date.now(), SPO = 3 * 3600000, sp = new Date(now - SPO), y = sp.getUTCFullYear(), m = sp.getUTCMonth(), at = (yy, mm, dd) => new Date(Date.UTC(yy, mm, dd) + SPO).toISOString(), to = new Date(now).toISOString();
+  if (p === 'today') return {from:at(y, m, sp.getUTCDate()), to, label:'hoje'};
+  if (p === 'last_month') return {from:at(y, m - 1, 1), to:at(y, m, 1), label:'mês passado'};
+  if (p === 'last_30_days') return {from:new Date(now - 30 * DAY).toISOString(), to, label:'últimos 30 dias'};
+  return {from:at(y, m, 1), to, label:'este mês'};
+}
+const cmdTeam = () => ((V._cmd && V._cmd.data && V._cmd.data.status.team) || []);
+const cmdMail = id => { if (!id) return 'ninguém'; const m = cmdTeam().find(x => x.user_id === id); return m ? (m.email || 'sem e-mail') : 'fora da equipe'; };
+const cmdTeamOpts = (cur, none = 'Ninguém') => [['', none, !cur], ...cmdTeam().map(m => [m.user_id, `${m.email || m.user_id} (${(ROLES[m.role] || {}).n || m.role})`, m.user_id === cur])];
+const cmdSalesOn = d => !!(d.snap.ai && d.snap.ai.sales_active);
+const cmdTaskState = t => ['pending', 'in_progress'].includes(t.status) && t.due_at && cmdT(t.due_at) < Date.now() ? 'overdue' : t.status;
+const cmdRefBtn = (kind, id, label) => kind && id ? `<button class="b3 sm ghost" data-cmd="ref" data-kind="${esc(kind)}" data-id="${esc(id)}">${esc(label || CMD_REF[kind] || 'Abrir')}</button>` : '';
+const cmdPill = (key, k, label, cur) => `<button class="pill" data-cmd="${key}" data-k="${esc(k)}" aria-pressed="${cur === k}">${esc(label)}</button>`;
+const cmdTbl = (heads, rows, empty) => rows.length ? `<div class="tbl"><table><thead><tr>${heads.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>` : `<p class="empty">${empty}</p>`;
+function cmdTargetName(kind, id) {
+  const d = V._cmd.data;
+  if (kind === 'lead') return leadName(id) || 'lead';
+  if (kind === 'charge') { const c = d.charges.find(x => x.id === id); return c ? `${c.description || 'cobrança'} · ${money(c.amount_cents)}` : 'cobrança'; }
+  if (kind === 'subscription') return ((S.subs || []).find(x => x.id === id) || {}).name || 'assinatura';
+  if (kind === 'project') return (d.projects.find(x => x.id === id) || {}).title || 'projeto';
+  if (kind === 'proposal') return ((S.proposals || []).find(x => x.id === id) || {}).title || 'proposta';
+  if (kind === 'client') return clientName(id) || 'cliente';
+  return kind || '';
+}
+function cmdAlertCard(a, d) {
+  const isNew = Date.now() - cmdT(a.first_seen) < DAY, lead = a.related_kind === 'lead' && a.related_id;
+  return `<article class="card cmdpri p-${a.priority}">
+    <div class="cmdtop">${aiChip(CMD_PRI, a.priority)}<span class="muted">${esc(CMD_CAT[a.category] || a.category)}</span><span class="muted">${isNew ? 'Novo' : 'Conhecido desde ' + fdate(cmdT(a.first_seen))}</span></div>
+    <h4>${esc(a.title)}</h4>${a.description ? `<p>${esc(a.description)}</p>` : ''}
+    ${a.recommendation ? `<p class="cmdrec"><b>Recomendação do Commander:</b> ${esc(a.recommendation)}</p>` : ''}
+    <p class="muted cmdmeta">Responsável: ${esc(cmdMail(a.assigned_to))} · Prazo: ${a.due_at ? fdate(cmdT(a.due_at)) + ' ' + ftime(cmdT(a.due_at)) : 'sem prazo'} · ${a.related_kind ? 'Registro: ' + esc(cmdTargetName(a.related_kind, a.related_id)) : 'Problema em grupo'}</p>
+    ${a.status === 'open' ? `<div class="acts">${cmdRefBtn(a.related_kind, a.related_id)}<button class="b3 sm" data-cmd="alertTask" data-id="${a.id}">Criar tarefa</button>${lead && cmdSalesOn(d) ? `<button class="b3 sm ghost" data-cmd="dispatchLead" data-id="${a.related_id}">Pedir ao AI Sales</button>` : ''}<button class="b3 sm ghost" data-cmd="alertAssign" data-id="${a.id}">Atribuir</button><button class="b3 sm ghost" data-cmd="alertResolve" data-id="${a.id}">Resolver</button><button class="b3 sm ghost" data-cmd="alertDismiss" data-id="${a.id}">Dispensar</button></div>` : ''}
+  </article>`;
+}
+function cmdBarsK(rows, label = x => x.k, val = x => x.n, fmt) { return aiBars((rows || []).map(x => [String(label(x)), Number(val(x))]), fmt); }
+
+const CMD_VIEWS = {
+  central(C) {
+    const d = C.data, s = d.snap.sales || {}, o = d.snap.operations || {}, f = d.snap.finance || {}, a = d.snap.ai || {}, rank = {critical:0, high:1, medium:2, low:3};
+    const open = d.alerts.filter(x => x.status === 'open'), count = k => open.filter(x => x.priority === k).length, last = d.audits[0];
+    let pri = open.slice().sort((x, y) => rank[x.priority] - rank[y.priority] || cmdT(y.first_seen) - cmdT(x.first_seen));
+    if (C.pc) pri = pri.filter(x => x.category === C.pc); if (C.pp) pri = pri.filter(x => x.priority === C.pp);
+    const done = a.dispatches ? Math.round(a.dispatches_done / a.dispatches * 100) + '%' : 'sem tarefas';
+    return `<div class="ch" style="margin:0"><span class="muted" style="font-size:13px">Indicadores de ${esc(cmdRange(C.period).label)} · Última auditoria: ${last ? aiWhen(cmdT(last.started_at)) + ' · ' + esc(last.summary || last.status) : 'ainda não rodou'}</span><div class="pills">${[['today', 'Hoje'], ['this_month', 'Este mês'], ['last_month', 'Mês passado'], ['last_30_days', '30 dias']].map(([k, l]) => cmdPill('period', k, l, C.period)).join('')}</div></div>
+      <section class="card"><div class="ch"><h3>Commander priorities</h3><button class="b3 sm" data-cmd="audit" ${C.busy ? 'disabled' : ''}>Rodar auditoria agora</button></div>
+        <div class="grid aistats">${aiTile('Críticas', count('critical'))}${aiTile('Altas', count('high'))}${aiTile('Médias', count('medium'))}${aiTile('Baixas', count('low'))}</div>
+        <div class="pills" style="margin:12px 0 6px">${cmdPill('pc', '', 'Todas as áreas', C.pc)}${Object.entries(CMD_CAT).map(([k, l]) => cmdPill('pc', k, l, C.pc)).join('')}</div>
+        <div class="pills" style="margin-bottom:12px">${cmdPill('pp', '', 'Toda prioridade', C.pp)}${Object.entries(CMD_PRI).map(([k, v]) => cmdPill('pp', k, v[0], C.pp)).join('')}</div>
+        ${pri.length ? `<div class="cmdlist">${pri.slice(0, 30).map(x => cmdAlertCard(x, d)).join('')}</div>${pri.length > 30 ? `<p class="muted">E mais ${pri.length - 30} em Tarefas e alertas.</p>` : ''}`
+          : `<p class="empty">${open.length ? 'Nenhum alerta com esse filtro.' : 'Nenhum problema aberto agora. A auditoria roda sozinha a cada ' + ((d.status.settings.monitoring || {}).interval_minutes || 60) + ' minutos.'}</p>`}</section>
+      <section class="card"><div class="ch"><h3>Comercial</h3></div><div class="grid aistats">
+        ${aiTile('Total de leads', s.leads_total ?? 0)}${aiTile('Leads novos', s.leads_new ?? 0, 'no período')}${aiTile('Sem responsável', s.leads_no_owner ?? 0, 'abertos')}${aiTile('Sem follow-up', s.leads_no_followup ?? 0, 'abertos')}
+        ${aiTile('Leads quentes', s.leads_hot ?? 0, 'marcados pelo AI Sales')}${aiTile('Leads qualificados', s.leads_qualified ?? 0, 'pelo AI Sales')}${aiTile('Em negociação', s.leads_negotiation ?? 0, 'Proposta e Negociação')}${aiTile('Vendas realizadas', s.sales_count ?? 0, 'com pagamento confirmado')}
+        ${aiTile('Taxa de conversão', cmdPct(s.conversion_rate), 'dos leads do período')}${aiTile('Ticket médio', money(s.avg_ticket_cents), 'cobranças pagas')}
+        ${aiTile('Receita contratada', money(s.revenue_contracted_cents), 'propostas aceitas')}${aiTile('Receita faturada', money(s.revenue_billed_cents), 'cobranças emitidas')}${aiTile('Receita recebida', money(s.revenue_received_cents), 'entradas no caixa')}</div></section>
+      <section class="card"><div class="ch"><h3>Operação</h3></div><div class="grid aistats">
+        ${aiTile('Projetos em andamento', o.projects_open ?? 0)}${aiTile('Aguardando aprovação', o.projects_waiting_approval ?? 0)}${aiTile('Projetos atrasados', o.projects_late ?? 0)}${aiTile('CRM em implantação', o.crm_projects_open ?? 0)}
+        ${aiTile('Implantações pendentes', o.crm_projects_pending ?? 0, 'CRM ainda em planejamento')}${aiTile('Tarefas atrasadas', o.tasks_late ?? 0)}${aiTile('Tarefas sem responsável', o.tasks_unassigned ?? 0, 'criadas pelos agentes')}${aiTile('Entregas em 3 dias', o.deliveries_due_soon ?? 0)}</div></section>
+      <section class="card"><div class="ch"><h3>Financeiro</h3></div><div class="grid aistats">
+        ${aiTile('Cobranças pendentes', f.charges_pending ?? 0, money(f.charges_pending_cents))}${aiTile('Cobranças atrasadas', f.charges_late ?? 0, money(f.charges_late_cents))}${aiTile('Pagamentos recebidos', f.payments_received ?? 0, 'no período')}
+        ${aiTile('Aguardando pagamento', f.payments_awaiting_confirmation ?? 0, 'link enviado, ainda sem pagamento')}${aiTile('Inadimplentes confirmados', f.delinquent_confirmed ?? 0, 'confirmados por uma pessoa')}${aiTile('Vencidas há mais de 7 dias', f.clients_overdue_7d ?? 0, 'clientes; não é inadimplência')}
+        ${aiTile('Receita recorrente mensal', money(f.mrr_cents))}${aiTile('Receita recorrente anual', money(f.arr_cents))}${aiTile('Renovações em 7 dias', f.subs_upcoming ?? 0)}${aiTile('Mensalidades vencidas', f.subs_overdue ?? 0, 'sem pagamento registrado')}</div></section>
+      <section class="card"><div class="ch"><h3>Inteligência artificial</h3></div><div class="grid aistats">
+        ${aiTile('AI Sales', a.sales_active ? 'Ligado' : 'Desligado', a.sales_mode ? 'modo ' + (AI_MODES[a.sales_mode] || [a.sales_mode])[0].toLowerCase() : '')}${aiTile('Conversas só com a IA', a.ai_led ?? 0, `de ${a.conversations ?? 0} no período`)}${aiTile('Qualificados pela IA', a.qualified_by_ai ?? 0)}
+        ${aiTile('Follow-ups executados', a.followups_sent ?? 0)}${aiTile('Oportunidades recuperadas', a.recovered ?? 0, 'responderam ou pagaram')}${aiTile('Transferências para humano', a.handoffs ?? 0)}${aiTile('Tarefas delegadas', a.dispatches ?? 0, 'ao AI Sales')}
+        ${aiTile('Conclusão dos agentes', done)}${aiTile('Falhas de execução', a.failures ?? 0)}${aiTile('Custo de IA', cmdUsd(a.cost_usd), `${Number(a.tokens || 0).toLocaleString('pt-BR')} tokens`)}</div></section>`;
+  },
+  chat(C) {
+    const d = C.data, msgs = d.chat.slice().reverse(), st = d.status;
+    return `${st.has_ai_key ? '' : `<p class="err">O chat usa a mesma chave do Claude do AI Sales e ela ainda não foi gravada. <button class="b3 sm ghost" data-cmd="goKey">Abrir AI Sales → Integrações</button></p>`}
+      <section class="card"><div class="ch"><h3>Converse com o ${esc(st.settings.name)}</h3><div class="acts"><span class="chip acc">${esc(CMD_AUTON[st.settings.autonomy][0])}</span>${msgs.length ? '<button class="b3 sm ghost" data-cmd="chatClear">Limpar conversa</button>' : ''}</div></div>
+        <div class="aimsgs" id="cmdMsgs">${msgs.length ? msgs.map(m => `<div class="aimsg ${m.role === 'user' ? 'out' : ''}">${cmdMd(m.content)}${(m.tools || []).length ? `<small>${m.tools.map(t => esc((CMD_TOOL[t.name] || t.name) + (t.mode === 'approval' ? ' (pediu aprovação)' : t.mode === 'deny' ? ' (bloqueado)' : !t.ok ? ' (falhou)' : ''))).join(' · ')}</small>` : ''}<small>${aiWhen(cmdT(m.created_at))}</small></div>`).join('')
+          : '<p class="empty">Pergunte sobre leads, vendas, entregas, cobranças ou peça uma auditoria. As respostas usam só dados do CRM.</p>'}${C.busy ? '<div class="aimsg"><span class="muted">Consultando o CRM e analisando…</span></div>' : ''}</div>
+        <form id="cmdChat" class="aicompose" novalidate><label for="cmdText" class="sr">Mensagem para o Commander</label><textarea id="cmdText" class="inp" rows="2" placeholder="Ex.: Quais leads quentes estão sem contato?" ${C.busy ? 'disabled' : ''}>${esc(C.draft)}</textarea><button class="b3" type="submit" ${C.busy || !st.has_ai_key ? 'disabled' : ''}>Enviar</button></form>
+        <div class="pills" style="margin-top:10px">${CMD_ASK.map(q => `<button class="pill" data-cmd="ask" data-k="${esc(q)}" ${C.busy || !st.has_ai_key ? 'disabled' : ''}>${esc(q)}</button>`).join('')}</div></section>`;
+  },
+  leads(C) {
+    const d = C.data, now = Date.now(), stale = Number((d.status.settings.monitoring || {}).stale_days || 7), openSt = ['s1', 's2', 's3', 's4'], sales = cmdSalesOn(d);
+    const op = l => openSt.includes(l.stage), q = (C.lq || '').trim().toLowerCase(), last = l => d.touched[l.id] || l.created || 0;
+    const F = {open:['Abertos', op], hot:['Quentes', l => op(l) && d.conv[l.id] && ['hot', 'qualified'].includes(d.conv[l.id].qualification)], stale:[`Sem atualização há ${stale} dias`, l => op(l) && last(l) < now - stale * DAY],
+      no_owner:['Sem responsável', l => op(l) && !d.owner[l.id]], no_follow:['Sem follow-up', l => op(l) && !l.follow], late:['Follow-up vencido', l => op(l) && l.follow && l.follow < now],
+      nego:['Em negociação', l => ['s3', 's4'].includes(l.stage)], won:['Fechados', l => l.stage === 's5'], lost:['Perdidos', l => l.stage === 's6']};
+    const list = S.leads.filter(F[C.lf][1]).filter(l => !q || (l.name || '').toLowerCase().includes(q) || (l.phone || '').replace(/\D/g, '').includes(q.replace(/\D/g, '') || '§')).sort((x, y) => last(y) - last(x));
+    const per = 25, pages = Math.max(1, Math.ceil(list.length / per)); C.lp = Math.max(0, Math.min(C.lp, pages - 1));
+    const page = list.slice(C.lp * per, C.lp * per + per), picked = C.pick.filter(id => S.leads.some(l => l.id === id));
+    const stName = k => (STAGES.find(s => s.id === k) || {}).n || k;
+    return `<section class="card"><div class="ch"><h3>Gestão de leads</h3><span class="muted" style="font-size:13px">${list.length} ${list.length === 1 ? 'lead' : 'leads'}</span></div>
+      <div class="pills" style="margin-bottom:10px">${Object.entries(F).map(([k, v]) => cmdPill('lf', k, v[0], C.lf)).join('')}</div>
+      <div class="fg" style="margin-bottom:10px"><div class="field full"><label for="cmdLq">Buscar por nome ou telefone</label><input class="inp" id="cmdLq" value="${esc(C.lq)}" autocomplete="off"></div></div>
+      ${picked.length ? `<div class="acts" style="margin-bottom:10px"><span class="muted">${picked.length} selecionados</span>${sales ? '<button class="b3 sm" data-cmd="bulkDispatch">Pedir ao AI Sales</button>' : ''}<button class="b3 sm ghost" data-cmd="bulkAssign">Atribuir responsável</button><button class="b3 sm ghost" data-cmd="pickClear">Limpar seleção</button></div>` : ''}
+      ${sales ? '' : '<p class="muted" style="font-size:13px">O AI Sales está desligado: para delegar contatos a ele, ligue em AI Sales → Agente.</p>'}
+      ${cmdTbl(['<input type="checkbox" data-cmd="pickPage" aria-label="Selecionar a página">', 'Lead', 'Etapa', 'Origem', 'Responsável', 'Próximo follow-up', 'IA', 'Atualizado', ''],
+        page.map(l => { const c = d.conv[l.id]; return `<tr><td><input type="checkbox" data-cmd="pick" data-id="${l.id}" ${picked.includes(l.id) ? 'checked' : ''} aria-label="Selecionar ${esc(l.name)}"></td>
+          <td><b>${esc(l.name)}</b>${l.interest ? `<br><small class="muted">${esc(l.interest)}</small>` : ''}</td><td>${esc(stName(l.stage))}</td><td>${esc(SRC[l.source] || l.source || '—')}${l.utm && l.utm.segmento ? `<br><small class="muted">${esc(l.utm.segmento)}</small>` : ''}</td>
+          <td>${esc(cmdMail(d.owner[l.id]))}</td><td>${l.follow ? `${fdate(l.follow)}${l.follow < now ? ' <span class="chip bad">vencido</span>' : ''}` : '—'}</td><td>${c ? aiChip(AI_QUAL, c.qualification) + (c.score ? ` <small class="muted">${c.score}/100</small>` : '') : '—'}</td>
+          <td>${rel(last(l))}</td><td><div class="acts"><button class="b3 sm ghost" data-cmd="ref" data-kind="lead" data-id="${l.id}">Abrir</button>${sales && op(l) ? `<button class="b3 sm ghost" data-cmd="dispatchLead" data-id="${l.id}">AI Sales</button>` : ''}<button class="b3 sm ghost" data-cmd="leadAssign" data-id="${l.id}">Responsável</button><button class="b3 sm ghost" data-cmd="leadTask" data-id="${l.id}">Tarefa</button></div></td></tr>`; }),
+        'Nenhum lead com esse filtro.')}
+      ${pages > 1 ? `<div class="acts" style="justify-content:center;margin-top:10px"><button class="b3 sm ghost" data-cmd="lp" data-k="-1" ${C.lp === 0 ? 'disabled' : ''}>Anterior</button><span class="muted">Página ${C.lp + 1} de ${pages}</span><button class="b3 sm ghost" data-cmd="lp" data-k="1" ${C.lp >= pages - 1 ? 'disabled' : ''}>Próxima</button></div>` : ''}</section>`;
+  },
+  intel(C) {
+    const pills = `<div class="pills">${[[30, '30 dias'], [90, '90 dias'], [180, '180 dias'], [365, '12 meses']].map(([k, l]) => cmdPill('intelDays', String(k), l, String(C.intelDays))).join('')}</div>`;
+    if (!C.intel || C.intel.days !== C.intelDays) {
+      if (!C.intelLoading) { C.intelLoading = true; Real.cmdIntel(C.intelDays).then(r => { C.intelLoading = false; C.intel = Object.assign(r || {}, {days:C.intelDays}); if (view === 'commander') render(); }); }
+      return pills + '<div class="scan" role="status" aria-label="Carregando"></div>';
+    }
+    const i = C.intel; if (i.error) return pills + `<p class="err">${esc(i.error)}</p>`;
+    const best = (rows, min = 3) => { const r = (rows || []).filter(x => x.n >= min).sort((a, b) => b.won / b.n - a.won / a.n)[0]; return r && r.won ? `${esc(r.k)} (${r.won} de ${r.n}, ${Math.round(r.won / r.n * 100)}%)` : 'ainda sem vendas suficientes para comparar'; };
+    const stalled = (i.stalled_by_stage || []).slice().sort((a, b) => b.n - a.n)[0], fc = i.forecast || {}, top = (i.top_potential || [])[0];
+    const stName = p => (STAGES[p - 1] || {}).n || 'etapa ' + p;
+    return `${pills}<div class="grid aistats">${aiTile('Leads no período', i.leads ?? 0)}${aiTile('Vendas', i.won ?? 0)}${aiTile('Taxa de conversão', cmdPct(i.conversion_rate))}${aiTile('Tempo médio até a venda', i.avg_days_to_convert != null ? String(i.avg_days_to_convert).replace('.', ',') + ' dias' : 'sem vendas')}
+        ${aiTile('Taxa de qualificação', cmdPct(i.ai_qualification_rate), 'conversas do AI Sales')}${aiTile('Precisam de uma pessoa', i.needs_human ?? 0, 'conversas pedindo vendedor')}${aiTile('Previsão de vendas', money(fc.cents), 'estimativa')}</div>
+      <section class="card"><div class="ch"><h3>Respostas rápidas</h3></div><ul class="cmdul">
+        <li><b>Canal que traz os melhores leads:</b> ${best(i.by_source)}</li><li><b>Nicho que converte melhor:</b> ${best(i.by_niche)}</li>
+        <li><b>Produto que mais vende:</b> ${(i.top_products || [])[0] ? esc(i.top_products[0].k) + ` (${i.top_products[0].n} vendas)` : 'sem vendas no período'}</li>
+        <li><b>Etapa com mais leads parados:</b> ${stalled ? `${esc(stName(stalled.pos))} (${stalled.n} sem atualização há 14 dias)` : 'nenhuma'}</li>
+        <li><b>Objeção mais frequente:</b> ${(i.objections || [])[0] ? esc(i.objections[0].k) + ` (${i.objections[0].n}×)` : 'nenhuma registrada pelo AI Sales'}</li>
+        <li><b>Lead com maior potencial:</b> ${top && (top.score || top.value_cents) ? esc(top.name) + (top.score ? ` · ${top.score}/100` : '') + (top.value_cents ? ' · ' + money(top.value_cents) : '') : 'sem pontuação ou valor para comparar'}</li>
+        <li><b>Previsão de vendas:</b> ${money(fc.cents)} (estimativa). ${esc(fc.method || '')}. ${fc.open_without_value ? `${fc.open_without_value} leads abertos sem valor ficam fora da conta.` : ''}</li></ul></section>
+      <div class="grid g2"><section class="card"><div class="ch"><h3>Leads por origem</h3></div>${cmdBarsK(i.by_source, x => SRC[x.k] || x.k)}</section><section class="card"><div class="ch"><h3>Leads por nicho</h3></div>${cmdBarsK(i.by_niche)}</section>
+        <section class="card"><div class="ch"><h3>Leads por responsável</h3></div>${cmdBarsK(i.by_owner)}</section><section class="card"><div class="ch"><h3>Leads por etapa</h3></div>${cmdBarsK(i.by_stage)}</section>
+        <section class="card"><div class="ch"><h3>Motivos de perda</h3></div>${cmdBarsK(i.lost_reasons)}</section><section class="card"><div class="ch"><h3>Objeções no AI Sales</h3></div>${cmdBarsK(i.objections)}</section>
+        <section class="card"><div class="ch"><h3>Vendas por mês</h3></div>${cmdBarsK(i.sales_by_month, x => x.m, x => x.cents, v => money(v))}</section><section class="card"><div class="ch"><h3>Produtos vendidos</h3></div>${cmdBarsK(i.top_products)}</section></div>
+      <section class="card"><div class="ch"><h3>Maior potencial de compra</h3></div>${cmdTbl(['Lead', 'Etapa', 'Valor', 'IA', ''], (i.top_potential || []).map(x => `<tr><td>${esc(x.name)}</td><td>${esc(stName(x.stage))}</td><td>${x.value_cents ? money(x.value_cents) : '—'}</td><td>${x.qualification ? aiChip(AI_QUAL, x.qualification) + (x.score ? ` ${x.score}/100` : '') : '—'}</td><td>${cmdRefBtn('lead', x.id, 'Abrir')}</td></tr>`), 'Sem leads abertos.')}</section>`;
+  },
+  delivery(C) {
+    const d = C.data, today = cmdToday(), soon = new Date(Date.now() - 3 * 3600000 + 3 * DAY).toISOString().slice(0, 10), ev = id => d.files.filter(x => x.project_id === id).length;
+    const order = ['briefing', 'criacao', 'aprovacao', 'ajustes', 'entregue'], openP = p => p.stage !== 'entregue';
+    const F = {open:['Em andamento', openP], late:['Atrasados', p => openP(p) && p.due_date && p.due_date < today], soon:['Prazo em 3 dias', p => openP(p) && p.due_date && p.due_date >= today && p.due_date <= soon],
+      approval:['Aguardando aprovação', p => p.stage === 'aprovacao'], no_owner:['Sem responsável', p => openP(p) && !p.assigned_to], no_due:['Sem prazo', p => openP(p) && !p.due_date],
+      crm:['Implantações de CRM', p => p.kind === 'crm' || /crm/i.test(p.title)], done:['Concluídos', p => p.stage === 'entregue'], all:['Todos', () => true]};
+    const list = d.projects.filter(F[C.pjf][1]).sort((a, b) => (a.due_date || '9999') < (b.due_date || '9999') ? -1 : 1);
+    return `<section class="card"><div class="ch"><h3>Controle de entregas</h3><button class="b3 sm ghost" data-cmd="ref" data-kind="project" data-id="x">Abrir Projetos</button></div>
+      <div class="pills" style="margin-bottom:10px">${Object.entries(F).map(([k, v]) => cmdPill('pjf', k, `${v[0]} (${d.projects.filter(v[1]).length})`, C.pjf)).join('')}</div>
+      ${cmdTbl(['Projeto', 'Serviço', 'Venda', 'Início', 'Prazo', 'Responsável', 'Status', 'Progresso', 'Evidências', ''], list.map(p => {
+        const late = openP(p) && p.due_date && p.due_date < today, st = late ? ['Atrasado', 'bad'] : [CMD_STAGE[p.stage] || p.stage, p.stage === 'entregue' ? 'ok' : p.stage === 'aprovacao' ? 'warn' : 'acc'], prog = (order.indexOf(p.stage) + 1) / 5, lead = p.lead_id && S.leads.find(l => l.id === p.lead_id);
+        return `<tr><td><b>${esc(p.title)}</b><br><small class="muted">${esc(clientName(p.client_id) || (lead && lead.name) || 'sem cliente')}</small></td><td>${esc(CMD_KIND[p.kind] || 'não informado')}</td><td>${lead && lead.paidAt ? fdate(lead.paidAt) : '—'}</td>
+          <td>${cmdDate(p.started_at)}</td><td>${p.due_date ? cmdDate(p.due_date) : '<span class="muted">sem prazo</span>'}</td><td>${esc(cmdMail(p.assigned_to))}</td><td><span class="chip ${st[1]}"><span class="dot"></span>${esc(st[0])}</span></td>
+          <td><span class="cmdprog" title="${Math.round(prog * 100)}%"><i style="width:${prog * 100}%"></i></span></td><td>${ev(p.id) ? ev(p.id) + ' arquivo' + (ev(p.id) > 1 ? 's' : '') : (p.stage === 'entregue' ? '<span class="chip warn">sem evidência</span>' : '—')}</td>
+          <td><div class="acts"><button class="b3 sm ghost" data-cmd="projEdit" data-id="${p.id}">Editar</button><button class="b3 sm ghost" data-cmd="projTask" data-id="${p.id}">Tarefa</button></div></td></tr>`; }), 'Nenhum projeto com esse filtro.')}
+      <p class="muted" style="font-size:13px;margin-top:8px">Projeto só fica Concluído com um arquivo de entrega ligado a ele em Arquivos. O Commander nunca marca entrega sem essa evidência.</p></section>`;
+  },
+  finance(C) {
+    const d = C.data, s = d.snap.sales || {}, f = d.snap.finance || {}, today = cmdToday(), r = cmdRange(C.period);
+    const pend = d.charges.filter(c => c.status === 'pending'), paid = d.charges.filter(c => c.status === 'paid' && c.paid_at >= r.from && c.paid_at < r.to).sort((a, b) => cmdT(b.paid_at) - cmdT(a.paid_at));
+    const who = c => clientName(c.client_id) || leadName(c.lead_id) || 'sem cliente', late = c => c.due_date && c.due_date < today, days = c => Math.round((Date.parse(today) - Date.parse(c.due_date)) / DAY);
+    return `<div class="ch" style="margin:0"><span class="muted" style="font-size:13px">Recebidos e receitas de ${esc(r.label)}. Pendências mostram a situação de hoje.</span><div class="pills">${[['this_month', 'Este mês'], ['last_month', 'Mês passado'], ['last_30_days', '30 dias']].map(([k, l]) => cmdPill('period', k, l, C.period)).join('')}</div></div>
+      <div class="grid aistats">${aiTile('Receita contratada', money(s.revenue_contracted_cents), 'propostas aceitas')}${aiTile('Receita faturada', money(s.revenue_billed_cents), 'cobranças emitidas')}${aiTile('Receita recebida', money(s.revenue_received_cents), 'entradas no caixa')}
+        ${aiTile('Pendentes', f.charges_pending ?? 0, money(f.charges_pending_cents))}${aiTile('Atrasadas', f.charges_late ?? 0, money(f.charges_late_cents))}${aiTile('Inadimplentes confirmados', f.delinquent_confirmed ?? 0)}${aiTile('Recorrente mensal', money(f.mrr_cents))}${aiTile('Recorrente anual', money(f.arr_cents))}</div>
+      <section class="card"><div class="ch"><h3>Cobranças pendentes</h3><button class="b3 sm ghost" data-cmd="ref" data-kind="charge" data-id="x">Abrir Financeiro</button></div>
+        ${cmdTbl(['Cliente', 'Cobrança', 'Valor', 'Vencimento', 'Situação', ''], pend.map(c => `<tr><td>${esc(who(c))}</td><td>${esc(c.description || '—')}${c.checkout_url ? '<br><small class="muted">link de pagamento enviado</small>' : ''}</td><td>${money(c.amount_cents)}</td><td>${cmdDate(c.due_date)}</td>
+          <td>${c.delinquent_confirmed_at ? '<span class="chip bad"><span class="dot"></span>Inadimplência confirmada</span>' : late(c) ? `<span class="chip warn"><span class="dot"></span>Vencida há ${days(c)} dias</span><br><small class="muted">sem pagamento registrado</small>` : '<span class="chip"><span class="dot"></span>A vencer</span>'}</td>
+          <td><div class="acts">${late(c) && !c.delinquent_confirmed_at ? `<button class="b3 sm ghost" data-cmd="delinq" data-id="${c.id}">Confirmar inadimplência</button>` : ''}${c.delinquent_confirmed_at ? `<button class="b3 sm ghost" data-cmd="undelinq" data-id="${c.id}">Desfazer</button>` : ''}<button class="b3 sm ghost" data-cmd="chargeTask" data-id="${c.id}">Tarefa de cobrança</button></div></td></tr>`), 'Nenhuma cobrança pendente.')}
+        <p class="muted" style="font-size:13px;margin-top:8px">Cobrança vencida não é inadimplência. Só conta como inadimplente depois que você confirmar com o cliente. Pagamento manual se registra no Financeiro, ou o Commander pede sua aprovação antes.</p></section>
+      <section class="card"><div class="ch"><h3>Pagamentos confirmados no período</h3></div>${cmdTbl(['Quando', 'Cliente', 'Cobrança', 'Valor'], paid.slice(0, 30).map(c => `<tr><td>${cmdDate(c.paid_at)}</td><td>${esc(who(c))}</td><td>${esc(c.description || '—')}</td><td>${money(c.amount_cents)}</td></tr>`), 'Nenhum pagamento confirmado no período.')}</section>`;
+  },
+  subs(C) {
+    const d = C.data, today = cmdToday(), ms0 = today.slice(0, 8) + '01', sales = cmdSalesOn(d);
+    const st = s => { const due = today.slice(0, 8) + String(s.day).padStart(2, '0'), pd = s.paid ? ymd(s.paid) : null, start = s.start ? ymd(s.start) : null;
+      if (s.status === 'canceled') return ['Cancelada', '', due]; if (s.status === 'paused') return ['Suspensa', '', due]; if (pd && pd >= ms0) return ['Ativa · paga no mês', 'ok', due];
+      if (start && start > due) return ['Ativa', 'ok', due]; if (due < today) return ['Vencida · sem pagamento registrado', 'bad', due]; return (Date.parse(due) - Date.parse(today)) / DAY <= 7 ? ['Renovação próxima', 'warn', due] : ['Pagamento pendente', 'acc', due]; };
+    const subs = (S.subs || []).map(s => Object.assign({}, s, {_st:st(s)}));
+    const F = {all:['Todas', () => true], upcoming:['Renovação próxima', s => s._st[0] === 'Renovação próxima'], overdue:['Vencidas', s => s._st[0].startsWith('Vencida')], active:['Ativas', s => s.status === 'active'], paused:['Suspensas', s => s.status === 'paused'], canceled:['Canceladas', s => s.status === 'canceled']};
+    const list = subs.filter(F[C.sf][1]).sort((a, b) => a._st[2] < b._st[2] ? -1 : 1);
+    return `<section class="card"><div class="ch"><h3>Monitor de assinaturas</h3><button class="b3 sm ghost" data-cmd="ref" data-kind="subscription" data-id="x">Abrir Mensalidades</button></div>
+      <div class="pills" style="margin-bottom:10px">${Object.entries(F).map(([k, v]) => cmdPill('sf', k, `${v[0]} (${subs.filter(v[1]).length})`, C.sf)).join('')}</div>
+      ${cmdTbl(['Cliente', 'Plano', 'Valor', 'Vencimento', 'Status', 'Último pagamento', 'Próxima renovação', ''], list.map(s => {
+        const next = s._st[0].startsWith('Ativa · paga') || s._st[0] === 'Ativa' ? (() => { const n = new Date(s._st[2] + 'T12:00:00'); n.setMonth(n.getMonth() + 1); return fdate(n.getTime()); })() : cmdDate(s._st[2]);
+        return `<tr><td>${esc(clientName(s.client) || '—')}</td><td>${esc(s.name)}</td><td>${money(s.amount)}</td><td>todo dia ${s.day}</td><td><span class="chip ${s._st[1]}"><span class="dot"></span>${esc(s._st[0])}</span></td><td>${s.paid ? fdate(s.paid) : 'nenhum'}</td><td>${s.status === 'active' ? next : '—'}</td>
+          <td><div class="acts"><button class="b3 sm ghost" data-cmd="subHist" data-id="${s.id}">Histórico</button>${sales && s.status === 'active' ? `<button class="b3 sm ghost" data-cmd="subDispatch" data-id="${s.id}">Renovação pelo AI Sales</button>` : ''}<button class="b3 sm ghost" data-cmd="subTask" data-id="${s.id}">Tarefa</button></div></td></tr>`; }), 'Nenhuma assinatura com esse filtro.')}
+      <p class="muted" style="font-size:13px;margin-top:8px">A auditoria avisa 7, 3 e 1 dia antes, no dia e depois do vencimento, um aviso de cada por mês. Vencida significa sem pagamento registrado: confirme com o cliente antes de cobrar.</p></section>`;
+  },
+  tasks(C) {
+    const d = C.data, ORG = {user:'Agenda / você', commander:'Commander', sales:'AI Sales', system:'Sistema'};
+    const TF = {open:['Abertas', t => ['pending', 'in_progress', 'awaiting_approval'].includes(t.status)], overdue:['Atrasadas', t => cmdTaskState(t) === 'overdue'], awaiting_approval:['Aguardando aprovação', t => t.status === 'awaiting_approval'],
+      commander:['Criadas pelos agentes', t => t.origin !== 'user' && ['pending', 'in_progress', 'awaiting_approval'].includes(t.status)], completed:['Concluídas', t => t.status === 'completed'], closed:['Canceladas ou com falha', t => ['cancelled', 'failed'].includes(t.status)], all:['Todas', () => true]};
+    const tasks = d.tasks.filter(TF[C.tf][1]).sort((a, b) => (cmdT(a.due_at) || 9e15) - (cmdT(b.due_at) || 9e15)).slice(0, 150);
+    const AF = {open:'Abertos', resolved:'Resolvidos', dismissed:'Dispensados', all:'Todos'};
+    const alerts = d.alerts.filter(a => (C.af === 'all' || a.status === C.af) && (!C.ac || a.category === C.ac)).slice(0, 120);
+    return `<section class="card"><div class="ch"><h3>Central de tarefas</h3><button class="b3 sm" data-cmd="taskNew">Nova tarefa</button></div>
+      <div class="pills" style="margin-bottom:10px">${Object.entries(TF).map(([k, v]) => cmdPill('tf', k, `${v[0]} (${d.tasks.filter(v[1]).length})`, C.tf)).join('')}</div>
+      ${cmdTbl(['Tarefa', 'Categoria', 'Prioridade', 'Responsável', 'Registro', 'Prazo', 'Status', 'Origem', ''], tasks.map(t => `<tr><td><b>${esc(t.title)}</b>${t.description ? `<br><small class="muted">${esc(t.description.slice(0, 140))}</small>` : ''}${t.result ? `<br><small>Resultado: ${esc(t.result)}</small>` : ''}</td>
+        <td>${esc(CMD_CAT[t.category] || '—')}</td><td>${t.priority ? aiChip(CMD_PRI, t.priority) : '—'}</td><td>${esc(cmdMail(t.assignee_id))}</td><td>${cmdRefBtn(t.related_kind, t.related_id, t.related_kind ? cmdTargetName(t.related_kind, t.related_id) : '') || '—'}</td>
+        <td>${t.due_at ? fdate(cmdT(t.due_at)) + ' ' + ftime(cmdT(t.due_at)) : '—'}</td><td>${aiChip(CMD_TASK, cmdTaskState(t))}</td><td>${esc(ORG[t.origin] || t.origin)}</td><td><button class="b3 sm ghost" data-cmd="taskEdit" data-id="${t.id}">Atualizar</button></td></tr>`), 'Nenhuma tarefa com esse filtro.')}</section>
+      <section class="card"><div class="ch"><h3>Central de alertas</h3><button class="b3 sm ghost" data-cmd="audit" ${C.busy ? 'disabled' : ''}>Rodar auditoria</button></div>
+        <div class="pills" style="margin-bottom:6px">${Object.entries(AF).map(([k, l]) => cmdPill('af', k, l, C.af)).join('')}</div>
+        <div class="pills" style="margin-bottom:10px">${cmdPill('ac', '', 'Todas as áreas', C.ac)}${Object.entries(CMD_CAT).map(([k, l]) => cmdPill('ac', k, l, C.ac)).join('')}</div>
+        ${cmdTbl(['Desde', 'Prioridade', 'Área', 'Alerta', 'Status', ''], alerts.map(a => `<tr><td>${fdate(cmdT(a.first_seen))}</td><td>${aiChip(CMD_PRI, a.priority)}</td><td>${esc(CMD_CAT[a.category] || a.category)}</td><td><b>${esc(a.title)}</b>${a.description ? `<br><small class="muted">${esc(a.description)}</small>` : ''}</td>
+          <td>${a.status === 'open' ? '<span class="chip acc">aberto</span>' : `<span class="chip ${a.status === 'resolved' ? 'ok' : ''}">${a.status === 'resolved' ? 'resolvido' : 'dispensado'}</span><br><small class="muted">${a.resolved_at ? fdate(cmdT(a.resolved_at)) : ''}</small>`}</td>
+          <td>${a.status === 'open' ? `<div class="acts">${cmdRefBtn(a.related_kind, a.related_id)}<button class="b3 sm ghost" data-cmd="alertResolve" data-id="${a.id}">Resolver</button><button class="b3 sm ghost" data-cmd="alertDismiss" data-id="${a.id}">Dispensar</button></div>` : ''}</td></tr>`), 'Nenhum alerta com esse filtro.')}
+        <p class="muted" style="font-size:13px;margin-top:8px">O mesmo problema vira um alerta só. Quando o problema some, a auditoria fecha o alerta sozinha; um alerta dispensado não volta por 30 dias.</p></section>`;
+  },
+  approvals(C) {
+    const d = C.data, pend = d.approvals.filter(a => a.status === 'pending'), done = d.approvals.filter(a => a.status !== 'pending');
+    const changes = o => { const e = Object.entries(o || {}).filter(([, v]) => v !== null && v !== undefined && v !== ''); return e.length ? `<ul class="cmdul">${e.map(([k, v]) => `<li><b>${esc(k)}:</b> ${esc(typeof v === 'object' ? JSON.stringify(v) : String(v))}</li>`).join('')}</ul>` : '<p class="muted">Sem campos alterados.</p>'; };
+    return `<section class="card"><div class="ch"><h3>Aguardando sua decisão</h3><span class="chip acc">${esc(CMD_AUTON[d.status.settings.autonomy][0])}</span></div>
+      ${pend.length ? `<div class="cmdlist">${pend.map(a => `<article class="card cmdpri p-high"><div class="cmdtop">${aiChip(CMD_APS, a.status)}<span class="muted">Pedido por ${a.agent === 'sales' ? 'AI Sales' : 'AI Commander'} · ${aiWhen(cmdT(a.requested_at))}</span></div>
+        <h4>${esc(CMD_FIN[a.action] || a.action)}</h4><p><b>Motivo:</b> ${esc(a.reason)}</p><p><b>Registro afetado:</b> ${esc(cmdTargetName(a.target_kind, a.target_id))} ${cmdRefBtn(a.target_kind, a.target_id)}</p>
+        <div><b>Dados que serão alterados:</b>${changes(a.changes)}</div>${a.consequences ? `<p class="cmdrec"><b>Consequências:</b> ${esc(a.consequences)}</p>` : ''}
+        <div class="acts"><button class="b3 sm" data-cmd="approve" data-id="${a.id}">Aprovar</button><button class="b3 sm ghost" data-cmd="reject" data-id="${a.id}">Rejeitar</button></div></article>`).join('')}</div>` : '<p class="empty">Nenhum pedido esperando aprovação.</p>'}
+      <p class="muted" style="font-size:13px;margin-top:8px">A aprovação é conferida no servidor: o pedido só executa uma vez, expira em 14 dias e operações sem caminho automático seguro viram tarefa para uma pessoa.</p></section>
+      <section class="card"><div class="ch"><h3>Histórico</h3></div>${cmdTbl(['Pedido em', 'Ação', 'Registro', 'Decisão', 'Resultado'], done.slice(0, 80).map(a => `<tr><td>${aiWhen(cmdT(a.requested_at))}</td><td>${esc(CMD_FIN[a.action] || a.action)}<br><small class="muted">${esc((a.reason || '').slice(0, 120))}</small></td>
+        <td>${esc(cmdTargetName(a.target_kind, a.target_id))}</td><td>${aiChip(CMD_APS, a.status)}<br><small class="muted">${a.decided_at ? aiWhen(cmdT(a.decided_at)) + ' · ' + esc(cmdMail(a.decided_by)) : ''}</small></td><td style="white-space:normal">${esc(a.result ? (a.result.error || a.result.nota || (a.result.ok ? 'executado' : '')) : '')}</td></tr>`), 'Nenhuma decisão ainda.')}</section>`;
+  },
+  reports(C) {
+    const d = C.data, st = d.status, cur = cmdToday().slice(0, 7);
+    if (C.report) {
+      const r = d.reports.find(x => x.id === C.report);
+      if (r) { const nar = (() => { try { return JSON.parse(r.narrative || '{}'); } catch (e) { return {}; } })();
+        return `<div class="acts"><button class="b3 sm ghost" data-cmd="repClose">Voltar aos relatórios</button><button class="b3 sm" data-cmd="repPdf" data-id="${r.id}">Exportar PDF</button></div>
+          <section class="card"><div class="ch"><h3>${esc((CMD_REPORT.find(k => k[0] === r.kind) || [r.kind, r.kind])[1])} · ${esc(r.data.label || '')}</h3><span class="muted" style="font-size:13px">De ${cmdDate(r.period_start)} a ${cmdDate(r.period_end)} · gerado ${aiWhen(cmdT(r.created_at))}</span></div>
+            ${r.data.ai_note ? `<p class="muted">${esc(r.data.ai_note)}</p>` : ''}<p class="muted" style="font-size:13px">${nar.fonte === 'ia' ? 'Resumo, oportunidades, recomendações e prioridades escritos pela IA a partir destes números.' : 'Textos gerados por regras fixas, sem IA.'} Números e listas vêm direto do banco.</p></section>
+          ${(r.data.sections || []).map(s => `<section class="card"><div class="ch"><h3>${s.n}. ${esc(s.title)}</h3></div><ul class="cmdul">${s.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul></section>`).join('')}`; }
+      C.report = null;
+    }
+    return `<form class="card" id="cmdRepForm" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Gerar relatório</h3></div>
+        <div class="fg">${aiSel('kind', 'Tipo', CMD_REPORT, 'monthly')}<div class="field"><label for="cmd_month">Mês (relatório mensal e temáticos)</label><input class="inp" id="cmd_month" name="month" type="month" value="${cur}" max="${cur}"></div></div>
+        <label class="switch"><input type="checkbox" name="ai" ${st.has_ai_key ? 'checked' : 'disabled'}> Resumo, oportunidades e recomendações escritos pela IA${st.has_ai_key ? '' : ' (grave a chave do Claude no AI Sales para usar)'}</label>
+        <p class="muted" style="font-size:13px">O mensal tem 23 seções com dados reais do período e comparação com o período anterior. Sem IA, os textos saem por regras fixas e ficam marcados assim.</p>
+        <div class="acts"><button class="b3" type="submit" ${C.busy ? 'disabled' : ''}>${C.busy ? 'Gerando…' : 'Gerar relatório'}</button></div></form>
+      <section class="card"><div class="ch"><h3>Relatórios gerados</h3></div>${cmdTbl(['Gerado', 'Tipo', 'Período', 'Texto', ''], d.reports.map(r => { let f = ''; try { f = JSON.parse(r.narrative || '{}').fonte; } catch (e) {} return `<tr><td>${aiWhen(cmdT(r.created_at))}</td><td>${esc((CMD_REPORT.find(k => k[0] === r.kind) || [r.kind, r.kind])[1])}</td><td>${esc(r.data.label || '')}</td><td>${f === 'ia' ? 'IA' : 'regras'}</td><td><div class="acts"><button class="b3 sm ghost" data-cmd="repOpen" data-id="${r.id}">Abrir</button><button class="b3 sm ghost" data-cmd="repPdf" data-id="${r.id}">PDF</button></div></td></tr>`; }), 'Nenhum relatório ainda.')}</section>`;
+  },
+  activity(C) {
+    const d = C.data, ACT_AG = {'':'Todos os agentes', commander:'AI Commander', sales:'AI Sales'}, ACT_RS = {'':'Qualquer resultado', ok:'ok', failed:'falhou', denied:'bloqueada'};
+    const acts = d.activity.filter(a => (!C.actAgent || a.agent === C.actAgent) && (!C.actRes || a.result === C.actRes)).slice(0, 200);
+    return `<section class="card"><div class="ch"><h3>Comunicação entre agentes</h3><span class="muted" style="font-size:13px">Tarefas que o Commander mandou ao AI Sales e o que voltou</span></div>
+      ${cmdTbl(['Criada', 'Tarefa', 'Para', 'Status', 'Retorno do AI Sales', 'Tentativas', ''], d.dispatches.slice(0, 100).map(x => { const r = x.result || {}; return `<tr><td>${aiWhen(cmdT(x.created_at))}</td><td><b>${esc(CMD_TT[x.task_type] || x.task_type)}</b><br><small class="muted">${esc((x.objective || '').slice(0, 120))}</small></td>
+        <td>${esc(x.lead_id ? leadName(x.lead_id) || 'lead' : x.subscription_id ? cmdTargetName('subscription', x.subscription_id) : '—')}</td><td>${aiChip(CMD_DISP, x.status)}</td>
+        <td style="white-space:normal">${r.outcome ? `<b>${esc(CMD_OUT[r.outcome] || r.outcome)}</b><br>` : ''}${esc(r.note || r.error || r.last_error || '')}${r.next_action ? `<br><small class="muted">Próxima ação: ${esc(r.next_action)}</small>` : ''}</td><td>${x.attempts}</td>
+        <td><div class="acts">${['pending', 'approved'].includes(x.status) ? `<button class="b3 sm ghost" data-cmd="dispCancel" data-id="${x.id}">Cancelar</button>` : ''}${x.status === 'failed' ? `<button class="b3 sm ghost" data-cmd="dispRetry" data-id="${x.id}">Reenviar</button>` : ''}${x.conversation_id ? cmdRefBtn('conversation', x.conversation_id, 'Conversa') : ''}<button class="b3 sm ghost" data-cmd="dispInfo" data-id="${x.id}">Detalhes</button></div></td></tr>`; }), 'O Commander ainda não mandou tarefas ao AI Sales.')}</section>
+      <section class="card"><div class="ch"><h3>Histórico dos agentes</h3></div>
+        <div class="pills" style="margin-bottom:6px">${Object.entries(ACT_AG).map(([k, l]) => cmdPill('actAgent', k, l, C.actAgent)).join('')}</div><div class="pills" style="margin-bottom:10px">${Object.entries(ACT_RS).map(([k, l]) => cmdPill('actRes', k, l, C.actRes)).join('')}</div>
+        ${cmdTbl(['Quando', 'Agente', 'Ação', 'Resultado', 'Detalhe', ''], acts.map(a => `<tr><td>${aiWhen(cmdT(a.created_at))}</td><td>${a.agent === 'sales' ? 'AI Sales' : 'AI Commander'}</td><td>${esc(CMD_ACT[a.action] || a.action)}</td><td>${aiChip(CMD_RES, a.result)}</td>
+          <td style="white-space:normal">${esc(a.detail || '')}${a.actor ? `<br><small class="muted">${esc(cmdMail(a.actor))}</small>` : ''}</td><td>${cmdRefBtn(a.ref_kind, a.ref_id)}</td></tr>`), 'Nada registrado ainda.')}
+        <p class="muted" style="font-size:13px;margin-top:8px">Os registros guardam o que foi feito, nunca senhas, chaves ou tokens.</p></section>`;
+  },
+  squad(C) {
+    const d = C.data, a = d.snap.ai || {}, n = (ag, act) => d.activity.filter(x => x.agent === ag && (!act || x.action === act)).length;
+    const perf = {commander:[['Auditorias', d.audits.length], ['Tarefas criadas', n('commander', 'task_created')], ['Conversas no chat', n('commander', 'chat')], ['Tarefas delegadas', d.dispatches.length]],
+      sales:[['Conversas no período', a.conversations ?? 0], ['Qualificados', a.qualified_by_ai ?? 0], ['Follow-ups', a.followups_sent ?? 0], ['Tarefas concluídas', d.dispatches.filter(x => x.status === 'completed').length]]};
+    const STATE = {idle:['Parado', ''], thinking:['Pensando', 'acc'], working:['Trabalhando', 'acc'], analyzing:['Analisando', 'acc'], waiting:['Esperando', 'warn'], alert:['Alerta', 'bad'], success:['Sucesso', 'ok'], error:['Erro', 'bad'], celebration:['Comemorando', 'ok']};
+    const STS = {active:['Ativo', 'ok'], paused:['Pausado', 'warn'], disabled:['Desligado', '']};
+    return `<p class="muted">Cada agente tem uma identidade própria. O mascote é só a camada visual: a inteligência funciona sem ele, e o personagem pode ser trocado depois sem mexer no agente.</p>
+      <div class="grid g2">${d.identities.map(x => `<section class="card cmdagent"><div class="ch"><div class="cmdav" aria-hidden="true">${x.avatar && /^https:\/\//.test(x.avatar) ? `<img src="${esc(x.avatar)}" alt="">` : esc(x.avatar || initials(x.name))}</div>
+          <div style="flex:1"><h3>${esc(x.name)}</h3><p class="muted" style="font-size:13px">${esc(x.department)}${x.role ? ' · ' + esc(x.role) : ''}</p></div>${aiChip(STS, x.status)}</div>
+        <p>${esc(x.description || '')}</p><p class="muted" style="font-size:13px">Personalidade: ${esc(x.personality || '—')} · Pet ID: ${esc(x.pet_id || 'a definir')} · Estado: ${aiChip(STATE, x.animation_state)}</p>
+        <div class="grid aistats">${(perf[x.agent_id] || []).map(p => aiTile(p[0], p[1])).join('')}</div>
+        <div class="acts" style="margin-top:10px">${x.view ? `<button class="b3 sm" data-cmd="squadOpen" data-k="${esc(x.view)}">Abrir painel</button>` : ''}<button class="b3 sm ghost" data-cmd="identEdit" data-id="${esc(x.agent_id)}">Editar identidade</button></div></section>`).join('')}</div>
+      <p class="muted" style="font-size:13px">Estados preparados para as animações futuras: parado, pensando, trabalhando, analisando, esperando, alerta, sucesso, erro e comemoração. Novos agentes (Finance, Operations) entram nesta mesma estrutura.</p>`;
+  },
+  settings(C) {
+    const d = C.data, st = d.status, s = st.settings, m = s.monitoring || {}, own = st.role === 'owner', dis = own ? '' : 'disabled', cats = m.categories || [];
+    const save = (ok = true) => ok ? '<div class="acts"><button class="b3" type="submit">Salvar</button></div>' : '<p class="muted" style="font-size:13px">Só o dono muda esta parte.</p>';
+    return `<form class="card" data-cmdform="identity" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Identidade</h3></div>
+        <div class="fg">${aiIn('name', 'Nome do agente', s.name)}${aiIn('language', 'Idioma', s.language)}${aiIn('personality', 'Personalidade', s.personality)}${aiIn('tone', 'Tom de comunicação', s.tone)}</div>
+        ${aiTA('description', 'Descrição', s.description, 2)}${aiTA('instructions', 'Instruções adicionais', s.instructions, 4, 'Ex.: Priorize sempre os clientes de CRM. Me mostre valores arredondados.')}${save()}</form>
+      <form class="card" data-cmdform="autonomy" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Autonomia</h3></div>
+        ${Object.entries(CMD_AUTON).map(([k, v]) => `<label class="switch" style="align-items:flex-start"><input type="radio" name="autonomy" value="${k}" ${s.autonomy === k ? 'checked' : ''} ${dis}> <span><b>${esc(v[0])}</b><br><small class="muted">${esc(v[1])}</small></span></label>`).join('')}
+        <p class="muted" style="font-size:13px">A autonomia é conferida no servidor a cada ação do agente. Ações que você faz nos botões desta aba são suas e não passam por aprovação.</p>${save(own)}</form>
+      <form class="card" data-cmdform="permissions" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Permissões do agente</h3></div>
+        <div class="cmdchecks">${Object.entries(CMD_PERM).map(([k, l]) => `<label class="switch"><input type="checkbox" name="${k}" ${s.permissions[k] ? 'checked' : ''} ${dis}> ${esc(l)}</label>`).join('')}</div>${save(own)}</form>
+      <form class="card" data-cmdform="monitoring" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Monitoramento automático</h3></div>
+        <label class="switch"><input type="checkbox" name="enabled" ${m.enabled !== false ? 'checked' : ''}> Auditoria automática ligada</label><label class="switch"><input type="checkbox" name="notify" ${m.notify !== false ? 'checked' : ''}> Avisar no sino quando aparecer alerta crítico ou alto (um aviso por auditoria)</label>
+        <div class="fg">${aiIn('interval_minutes', 'Frequência (minutos)', m.interval_minutes ?? 60, 'type="number" min="15" max="1440" step="15"')}${aiIn('stale_days', 'Lead esquecido depois de (dias)', m.stale_days ?? 7, 'type="number" min="1" max="90"')}
+          ${aiIn('hot_hours', 'Lead quente sem contato depois de (horas)', m.hot_hours ?? 24, 'type="number" min="1" max="168"')}${aiIn('proposal_days', 'Proposta parada depois de (dias)', m.proposal_days ?? 5, 'type="number" min="1" max="60"')}
+          ${aiIn('project_warning_days', 'Avisar prazo de projeto com (dias)', m.project_warning_days ?? 3, 'type="number" min="1" max="30"')}${aiIn('approval_days', 'Aprovação do cliente parada depois de (dias)', m.approval_days ?? 5, 'type="number" min="1" max="60"')}</div>
+        <div class="cmdchecks">${Object.entries(CMD_CAT).filter(([k]) => k !== 'security').map(([k, l]) => `<label class="switch"><input type="checkbox" name="cat" value="${k}" ${cats.includes(k) ? 'checked' : ''}> ${esc(l)}</label>`).join('')}</div>
+        <p class="muted" style="font-size:13px">As verificações são consultas SQL fixas, sem IA e sem custo. Segurança é sempre monitorada.</p>${save()}</form>
+      <form class="card" data-cmdform="ai" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Inteligência artificial</h3></div>
+        <div class="fg"><div class="field"><span class="flabel">Provedor</span><p>Claude (Anthropic), o mesmo do AI Sales</p></div>${aiSel('model', 'Modelo', (st.models || []).map(x => [x, x]), s.model)}${aiSel('effort', 'Esforço', [['low', 'Baixo (mais barato)'], ['medium', 'Médio'], ['high', 'Alto (análises mais profundas)']], s.effort)}</div>
+        <p class="muted" style="font-size:13px">Chave do Claude: ${st.has_ai_key ? 'gravada no cofre do servidor (compartilhada com o AI Sales)' : 'ainda não gravada. Grave em AI Sales → Integrações.'} Gasto do Commander neste mês: ${cmdUsd(st.month_cost)}.</p>
+        <div class="acts"><button class="b3 ghost" type="button" data-cmd="testAi" ${st.has_ai_key ? '' : 'disabled'}>Testar conexão</button><button class="b3" type="submit">Salvar</button></div></form>
+      <form class="card" data-cmdform="limits" style="display:flex;flex-direction:column;gap:12px" novalidate><div class="ch" style="margin:0"><h3>Limites de execução</h3></div>
+        <div class="fg">${aiIn('monthly_usd', 'Teto de custo do Commander por mês (US$)', s.limits.monthly_usd, `type="number" min="0" max="1000" ${dis}`)}${aiIn('chat_per_day', 'Mensagens no chat por dia', s.limits.chat_per_day, `type="number" min="1" max="2000" ${dis}`)}${aiIn('dispatch_per_day', 'Tarefas para o AI Sales por dia', s.limits.dispatch_per_day, `type="number" min="0" max="500" ${dis}`)}</div>${save(own)}</form>
+      <section class="card"><div class="ch"><h3>Últimas auditorias</h3></div>${cmdTbl(['Quando', 'Origem', 'Registros analisados', 'Achados', 'Severidade', 'Status'], d.audits.map(a => `<tr><td>${aiWhen(cmdT(a.started_at))}</td><td>${a.trigger === 'schedule' ? 'automática' : a.trigger === 'chat' ? 'chat' : 'manual'}</td>
+        <td style="white-space:normal">${esc(Object.entries(a.analyzed || {}).map(([k, v]) => `${k} ${v}`).join(' · '))}</td><td>${a.findings} (${a.new_alerts} novos, ${a.resolved_alerts} resolvidos)</td><td>${esc(Object.entries(a.severity || {}).map(([k, v]) => `${(CMD_PRI[k] || [k])[0]} ${v}`).join(' · ') || '—')}</td><td>${esc(a.status)}</td></tr>`), 'Nenhuma auditoria ainda.')}</section>`;
+  },
+};
+V.commander = () => {
+  const C = cmdState();
+  if (!REAL || !CMD.enabled) return head('AI Commander', 'Módulo indisponível nesta instalação.');
+  if (!C.data && !C.loading) { C.loading = true; Real.cmdLoad(C).then(() => { C.loading = false; if (view === 'commander') { render(); cmdScroll(); } }); }
+  const s = C.data && C.data.status.settings;
+  return head('AI Commander', 'Seu diretor operacional virtual: audita a empresa, prioriza o que importa e coordena o AI Sales.', s ? `<span class="chip acc"><span class="dot"></span>${esc(CMD_AUTON[s.autonomy][0])}</span><button class="b3 sm ghost" data-cmd="reload">Atualizar</button>` : '<span class="chip">Carregando…</span>')
+    + `<nav class="aitabs" aria-label="Seções do AI Commander">${CMD_TABS.map(t => `<button class="pill" data-cmd="tab" data-k="${t[0]}" aria-pressed="${C.tab === t[0]}">${t[1]}${t[0] === 'approvals' && C.data && C.data.approvals.some(a => a.status === 'pending') ? ` <span class="chip warn">${C.data.approvals.filter(a => a.status === 'pending').length}</span>` : ''}</button>`).join('')}</nav>`
+    + (C.data ? `<div class="aiview" style="display:flex;flex-direction:column;gap:16px">${CMD_VIEWS[C.tab](C)}</div>` : C.error ? `<p class="err">${esc(C.error)}</p>` : '<div class="scan" role="status" aria-label="Carregando"></div>');
+};
+const cmdScroll = () => { const b = $('#cmdMsgs'); if (b) b.scrollTop = b.scrollHeight; };
+async function cmdDo(action, o, msg, opts = {}) {
+  const C = cmdState(); C.busy = true; if (opts.render !== false) render();
+  const r = await Real.cmdAct(action, o); C.busy = false;
+  if (r.error) toast(r.error); else if (msg) toast(typeof msg === 'function' ? msg(r) : msg);
+  await Real.cmdLoad(C);
+  if (!r.error && opts.sync) { try { await Real.reload(); } catch (e) {} }
+  if (view === 'commander') render();
+  return r;
+}
+// Resultado de despacho em uma frase, do jeito que o AI Sales devolveu.
+const cmdDispMsg = r => { const x = r.resultado || r.result || {};
+  return r.duplicada ? 'Já existe uma tarefa igual em andamento para o AI Sales.' : r.aguardando_aprovacao ? 'Pedido de aprovação criado.' : r.status ? `AI Sales: ${(CMD_DISP[r.status] || [r.status])[0].toLowerCase()}${x.outcome ? ' · ' + (CMD_OUT[x.outcome] || x.outcome) : ''}${x.error ? ' · ' + x.error : ''}.` : 'Tarefa registrada.'; };
+function cmdTaskModal(pre) {
+  modal('Nova tarefa', `<div class="fg">${inp('title', 'Título', `full required autocomplete="off" value="${esc(pre.title || '')}"`)}${sel('category', 'Categoria', Object.entries(CMD_CAT).filter(([k]) => k !== 'security').map(([k, l]) => [k, l, k === (pre.category || 'operations')]))}
+    ${sel('priority', 'Prioridade', Object.entries(CMD_PRI).map(([k, v]) => [k, v[0], k === (pre.priority || 'medium')]))}${sel('assignee_id', 'Responsável', cmdTeamOpts(pre.assignee_id))}${inp('due', 'Prazo', `type="datetime-local" value="${pre.due || ''}"`)}
+    <div class="field full"><label for="m_description">Descrição</label><textarea class="inp" id="m_description" name="description" rows="3">${esc(pre.description || '')}</textarea></div></div>`,
+    fd => { const title = String(fd.get('title') || '').trim(); if (!title) return 'Escreva o título.';
+      const due = fd.get('due') ? new Date(String(fd.get('due'))).toISOString() : undefined;
+      cmdDo('taskCreate', {task:{title, description:String(fd.get('description') || '').trim() || undefined, category:fd.get('category'), priority:fd.get('priority'), assignee_id:fd.get('assignee_id') || undefined, due_at:due, related_kind:pre.related_kind, related_id:pre.related_id}},
+        r => r.duplicada ? 'Já existe uma tarefa aberta igual.' : 'Tarefa criada.', {sync:true}); }, 'Criar');
+}
+function cmdDispatchModal(pre) {
+  const tt = pre.task_type || 'recover_lead';
+  modal(pre.subscription_id ? 'Renovação pelo AI Sales' : 'Pedir ao AI Sales', `<p class="muted">O AI Sales recebe a tarefa pelo canal interno e segue as regras dele: modo atual, janela de 24 horas do WhatsApp, horário de atendimento, pedido de não contato e conversa assumida por uma pessoa. O resultado volta para o Commander.</p>
+    <div class="fg">${sel('task_type', 'Tipo', Object.entries(CMD_TT).map(([k, l]) => [k, l, k === tt]))}${sel('priority', 'Prioridade', Object.entries(CMD_PRI).map(([k, v]) => [k, v[0], k === (pre.priority || 'high')]))}
+    <div class="field full"><label for="m_objective">Objetivo</label><textarea class="inp" id="m_objective" name="objective" rows="3" required>${esc(pre.objective || '')}</textarea></div>
+    <div class="field full"><label for="m_restrictions">Restrições (opcional)</label><textarea class="inp" id="m_restrictions" name="restrictions" rows="2" placeholder="Ex.: não oferecer desconto">${esc(pre.restrictions || '')}</textarea></div></div>`,
+    fd => { const objective = String(fd.get('objective') || '').trim(); if (!objective) return 'Escreva o objetivo.';
+      cmdDo('dispatch', {dispatch:{task_type:fd.get('task_type'), priority:fd.get('priority'), objective, restrictions:String(fd.get('restrictions') || '').trim() || undefined, lead_id:pre.lead_id, subscription_id:pre.subscription_id}}, cmdDispMsg); }, 'Enviar');
+}
+const cmdRecover = name => `Recuperar o lead ${name}. Analise o histórico, veja a última interação, entenda o contexto comercial e prepare uma abordagem adequada. Não repita perguntas já respondidas. Registre o resultado e indique a próxima ação.`;
+function cmdPrint(r) {
+  const secs = (r.data.sections || []).map(s => `<h2>${s.n}. ${esc(s.title)}</h2><ul>${s.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul>`).join('');
+  const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório ${esc(r.data.label || '')}</title><style>body{font:14px/1.5 system-ui,sans-serif;color:#111;margin:32px;max-width:820px}h1{font-size:22px;margin:0 0 4px}h2{font-size:16px;margin:22px 0 6px;break-after:avoid}ul{margin:0;padding-left:20px}p{color:#555}</style></head>
+    <body><h1>${esc(brandName())} · ${esc((CMD_REPORT.find(k => k[0] === r.kind) || [r.kind, r.kind])[1])} · ${esc(r.data.label || '')}</h1><p>De ${cmdDate(r.period_start)} a ${cmdDate(r.period_end)}. Gerado pelo AI Commander com dados reais do CRM.</p>${secs}</body></html>`;
+  const w = window.open('', '_blank'); if (!w) return toast('O navegador bloqueou a janela do PDF. Libere pop-ups para este site.');
+  w.document.open(); w.document.write(html); w.document.close(); w.focus(); setTimeout(() => w.print(), 300);
+}
+document.addEventListener('submit', async e => {
+  const f = e.target, sec = f.dataset && f.dataset.cmdform;
+  if (!sec && f.id !== 'cmdChat' && f.id !== 'cmdRepForm') return;
+  e.preventDefault(); const C = cmdState();
+  if (f.id === 'cmdChat') return cmdSend($('#cmdText').value);
+  if (f.id === 'cmdRepForm') {
+    const fd = new FormData(f), kind = String(fd.get('kind')), month = String(fd.get('month') || '') || undefined;
+    toast(fd.get('ai') === 'on' ? 'Gerando o relatório; a IA escreve o resumo em seguida…' : 'Gerando o relatório…');
+    const r = await cmdDo('report', {kind, month, ai:fd.get('ai') === 'on'}, x => x.aviso || 'Relatório pronto.');
+    if (!r.error) { C.report = r.id; render(); window.scrollTo({top:0}); }
+    return;
+  }
+  const fd = new FormData(f), g = k => String(fd.get(k) ?? '').trim(), n = k => Number(fd.get(k));
+  const data = sec === 'identity' ? Object.fromEntries(['name', 'description', 'personality', 'tone', 'language', 'instructions'].map(k => [k, g(k)]))
+    : sec === 'autonomy' ? {autonomy:g('autonomy')} : sec === 'permissions' ? Object.fromEntries(Object.keys(CMD_PERM).map(k => [k, fd.get(k) === 'on']))
+    : sec === 'monitoring' ? {enabled:fd.get('enabled') === 'on', notify:fd.get('notify') === 'on', interval_minutes:n('interval_minutes'), stale_days:n('stale_days'), hot_hours:n('hot_hours'), proposal_days:n('proposal_days'), project_warning_days:n('project_warning_days'), approval_days:n('approval_days'), categories:fd.getAll('cat')}
+    : sec === 'ai' ? {provider:'anthropic', model:g('model'), effort:g('effort')} : sec === 'limits' ? {monthly_usd:n('monthly_usd'), chat_per_day:n('chat_per_day'), dispatch_per_day:n('dispatch_per_day')} : {};
+  await cmdDo('save', {section:sec, data}, 'Configuração salva.');
+});
+async function cmdSend(text) {
+  const C = cmdState(); text = String(text || '').trim();
+  if (!text || C.busy) return;
+  C.busy = true; C.draft = ''; C.data.chat.unshift({id:'tmp' + Date.now(), role:'user', content:text, tools:[], created_at:new Date().toISOString()}); render(); cmdScroll();
+  const r = await Real.cmdAct('chat', {text});
+  C.busy = false;
+  if (r.error) toast(r.error);
+  await Real.cmdLoad(C);
+  if ((r.tools || []).some(t => t.ok && t.mode === 'execute' && /^(create_|update_|cancel_|dispatch_)/.test(t.name))) { try { await Real.reload(); } catch (e) {} }
+  if (view === 'commander') { render(); cmdScroll(); const t = $('#cmdText'); if (t) t.focus(); }
+}
+document.addEventListener('input', e => {
+  const C = V._cmd; if (!C) return;
+  if (e.target.id === 'cmdText') C.draft = e.target.value;
+  if (e.target.id === 'cmdLq') { C.lq = e.target.value; C.lp = 0; const pos = e.target.selectionStart; render(); const q = $('#cmdLq'); if (q) { q.focus(); try { q.setSelectionRange(pos, pos); } catch (x) {} } }
+});
+document.addEventListener('keydown', e => { if (e.target.id === 'cmdText' && e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); cmdSend(e.target.value); } });
+document.addEventListener('change', e => {
+  const b = e.target.closest('[data-cmd]'); if (!b || !V._cmd) return;
+  const C = V._cmd, k = b.dataset.cmd;
+  if (k === 'pick') { const id = b.dataset.id; C.pick = b.checked ? [...new Set([...C.pick, id])] : C.pick.filter(x => x !== id); render(); }
+  if (k === 'pickPage') { const ids = [...document.querySelectorAll('[data-cmd="pick"]')].map(x => x.dataset.id); C.pick = b.checked ? [...new Set([...C.pick, ...ids])] : C.pick.filter(x => !ids.includes(x)); render(); }
+});
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-cmd]'); if (!b || b.tagName === 'INPUT') return;
+  const C = cmdState(), k = b.dataset.cmd, v = b.dataset.k, id = b.dataset.id, d = C.data;
+  const filters = {period:1, pc:1, pp:1, lf:1, tf:1, af:1, ac:1, pjf:1, sf:1, actAgent:1, actRes:1};
+  if (k === 'tab') { C.tab = v; C.report = null; render(); if (v === 'chat') cmdScroll(); window.scrollTo({top:0}); return; }
+  if (filters[k]) { C[k] = v; if (k === 'lf') { C.lp = 0; } render(); if (k === 'period') { await Real.cmdLoad(C); render(); } return; }
+  if (k === 'lp') { C.lp += +v; render(); return; }
+  if (k === 'intelDays') { C.intelDays = +v; render(); return; }
+  if (k === 'reload') { toast('Atualizando…'); await Real.cmdLoad(C); C.intel = null; render(); return; }
+  if (k === 'pickClear') { C.pick = []; render(); return; }
+  if (k === 'ask') { C.tab = 'chat'; cmdSend(v); return; }
+  if (k === 'goKey') { const A = aiState(); A.tab = 'integrations'; go('aisales'); return; }
+  if (k === 'squadOpen') { if (v === 'commander') { C.tab = 'central'; render(); } else go(v); return; }
+  if (k === 'ref') {
+    const kind = b.dataset.kind;
+    if (kind === 'lead') { go('funil'); openLead(id); } else if (kind === 'project') go('projetos'); else if (kind === 'charge') go('financeiro'); else if (kind === 'subscription') go('mensalidades');
+    else if (kind === 'proposal') go('propostas'); else if (kind === 'client') go('clientes'); else if (kind === 'conversation') { const A = aiState(); A.tab = 'inbox'; go('aisales'); aiOpen(id); }
+    else { C.tab = {task:'tasks', alert:'tasks', dispatch:'activity', approval:'approvals', audit:'settings', report:'reports'}[kind] || C.tab; if (kind === 'report') C.report = id; render(); }
+    return;
+  }
+  if (!d) return;
+  if (k === 'audit') { await cmdDo('audit', {}, r => r.auditoria ? `Auditoria feita: ${r.auditoria.findings} achados, ${r.auditoria.new} novos, ${r.auditoria.resolved} resolvidos.` : 'Auditoria feita.'); return; }
+  if (k === 'alertResolve' || k === 'alertDismiss') {
+    const a = d.alerts.find(x => x.id === id), res = k === 'alertResolve';
+    modal(res ? 'Marcar como resolvido' : 'Dispensar alerta', `<p>${esc(a.title)}</p><p class="muted">${res ? 'Se o problema continuar, a próxima auditoria abre o alerta de novo.' : 'O alerta não volta por 30 dias enquanto for o mesmo problema.'}</p>${inp('note', 'Observação', 'full autocomplete="off"')}`,
+      fd => { cmdDo('alert', {id, status:res ? 'resolved' : 'dismissed', note:String(fd.get('note') || '')}, res ? 'Alerta resolvido.' : 'Alerta dispensado.'); }, res ? 'Resolver' : 'Dispensar');
+    return;
+  }
+  if (k === 'alertAssign') { const a = d.alerts.find(x => x.id === id); modal('Atribuir alerta', `<p>${esc(a.title)}</p>${sel('who', 'Responsável', cmdTeamOpts(a.assigned_to))}`, fd => { cmdDo('alert', {id, status:'assign', assigned_to:fd.get('who') || null}, 'Responsável definido.'); }, 'Atribuir'); return; }
+  if (k === 'alertTask') { const a = d.alerts.find(x => x.id === id); cmdTaskModal({title:a.title, description:[a.description, a.recommendation].filter(Boolean).join('\n'), category:a.category === 'security' ? 'operations' : a.category, priority:a.priority, assignee_id:a.assigned_to, related_kind:a.related_kind || 'alert', related_id:a.related_id || a.id}); return; }
+  if (k === 'dispatchLead') { const name = leadName(id) || 'este lead'; cmdDispatchModal({lead_id:id, objective:cmdRecover(name)}); return; }
+  if (k === 'leadAssign' || k === 'bulkAssign') {
+    const ids = k === 'bulkAssign' ? C.pick.slice() : [id];
+    modal(ids.length > 1 ? `Responsável de ${ids.length} leads` : 'Responsável pelo lead', `${ids.length === 1 ? `<p>${esc(leadName(id))}</p>` : ''}${sel('who', 'Responsável', cmdTeamOpts(ids.length === 1 ? d.owner[id] : null))}`, fd => {
+      const who = fd.get('who') || null;
+      (async () => { let ok = 0, err = ''; for (const x of ids) { const r = await Real.cmdAct('record', {record:{kind:'lead', id:x, changes:{owner_id:who}, reason:'Definido pelo dono no AI Commander'}}); if (r.error) err = r.error; else ok++; }
+        if (err) toast(err); else toast(ids.length > 1 ? `${ok} leads atualizados.` : 'Responsável definido.'); C.pick = []; await Real.cmdLoad(C); render(); })(); }, 'Salvar');
+    return;
+  }
+  if (k === 'bulkDispatch') {
+    const ids = C.pick.slice();
+    modal(`Pedir ao AI Sales (${ids.length} leads)`, `<p class="muted">Cada lead vira uma tarefa separada e rastreável. Leads que já têm tarefa igual em andamento são pulados. O AI Sales segue o modo e as regras dele.</p><div class="fg"><div class="field full"><label for="m_objective">Objetivo</label><textarea class="inp" id="m_objective" name="objective" rows="3">Retomar o contato com o lead. Analise o histórico, veja a última interação e prepare uma abordagem adequada, sem repetir perguntas já respondidas. Registre o resultado e indique a próxima ação.</textarea></div></div>`, fd => {
+      const objective = String(fd.get('objective') || '').trim(); if (!objective) return 'Escreva o objetivo.';
+      (async () => { toast('Enviando para o AI Sales…'); const out = {ok:0, dup:0, err:0}; let last = '';
+        for (const x of ids) { const r = await Real.cmdAct('dispatch', {dispatch:{task_type:'recover_lead', lead_id:x, objective, priority:'high'}}); if (r.error) { out.err++; last = r.error; } else if (r.duplicada) out.dup++; else out.ok++; if (r.error && /desligado|Limite/.test(r.error)) break; }
+        toast(`${out.ok} enviados${out.dup ? `, ${out.dup} já estavam em andamento` : ''}${out.err ? `, ${out.err} com erro: ${last}` : ''}.`); C.pick = []; await Real.cmdLoad(C); render(); })(); }, 'Enviar');
+    return;
+  }
+  if (k === 'leadTask') { cmdTaskModal({title:'Acompanhar lead: ' + leadName(id), category:'sales', priority:'medium', related_kind:'lead', related_id:id, assignee_id:d.owner[id]}); return; }
+  if (k === 'projEdit') {
+    const p = d.projects.find(x => x.id === id);
+    modal('Editar projeto', `<p>${esc(p.title)}</p><div class="fg">${sel('assigned_to', 'Responsável', cmdTeamOpts(p.assigned_to))}${sel('kind', 'Serviço', [['', 'Não informado', !p.kind], ...Object.entries(CMD_KIND).map(([k2, l]) => [k2, l, p.kind === k2])])}
+      ${inp('due_date', 'Prazo de entrega', `type="date" value="${p.due_date || ''}"`)}${sel('stage', 'Etapa', Object.entries(CMD_STAGE).map(([k2, l]) => [k2, l, p.stage === k2]))}</div><p class="muted" style="font-size:13px">Concluído exige um arquivo de entrega ligado ao projeto em Arquivos.</p>`,
+      fd => { const ch = {}; if ((fd.get('assigned_to') || null) !== (p.assigned_to || null)) ch.assigned_to = fd.get('assigned_to') || null; if (fd.get('kind') && fd.get('kind') !== p.kind) ch.kind = fd.get('kind');
+        if ((fd.get('due_date') || null) !== (p.due_date || null)) ch.due_date = fd.get('due_date') || null; if (fd.get('stage') !== p.stage) ch.stage = fd.get('stage');
+        if (!Object.keys(ch).length) return 'Nada mudou.'; cmdDo('record', {record:{kind:'project', id, changes:ch, reason:'Alterado pelo dono no AI Commander'}}, 'Projeto atualizado.', {sync:true}); }, 'Salvar');
+    return;
+  }
+  if (k === 'projTask') { const p = d.projects.find(x => x.id === id); cmdTaskModal({title:'Acompanhar projeto: ' + p.title, category:'delivery', priority:'medium', related_kind:'project', related_id:id, assignee_id:p.assigned_to}); return; }
+  if (k === 'delinq' || k === 'undelinq') {
+    const c = d.charges.find(x => x.id === id), yes = k === 'delinq';
+    modal(yes ? 'Confirmar inadimplência' : 'Desfazer inadimplência', `<p>${esc(clientName(c.client_id) || leadName(c.lead_id) || 'Cliente')} · ${esc(c.description || '')} · ${money(c.amount_cents)}</p><p class="muted">${yes ? 'Confirme só depois de falar com o cliente e conferir que o pagamento realmente não foi feito. O cliente passa a contar como inadimplente nos indicadores.' : 'A cobrança volta a contar só como vencida.'}</p>`,
+      () => { cmdDo('delinquency', {id, confirm:yes}, yes ? 'Inadimplência confirmada.' : 'Inadimplência desfeita.'); }, yes ? 'Confirmar' : 'Desfazer');
+    return;
+  }
+  if (k === 'chargeTask') { const c = d.charges.find(x => x.id === id); cmdTaskModal({title:'Verificar cobrança: ' + (c.description || money(c.amount_cents)), description:`Cliente: ${clientName(c.client_id) || leadName(c.lead_id) || '—'}. Valor ${money(c.amount_cents)}, vencimento ${cmdDate(c.due_date)}.`, category:'finance', priority:c.due_date < cmdToday() ? 'high' : 'medium', related_kind:'charge', related_id:id}); return; }
+  if (k === 'subHist') { const s = (S.subs || []).find(x => x.id === id), h = d.charges.filter(c => c.subscription_id === id).sort((a, b) => a.due_date < b.due_date ? 1 : -1);
+    modal('Histórico de pagamentos', `<p>${esc(s.name)} · ${esc(clientName(s.client) || '')}</p>${cmdTbl(['Vencimento', 'Valor', 'Status', 'Pago em'], h.map(c => `<tr><td>${cmdDate(c.due_date)}</td><td>${money(c.amount_cents)}</td><td>${c.status === 'paid' ? 'pago' : c.status === 'pending' ? 'pendente' : esc(c.status)}</td><td>${c.paid_at ? cmdDate(c.paid_at) : '—'}</td></tr>`), 'Nenhuma cobrança gerada para esta assinatura ainda.')}`, null); return; }
+  if (k === 'subDispatch') { const s = (S.subs || []).find(x => x.id === id); cmdDispatchModal({subscription_id:id, task_type:'renewal', priority:'medium', objective:`Lembrar o cliente da renovação da assinatura ${s.name} (${money(s.amount)}, todo dia ${s.day}) e ajudar com o pagamento. Não trate como inadimplente nem cobre de forma agressiva.`}); return; }
+  if (k === 'subTask') { const s = (S.subs || []).find(x => x.id === id); cmdTaskModal({title:'Renovar assinatura: ' + s.name, category:'subscription', priority:'medium', related_kind:'subscription', related_id:id}); return; }
+  if (k === 'taskNew') { cmdTaskModal({}); return; }
+  if (k === 'taskEdit') {
+    const t = d.tasks.find(x => x.id === id), loc = t.due_at ? new Date(cmdT(t.due_at) - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
+    modal('Atualizar tarefa', `<p><b>${esc(t.title)}</b></p><div class="fg">${sel('status', 'Status', [['pending', 'Pendente'], ['in_progress', 'Em andamento'], ['completed', 'Concluída'], ['failed', 'Falhou'], ['cancelled', 'Cancelada']].map(o => [o[0], o[1], o[0] === t.status]))}
+      ${sel('assignee_id', 'Responsável', cmdTeamOpts(t.assignee_id))}${inp('due', 'Prazo', `type="datetime-local" value="${loc}"`)}<div class="field full"><label for="m_result">Resultado</label><textarea class="inp" id="m_result" name="result" rows="2">${esc(t.result || '')}</textarea></div></div>
+      ${(t.history || []).length ? `<p class="muted" style="font-size:13px">Histórico: ${t.history.slice(-6).map(h => `${esc((CMD_TASK[h.to] || [h.to])[0])} em ${fdate(cmdT(h.at))}`).join(' · ')}</p>` : ''}`,
+      fd => { const task = {}; if (fd.get('status') !== t.status) task.status = fd.get('status'); if ((fd.get('assignee_id') || null) !== (t.assignee_id || null) && fd.get('assignee_id')) task.assignee_id = fd.get('assignee_id');
+        if (fd.get('due')) { const iso = new Date(String(fd.get('due'))).toISOString(); if (iso !== t.due_at) task.due_at = iso; } const res = String(fd.get('result') || '').trim(); if (res !== (t.result || '')) task.result = res;
+        if (!Object.keys(task).length) return 'Nada mudou.'; cmdDo('taskUpdate', {id, task}, 'Tarefa atualizada.', {sync:true}); }, 'Salvar');
+    return;
+  }
+  if (k === 'approve' || k === 'reject') {
+    const a = d.approvals.find(x => x.id === id), yes = k === 'approve';
+    modal(yes ? 'Aprovar e executar' : 'Rejeitar pedido', `<p><b>${esc(CMD_FIN[a.action] || a.action)}</b> · ${esc(cmdTargetName(a.target_kind, a.target_id))}</p><p class="muted">${esc(a.consequences || a.reason)}</p>${yes ? '' : inp('note', 'Motivo da recusa', 'full autocomplete="off"')}`,
+      fd => { cmdDo(yes ? 'approve' : 'reject', {id, note:String(fd.get('note') || '')}, r => yes ? (r.result && r.result.nota) || (r.result && r.result.despacho ? cmdDispMsg({status:r.result.despacho.status, resultado:r.result.despacho.result}) : 'Aprovado e executado.') : 'Pedido recusado.', {sync:yes}); }, yes ? 'Aprovar' : 'Rejeitar');
+    return;
+  }
+  if (k === 'repOpen') { C.report = id; render(); window.scrollTo({top:0}); return; }
+  if (k === 'repClose') { C.report = null; render(); return; }
+  if (k === 'repPdf') { const r = d.reports.find(x => x.id === id); if (r) cmdPrint(r); return; }
+  if (k === 'dispCancel') { cmdDo('dispatchCancel', {id}, 'Tarefa cancelada.'); return; }
+  if (k === 'dispRetry') { cmdDo('dispatchRetry', {id}, r => cmdDispMsg(r)); return; }
+  if (k === 'dispInfo') {
+    const x = d.dispatches.find(y => y.id === id), r = x.result || {};
+    const rows = [['Dispatch ID', x.id], ['Origem → destino', `${x.source_agent} → ${x.dest_agent}`], ['Tipo', CMD_TT[x.task_type] || x.task_type], ['Lead', x.lead_id ? `${leadName(x.lead_id)} (${x.lead_id})` : '—'], ['Cliente', x.client_id ? clientName(x.client_id) : '—'],
+      ['Objetivo', x.objective], ['Contexto', x.context || '—'], ['Restrições', x.restrictions || '—'], ['Prioridade', (CMD_PRI[x.priority] || [x.priority])[0]], ['Prazo', x.deadline ? aiWhen(cmdT(x.deadline)) : '—'], ['Ações autorizadas', (x.authorized_actions || []).join(', ')],
+      ['Exige aprovação', x.approval_required ? 'sim' : 'não'], ['Criada em', aiWhen(cmdT(x.created_at))], ['Status', (CMD_DISP[x.status] || [x.status])[0]], ['Ações executadas', (r.actions || []).join(', ') || '—'], ['Mensagem enviada', r.message || '—'],
+      ['Situação da mensagem', r.message_status ? (AI_MSG[r.message_status] || r.message_status) : '—'], ['Resposta recebida', r.reply || '—'], ['Resultado', r.outcome ? CMD_OUT[r.outcome] || r.outcome : '—'], ['Próxima ação', r.next_action || '—'],
+      ['Precisa de uma pessoa', r.needs_human ? 'sim' : 'não'], ['Erros', r.error || r.last_error || '—']];
+    modal('Tarefa do AI Sales', `<dl class="cmddl">${rows.map(([a, b]) => `<dt>${esc(a)}</dt><dd>${esc(String(b))}</dd>`).join('')}</dl>`, null); return;
+  }
+  if (k === 'identEdit') {
+    const x = d.identities.find(y => y.agent_id === id);
+    modal('Identidade do agente', `<div class="fg">${inp('name', 'Nome', `value="${esc(x.name)}" autocomplete="off"`)}${inp('department', 'Departamento', `value="${esc(x.department)}" autocomplete="off"`)}${inp('role', 'Função', `value="${esc(x.role || '')}" autocomplete="off"`)}
+      ${inp('personality', 'Personalidade', `value="${esc(x.personality || '')}" autocomplete="off"`)}${inp('pet_id', 'Pet ID (mascote, para depois)', `value="${esc(x.pet_id || '')}" autocomplete="off"`)}${inp('avatar', 'Avatar (emoji, sigla ou link https)', `value="${esc(x.avatar || '')}" autocomplete="off"`)}
+      ${sel('status', 'Status', [['active', 'Ativo'], ['paused', 'Pausado'], ['disabled', 'Desligado']].map(o => [o[0], o[1], o[0] === x.status]))}<div class="field full"><label for="m_description">Descrição</label><textarea class="inp" id="m_description" name="description" rows="2">${esc(x.description || '')}</textarea></div></div>
+      <p class="muted" style="font-size:13px">Pausar aqui muda só a identidade visual. Para desligar o AI Sales de verdade, use AI Sales → Agente.</p>`,
+      fd => { cmdDo('identity', {id, data:Object.fromEntries(['name', 'department', 'role', 'personality', 'pet_id', 'avatar', 'status', 'description'].map(f => [f, String(fd.get(f) || '').trim()]))}, 'Identidade salva.'); }, 'Salvar');
+    return;
+  }
+  if (k === 'testAi') { toast('Testando a conexão…'); const r = await Real.cmdAct('testProvider'); toast(r.error || `Conectado: ${r.model} respondeu.`); return; }
+  if (k === 'chatClear') { modal('Limpar conversa', '<p>Apagar o histórico do seu chat com o Commander? As ações já feitas continuam registradas em Atividade.</p>', () => { cmdDo('chatClear', {}, 'Conversa limpa.'); }, 'Limpar'); return; }
+});
+// Atualiza sozinho a cada 30 s enquanto a aba está na tela (sem atrapalhar quem está digitando ou com janela aberta).
+setInterval(() => { const C = V._cmd; if (REAL && CMD.enabled && view === 'commander' && C && C.data && !C.busy && !document.hidden && !$('#scrim').classList.contains('on')) {
+  const typing = document.activeElement && /^(cmdText|cmdLq|cmd_month)$/.test(document.activeElement.id); if (typing || C.tab === 'settings' || C.tab === 'reports') return;
+  Real.cmdLoad(C).then(() => { if (view === 'commander' && !C.busy) { const keep = C.tab === 'chat'; render(); if (keep) cmdScroll(); } }); } }, 30000);
+
 /* ============ chaves de acesso (só o dono) ============ */
 // O dono escolhe o perfil, o servidor gera AMP-XXXX-XXXX-XXXX de uso único e o colaborador cria
 // o próprio e-mail e senha com ela, no app Android ou no navegador.
@@ -3101,6 +3644,7 @@ const Real = (() => {
     if (!row || !me) { await sb.auth.signOut(); mode = 'login'; paintLogin(); return say('Esta conta não tem acesso a este painel.'); }
     tid = row.id; role = ROLES[me.role] ? me.role : 'viewer'; setTenant(row); await reload();
     { const {data:ai} = await sb.rpc('ai_sales_status', {p_tenant:tid}); AI = {enabled:!!(ai && ai.enabled), admin:!!(ai && ai.admin)}; }
+    { const {data:cm} = await sb.rpc('commander_status', {p_tenant:tid}); CMD = {enabled:!!(cm && cm.enabled)}; }
     $('#login').hidden = true; $('#site').hidden = true; $('#app').hidden = false; document.body.classList.add('in-app'); FX.mode('app');
     const h = (location.hash || '').slice(1); view = allowed(h) ? h : 'painel';
     renderChrome(); render(); armLock(); listen();
@@ -3214,6 +3758,32 @@ const Real = (() => {
     const {error} = op === 'insert' ? await sb.from('ai_knowledge').insert(Object.assign({tenant_id:tid}, row)) : op === 'update' ? await sb.from('ai_knowledge').update(row).eq('id', o.id) : await sb.from('ai_knowledge').delete().eq('id', o.id);
     return error ? {error:'Só dono e admin mudam a base de conhecimento.'} : {ok:true};
   }
+  // AI Commander: leitura direta (as regras do banco só liberam dono e admin da empresa autorizada) e ações pela função ai-commander
+  const cmdAct = (action, o = {}) => fn('ai-commander', Object.assign({action, tenant_id:tid}, o));
+  async function cmdLoad(C) {
+    const q = t => sb.from(t).select('*').eq('tenant_id', tid), r = cmdRange(C.period);
+    const [st, sn, al, ap, dp, ac, rp, au, idn, ch, tk, pj, ld, cg, fl, cv] = await Promise.all([cmdAct('status'), sb.rpc('commander_snapshot', {p_tenant:tid, p_from:r.from, p_to:r.to}),
+      q('commander_alerts').order('last_seen', {ascending:false}).limit(400), q('commander_approvals').order('requested_at', {ascending:false}).limit(150),
+      q('agent_dispatches').order('created_at', {ascending:false}).limit(200), q('agent_activity').order('id', {ascending:false}).limit(300),
+      q('commander_reports').order('created_at', {ascending:false}).limit(30), q('commander_audits').order('started_at', {ascending:false}).limit(15), q('agent_identities').order('agent_id'),
+      sb.from('commander_chat').select('id, role, content, tools, created_at').eq('tenant_id', tid).order('id', {ascending:false}).limit(80),
+      sb.from('tasks').select('id, title, description, category, priority, status, origin, due_at, assignee_id, related_kind, related_id, result, history, created_at').eq('tenant_id', tid).order('created_at', {ascending:false}).limit(600),
+      sb.from('projects').select('id, title, stage, kind, due_date, started_at, delivered_at, assigned_to, client_id, lead_id, updated_at').eq('tenant_id', tid),
+      sb.from('leads').select('id, owner_id, updated_at').eq('tenant_id', tid).is('deleted_at', null).limit(10000),
+      sb.from('charges').select('id, description, amount_cents, due_date, status, paid_at, client_id, lead_id, checkout_url, delinquent_confirmed_at, subscription_id').eq('tenant_id', tid).is('deleted_at', null).in('status', ['pending', 'paid']).order('due_date').limit(3000),
+      sb.from('files').select('project_id').eq('tenant_id', tid).not('project_id', 'is', null).limit(5000),
+      sb.from('ai_conversations').select('lead_id, qualification, score').eq('tenant_id', tid).eq('is_test', false).not('lead_id', 'is', null).limit(5000)]);
+    if (st.error) { C.error = st.error; return; }
+    const owner = {}, touched = {}, conv = {};
+    (ld.data || []).forEach(x => { owner[x.id] = x.owner_id; touched[x.id] = ms(x.updated_at); });
+    (cv.data || []).forEach(x => { conv[x.lead_id] = x; });
+    C.error = ''; C.data = {status:st, snap:sn.data || {}, alerts:al.data || [], approvals:ap.data || [], dispatches:dp.data || [], activity:ac.data || [], reports:rp.data || [], audits:au.data || [],
+      identities:idn.data || [], chat:ch.data || [], tasks:tk.data || [], projects:pj.data || [], owner, touched, conv, charges:cg.data || [], files:fl.data || []};
+  }
+  async function cmdIntel(days) {
+    const {data, error} = await sb.rpc('commander_intel', {p_tenant:tid, p_from:new Date(Date.now() - days * DAY).toISOString(), p_to:new Date().toISOString()});
+    return error ? {error:'Não consegui carregar a inteligência comercial.'} : data;
+  }
   async function savePay(tag, rows) {
     const {error:e1} = await sb.from('tenants').update({payment_handle:tag || null}).eq('id', tid);
     if (e1) return 'Só o dono ou admin muda o pagamento.';
@@ -3313,7 +3883,7 @@ const Real = (() => {
     const {data:{session}} = await sb.auth.getSession();
     if (session) await openApp();
   }
-  return {aiAct, aiLoad, aiThread, aiKb, filesUpload, fileUrl, fileDelete, subLink, backups, pushOn, boot, sync, fn, reload, fichasLoad, fichaLink, fichaDrop, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, deleteMany, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
+  return {cmdAct, cmdLoad, cmdIntel, aiAct, aiLoad, aiThread, aiKb, filesUpload, fileUrl, fileDelete, subLink, backups, pushOn, boot, sync, fn, reload, fichasLoad, fichaLink, fichaDrop, toggleKey, keysLoad, keyCreate, keyRevoke, logout, payLink, proposalLink, deleteRecord, deleteMany, savePay, invite, paintLogin, submitLogin, forgot, toggleCode, accessCode, accessCodeOff, changePass, tenantId:() => tid};
 })();
 
 /* tema do sistema mudou ou o host trocou data-theme */
