@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sites · Amplitude Lab</title>
+<meta name="description" content="Portfólio de sites, sistemas e jogos criados pela Amplitude Lab: páginas de artistas, sites de negócios, CRM e jogos em HTML5.">
+<meta property="og:title" content="Sites · Amplitude Lab">
+<meta property="og:description" content="Portfólio: sites de artistas e negócios, CRM com radar de leads e jogos em HTML5.">
+<meta property="og:image" content="https://amplitudelab.github.io/lab/sites/amplitude.jpg">
+<meta name="theme-color" content="#05070f">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070f;--card:#0c1120;--line:rgba(160,180,255,.14);--ink:#eef2ff;--dim:#93a0c4;--blue:#5b8cff;--blue2:#3d6bff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(900px 500px at 50% -10%,rgba(61,107,255,.22),transparent 70%);pointer-events:none}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;position:relative}
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+nav a{font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--dim)}
+nav a:hover{color:var(--ink)}
+.cta{border:1px solid var(--line);padding:11px 16px;border-radius:999px;color:var(--ink)!important}
+header{padding:56px 0 30px}
+.eyebrow{font:500 12px 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+h1{font:700 clamp(40px,7vw,84px)/1 'Space Grotesk',sans-serif;letter-spacing:-.03em;margin:14px 0 18px}
+h1 span{background:linear-gradient(90deg,#6f9bff,#3d6bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{max-width:640px;color:var(--dim);font-size:18px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.chips a{font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;color:var(--dim)}
+.chips a:hover{color:var(--ink);border-color:var(--blue)}
+section{padding:40px 0}
+h2{font:700 28px 'Space Grotesk',sans-serif;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--dim);margin:0 0 22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s,border-color .25s}
+.card:hover{transform:translateY(-3px);border-color:rgba(91,140,255,.45)}
+.media{aspect-ratio:16/9;background:#000;position:relative;overflow:hidden}
+.media img,.media video{width:100%;height:100%;object-fit:cover;display:block}
+.tag{position:absolute;top:12px;left:12px;font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;background:rgba(5,7,15,.75);backdrop-filter:blur(6px);border:1px solid var(--line);padding:6px 9px;border-radius:999px}
+.body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.body h3{font:700 21px 'Space Grotesk',sans-serif;margin:0}
+.body p{margin:0;color:var(--dim);font-size:15px}
+.stack{font:400 12px 'IBM Plex Mono',monospace;color:#7f8db3}
+.go{margin-top:auto;padding-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+.go a{font:500 12px 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:10px 14px;border-radius:999px;background:linear-gradient(180deg,#6f9bff,#3d6bff);color:#fff}
+.go a.alt{background:none;border:1px solid var(--line);color:var(--ink)}
+footer{border-top:1px solid var(--line);margin-top:40px;padding:34px 0 50px;color:var(--dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:14px}
+@media(max-width:420px){.grid{grid-template-columns:1fr}nav .hide{display:none}}
+@media(prefers-reduced-motion:reduce){.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav><a href="../">← Amplitude Lab</a><a class="cta" href="https://wa.me/5511952182016?text=Oi!%20Vi%20o%20portf%C3%B3lio%20da%20Amplitude%20Lab">Fazer orçamento</a></nav>
+
+<header>
+  <div class="eyebrow">Portfólio · sites, sistemas e jogos</div>
+  <h1>Sites que a gente <span>já colocou no ar.</span></h1>
+  <p class="lead">Páginas de artistas, sites de negócios, um CRM com radar de leads e jogos em HTML5. Tudo desenhado e desenvolvido pela Amplitude Lab, com design, código e IA.</p>
+  <div class="chips"><a href="#artistas">Artistas e DJs</a><a href="#negocios">Negócios</a><a href="#sistemas">Sistemas</a><a href="#jogos">Jogos</a></div>
+</header>
+
+<section id="artistas">
+  <h2>Artistas e DJs</h2>
+  <p class="sub">Press kit, sets, agenda e booking em uma página com a cara do artista.</p>
+  <div class="grid">
+    <article class="card"><div class="media"><video src="darky.mp4" poster="darky.jpg" muted loop playsinline preload="none"></video><span class="tag">Artista</span></div>
+      <div class="body"><h3>DARKY</h3><p>Site do projeto de Bruno Martins: três projetos em um só lugar (Darky, Slowly, Obskurial), players, festivais, press kit e pedido de booking.</p><div class="stack">HTML · CSS · JS · direção de arte</div>
+      <div class="go"><a href="../darky/">Ver site</a></div></div></article>
+    <article class="card"><div class="media"><video src="bruxo-scroll.mp4" poster="bruxo.jpg" muted loop playsinline preload="none"></video><span class="tag">Artista</span></div>
+      <div class="body"><h3>BRUXO</h3><p>Página do projeto de Progressive, Hard e Hi-Tech: o BPM sobe conforme a rolagem e o campo de partículas pulsa junto.</p><div class="stack">Canvas · animação · identidade visual</div>
+      <div class="go"><a href="bruxo/">Ver site</a></div></div></article>
+    <article class="card"><div class="media"><video src="mercurio.mp4" poster="mercurio.jpg" muted loop playsinline preload="none"></video><span class="tag">DJ</span></div>
+      <div class="body"><h3>MERCÚRIO</h3><p>Site de DJ de Progressive com estética cyber, vídeos verticais, gigs e press kit, em PT e EN.</p><div class="stack">HTML · CSS · JS · bilíngue</div>
+      <div class="go"><a href="https://symbiozyy.github.io/mercuriodj/">Ver site</a></div></div></article>
+    <article class="card"><div class="media"><video src="astralix.mp4" poster="astralix.jpg" muted loop playsinline preload="none"></video><span class="tag">DJ</span></div>
+      <div class="body"><h3>ASTRALIX</h3><p>Site de DJ de Psytrance com entrada sonora, release, jornada, galeria de festas e booking.</p><div class="stack">HTML · CSS · JS · áudio</div>
+      <div class="go"><a href="https://symbiozyy.github.io/astralixdj/">Ver site</a></div></div></article>
+    <article class="card"><div class="media"><video src="odium.mp4" poster="odium.jpg" muted loop playsinline preload="none"></video><span class="tag">Produtora</span></div>
+      <div class="body"><h3>ODIUM</h3><p>Produtora de áudio: logo em 3D, player de beats, trabalhos no Spotify e calculadora de orçamento que envia pelo WhatsApp.</p><div class="stack">Three.js · GSAP · JS</div>
+      <div class="go"><a href="https://symbiozyy.github.io/od1um/">Ver site</a></div></div></article>
+  </div>
+</section>
+
+<section id="negocios">
+  <h2>Negócios</h2>
+  <p class="sub">Sites que vendem: orçamento guiado, vitrine e pedido direto no WhatsApp.</p>
+  <div class="grid">
+    <article class="card"><div class="media"><video src="amplitude.mp4" poster="amplitude.jpg" muted loop playsinline preload="none"></video><span class="tag">Estúdio</span></div>
+      <div class="body"><h3>Amplitude Lab</h3><p>Site do estúdio com cenas 3D interativas, modelos rodando no celular e orçamento guiado.</p><div class="stack">Three.js · GSAP ScrollTrigger · JS</div>
+      <div class="go"><a href="../">Ver site</a></div></div></article>
+    <article class="card"><div class="media"><video src="ame.mp4" poster="ame.jpg" muted loop playsinline preload="none"></video><span class="tag">Site + marca</span></div>
+      <div class="body"><h3>AME Redes de Proteção</h3><p>Identidade visual completa (logos, cores, tipografia, avatar) e site de vendas com obras e orçamento.</p><div class="stack">Branding · SVG · HTML · CSS</div>
+      <div class="go"><a href="https://symbiozyy.github.io/amerededeprotecao/">Ver site</a></div></div></article>
+    <article class="card"><div class="media"><img src="modelos.jpg" alt="Hub de modelos de site por segmento" loading="lazy"><span class="tag">Modelos</span></div>
+      <div class="body"><h3>Modelos por segmento</h3><p>Cinco sites navegáveis: barbearia, tatuagem, hamburgueria, moda e decoração, cada um em versão ilustrada e com fotos.</p><div class="stack">HTML · CSS · JS · UI mobile</div>
+      <div class="go"><a href="../modelos/">Ver modelos</a><a class="alt" href="../demos/">Demos de clientes</a></div></div></article>
+  </div>
+</section>
+
+<section id="sistemas">
+  <h2>Sistemas</h2>
+  <p class="sub">Software de gestão feito para o pequeno negócio vender mais.</p>
+  <div class="grid">
+    <article class="card"><div class="media"><video src="crm.mp4" poster="crm.jpg" muted loop playsinline preload="none"></video><span class="tag">SaaS</span></div>
+      <div class="body"><h3>Amplitude CRM</h3><p>Painel, funil de vendas, agenda, propostas, financeiro e o Radar de Leads, que busca negócios sem site no mapa. Back-end em Supabase com RLS e Edge Functions.</p><div class="stack">JS · Supabase · PostgreSQL · Cloudflare Workers</div>
+      <div class="go"><a href="../crm/app/">Testar o CRM</a><a class="alt" href="../crm/">Página do produto</a></div></div></article>
+  </div>
+</section>
+
+<section id="jogos">
+  <h2>Jogos</h2>
+  <p class="sub">Jogos de navegador e celular, do motor gráfico à trilha sonora.</p>
+  <div class="grid">
+    <article class="card"><div class="media"><img src="quebradaz.jpg" alt="Tela inicial do jogo Quebrada Z" loading="lazy"><span class="tag">Mobile · PWA</span></div>
+      <div class="body"><h3>QUEBRADA Z</h3><p>Sobrevivência por ondas na quebrada, estilo CoD Zombies: campanha com chefes, economia, upgrades, sprites e áudio autorais.</p><div class="stack">HTML5 Canvas · PWA · pixel art · FL Studio</div>
+      <div class="go"><a href="https://quebradaz.github.io/game/">Jogar</a></div></div></article>
+    <article class="card"><div class="media"><video src="zonazero.mp4" poster="zonazero.jpg" muted loop playsinline preload="none"></video><span class="tag">Navegador</span></div>
+      <div class="body"><h3>ZONA ZERO</h3><p>Horror cósmico isométrico com motor próprio que transforma modelos voxel em pixel art, IA com A* e cidade procedural.</p><div class="stack">HTML5 Canvas · JS puro · procedural</div>
+      <div class="go"><a href="https://symbiozyy.github.io/zonazero/">Jogar</a></div></div></article>
+  </div>
+</section>
+
+<footer><span>Amplitude Lab · laboratório de experiências digitais · São Paulo, Brasil</span><span><a href="https://instagram.com/amplitude_lab">@amplitude_lab</a> · <a href="https://wa.me/5511952182016">WhatsApp</a></span></footer>
+</div>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){v.preload='auto';v.play().catch(()=>{})}else v.pause()}),{threshold:.35});
+document.querySelectorAll('video').forEach(v=>io.observe(v));
+</script>
+</body>
+</html>
