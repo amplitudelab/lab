@@ -1,0 +1,1153 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>BRUXO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: one vertical set — tempo rises as you scroll, and the particle field beats with it. */
+:root{
+  --void:#06040b;
+  --void-2:#120a1f;
+  --ember:#e0a44a;
+  --magenta:#ff2fd0;
+  --cyan:#22e6ff;
+  --acid:#c6ff3f;
+  --ink:#f4eeff;
+  --ink-dim:#a494c2;
+  --line:rgba(244,238,255,.12);
+  --line-strong:rgba(224,164,74,.34);
+
+  --display:'Pirata One', 'Palatino Linotype', serif;
+  --label:'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --body:'Barlow', system-ui, -apple-system, sans-serif;
+  --data:'IBM Plex Mono', ui-monospace, monospace;
+
+  color-scheme: dark;
+  --gut-l: max(18px, env(safe-area-inset-left, 0px));
+  --gut-r: max(18px, env(safe-area-inset-right, 0px));
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth; overflow-x:hidden; background:var(--void);}
+body{
+  background:var(--void); color:var(--ink);
+  font-family:var(--body); font-size:16px; line-height:1.6;
+  overflow-x:hidden; width:100%; position:relative;
+  -webkit-font-smoothing:antialiased;
+}
+img{display:block; max-width:100%;}
+::selection{ background:rgba(255,47,208,.35); color:#fff; }
+:focus-visible{ outline:2px solid var(--ember); outline-offset:3px; }
+
+/* ---------- fixed atmosphere layers ---------- */
+.layer{ position:fixed; inset:0; pointer-events:none; }
+.glow-field{
+  z-index:0;
+  background:
+    radial-gradient(ellipse 58% 38% at 14% 6%, rgba(255,47,208,.26), transparent 62%),
+    radial-gradient(ellipse 52% 44% at 90% 16%, rgba(34,230,255,.18), transparent 62%),
+    radial-gradient(ellipse 66% 48% at 52% 98%, rgba(198,255,63,.11), transparent 62%),
+    linear-gradient(180deg, var(--void) 0%, var(--void-2) 55%, var(--void) 100%);
+}
+.tarot-veil{
+  z-index:0;
+  background-image:url("media/00.jpg");
+  background-size:cover; background-position:center top;
+  opacity:.12; filter:saturate(.7) contrast(1.05);
+  mix-blend-mode:screen;
+}
+.tarot-veil::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, var(--void) 0%, transparent 22%, transparent 72%, var(--void) 100%);
+}
+#fx{ position:fixed; inset:0; z-index:1; pointer-events:none; }
+.vignette{
+  z-index:2;
+  background:radial-gradient(ellipse 85% 70% at 50% 45%, transparent 40%, rgba(6,4,11,.72) 100%);
+}
+.noise{
+  z-index:3; opacity:.05; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.scanline{
+  z-index:3; opacity:.22; mix-blend-mode:overlay;
+  background:repeating-linear-gradient(180deg, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.35) 2px 3px);
+}
+
+/* ---------- set progress ---------- */
+.progress{
+  position:fixed; top:0; left:0; right:0; height:2px; z-index:40;
+  background:rgba(244,238,255,.07);
+}
+.progress i{
+  display:block; height:100%; width:0%;
+  background:linear-gradient(90deg,var(--cyan),var(--magenta) 55%,var(--acid));
+  box-shadow:0 0 12px rgba(255,47,208,.6);
+}
+
+/* ---------- BPM HUD ---------- */
+.hud{
+  position:fixed; left:0; bottom:0; z-index:40;
+  padding:0 0 max(14px, env(safe-area-inset-bottom,0px)) var(--gut-l);
+  display:flex; align-items:center; gap:12px;
+  font-family:var(--data);
+}
+.hud-inner{
+  display:flex; align-items:center; gap:12px;
+  background:rgba(8,5,14,.72); backdrop-filter:blur(8px);
+  border:1px solid var(--line); border-radius:100px;
+  padding:8px 14px 8px 10px;
+}
+.hud-beat{
+  width:30px; height:30px; border-radius:50%; flex:0 0 auto;
+  border:1px solid var(--line-strong); position:relative;
+  display:grid; place-items:center;
+}
+.hud-dot{
+  width:9px; height:9px; border-radius:50%; background:var(--ember);
+  box-shadow:0 0 10px var(--ember); transform:scale(.7);
+}
+.hud-ring{
+  position:absolute; inset:-1px; border-radius:50%;
+  border:1px solid var(--ember); opacity:0; transform:scale(.8);
+}
+.hud-bpm{ font-size:15px; letter-spacing:.02em; font-variant-numeric:tabular-nums; color:var(--ink); }
+.hud-bpm em{ font-style:normal; font-size:10px; color:var(--ink-dim); margin-left:4px; letter-spacing:.14em; }
+.hud-stage{ font-size:9.5px; letter-spacing:.22em; color:var(--ember); margin-top:1px; }
+.hud-toggle{
+  width:30px; height:30px; border-radius:50%; cursor:pointer;
+  background:none; border:1px solid var(--line); color:var(--ink-dim);
+  font-size:10px; display:grid; place-items:center; font-family:var(--data);
+  transition:color .2s, border-color .2s;
+}
+.hud-toggle:hover{ color:var(--ink); border-color:var(--line-strong); }
+@media (max-width:520px){
+  .hud-stage{ display:none; }
+  .hud-inner{ padding:6px 12px 6px 8px; }
+}
+
+/* ---------- shared ---------- */
+section, header, footer{ position:relative; z-index:4; }
+.wrap{
+  max-width:1060px; margin:0 auto; width:100%;
+  padding-left:var(--gut-l); padding-right:var(--gut-r);
+}
+.narrow{ max-width:760px; }
+h1,h2,h3{ line-height:1.02; text-wrap:balance; font-weight:400; }
+.eyebrow{
+  font-family:var(--label); font-weight:600;
+  font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:var(--cyan);
+}
+.rule{ height:1px; background:linear-gradient(90deg,var(--line-strong),transparent); }
+.sec-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.sec-head h2{
+  font-family:var(--display); font-size:clamp(2.3rem,6vw,3.6rem); letter-spacing:.01em;
+}
+.sec-note{
+  font-family:var(--data); font-size:11.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-dim);
+}
+
+/* reveal: visible at rest, JS only hides what starts below the fold */
+.rv{ transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+.rv.pending{ opacity:0; transform:translateY(22px); }
+
+/* ---------- HERO ---------- */
+.hero{ padding-block:clamp(48px,9vw,96px) clamp(40px,7vw,72px); }
+.hero-grid{
+  display:grid; gap:clamp(28px,5vw,56px);
+  grid-template-columns:1fr; align-items:center;
+}
+@media (min-width:900px){
+  .hero-grid{ grid-template-columns:1.05fr .95fr; }
+  .hero-copy{ order:1; } .orb-wrap{ order:2; }
+}
+.hero h1{
+  font-family:var(--display);
+  font-size:clamp(4.4rem,16vw,9rem);
+  margin:.06em 0 .12em; letter-spacing:.012em; position:relative;
+  background:linear-gradient(104deg,var(--magenta) 0%, var(--ember) 30%, var(--ink) 52%, var(--cyan) 76%, var(--acid) 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  filter:drop-shadow(0 0 28px rgba(255,47,208,.22));
+}
+.hero h1::after{
+  content:"BRUXO"; position:absolute; inset:0; z-index:-1;
+  color:rgba(34,230,255,.26); transform:translate(3px,-2px);
+  filter:blur(1px);
+}
+.tag{
+  font-size:clamp(1.02rem,2.1vw,1.22rem); color:var(--ink-dim);
+  max-width:46ch; line-height:1.62;
+}
+.routes{ margin-top:26px; display:flex; gap:8px; flex-wrap:wrap; }
+.routes span{
+  font-family:var(--label); font-weight:600; font-size:13px; letter-spacing:.2em;
+  padding:7px 15px; border:1px solid var(--line-strong); border-radius:100px; color:var(--ink);
+  background:rgba(224,164,74,.05);
+}
+.routes span:nth-child(2){ border-color:rgba(255,47,208,.4); }
+.routes span:nth-child(3){ border-color:rgba(198,255,63,.4); }
+.platform-links{ margin-top:28px; display:flex; gap:12px; flex-wrap:wrap; }
+.platform-btn{
+  width:50px; height:50px; border-radius:50%; border:1px solid var(--line-strong);
+  display:grid; place-items:center; color:var(--ink); text-decoration:none;
+  background:rgba(224,164,74,.05);
+  transition:transform .18s, background .18s, border-color .18s, color .18s;
+}
+.platform-btn svg{ width:22px; height:22px; }
+.platform-btn:hover{ transform:translateY(-3px); background:rgba(224,164,74,.16); color:var(--ember); }
+
+/* orb: moon mandala framing the portrait */
+.orb-wrap{ display:grid; place-items:center; }
+.orb{
+  position:relative; width:min(84vw,430px); aspect-ratio:1;
+  display:grid; place-items:center;
+}
+.mandala{
+  position:absolute; inset:0; width:100%; height:100%;
+  touch-action:none; cursor:grab; opacity:.85;
+}
+.mandala .moon-ring{ transform-origin:200px 200px; animation:spin 150s linear infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.orb-photo{
+  position:relative; width:56%; aspect-ratio:1; border-radius:50%;
+  overflow:hidden; border:1px solid rgba(224,164,74,.45);
+  box-shadow:0 0 70px rgba(255,47,208,.22), inset 0 0 40px rgba(6,4,11,.6);
+}
+.orb-photo img{ width:100%; height:100%; object-fit:cover; object-position:center 42%; filter:contrast(1.08) saturate(.95); }
+.orb-photo::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(170deg, rgba(255,47,208,.3), transparent 45%, rgba(34,230,255,.22));
+  mix-blend-mode:color; opacity:.7;
+}
+.orb-pulse{
+  position:absolute; width:56%; aspect-ratio:1; border-radius:50%;
+  border:1px solid var(--ember); opacity:0; pointer-events:none;
+}
+
+/* ---------- MARQUEE ---------- */
+.marquee{
+  margin-top:clamp(36px,6vw,64px);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  overflow:hidden; padding:14px 0; position:relative; z-index:4;
+  background:rgba(8,5,14,.45);
+}
+.marquee-track{ display:flex; gap:0; width:max-content; animation:slide 38s linear infinite; }
+.marquee span{
+  font-family:var(--display); font-size:clamp(1.3rem,3.4vw,2rem);
+  padding:0 26px; color:var(--ink-dim); white-space:nowrap;
+}
+.marquee span b{ color:var(--ember); font-weight:400; }
+@keyframes slide{ to{ transform:translateX(-50%); } }
+
+/* ---------- BIO ---------- */
+.bio{ padding-block:clamp(60px,10vw,110px); }
+.bio-grid{ display:grid; gap:clamp(26px,4vw,48px); grid-template-columns:1fr; align-items:start; }
+@media (min-width:860px){ .bio-grid{ grid-template-columns:1fr 340px; } }
+.bio h2{ font-family:var(--display); font-size:clamp(2.4rem,6.4vw,3.8rem); color:var(--ember); margin-bottom:22px; }
+.bio p{ font-size:clamp(1.02rem,1.9vw,1.14rem); line-height:1.72; max-width:62ch; }
+.bio p + p{ margin-top:18px; }
+.bio strong{ color:var(--magenta); font-weight:600; }
+.bio-portrait{ position:relative; }
+.bio-portrait img{
+  width:100%; border-radius:3px; filter:grayscale(1) contrast(1.12);
+  border:1px solid var(--line);
+}
+.bio-portrait figcaption{
+  font-family:var(--data); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--ink-dim); margin-top:10px;
+}
+.corner{ position:absolute; width:16px; height:16px; border:1px solid var(--ember); opacity:.75; }
+.corner.tl{ top:-5px; left:-5px; border-right:0; border-bottom:0; }
+.corner.br{ bottom:26px; right:-5px; border-left:0; border-top:0; }
+
+/* ---------- JOURNEY ---------- */
+.band{
+  position:relative; z-index:4; overflow:hidden;
+  height:clamp(230px,38vw,400px);
+  border-block:1px solid var(--line);
+}
+.band img{
+  position:absolute; inset:-14% 0; width:100%; height:128%; object-fit:cover;
+  object-position:center 40%; filter:contrast(1.1) saturate(1.05);
+  will-change:transform;
+}
+.band::after{
+  content:""; position:absolute; inset:0;
+  background:
+    linear-gradient(180deg, var(--void) 0%, rgba(6,4,11,.25) 35%, rgba(6,4,11,.4) 65%, var(--void) 100%),
+    linear-gradient(90deg, rgba(255,47,208,.22), transparent 55%, rgba(34,230,255,.2));
+  mix-blend-mode:multiply;
+}
+.band-label{
+  position:absolute; left:0; bottom:18px; z-index:2;
+  padding-left:var(--gut-l); padding-right:var(--gut-r);
+  font-family:var(--data); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--ink); text-shadow:0 2px 14px rgba(0,0,0,.9);
+}
+.journey{ padding-block:clamp(60px,9vw,100px); }
+.bpm-chart{ width:100%; height:auto; display:block; margin-top:34px; }
+.bpm-chart .curve{ stroke-dasharray:1400; stroke-dashoffset:0; }
+.bpm-chart.pending-draw .curve{ stroke-dashoffset:1400; }
+.bpm-chart .curve.draw{ transition:stroke-dashoffset 2.2s cubic-bezier(.3,.7,.2,1); stroke-dashoffset:0; }
+.stages{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:38px; }
+@media (max-width:700px){ .stages{ grid-template-columns:1fr; } }
+.stage{ border-top:2px solid var(--line); padding-top:16px; min-width:0; }
+.stage.prog{ border-color:var(--cyan); }
+.stage.hard{ border-color:var(--magenta); }
+.stage.hitech{ border-color:var(--acid); }
+.stage .bpm{ font-family:var(--data); font-size:12px; color:var(--ink-dim); font-variant-numeric:tabular-nums; letter-spacing:.06em; }
+.stage h3{ font-family:var(--display); font-size:1.65rem; margin:8px 0 10px; }
+.stage.prog h3{ color:var(--cyan); } .stage.hard h3{ color:var(--magenta); } .stage.hitech h3{ color:var(--acid); }
+.stage p{ color:var(--ink-dim); font-size:.97rem; line-height:1.6; }
+
+/* ---------- GALLERY ---------- */
+.gallery{ padding-block:clamp(50px,8vw,90px); }
+.mosaic{ columns:3; column-gap:14px; margin-top:34px; }
+@media (max-width:880px){ .mosaic{ columns:2; } }
+@media (max-width:430px){ .mosaic{ columns:1; } }
+.tile{
+  break-inside:avoid; margin:0 0 14px; position:relative; display:block; width:100%;
+  border:1px solid var(--line); border-radius:3px; overflow:hidden; cursor:pointer;
+  background:rgba(255,47,208,.05); padding:0;
+  transition:border-color .25s, transform .25s;
+}
+.tile img{
+  width:100%; height:auto; display:block;
+  filter:grayscale(.55) contrast(1.06) brightness(.92);
+  transition:filter .4s, transform .5s cubic-bezier(.2,.7,.2,1);
+}
+.tile::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 50%, rgba(6,4,11,.85));
+  opacity:.75; transition:opacity .3s; pointer-events:none;
+}
+.tile figcaption{
+  position:absolute; left:12px; bottom:10px; z-index:2;
+  font-family:var(--data); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-dim); transition:color .25s;
+}
+.tile:hover{ border-color:var(--line-strong); transform:translateY(-3px); }
+.tile:hover img{ filter:grayscale(0) contrast(1.1) brightness(1); transform:scale(1.04); }
+.tile:hover figcaption{ color:var(--ember); }
+.tile:hover::after{ opacity:.55; }
+
+/* ---------- LIGHTBOX ---------- */
+.lightbox{
+  position:fixed; inset:0; z-index:90; display:none;
+  align-items:center; justify-content:center;
+  padding:max(20px, env(safe-area-inset-top,0px)) var(--gut-r) max(20px, env(safe-area-inset-bottom,0px)) var(--gut-l);
+}
+.lightbox.open{ display:flex; }
+.lightbox-backdrop{ position:absolute; inset:0; background:rgba(4,2,8,.95); backdrop-filter:blur(6px); }
+.lightbox-content{ position:relative; z-index:1; max-width:min(94vw,860px); max-height:84vh; display:grid; place-items:center; }
+.lightbox-content img{ max-width:100%; max-height:84vh; border-radius:4px; box-shadow:0 0 80px rgba(224,164,74,.22); }
+.lb-btn{
+  position:absolute; z-index:2; width:44px; height:44px; border-radius:50%;
+  border:1px solid var(--line-strong); background:rgba(8,5,14,.6); color:var(--ink);
+  font-size:18px; display:grid; place-items:center; cursor:pointer; font-family:var(--data);
+}
+.lb-btn:hover{ background:rgba(224,164,74,.18); }
+.lb-close{ top:max(18px, env(safe-area-inset-top,0px)); right:var(--gut-r); }
+.lb-prev{ left:var(--gut-l); top:50%; transform:translateY(-50%); }
+.lb-next{ right:var(--gut-r); top:50%; transform:translateY(-50%); }
+.lb-count{
+  position:absolute; bottom:max(18px, env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%);
+  z-index:2; font-family:var(--data); font-size:11px; letter-spacing:.2em; color:var(--ink-dim);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---------- TRACKS ---------- */
+.tracks{ padding-block:clamp(50px,8vw,90px); }
+.track{
+  display:block; text-decoration:none; color:inherit;
+  border:1px solid var(--line); border-radius:4px; padding:18px 20px; margin-top:14px;
+  background:linear-gradient(180deg, rgba(255,255,255,.028), rgba(255,255,255,.008));
+  transition:border-color .25s, transform .2s, background .25s;
+}
+.track:hover{ border-color:rgba(255,47,208,.45); transform:translateY(-2px); background:rgba(255,47,208,.05); }
+.track-head{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; }
+.track-head h3{ font-family:var(--display); font-size:1.55rem; }
+.track-head .src{ font-family:var(--data); font-size:11px; letter-spacing:.16em; color:var(--cyan); text-transform:uppercase; }
+.wave{ display:flex; align-items:flex-end; gap:2px; height:34px; margin-top:14px; }
+.wave i{
+  flex:1 1 auto; min-width:0; background:var(--line-strong); border-radius:1px;
+  transition:background .35s, opacity .35s; opacity:.55;
+}
+.track:hover .wave i{ background:linear-gradient(180deg,var(--magenta),var(--ember)); opacity:1; }
+.play-row{
+  display:flex; align-items:center; gap:11px; margin-top:14px;
+  font-family:var(--data); font-size:12px; letter-spacing:.1em; color:var(--ink-dim);
+}
+.play-icon{
+  width:32px; height:32px; border-radius:50%; border:1px solid var(--line);
+  display:grid; place-items:center; color:var(--cyan); font-size:11px; flex:0 0 auto;
+  transition:border-color .25s, background .25s, color .25s;
+}
+.track:hover .play-icon{ border-color:var(--cyan); background:rgba(34,230,255,.14); color:var(--ink); }
+
+/* ---------- FOOTER ---------- */
+footer{ padding-block:clamp(60px,9vw,110px) clamp(70px,8vw,100px); text-align:center; }
+footer h2{
+  font-family:var(--display); font-size:clamp(2.1rem,6.4vw,3.6rem); margin-bottom:26px;
+  background:linear-gradient(100deg,var(--ember),var(--acid),var(--cyan));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.foot-links{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.foot-link{
+  display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink);
+  font-family:var(--data); font-size:12px; letter-spacing:.1em;
+  border:1px solid var(--line); padding:11px 20px; border-radius:100px;
+  transition:border-color .22s, color .22s, background .22s;
+}
+.foot-link:hover{ border-color:var(--ember); color:var(--ember); background:rgba(224,164,74,.07); }
+.fine{
+  margin-top:46px; font-family:var(--data); font-size:11px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--ink-dim);
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .mandala .moon-ring, .marquee-track{ animation:none; }
+  .rv{ transition:none; }
+  .rv.pending{ opacity:1; transform:none; }
+}
+</style>
+
+<div class="layer glow-field"></div>
+<div class="layer tarot-veil"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="layer vignette"></div>
+<div class="layer noise"></div>
+<div class="layer scanline"></div>
+
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+<div class="hud">
+  <div class="hud-inner">
+    <div class="hud-beat"><span class="hud-ring" id="hudRing"></span><span class="hud-dot" id="hudDot"></span></div>
+    <div>
+      <div class="hud-bpm"><span id="hudBpm">136</span><em>BPM</em></div>
+      <div class="hud-stage" id="hudStage">PROGRESSIVE</div>
+    </div>
+    <button type="button" class="hud-toggle" id="fxToggle" aria-pressed="false" aria-label="Pausar movimento da página">❙❙</button>
+  </div>
+</div>
+
+<header class="hero wrap" data-bpm="136">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow">Progressive / Hard / Hi-Tech</div>
+      <h1>BRUXO</h1>
+      <p class="tag">Uma viagem sonora em constante transformação, onde o BPM deixa de ser velocidade e passa a ser narrativa.</p>
+      <div class="routes">
+        <span>Progressive</span><span>Hard</span><span>Hi-Tech</span>
+      </div>
+      <div class="platform-links">
+        <a class="platform-btn" href="https://youtube.com/@symbiozyyrecords" target="_blank" rel="noopener" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="20" height="12" rx="4" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 9.5v5l4.5-2.5-4.5-2.5z" fill="currentColor"/></svg>
+        </a>
+        <a class="platform-btn" href="https://instagram.com/bruxoemsp" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
+        </a>
+        <a class="platform-btn" href="https://on.soundcloud.com/t3p0I67O0NMFmF27Ih" target="_blank" rel="noopener" aria-label="SoundCloud">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 16.5v-4M6 17v-6M9 17v-8M12 17V7.5c2.8-.9 5.5 1 5.8 3.7 2.3-.1 4.2 1.6 4.2 3.8 0 2.1-1.8 3-3.7 3H12z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="orb-wrap">
+      <div class="orb">
+        <svg class="mandala" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="200" cy="200" r="190" fill="none" stroke="var(--ember)" stroke-opacity=".16"/>
+          <circle cx="200" cy="200" r="168" fill="none" stroke="var(--cyan)" stroke-opacity=".12" stroke-dasharray="2 7"/>
+          <circle cx="200" cy="200" r="146" fill="none" stroke="var(--magenta)" stroke-opacity=".14"/>
+          <g class="moon-ring">
+            <circle cx="200" cy="200" r="178" fill="none" stroke="var(--ember)" stroke-opacity=".22" stroke-dasharray="1 12"/>
+            <g transform="translate(200,22)"><circle r="13" fill="none" stroke="var(--ember)" stroke-opacity=".35"/><circle r="12" fill="var(--ember)" fill-opacity=".8"/><circle cx="0" cy="0" r="12" fill="var(--void)"/></g>
+            <g transform="translate(326,74)"><circle r="13" fill="none" stroke="var(--ember)" stroke-opacity=".35"/><circle r="12" fill="var(--ember)" fill-opacity=".8"/><circle cx="-8" cy="0" r="12" fill="var(--void)"/></g>
+            <g transform="translate(378,200)"><circle r="13" fill="none" stroke="var(--ember)" stroke-opacity=".35"/><circle r="12" fill="var(--ember)" fill-opacity=".8"/><circle cx="-12" cy="0" r="12" fill="var(--void)"/></g>
+            <g transform="translate(326,326)"><circle r="13" fill="none" stroke="var(--ember)" stroke-opacity=".35"/><circle r="12" fill="var(--ember)" fill-opacity=".8"/><circle cx="-18" cy="0" r="12" fill="var(--void)"/></g>
+            <g transform="translate(200,378)"><circle r="13" fill="none" stroke="var(--ember)" stroke-opacity=".35"/><circle r="12" fill="var(--ember)" fill-opacity=".8"/><circle cx="-26" cy="0" r="12" fill="var(--void)"/></g>
+            <g transform="translate(74,326)"><circle r="13" fill="none" stroke="var(--ember)" stroke-opacity=".35"/><circle r="12" fill="var(--ember)" fill-opacity=".8"/><circle cx="16" cy="0" r="12" fill="var(--void)"/></g>
+            <g transform="translate(22,200)"><circle r="13" fill="none" stroke="var(--ember)" stroke-opacity=".35"/><circle r="12" fill="var(--ember)" fill-opacity=".8"/><circle cx="11" cy="0" r="12" fill="var(--void)"/></g>
+            <g transform="translate(74,74)"><circle r="13" fill="none" stroke="var(--ember)" stroke-opacity=".35"/><circle r="12" fill="var(--ember)" fill-opacity=".8"/><circle cx="5" cy="0" r="12" fill="var(--void)"/></g>
+          </g>
+          <g stroke="var(--ember)" stroke-opacity=".3" fill="none" stroke-width="1">
+            <path d="M200,54 L318,200 L200,346 L82,200 Z"/>
+            <path d="M200,80 L296,200 L200,320 L104,200 Z" stroke-opacity=".18"/>
+          </g>
+        </svg>
+        <div class="orb-pulse" id="orbPulse"></div>
+        <div class="orb-photo">
+          <img src="media/07.jpg" alt="Bruxo em retrato aproximado, com tatuagens no rosto e gorro de pele" width="700" height="700">
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack">
+    <span>Progressive <b>✦</b> Hard <b>✦</b> Hi-Tech <b>✦</b> 136 → 190 BPM <b>✦</b> Imersão <b>✦</b> Tensão <b>✦</b> Explosão <b>✦</b> Catarse <b>✦</b>&nbsp;</span>
+    <span>Progressive <b>✦</b> Hard <b>✦</b> Hi-Tech <b>✦</b> 136 → 190 BPM <b>✦</b> Imersão <b>✦</b> Tensão <b>✦</b> Explosão <b>✦</b> Catarse <b>✦</b>&nbsp;</span>
+  </div>
+</div>
+
+<section class="bio wrap" data-bpm="138">
+  <div class="bio-grid">
+    <div class="rv">
+      <h2>Quem é o Bruxo?</h2>
+      <p>Bruxo transforma a pista em uma verdadeira <strong>experiência psicodélica</strong>, explorando três das vertentes mais intensas e marcantes da cena: Progressive, Hard e Hi-Tech.</p>
+      <p>Seu diferencial está na construção de um set que foge do óbvio. Como uma verdadeira montanha-russa de BPMs, a apresentação conduz o público por diferentes estados de energia — imersão, tensão, explosão e catarse.</p>
+      <p>A viagem começa nas atmosferas progressivas, construindo a narrativa de forma hipnótica e envolvente. Aos poucos, a intensidade aumenta, atravessando frequências mais agressivas do Hard e chegando à velocidade e à <strong>psicodelia extrema</strong> do Hi-Tech.</p>
+      <p>O set ganha identidade ainda mais autoral através da união de tracks próprias com produções de amigos, parceiros e artistas que compartilham dessa mesma visão — uma seleção exclusiva e imprevisível a cada apresentação.</p>
+    </div>
+    <figure class="bio-portrait rv">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <img src="media/06.jpg" alt="Retrato em preto e branco de Bruxo sorrindo, em frente a um muro grafitado" width="700" height="700">
+      <figcaption>São Paulo · retrato</figcaption>
+    </figure>
+  </div>
+</section>
+
+<div class="band" data-bpm="150">
+  <img src="media/02.jpg" alt="Bruxo mixando na cabine sob luz verde" id="bandImg" width="536" height="700">
+  <div class="band-label">A cabine · onde a curva começa a subir</div>
+</div>
+
+<section class="journey wrap" data-bpm="155">
+  <div class="sec-head rv">
+    <h2>Uma única viagem. Várias dimensões.</h2>
+    <div class="sec-note">A curva de BPM como narrativa</div>
+  </div>
+
+  <svg class="bpm-chart rv" id="bpmChart" viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Curva de BPM do set: começa perto de 132 BPM no Progressive, passa por 145 a 160 BPM no Hard e chega acima de 185 BPM no Hi-Tech.">
+    <defs>
+      <linearGradient id="bpmLine" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#22e6ff"/><stop offset="52%" stop-color="#ff2fd0"/><stop offset="100%" stop-color="#c6ff3f"/>
+      </linearGradient>
+      <linearGradient id="bpmFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ff2fd0" stop-opacity=".26"/><stop offset="100%" stop-color="#ff2fd0" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+
+    <rect x="56" y="30" width="334" height="230" fill="#22e6ff" fill-opacity=".045"/>
+    <rect x="390" y="30" width="230" height="230" fill="#ff2fd0" fill-opacity=".05"/>
+    <rect x="620" y="30" width="220" height="230" fill="#c6ff3f" fill-opacity=".045"/>
+
+    <g stroke="rgba(244,238,255,0.1)" stroke-width="1">
+      <line x1="56" y1="210.7" x2="840" y2="210.7"/>
+      <line x1="56" y1="145" x2="840" y2="145"/>
+      <line x1="56" y1="79.3" x2="840" y2="79.3"/>
+      <line x1="56" y1="260" x2="840" y2="260"/>
+    </g>
+    <g fill="#a494c2" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="end">
+      <text x="46" y="214">140</text><text x="46" y="148.5">160</text><text x="46" y="82.8">180</text><text x="46" y="263.5">125</text>
+    </g>
+
+    <path class="curve" d="M56,237 C120,230 140,222 180,217 C240,209 260,205 300,198 C360,188 380,180 420,171 C480,160 500,153 540,145 C600,132 610,118 650,106 C690,94 712,82 750,73 C790,63 812,50 840,40"
+          fill="none" stroke="url(#bpmLine)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M56,237 C120,230 140,222 180,217 C240,209 260,205 300,198 C360,188 380,180 420,171 C480,160 500,153 540,145 C600,132 610,118 650,106 C690,94 712,82 750,73 C790,63 812,50 840,40 L840,260 L56,260 Z"
+          fill="url(#bpmFill)"/>
+
+    <circle cx="300" cy="198" r="5" fill="#22e6ff"/><circle cx="300" cy="198" r="10" fill="none" stroke="#22e6ff" stroke-opacity=".4"/>
+    <circle cx="540" cy="145" r="5" fill="#ff2fd0"/><circle cx="540" cy="145" r="10" fill="none" stroke="#ff2fd0" stroke-opacity=".4"/>
+    <circle cx="790" cy="57" r="5" fill="#c6ff3f"/><circle cx="790" cy="57" r="10" fill="none" stroke="#c6ff3f" stroke-opacity=".4"/>
+
+    <g font-family="IBM Plex Mono, monospace" font-size="11.5">
+      <text x="300" y="182" fill="#22e6ff" text-anchor="middle">132–142</text>
+      <text x="540" y="129" fill="#ff2fd0" text-anchor="middle">145–160</text>
+      <text x="790" y="41" fill="#c6ff3f" text-anchor="middle">170–190+</text>
+    </g>
+
+    <g font-family="Barlow Condensed, sans-serif" font-size="14" font-weight="600" fill="#a494c2" letter-spacing="3">
+      <text x="56" y="288">ABERTURA</text>
+      <text x="448" y="288" text-anchor="middle">TENSÃO</text>
+      <text x="840" y="288" text-anchor="end">CATARSE</text>
+    </g>
+    <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#a494c2" letter-spacing="1.5">
+      <text x="56" y="312">TEMPO DE SET →</text>
+      <text x="840" y="312" text-anchor="end">BPM ↑</text>
+    </g>
+  </svg>
+
+  <div class="stages">
+    <div class="stage prog rv">
+      <div class="bpm">~132–142 BPM</div>
+      <h3>Progressive</h3>
+      <p>Construção hipnótica e envolvente. A narrativa começa em camadas, atmosférica.</p>
+    </div>
+    <div class="stage hard rv">
+      <div class="bpm">~145–160 BPM</div>
+      <h3>Hard</h3>
+      <p>A intensidade sobe. Frequências mais agressivas, tensão crescente.</p>
+    </div>
+    <div class="stage hitech rv">
+      <div class="bpm">170–190+ BPM</div>
+      <h3>Hi-Tech</h3>
+      <p>Velocidade e psicodelia extrema. Explosão e catarse.</p>
+    </div>
+  </div>
+</section>
+
+<section class="gallery wrap" data-bpm="168">
+  <div class="sec-head rv">
+    <h2>Visual</h2>
+    <div class="sec-note">Clique para ampliar</div>
+  </div>
+  <div class="mosaic" id="mosaic">
+    <figure class="tile rv" data-src="media/02.jpg"><img src="media/02.jpg" alt="Bruxo mixando sob luz verde" loading="lazy" width="536" height="700"><figcaption>nos pratos</figcaption></figure>
+    <figure class="tile rv" data-src="media/06.jpg"><img src="media/06.jpg" alt="Retrato em preto e branco, sorrindo" loading="lazy" width="700" height="700"><figcaption>grillz</figcaption></figure>
+    <figure class="tile rv" data-src="media/04.jpg"><img src="media/04.jpg" alt="Bruxo pendurado na estrutura de uma ponte ferroviária sobre a mata" loading="lazy" width="525" height="700"><figcaption>a ponte</figcaption></figure>
+    <figure class="tile rv" data-src="media/03.jpg"><img src="media/03.jpg" alt="Bruxo rindo ao lado de um cão preto" loading="lazy" width="525" height="700"><figcaption>parceiro</figcaption></figure>
+    <figure class="tile rv" data-src="media/07.jpg"><img src="media/07.jpg" alt="Retrato aproximado sobre fundo vermelho" loading="lazy" width="700" height="700"><figcaption>fundo vermelho</figcaption></figure>
+    <figure class="tile rv" data-src="media/05.jpg"><img src="media/05.jpg" alt="Bruxo deitado no asfalto ao lado de um tênis" loading="lazy" width="466" height="700"><figcaption>asfalto</figcaption></figure>
+    <figure class="tile rv" data-src="media/01.jpg"><img src="media/01.jpg" alt="Bruxo tocando ao ar livre durante o dia" loading="lazy" width="450" height="700"><figcaption>luz do dia</figcaption></figure>
+  </div>
+</section>
+
+<section class="tracks wrap" data-bpm="180">
+  <div class="sec-head rv">
+    <h2>Faixas</h2>
+    <div class="sec-note">Músicas autorais</div>
+  </div>
+
+  <a class="track rv" href="https://on.soundcloud.com/1IY7MNOwyDdlC2lplo" target="_blank" rel="noopener">
+    <div class="track-head"><h3>Poder Ancestral</h3><span class="src">SoundCloud</span></div>
+    <div class="wave" data-seed="7" aria-hidden="true"></div>
+    <div class="play-row"><span class="play-icon">▶</span><span>Ouvir no SoundCloud</span></div>
+  </a>
+  <a class="track rv" href="https://on.soundcloud.com/JlOc1kjYm02j3fAnXN" target="_blank" rel="noopener">
+    <div class="track-head"><h3>Looting</h3><span class="src">SoundCloud</span></div>
+    <div class="wave" data-seed="23" aria-hidden="true"></div>
+    <div class="play-row"><span class="play-icon">▶</span><span>Ouvir no SoundCloud</span></div>
+  </a>
+  <a class="track rv" href="https://on.soundcloud.com/lrGN4Ayadzr848UoLk" target="_blank" rel="noopener">
+    <div class="track-head"><h3>Echo</h3><span class="src">SoundCloud</span></div>
+    <div class="wave" data-seed="41" aria-hidden="true"></div>
+    <div class="play-row"><span class="play-icon">▶</span><span>Ouvir no SoundCloud</span></div>
+  </a>
+</section>
+
+<div class="band" data-bpm="190">
+  <img src="media/04.jpg" alt="Bruxo na estrutura de uma ponte sobre a mata" id="bandImg2" width="525" height="700">
+  <div class="band-label">Fora da pista · mesma frequência</div>
+</div>
+
+<footer class="wrap" data-bpm="190">
+  <h2>Progressive → Hard → Hi-Tech</h2>
+  <div class="foot-links">
+    <a class="foot-link" href="https://instagram.com/bruxoemsp" target="_blank" rel="noopener">Instagram @bruxoemsp</a>
+    <a class="foot-link" href="https://on.soundcloud.com/t3p0I67O0NMFmF27Ih" target="_blank" rel="noopener">SoundCloud</a>
+    <a class="foot-link" href="https://youtube.com/@symbiozyyrecords" target="_blank" rel="noopener">YouTube</a>
+  </div>
+  <div class="fine">Bruxo — DJ set / projeto autoral</div>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Imagem ampliada">
+  <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+  <button type="button" class="lb-btn lb-close" id="lbClose" aria-label="Fechar">&times;</button>
+  <button type="button" class="lb-btn lb-prev" id="lbPrev" aria-label="Anterior">&#8249;</button>
+  <button type="button" class="lb-btn lb-next" id="lbNext" aria-label="Próxima">&#8250;</button>
+  <div class="lightbox-content" id="lightboxContent"></div>
+  <div class="lb-count" id="lbCount">1 / 7</div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ============ 1. BEAT CLOCK — the page's tempo, driven by scroll ============ */
+  var clock = {
+    bpm: 136, target: 136, phase: 0, pulse: 0, beatCount: 0, running: !reduce
+  };
+  var sections = Array.prototype.slice.call(document.querySelectorAll('[data-bpm]'));
+
+  function stageName(b){
+    if(b < 145) return 'PROGRESSIVE';
+    if(b < 168) return 'HARD';
+    return 'HI-TECH';
+  }
+  function readScroll(){
+    var mid = window.innerHeight * 0.5, best = null, bestD = Infinity;
+    for(var i=0;i<sections.length;i++){
+      var r = sections[i].getBoundingClientRect();
+      var c = r.top + r.height/2;
+      var d = Math.abs(c - mid);
+      if(r.bottom > 0 && r.top < window.innerHeight && d < bestD){ bestD = d; best = sections[i]; }
+    }
+    if(best) clock.target = parseFloat(best.getAttribute('data-bpm')) || 136;
+
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var p = max > 0 ? Math.min(1, Math.max(0, h.scrollTop / max)) : 0;
+    var bar = document.getElementById('progressBar');
+    if(bar) bar.style.width = (p*100).toFixed(2) + '%';
+  }
+
+  var hudBpm = document.getElementById('hudBpm');
+  var hudStage = document.getElementById('hudStage');
+  var hudDot = document.getElementById('hudDot');
+  var hudRing = document.getElementById('hudRing');
+  var orbPulse = document.getElementById('orbPulse');
+
+  function onBeat(){
+    clock.pulse = 1;
+    clock.beatCount++;
+    if(hudRing){
+      hudRing.style.transition = 'none';
+      hudRing.style.opacity = '.95';
+      hudRing.style.transform = 'scale(.7)';
+      /* force reflow so the next transition runs */
+      void hudRing.offsetWidth;
+      hudRing.style.transition = 'opacity .45s ease-out, transform .45s ease-out';
+      hudRing.style.opacity = '0';
+      hudRing.style.transform = 'scale(1.6)';
+    }
+    if(orbPulse && clock.beatCount % 2 === 0){
+      orbPulse.style.transition = 'none';
+      orbPulse.style.opacity = '.5';
+      orbPulse.style.transform = 'scale(1)';
+      void orbPulse.offsetWidth;
+      orbPulse.style.transition = 'opacity 1.1s ease-out, transform 1.1s ease-out';
+      orbPulse.style.opacity = '0';
+      orbPulse.style.transform = 'scale(1.75)';
+    }
+    FX.burst();
+  }
+
+  /* ============ 2. PARTICLE FIELD ============ */
+  var canvas = document.getElementById('fx');
+  var ctx = canvas.getContext('2d');
+  var W = 0, H = 0, DPR = 1;
+  var dust = [], sparks = [], glyphs = [];
+  var pointer = { x: -9999, y: -9999, active: false };
+
+  var PAL = [
+    [224,164,74],   /* ember */
+    [255,47,208],   /* magenta */
+    [34,230,255],   /* cyan */
+    [198,255,63],   /* acid */
+    [244,238,255]   /* ink */
+  ];
+  var PAL_W = [0.42, 0.2, 0.18, 0.08, 0.12];
+
+  function pickColor(){
+    var r = Math.random(), a = 0;
+    for(var i=0;i<PAL_W.length;i++){ a += PAL_W[i]; if(r <= a) return PAL[i]; }
+    return PAL[0];
+  }
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = Math.floor(W * DPR);
+    canvas.height = Math.floor(H * DPR);
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    seedDust();
+  }
+
+  function seedDust(){
+    var n = Math.round(Math.min(170, Math.max(55, (W * H) / 13000)));
+    dust.length = 0;
+    for(var i=0;i<n;i++){
+      dust.push({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        z: 0.28 + Math.random()*0.72,
+        r: 0.5 + Math.random()*1.9,
+        vx: (Math.random()-0.5)*0.16,
+        vy: -(0.07 + Math.random()*0.32),
+        drift: Math.random()*Math.PI*2,
+        dspd: 0.004 + Math.random()*0.01,
+        c: pickColor()
+      });
+    }
+  }
+
+  /* sigils: the occult marks the project already wears */
+  var SIGILS = [
+    function(c,s){ c.moveTo(0,-s); c.lineTo(s*0.87,s*0.5); c.lineTo(-s*0.87,s*0.5); c.closePath(); },
+    function(c,s){ c.moveTo(0,s); c.lineTo(s*0.87,-s*0.5); c.lineTo(-s*0.87,-s*0.5); c.closePath();
+                   c.moveTo(-s*0.6,0); c.lineTo(s*0.6,0); },
+    function(c,s){ c.arc(0,0,s,0,Math.PI*2); c.moveTo(0,-s); c.lineTo(0,s); c.moveTo(-s,0); c.lineTo(s,0); },
+    function(c,s){ c.arc(0,0,s,Math.PI*0.32,Math.PI*1.68); c.moveTo(s*0.52,-s*0.8); c.arc(s*0.1,0,s*0.86,Math.PI*1.68,Math.PI*0.32,true); },
+    function(c,s){ for(var i=0;i<5;i++){ var a=-Math.PI/2 + i*(4*Math.PI/5); var x=Math.cos(a)*s, y=Math.sin(a)*s; if(i===0) c.moveTo(x,y); else c.lineTo(x,y); } c.closePath(); },
+    function(c,s){ c.ellipse(0,0,s,s*0.56,0,0,Math.PI*2); c.moveTo(s*0.34,0); c.arc(0,0,s*0.34,0,Math.PI*2); },
+    function(c,s){ c.arc(0,0,s,0,Math.PI*2); c.moveTo(0,-s*1.5); c.lineTo(0,-s); c.moveTo(-s*0.5,-s*1.4); c.lineTo(0,-s*1.9); c.lineTo(s*0.5,-s*1.4); }
+  ];
+
+  function spawnGlyph(){
+    if(glyphs.length > 4) return;
+    glyphs.push({
+      x: W*(0.08 + Math.random()*0.84),
+      y: H*(0.12 + Math.random()*0.76),
+      s: 16 + Math.random()*34,
+      rot: Math.random()*Math.PI*2,
+      vrot: (Math.random()-0.5)*0.0035,
+      life: 0,
+      max: 4200 + Math.random()*2600,
+      fn: SIGILS[(Math.random()*SIGILS.length)|0],
+      c: Math.random() < 0.62 ? PAL[0] : (Math.random() < 0.5 ? PAL[1] : PAL[2])
+    });
+  }
+
+  var FX = {
+    burst: function(){
+      if(!clock.running) return;
+      var energy = (clock.bpm - 130) / 60;               /* 0 at 130bpm, 1 at 190bpm */
+      energy = Math.max(0, Math.min(1, energy));
+      var n = Math.round(10 + energy * 26);
+      var cx = W * (0.2 + Math.random()*0.6);
+      var cy = H * (0.25 + Math.random()*0.6);
+      var base = pickColor();
+      for(var i=0;i<n;i++){
+        var a = Math.random()*Math.PI*2;
+        var sp = (0.7 + Math.random()*2.6) * (0.65 + energy);
+        sparks.push({
+          x: cx, y: cy, px: cx, py: cy,
+          vx: Math.cos(a)*sp, vy: Math.sin(a)*sp - 0.25,
+          life: 0, max: 420 + Math.random()*620,
+          w: 0.6 + Math.random()*1.3,
+          c: Math.random() < 0.72 ? base : pickColor()
+        });
+      }
+      if(sparks.length > 900) sparks.splice(0, sparks.length - 900);
+    }
+  };
+
+  function drawDust(dt){
+    for(var i=0;i<dust.length;i++){
+      var p = dust[i];
+      if(clock.running){
+        p.drift += p.dspd;
+        p.x += p.vx * p.z + Math.sin(p.drift) * 0.22 * p.z;
+        p.y += p.vy * (0.6 + p.z) * (1 + clock.pulse*0.5);
+
+        if(pointer.active){
+          var dx = p.x - pointer.x, dy = p.y - pointer.y;
+          var d2 = dx*dx + dy*dy;
+          if(d2 < 26000 && d2 > 1){
+            var d = Math.sqrt(d2);
+            var f = (1 - d/161) * 0.9;
+            p.x += (-dy/d) * f * 1.5 + (dx/d) * f * 0.7;
+            p.y += ( dx/d) * f * 1.5 + (dy/d) * f * 0.7;
+          }
+        }
+        if(p.y < -12){ p.y = H + 12; p.x = Math.random()*W; }
+        if(p.x < -12) p.x = W + 12;
+        if(p.x > W + 12) p.x = -12;
+      }
+      var alpha = (0.16 + p.z*0.42) * (0.75 + clock.pulse*0.55);
+      var r = p.r * (1 + clock.pulse*0.35);
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(' + p.c[0] + ',' + p.c[1] + ',' + p.c[2] + ',' + alpha.toFixed(3) + ')';
+      ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  function drawSparks(dt){
+    for(var i=sparks.length-1;i>=0;i--){
+      var s = sparks[i];
+      s.life += dt;
+      if(s.life > s.max){ sparks.splice(i,1); continue; }
+      s.px = s.x; s.py = s.y;
+      s.vx *= 0.975; s.vy = s.vy*0.975 + 0.012;
+      s.x += s.vx; s.y += s.vy;
+      var t = 1 - s.life / s.max;
+      var a = t * t * 0.85;
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(' + s.c[0] + ',' + s.c[1] + ',' + s.c[2] + ',' + a.toFixed(3) + ')';
+      ctx.lineWidth = s.w * t;
+      ctx.moveTo(s.px, s.py);
+      ctx.lineTo(s.x, s.y);
+      ctx.stroke();
+    }
+  }
+
+  function drawGlyphs(dt){
+    for(var i=glyphs.length-1;i>=0;i--){
+      var g = glyphs[i];
+      g.life += dt;
+      if(g.life > g.max){ glyphs.splice(i,1); continue; }
+      var t = g.life / g.max;
+      var a = Math.sin(t * Math.PI) * 0.3;
+      if(clock.running) g.rot += g.vrot;
+      ctx.save();
+      ctx.translate(g.x, g.y);
+      ctx.rotate(g.rot);
+      ctx.beginPath();
+      g.fn(ctx, g.s);
+      ctx.strokeStyle = 'rgba(' + g.c[0] + ',' + g.c[1] + ',' + g.c[2] + ',' + (a*(0.8 + clock.pulse*0.5)).toFixed(3) + ')';
+      ctx.lineWidth = 1.1;
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  var last = 0, glyphTimer = 0, visible = true;
+  function frame(now){
+    requestAnimationFrame(frame);
+    if(!visible) { last = now; return; }
+    var dt = last ? Math.min(now - last, 60) : 16;
+    last = now;
+
+    if(clock.running){
+      clock.bpm += (clock.target - clock.bpm) * Math.min(1, dt / 900);
+      clock.phase += dt;
+      var interval = 60000 / clock.bpm;
+      while(clock.phase >= interval){ clock.phase -= interval; onBeat(); }
+      clock.pulse *= Math.pow(0.9955, dt);
+      if(clock.pulse < 0.002) clock.pulse = 0;
+
+      glyphTimer += dt;
+      if(glyphTimer > 2600){ glyphTimer = 0; if(Math.random() < 0.8) spawnGlyph(); }
+    }
+
+    if(hudBpm){
+      var shown = Math.round(clock.bpm);
+      if(hudBpm.textContent !== String(shown)) hudBpm.textContent = shown;
+    }
+    if(hudStage){
+      var st = stageName(clock.bpm);
+      if(hudStage.textContent !== st) hudStage.textContent = st;
+    }
+    if(hudDot){
+      hudDot.style.transform = 'scale(' + (0.7 + clock.pulse*0.75).toFixed(3) + ')';
+    }
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    drawGlyphs(dt);
+    drawDust(dt);
+    drawSparks(dt);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', function(){ visible = !document.hidden; });
+  window.addEventListener('pointermove', function(e){
+    pointer.x = e.clientX; pointer.y = e.clientY; pointer.active = true;
+  }, {passive:true});
+  window.addEventListener('pointerleave', function(){ pointer.active = false; });
+
+  if(reduce){
+    /* one calm, static frame */
+    ctx.clearRect(0,0,W,H);
+    ctx.globalCompositeOperation = 'lighter';
+    drawDust(0);
+    ctx.globalCompositeOperation = 'source-over';
+  } else {
+    spawnGlyph();
+    requestAnimationFrame(frame);
+  }
+
+  /* pause / resume control */
+  var toggle = document.getElementById('fxToggle');
+  if(toggle){
+    if(reduce){ toggle.textContent = '▶'; toggle.setAttribute('aria-pressed','true'); }
+    toggle.addEventListener('click', function(){
+      clock.running = !clock.running;
+      toggle.textContent = clock.running ? '❙❙' : '▶';
+      toggle.setAttribute('aria-pressed', clock.running ? 'false' : 'true');
+      toggle.setAttribute('aria-label', clock.running ? 'Pausar movimento da página' : 'Retomar movimento da página');
+      document.querySelectorAll('.moon-ring, .marquee-track').forEach(function(el){
+        el.style.animationPlayState = clock.running ? 'running' : 'paused';
+      });
+      if(clock.running && !reduce){ last = 0; requestAnimationFrame(frame); }
+    });
+  }
+
+  /* ============ 3. SCROLL: tempo, parallax, reveals ============ */
+  var bands = [document.getElementById('bandImg'), document.getElementById('bandImg2')].filter(Boolean);
+  function parallax(){
+    if(reduce) return;
+    for(var i=0;i<bands.length;i++){
+      var el = bands[i];
+      var r = el.parentNode.getBoundingClientRect();
+      if(r.bottom < -100 || r.top > window.innerHeight + 100) continue;
+      var prog = (r.top + r.height/2 - window.innerHeight/2) / window.innerHeight;
+      el.style.transform = 'translateY(' + (prog * -42).toFixed(2) + 'px)';
+    }
+  }
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ readScroll(); parallax(); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', function(){ readScroll(); parallax(); });
+  readScroll(); parallax();
+
+  /* reveal only what starts below the first screen, so the page is complete at rest */
+  var revealables = Array.prototype.slice.call(document.querySelectorAll('.rv'));
+  if(!reduce && 'IntersectionObserver' in window){
+    var pending = revealables.filter(function(el){
+      return el.getBoundingClientRect().top > window.innerHeight * 0.92;
+    });
+    pending.forEach(function(el, i){
+      el.classList.add('pending');
+      el.style.transitionDelay = (Math.min(i, 4) * 60) + 'ms';
+    });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.classList.remove('pending');
+          io.unobserve(en.target);
+        }
+      });
+    }, {threshold: 0.12, rootMargin: '0px 0px -8% 0px'});
+    pending.forEach(function(el){ io.observe(el); });
+  }
+
+  /* the BPM curve draws itself once it is on screen */
+  var chart = document.getElementById('bpmChart');
+  if(chart && !reduce && 'IntersectionObserver' in window){
+    var curve = chart.querySelector('.curve');
+    if(curve && chart.getBoundingClientRect().top > window.innerHeight * 0.92){
+      chart.classList.add('pending-draw');
+      var cio = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){
+            curve.classList.add('draw');
+            cio.unobserve(en.target);
+          }
+        });
+      }, {threshold: 0.3});
+      cio.observe(chart);
+    }
+  }
+
+  /* ============ 4. WAVEFORMS ============ */
+  document.querySelectorAll('.wave').forEach(function(wave){
+    var seed = parseInt(wave.getAttribute('data-seed'), 10) || 1;
+    var n = 58;
+    var frag = document.createDocumentFragment();
+    for(var i=0;i<n;i++){
+      seed = (seed * 9301 + 49297) % 233280;
+      var rnd = seed / 233280;
+      var env = Math.sin((i / n) * Math.PI);
+      var h = 12 + rnd * 70 * (0.35 + env * 0.85);
+      var bar = document.createElement('i');
+      bar.style.height = Math.min(100, h).toFixed(1) + '%';
+      frag.appendChild(bar);
+    }
+    wave.appendChild(frag);
+  });
+
+  /* ============ 5. MANDALA: drag to spin ============ */
+  (function(){
+    var svg = document.querySelector('.mandala');
+    var ring = document.querySelector('.moon-ring');
+    if(!svg || !ring) return;
+    var rotation = 0, dragging = false, pointerId = null;
+    var startAngle = 0, startRotation = 0, lastAngle = 0, lastTime = 0, velocity = 0, mf = null;
+
+    function angleAt(x, y){
+      var r = svg.getBoundingClientRect();
+      return Math.atan2(y - (r.top + r.height/2), x - (r.left + r.width/2)) * 180 / Math.PI;
+    }
+    function apply(){ ring.style.transform = 'rotate(' + rotation + 'deg)'; }
+    function stopM(){ if(mf){ cancelAnimationFrame(mf); mf = null; } }
+
+    svg.addEventListener('pointerdown', function(e){
+      stopM();
+      ring.style.animation = 'none';
+      dragging = true; pointerId = e.pointerId;
+      try{ svg.setPointerCapture(pointerId); }catch(err){}
+      startAngle = angleAt(e.clientX, e.clientY);
+      startRotation = rotation; lastAngle = startAngle;
+      lastTime = performance.now(); velocity = 0;
+      svg.style.cursor = 'grabbing';
+      e.preventDefault();
+    }, {passive:false});
+
+    svg.addEventListener('pointermove', function(e){
+      if(!dragging) return;
+      e.preventDefault();
+      var a = angleAt(e.clientX, e.clientY);
+      rotation = startRotation + (a - startAngle);
+      apply();
+      var now = performance.now(), dt = now - lastTime;
+      if(dt > 0){
+        var d = a - lastAngle;
+        if(d > 180) d -= 360;
+        if(d < -180) d += 360;
+        velocity = d / dt;
+      }
+      lastAngle = a; lastTime = now;
+    }, {passive:false});
+
+    function release(){
+      if(!dragging) return;
+      dragging = false;
+      svg.style.cursor = 'grab';
+      try{ svg.releasePointerCapture(pointerId); }catch(err){}
+      if(Math.abs(velocity) > 0.005){
+        (function step(){
+          velocity *= 0.95;
+          rotation += velocity * 16;
+          apply();
+          mf = Math.abs(velocity) > 0.005 ? requestAnimationFrame(step) : null;
+        })();
+      }
+    }
+    svg.addEventListener('pointerup', release);
+    svg.addEventListener('pointercancel', release);
+    svg.addEventListener('touchstart', function(e){ e.preventDefault(); }, {passive:false});
+    svg.addEventListener('touchmove', function(e){ e.preventDefault(); }, {passive:false});
+  })();
+
+  /* ============ 6. LIGHTBOX ============ */
+  (function(){
+    var lb = document.getElementById('lightbox');
+    var content = document.getElementById('lightboxContent');
+    var count = document.getElementById('lbCount');
+    var mosaic = document.getElementById('mosaic');
+    if(!lb || !content || !mosaic) return;
+
+    var tiles = Array.prototype.slice.call(mosaic.querySelectorAll('.tile'));
+    var index = 0;
+
+    function show(i){
+      index = (i + tiles.length) % tiles.length;
+      var tile = tiles[index];
+      var img = document.createElement('img');
+      img.src = tile.getAttribute('data-src');
+      var inner = tile.querySelector('img');
+      img.alt = inner ? inner.alt : '';
+      content.innerHTML = '';
+      content.appendChild(img);
+      if(count) count.textContent = (index + 1) + ' / ' + tiles.length;
+    }
+    function open(i){ show(i); lb.classList.add('open'); }
+    function close(){ lb.classList.remove('open'); content.innerHTML = ''; }
+
+    mosaic.addEventListener('click', function(e){
+      var tile = e.target.closest('.tile');
+      if(!tile) return;
+      open(tiles.indexOf(tile));
+    });
+    document.getElementById('lbClose').addEventListener('click', close);
+    document.getElementById('lightboxBackdrop').addEventListener('click', close);
+    document.getElementById('lbPrev').addEventListener('click', function(){ show(index - 1); });
+    document.getElementById('lbNext').addEventListener('click', function(){ show(index + 1); });
+    document.addEventListener('keydown', function(e){
+      if(!lb.classList.contains('open')) return;
+      if(e.key === 'Escape') close();
+      if(e.key === 'ArrowLeft') show(index - 1);
+      if(e.key === 'ArrowRight') show(index + 1);
+    });
+  })();
+})();
+</script>
+
+</body></html>
