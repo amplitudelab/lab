@@ -1,0 +1,19 @@
+name: Prévias vencidas
+# Todo dia às 9h (Brasília) confere a pasta previa/. Se alguma prévia passou da
+# validade e ainda está no repositório, o teste fica vermelho e o GitHub manda
+# e-mail. Ele não apaga nada sozinho: a remoção vai por PR, como o resto.
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  push:
+    branches: [main]
+    paths: ['previa/**', '.github/workflows/previas.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  conferir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node previa/previa.js conferir
