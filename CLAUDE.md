@@ -20,7 +20,8 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   o endereço antigo do repositório, mas não o do site).
 - Site: **https://amplitudelab.github.io/lab/** (GitHub Pages, branch `main`, pasta raiz).
   - Modelos: `/modelos/` · Site + CRM: `/crm/` · CRM demo: `/crm/app/` ·
-    guia do CRM: `/crm/guia.html` · demos de clientes: `/demos/`
+    guia do CRM: `/crm/guia.html` · demos de clientes: `/demos/` · prévias temporárias e
+    privadas: `/previa/<id>/#<chave>` (ver "Prévias temporárias" abaixo)
 - Endereço antigo do site, que não funciona mais: `symbiozyy.github.io/amplitude-lab`.
 - Para o site ficar na raiz (`amplitudelab.github.io/`), o repositório teria que se chamar
   `amplitudelab.github.io`. Se isso mudar, troque `amplitudelab.github.io/lab/` em
@@ -55,7 +56,11 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   do Pexels em `modelos/img/<id>.webp` e `<id>-p.webp`). `modelos/kit.css` e
   `modelos/kit.js` têm a barra "voltar ao hub", a simulação do WhatsApp (`AL.whats`),
   `AL.toast` e `AL.px`.
-- `demos/`: demos feitas para clientes reais (`noindex`).
+- `demos/`: demos feitas para clientes reais (`noindex`). É vitrine **pública e
+  permanente**: `demos/index.html` lista todas, e o hub de modelos e a página Sites
+  apontam para lá. Demo que ainda não pode aparecer vai para `previa/`.
+- `previa/`: prévias temporárias e privadas (uma semana, conteúdo cifrado). Processo
+  completo na seção "Prévias temporárias" abaixo.
 - **Sites de clientes** — grupo à parte, sem ligação com o ecossistema da Amplitude
   (nada de CRM, orçamento ou WhatsApp da Amplitude). Cada cliente tem uma pasta própria
   **na raiz**, então o nome dele fica no fim do link:
@@ -155,6 +160,63 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   - Regras fixas: pagamento só conta quando a cobrança está paga no sistema; cobrança vencida não é inadimplência (só vira confirmada por uma pessoa, `charges.delinquent_confirmed_at`); projeto só vira entregue com arquivo ligado em Arquivos. Teste de isolamento em `tests/commander_isolamento.sql` (roda e desfaz).
 - Nunca coloque chaves secretas no repositório.
 
+## Prévias temporárias (`previa/`)
+
+Para mostrar uma demo a um cliente durante uma semana sem divulgar: o cliente avalia e a
+equipe usa a semana para projetar a versão final. O link é entregue pelo chat.
+
+**O que fica protegido e o que não fica.** O GitHub Pages é público e estático, e o
+repositório também é público. Por isso a prévia não confia só em "endereço difícil":
+- A pasta é `previa/<id>/`, com 16 letras e números sorteados, `noindex`, sem link de
+  nenhuma página e fora de qualquer lista. `/lab/previa/` dá 404.
+- O conteúdo vai **cifrado** (AES-256-GCM) em `previa/<id>/dados.bin`: textos, nome do
+  cliente, fontes e imagens. O `index.html` da pasta só abre a prévia. A chave existe
+  apenas no link, depois do `#`, e o navegador não manda essa parte para o servidor.
+  Quem olha o repositório vê que a pasta existe, mas não o que tem dentro.
+- **Não fica protegido:** quem tem o link completo pode repassar, e ele abre para
+  qualquer pessoa até a validade. A data é conferida no navegador, então alguém com o
+  link e conhecimento técnico consegue decifrar depois do vencimento enquanto o arquivo
+  existir (e o histórico do git guarda o `dados.bin` antigo, ainda cifrado). Prévia não
+  leva dado sensível de cliente.
+- O nome do cliente não entra no repositório: nem na pasta, nem no commit, nem no PR,
+  nem aqui. O link fica no chat e no histórico do lead no CRM.
+
+**Validade.** 7 dias por padrão (`--dias`, de 1 a 30), até 23h59 de Brasília do último
+dia, contados da criação (não do merge; se o merge atrasar, use `prorrogar`). Vencida, a
+página mostra "saiu do ar" e não abre mais. A rotina `.github/workflows/previas.yml`
+confere a pasta todo dia às 9h e fica vermelha, com e-mail do GitHub, enquanto houver
+prévia vencida no repositório. Ela não apaga nada sozinha: a remoção vai por PR.
+
+**Como criar.** Monte a demo numa pasta **fora do repositório**: `index.html` e os
+arquivos que ele usa (fontes, imagens, CSS), sem CDN. Regras: script só dentro do
+`index.html` (nada de `<script src>`), nenhum `onclick=` e afins (a CSP bloqueia; use
+`addEventListener`), e caminhos de arquivo usados por script ficam em atributos do HTML,
+porque dentro do `<script>` eles não são trocados. Links `#secao` funcionam. Players do
+SoundCloud, YouTube, Mixcloud, Spotify e Apple Music podem entrar em `<iframe>`.
+
+```bash
+node previa/previa.js criar <pasta> [--dias 7] [--idioma pt|en]  # cria previa/<id>/ e mostra o link
+node previa/previa.js atualizar "<link>" <pasta>                 # troca o conteúdo; link e data continuam
+node previa/previa.js abrir "<link>" <pasta-saida>               # devolve os arquivos da demo
+node previa/previa.js prorrogar <id> <dias>                      # empurra a validade
+node previa/previa.js lista                                      # prévias no repositório e validades
+node previa/previa.js limpar                                     # apaga as vencidas
+```
+
+- `--idioma` muda os avisos da página de abertura e a faixa "no ar até" que aparece no
+  canto da demo. Use `en` para cliente que não fala português.
+- Publicar: ramo, commit só de `previa/<id>/`, PR e merge com a aprovação do dono. O
+  GitHub Pages atualiza em 1 ou 2 minutos (depois de `atualizar`, espere uns minutos
+  antes de conferir).
+- O link é `https://amplitudelab.github.io/lab/previa/<id>/#<chave>`. A chave não é
+  gravada em lugar nenhum além do link: sem ele não há como abrir nem atualizar a prévia.
+- A fonte não precisa ficar guardada: `abrir` recupera os arquivos a partir do
+  repositório e do link.
+- **Remover:** `node previa/previa.js limpar` (ou apague a pasta), commit, PR e merge. A
+  página sai do ar alguns minutos depois.
+- **Virou cliente:** `abrir` a prévia, levar os arquivos para a pasta do cliente na raiz
+  (grupo "Sites de clientes"), refazer o que faltar e remover a prévia.
+
 ## Visual
 
 - Escuro: fundo `#05070d`, azul `#5b8cff` / `#a9c4ff`, verde `#3fcf9b`.
@@ -171,9 +233,9 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   antes (as animações de entrada dependem do scroll).
 - Links internos usam `index.html` explícito quando a página precisa abrir também do
   disco (pacote .zip).
-- Pacote para enviar: `git archive` do `main` sem `voxel-realms*` e sem os sites de
-  clientes (`clientes/`, `bruno-zampieri/`, `bruxo/`, `darky/` e os próximos que entrarem na
-  lista), mais uma página `COMECE-AQUI.html` na raiz, zipado como
+- Pacote para enviar: `git archive` do `main` sem `voxel-realms*`, sem `previa/` e sem
+  os sites de clientes (`clientes/`, `bruno-zampieri/`, `bruxo/`, `darky/` e os próximos
+  que entrarem na lista), mais uma página `COMECE-AQUI.html` na raiz, zipado como
   `amplitude-lab-completo.zip`.
 - Pull requests só quando pedido. O dono costuma pedir PR + merge no fim.
 

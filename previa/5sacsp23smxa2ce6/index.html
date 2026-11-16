@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" data-id="5sacsp23smxa2ce6" data-expira="2026-11-22T23:59:59-03:00" data-idioma="en" data-versao="e5f25e0db7" data-ajudante="document.addEventListener('click',e=>{const a=e.target.closest&amp;&amp;e.target.closest('a[href^=&quot;#&quot;]');if(!a)return;e.preventDefault();const id=decodeURIComponent(a.getAttribute('href').slice(1));const alvo=id&amp;&amp;document.getElementById(id);if(alvo)alvo.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})},true);">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tqe3qRK1fKHR1RPzQ+/n5TSgh499CSC6xnGJKaMyH8Y=' 'sha256-+m03drRx91QzCxGXFVEbASDZGzKQ81yDU0Sn+p5hznY=' 'sha256-1naOC+iI3ZW3Jhy5nhhvXWO/P3E1YWFGhJi9xelLGyY='; style-src 'unsafe-inline' blob:; img-src data: blob:; font-src data: blob:; media-src blob:; connect-src 'self'; frame-src https://w.soundcloud.com https://www.youtube-nocookie.com https://www.youtube.com https://player-widget.mixcloud.com https://www.mixcloud.com https://open.spotify.com https://embed.music.apple.com; base-uri 'none'; form-action 'none'">
+<title>Preview</title>
+<style>html{color-scheme:dark}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box;background:#0b0b0d;color:#e9e9ee;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center}p{max-width:34ch;margin:0}small{display:block;margin-top:14px;color:#8a8a96;font-size:12px;letter-spacing:.08em;text-transform:uppercase}</style>
+</head>
+<body>
+<main><p id="m">Opening preview…</p><small>Private preview · Amplitude Lab</small></main>
+<noscript><p>Turn on JavaScript to see the preview.</p></noscript>
+<script>(async()=>{
+const d=document.documentElement,pt=d.dataset.idioma!=='en',id=d.dataset.id,m=document.getElementById('m');
+const T=pt?{falta:'Este link está incompleto. Peça o link completo a quem enviou a prévia.',venceu:'Esta prévia saiu do ar em ',erro:'Não foi possível abrir esta prévia. Confira se o link está completo.',rede:'Não foi possível carregar a prévia. Tente de novo em instantes.',faixa:'Prévia privada · no ar até '}:{falta:'This preview link is incomplete. Ask the person who sent it for the full link.',venceu:'This preview went offline on ',erro:'This preview could not be opened. Check that the link is complete.',rede:'The preview could not be loaded. Please try again in a moment.',faixa:'Private preview · online until '};
+const avisar=t=>{m.textContent=t};
+const fim=new Date(d.dataset.expira);
+const quando=fim.toLocaleDateString(pt?'pt-BR':'en-US',pt?{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'America/Sao_Paulo'}:{month:'short',day:'numeric',year:'numeric',timeZone:'America/Sao_Paulo'});
+if(!(Date.now()<=fim.getTime())){avisar(T.venceu+quando+'.');return}
+const chave='previa:'+id;let k=location.hash.slice(1);
+if(!k){try{k=sessionStorage.getItem(chave)||''}catch(e){}}
+if(!/^[A-Za-z0-9_-]{43}$/.test(k)){avisar(T.falta);return}
+const bytes=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'='),c=>c.charCodeAt(0));
+let buf;try{const r=await fetch('dados.bin?v='+d.dataset.versao);if(!r.ok)throw 0;buf=await r.arrayBuffer()}catch(e){avisar(T.rede);return}
+let claro;try{const ch=await crypto.subtle.importKey('raw',bytes(k),'AES-GCM',false,['decrypt']);claro=new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(buf,0,12)},ch,new Uint8Array(buf,12)))}catch(e){avisar(T.erro);return}
+try{sessionStorage.setItem(chave,k)}catch(e){}
+const txt=new TextDecoder(),n=new DataView(claro.buffer,claro.byteOffset).getUint32(0),man=JSON.parse(txt.decode(claro.subarray(4,4+n)));
+let pos=4+n;const arq={};for(const a of man.arquivos){arq[a.caminho]={tipo:a.tipo,b:claro.subarray(pos,pos+a.tamanho)};pos+=a.tamanho}
+const url={},ref=/(["'(])(?:\.\/)?([^"'()<>\s]+?)([?#][^"'()<>\s]*)?(?=["')])/g;
+const trocar=s=>s.replace(ref,(x,a,p,q)=>url[p]?a+url[p]+(q||''):x).replace(/(\s(?:srcset|imagesrcset)=")([^"]*)"/g,(x,a,v)=>a+v.split(',').map(p=>p.trim().replace(/^(?:\.\/)?(\S+)/,(y,c)=>url[c]||y)).join(', ')+'"');
+const blob=(b,t)=>URL.createObjectURL(new Blob([b],{type:t}));
+for(const p in arq)if(p!==man.entrada&&arq[p].tipo!=='text/css')url[p]=blob(arq[p].b,arq[p].tipo);
+for(const p in arq)if(p!==man.entrada&&arq[p].tipo==='text/css')url[p]=blob(trocar(txt.decode(arq[p].b)),'text/css');
+let h=txt.decode(arq[man.entrada].b).split(/(<script\b[^>]*>[\s\S]*?<\/script>)/i).map((p,i)=>i%2?p:trocar(p)).join('');
+const cab='<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">';
+h=/<head[^>]*>/i.test(h)?h.replace(/<head[^>]*>/i,x=>x+cab):cab+h;
+const faixa='<div style="position:fixed;left:10px;bottom:10px;z-index:2147483647;pointer-events:none;font:500 11px/1.2 system-ui,sans-serif;letter-spacing:.04em;color:#fff;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.18);padding:6px 10px;border-radius:999px">'+T.faixa+quando+'</div><script>'+d.dataset.ajudante+'<\/script>';
+const f=h.lastIndexOf('</body>');h=f<0?h+faixa:h.slice(0,f)+faixa+h.slice(f);
+document.open();document.write(h);document.close();
+})();</script>
+</body>
+</html>
