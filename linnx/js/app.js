@@ -524,7 +524,9 @@ document.body.classList.add('travado');
 Promise.race([prontos, limite]).then(() => {
   feitos = preciso.length + 1; progresso();
   setTimeout(() => {
-    const ent = $('#ab-entrar'); ent.hidden = false;
+    const ent = $('#ab-entrar');
+    if (!ent) return;                    // entrou direto por um link com #: a abertura já saiu
+    ent.hidden = false;
     if (gsap && !calmo) gsap.from(ent.children, { y: 20, opacity: 0, stagger: .08, duration: .6, ease: 'power3.out' });
     ent.querySelector('button').focus({ preventScroll: true });
   }, calmo ? 0 : 500);
