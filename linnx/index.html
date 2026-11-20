@@ -7,7 +7,7 @@
 <meta name="description" content="Linnx, artista de São Paulo: progressive trance e acelerado, melodias etéreas e o pulso da biomecânica. Ao vivo, press kit e contratação.">
 <meta name="theme-color" content="#07030b">
 <meta name="robots" content="noindex">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta property="og:title" content="LINNX — Progressive Trance e Acelerado">
 <meta property="og:description" content="Artista de São Paulo. Melodias etéreas, baixo intenso e o pulso da biomecânica.">
@@ -33,7 +33,7 @@
   <div class="abertura__entrar" id="ab-entrar" hidden>
     <button type="button" class="btn btn--rosa" data-entrar="som">Entrar com som</button>
     <button type="button" class="btn btn--linha" data-entrar="mudo">Entrar em silêncio</button>
-    <p>O som é o do set ao vivo dela. Dá para ligar e desligar a qualquer momento.</p>
+    <p>O som é do set dela no Comic Festival 2026. Dá para ligar e desligar a qualquer momento.</p>
   </div>
 </div>
 
@@ -44,6 +44,7 @@
 <header class="topo" id="topo">
   <a class="topo__marca" href="#inicio" aria-label="Linnx, início"><img src="./assets/img/logo-branco.webp" alt="" width="1200" height="449"></a>
   <nav class="topo__nav" aria-label="Seções">
+    <a href="#comic" data-scramble>Comic 2026</a>
     <a href="#sobre" data-scramble>Sobre</a>
     <a href="#viagem" data-scramble>Viagem</a>
     <a href="#ao-vivo" data-scramble>Ao vivo</a>
@@ -55,12 +56,13 @@
 
 <div class="menu" id="menu" hidden>
   <nav aria-label="Menu">
-    <a href="#sobre"><small>01</small>Sobre</a>
-    <a href="#viagem"><small>02</small>Viagem</a>
-    <a href="#ao-vivo"><small>03</small>Ao vivo</a>
-    <a href="#retrato"><small>04</small>Retrato</a>
-    <a href="#press"><small>05</small>Press kit</a>
-    <a href="#booking"><small>06</small>Contratar</a>
+    <a href="#comic"><small>01</small>Comic 2026</a>
+    <a href="#sobre"><small>02</small>Sobre</a>
+    <a href="#viagem"><small>03</small>Viagem</a>
+    <a href="#ao-vivo"><small>04</small>Ao vivo</a>
+    <a href="#retrato"><small>05</small>Retrato</a>
+    <a href="#press"><small>06</small>Press kit</a>
+    <a href="#booking"><small>07</small>Contratar</a>
   </nav>
 </div>
 
@@ -81,10 +83,10 @@
       <p class="hero__linha"><span class="kin" data-kin>Progressive trance</span> <b>✕</b> <span class="kin" data-kin>acelerado</span></p>
       <div class="hero__acoes">
         <a class="btn btn--rosa magnet" href="#booking">Contratar a Linnx</a>
-        <a class="btn btn--linha magnet" href="#ao-vivo">Ver ao vivo</a>
+        <a class="btn btn--linha magnet" href="#comic">Ver o set da Comic</a>
       </div>
     </div>
-    <a class="hero__desce" href="#sobre" aria-label="Descer para o conteúdo"><span></span></a>
+    <a class="hero__desce" href="#comic" aria-label="Descer para o conteúdo"><span></span></a>
   </section>
 
   <!-- FAIXA -->
@@ -92,9 +94,47 @@
     <div class="faixa__trilho"><span>PROGRESSIVE TRANCE</span><i>✕</i><span>ACELERADO</span><i>✕</i><span>BIOMECÂNICA</span><i>✕</i><span>MELODIAS ETÉREAS</span><i>✕</i><span>SÃO PAULO</span><i>✕</i></div>
   </div>
 
+
+  <!-- ÚLTIMA PASSAGEM: o set do Comic Festival 2026 -->
+  <section class="comic" id="comic" aria-labelledby="comic-t">
+    <div class="comic__topo">
+      <p class="rotulo"><span class="ponto ponto--vivo"></span>01 · Última passagem</p>
+      <h2 id="comic-t" class="comic__titulo"><span class="comic__linha">Comic</span> <span class="comic__linha">Festival <em>2026</em></span></h2>
+      <p class="comic__lede">O set completo filmado no festival: 58 minutos de progressive trance e acelerado debaixo da lona. O som que toca nesta página é o fim desse set.</p>
+    </div>
+    <div class="comic__pin">
+      <div class="comic__tela" id="comic-tela">
+        <video class="comic__video is-on" muted playsinline preload="none" aria-hidden="true" poster="./assets/comic/quadro-01.webp"></video>
+        <video class="comic__video" muted playsinline preload="none" aria-hidden="true"></video>
+        <div class="comic__veu" aria-hidden="true"></div>
+        <div class="comic__hud" aria-hidden="true">
+          <span class="comic__rec"><i></i>Comic Festival 2026</span>
+          <span class="comic__tc"><b id="comic-n">01</b>/08 · <span id="comic-tc">15:30</span></span>
+        </div>
+        <p class="comic__nome" id="comic-nome" aria-live="polite">A pista vista do palco</p>
+        <div class="comic__acoes">
+          <button type="button" class="btn btn--rosa comic__play" id="comic-full"><span class="comic__tri" aria-hidden="true"></span>Assistir ao set completo · 58 min</button>
+          <button type="button" class="btn btn--linha btn--peq" data-som aria-pressed="false"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span data-som-rot>Ligar o som</span></button>
+        </div>
+        <div class="comic__yt" id="comic-yt" hidden></div>
+      </div>
+    </div>
+    <ol class="comic__cortes" id="comic-cortes" aria-label="Cortes do set">
+        <li><button type="button" class="corte" data-corte="0" data-seg="930" aria-label="Corte 01: A pista vista do palco, aos 15:30 do set"><img src="./assets/comic/quadro-01-m.webp" alt="" width="800" height="450" loading="lazy" decoding="async"><span class="corte__tc">15:30</span><span class="corte__nome">A pista vista do palco</span><i class="corte__barra" aria-hidden="true"></i></button></li>
+        <li><button type="button" class="corte" data-corte="1" data-seg="210" aria-label="Corte 02: Nos decks, aos 03:30 do set"><img src="./assets/comic/quadro-02-m.webp" alt="" width="800" height="450" loading="lazy" decoding="async"><span class="corte__tc">03:30</span><span class="corte__nome">Nos decks</span><i class="corte__barra" aria-hidden="true"></i></button></li>
+        <li><button type="button" class="corte" data-corte="2" data-seg="690" aria-label="Corte 03: O festival de cima, aos 11:30 do set"><img src="./assets/comic/quadro-03-m.webp" alt="" width="800" height="450" loading="lazy" decoding="async"><span class="corte__tc">11:30</span><span class="corte__nome">O festival de cima</span><i class="corte__barra" aria-hidden="true"></i></button></li>
+        <li><button type="button" class="corte" data-corte="3" data-seg="1230" aria-label="Corte 04: Mão para o alto, aos 20:30 do set"><img src="./assets/comic/quadro-04-m.webp" alt="" width="800" height="450" loading="lazy" decoding="async"><span class="corte__tc">20:30</span><span class="corte__nome">Mão para o alto</span><i class="corte__barra" aria-hidden="true"></i></button></li>
+        <li><button type="button" class="corte" data-corte="4" data-seg="1290" aria-label="Corte 05: O palco inteiro, aos 21:30 do set"><img src="./assets/comic/quadro-05-m.webp" alt="" width="800" height="450" loading="lazy" decoding="async"><span class="corte__tc">21:30</span><span class="corte__nome">O palco inteiro</span><i class="corte__barra" aria-hidden="true"></i></button></li>
+        <li><button type="button" class="corte" data-corte="5" data-seg="2370" aria-label="Corte 06: De perto, nos decks, aos 39:30 do set"><img src="./assets/comic/quadro-06-m.webp" alt="" width="800" height="450" loading="lazy" decoding="async"><span class="corte__tc">39:30</span><span class="corte__nome">De perto, nos decks</span><i class="corte__barra" aria-hidden="true"></i></button></li>
+        <li><button type="button" class="corte" data-corte="6" data-seg="2730" aria-label="Corte 07: Sob a lona, aos 45:30 do set"><img src="./assets/comic/quadro-07-m.webp" alt="" width="800" height="450" loading="lazy" decoding="async"><span class="corte__tc">45:30</span><span class="corte__nome">Sob a lona</span><i class="corte__barra" aria-hidden="true"></i></button></li>
+        <li><button type="button" class="corte" data-corte="7" data-seg="3390" aria-label="Corte 08: A pista no fim do set, aos 56:30 do set"><img src="./assets/comic/quadro-08-m.webp" alt="" width="800" height="450" loading="lazy" decoding="async"><span class="corte__tc">56:30</span><span class="corte__nome">A pista no fim do set</span><i class="corte__barra" aria-hidden="true"></i></button></li>
+    </ol>
+    <p class="comic__fonte">Vídeo: <a href="https://www.youtube.com/watch?v=O3xTPJZGzeo" target="_blank" rel="noopener">Linnx DjSet @ Comic Festival 2026 (Full Set Movie)</a>, no canal da Linnx.</p>
+  </section>
+
   <!-- SOBRE / MANIFESTO -->
   <section class="sobre" id="sobre" aria-labelledby="sobre-t">
-    <p class="rotulo">01 · Sobre</p>
+    <p class="rotulo">02 · Sobre</p>
     <h2 id="sobre-t" class="sobre__frase" data-palavras>Sou a Linnx, uma artista emergente de São Paulo que traz uma mistura explosiva de progressive trance e acelerado.</h2>
     <div class="sobre__grade">
       <p data-revela>Minhas tracks combinam melodias etéreas e progressivas com o ritmo pulsante e contagiante da biomecânica, criando uma experiência musical única e energizante.</p>
@@ -110,7 +150,7 @@
     <video class="viagem__video" src="./assets/video/linnx-fundo.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
     <div class="viagem__pin">
       <header class="viagem__topo">
-        <p class="rotulo">02 · A viagem</p>
+        <p class="rotulo">03 · A viagem</p>
         <h2 id="viagem-t">Paisagens sonoras vibrantes</h2>
         <div class="viagem__prog" aria-hidden="true"><i id="viagem-prog"></i></div>
       </header>
@@ -147,7 +187,7 @@
   <section class="aovivo" id="ao-vivo" aria-labelledby="aovivo-t">
     <div class="aovivo__pin">
       <div class="aovivo__titulo">
-        <p class="rotulo"><span class="ponto ponto--vivo"></span>03 · Ao vivo</p>
+        <p class="rotulo"><span class="ponto ponto--vivo"></span>04 · Ao vivo</p>
         <h2 id="aovivo-t">Me encontre<br>nas pistas</h2>
       </div>
       <div class="aovivo__palco">
@@ -167,7 +207,7 @@
 
   <!-- RETRATO -->
   <section class="retrato" id="retrato" aria-labelledby="retrato-t">
-    <p class="rotulo">04 · Retrato</p>
+    <p class="rotulo">05 · Retrato</p>
     <h2 id="retrato-t" class="sr">Fotos da Linnx</h2>
     <svg width="0" height="0" class="sr" aria-hidden="true" focusable="false">
       <filter id="duo" color-interpolation-filters="sRGB">
@@ -198,7 +238,7 @@
 
   <!-- PRESS KIT -->
   <section class="press" id="press" aria-labelledby="press-t">
-    <p class="rotulo">05 · Press kit</p>
+    <p class="rotulo">06 · Press kit</p>
     <h2 id="press-t">Tudo para divulgar</h2>
     <p class="press__lede">Logo, fotos, release e vídeo, prontos para flyer, line-up e redes. Baixe um por um ou o pacote inteiro.</p>
     <ul class="press__lista">
@@ -226,7 +266,7 @@
   <!-- BOOKING -->
   <section class="booking" id="booking" aria-labelledby="booking-t">
     <div class="booking__x" aria-hidden="true">✕</div>
-    <p class="rotulo">06 · Contratar</p>
+    <p class="rotulo">07 · Contratar</p>
     <h2 id="booking-t">Leve a Linnx<br>para a sua pista</h2>
     <form class="form" id="form" novalidate>
       <div class="form__linha">
@@ -250,6 +290,9 @@
   <p>Progressive trance ✕ acelerado · São Paulo</p>
   <p class="rodape__ass">Site feito por Amplitude Lab</p>
 </footer>
+
+<!-- trilha: o fim do set da Linnx no Comic Festival 2026 -->
+<audio id="trilha" src="./assets/audio/comic-trilha.m4a" loop preload="none"></audio>
 
 <!-- HUD: pulso da pista e som -->
 <div class="hud" id="hud">
