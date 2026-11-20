@@ -32,6 +32,15 @@ const SITES = [
     cor: "#9a6bff",
     fundo: "#120a22",
   },
+  {
+    nome: "LINNX",
+    sobre: "DJ · Progressive trance e acelerado · nov 2026",
+    url: "../linnx/",
+    endereco: "amplitudelab.github.io/lab/linnx/",
+    inicial: "LX",
+    cor: "#ff3fb0",
+    fundo: "#1c0716",
+  },
 ];
 
 const SLUG = "amplitudelab";
