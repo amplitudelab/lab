@@ -3,7 +3,7 @@
    ligado, um analisador lê os graves e é isso que faz o fundo, o logo e o visualizador
    pulsarem. Sem som, um
    pulso sintético em 140 BPM mantém tudo vivo (só animação, não é dado da artista). */
-import { criarFx } from './fx.js';
+import { criarFx } from './fx.js?v=4';
 
 // ---------------------------------------------------------------------------
 // Contatos de booking. Campo vazio não aparece na página: nada é inventado.
@@ -100,7 +100,7 @@ new IntersectionObserver(([e]) => {
 // ---------- última passagem: cortes do set da Comic ----------
 const CORTES = $$('[data-corte]').map((b) => ({
   btn: b, seg: +b.dataset.seg,
-  nome: b.querySelector('.corte__nome').textContent, tc: b.querySelector('.corte__tc').textContent,
+  nome: b.querySelector('.corte__nome').textContent,
 }));
 const telaComic = $('#comic-tela');
 const vidsComic = $$('.comic__video', telaComic);
@@ -115,7 +115,6 @@ function mostrarCorte(i, { tocar = true } = {}) {
   corteAtual = i;
   const c = CORTES[i];
   $('#comic-n').textContent = String(i + 1).padStart(2, '0');
-  $('#comic-tc').textContent = c.tc;
   $('#comic-nome').textContent = c.nome;
   CORTES.forEach((x, k) => { x.btn.classList.toggle('ativo', k === i); x.btn.setAttribute('aria-current', k === i ? 'true' : 'false'); });
   proximo.poster = quadroCorte(i);
@@ -439,7 +438,7 @@ function motion() {
       scrollTrigger: { trigger: '.comic__pin', start: 'top 85%', end: 'top 10%', scrub: .6 } });
     gsap.fromTo('.comic__video', { scale: 1.12 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '.comic__pin', start: 'top bottom', end: 'bottom top', scrub: true } });
   });
-  gsap.from('.comic__cortes li', { y: 40, opacity: 0, stagger: .05, duration: .7, ease: 'power3.out', scrollTrigger: { trigger: '.comic__cortes', start: 'top 92%' } });
+  gsap.from('.comic__cortes li', { opacity: 0, stagger: .05, duration: .7, ease: 'power3.out', scrollTrigger: { trigger: '.comic__cortes', start: 'top 92%' } });
 
   // sobre: as palavras acendem conforme a leitura
   const palavras = quebrarPalavras($('[data-palavras]'));
@@ -524,7 +523,9 @@ document.body.classList.add('travado');
 Promise.race([prontos, limite]).then(() => {
   feitos = preciso.length + 1; progresso();
   setTimeout(() => {
-    const ent = $('#ab-entrar'); ent.hidden = false;
+    const ent = $('#ab-entrar');
+    if (!ent) return;                    // entrou direto por um link com #: a abertura já saiu
+    ent.hidden = false;
     if (gsap && !calmo) gsap.from(ent.children, { y: 20, opacity: 0, stagger: .08, duration: .6, ease: 'power3.out' });
     ent.querySelector('button').focus({ preventScroll: true });
   }, calmo ? 0 : 500);
