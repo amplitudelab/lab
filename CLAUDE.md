@@ -117,7 +117,14 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
     transparente), um vídeo vertical de 28 s ao vivo e o release. Todo o texto da página
     sai do release; nada foi inventado. Contatos de booking ficam no objeto `CONTATO` de
     `js/app.js` — **ainda vazios**: campo vazio não aparece, e sem nenhum o formulário só
-    copia o pedido. O som da página é o áudio do vídeo ao vivo; com ele ligado, um
+    copia o pedido. **Primeira seção: última passagem, o set do Comic Festival 2026**
+    (vídeo do canal dela, `youtube.com/watch?v=O3xTPJZGzeo`, 58 min). Oito cortes de 6 s
+    em `assets/comic/` (`corte-NN.mp4`, `-m` no celular, e `quadro-NN.webp`) giram
+    sozinhos; o minuto de cada corte fica em `data-seg` no HTML, e o botão "Assistir ao set
+    completo" abre o YouTube sem cookies (`youtube-nocookie`, liberado no `frame-src`)
+    a partir desse ponto. O vídeo original (1,9 GB) não vai para o repositório. O som da
+    página é `assets/audio/comic-trilha.m4a`: 4 min do fim do set (52:50 a 56:50, o trecho
+    de maior energia); com ele ligado, um
     `AnalyserNode` lê os graves e faz o fundo WebGL (`js/fx.js`, sem biblioteca), o logo e
     o visualizador pulsarem; sem som, um pulso sintético em 140 BPM. No celular não há
     WebGL (fica um gradiente em CSS) e o vídeo é o `-m`. Antes de ligar o fundo, `fx.js` mede o custo

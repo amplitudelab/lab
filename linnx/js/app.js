@@ -1,6 +1,7 @@
 /* LINNX — interações, motion e som.
-   O som da página é o áudio do vídeo ao vivo dela: quando ligado, um analisador lê
-   os graves e é isso que faz o fundo, o logo e o visualizador pulsarem. Sem som, um
+   O som da página é o fim do set dela no Comic Festival 2026 (assets/audio): quando
+   ligado, um analisador lê os graves e é isso que faz o fundo, o logo e o visualizador
+   pulsarem. Sem som, um
    pulso sintético em 140 BPM mantém tudo vivo (só animação, não é dado da artista). */
 import { criarFx } from './fx.js';
 
@@ -44,7 +45,10 @@ async function copiar(txt) {
   }
 }
 
-// ---------- vídeo: versão leve no celular ----------
+// ---------- trilha: o fim do set da Comic ----------
+const trilha = $('#trilha');
+
+// ---------- vídeo ao vivo (sempre mudo): versão leve no celular ----------
 const video = $('#video-vivo');
 const fonte = video.querySelector('source');
 fonte.src = fraco ? fonte.dataset.srcM : fonte.dataset.src;
@@ -63,7 +67,7 @@ function prepararAnalisador() {
   if (analisador || !window.AudioContext) return;
   try {
     ctx = new AudioContext();
-    const src = ctx.createMediaElementSource(video);
+    const src = ctx.createMediaElementSource(trilha);
     analisador = ctx.createAnalyser();
     analisador.fftSize = 256; analisador.smoothingTimeConstant = .7;
     src.connect(analisador); analisador.connect(ctx.destination);
@@ -73,29 +77,102 @@ function prepararAnalisador() {
 function marcarSom() {
   $$('[data-som]').forEach((b) => b.setAttribute('aria-pressed', String(estado.som)));
   $$('[data-som-rot]').forEach((s) => { s.textContent = s.closest('.hud') ? (estado.som ? 'Som on' : 'Som off') : (estado.som ? 'Desligar o som' : 'Ligar o som'); });
-  $('.hud__som').setAttribute('aria-label', estado.som ? 'Desligar o som do set ao vivo' : 'Ligar o som do set ao vivo');
+  $('.hud__som').setAttribute('aria-label', estado.som ? 'Desligar o som do set da Comic' : 'Ligar o som do set da Comic');
 }
 async function ligarSom(on) {
   estado.som = on;
   if (on) {
     prepararAnalisador();
     try { await ctx?.resume(); } catch {}
-    video.muted = false;
-    try { await video.play(); } catch { estado.som = false; video.muted = true; avisar('Toque de novo para ligar o som'); }
+    if (trilha.preload === 'none') trilha.preload = 'auto';
+    try { await trilha.play(); } catch { estado.som = false; avisar('Toque de novo para ligar o som'); }
   } else {
-    video.muted = true;
-    if (!videoVisivel) video.pause();
+    trilha.pause();
   }
   marcarSom();
 }
 $$('[data-som]').forEach((b) => b.addEventListener('click', () => ligarSom(!estado.som)));
 
-let videoVisivel = false;
 new IntersectionObserver(([e]) => {
-  videoVisivel = e.isIntersecting;
-  if (videoVisivel) video.play().catch(() => {});
-  else if (!estado.som) video.pause();
+  if (e.isIntersecting) video.play().catch(() => {}); else video.pause();
 }, { threshold: .15 }).observe(video);
+
+// ---------- última passagem: cortes do set da Comic ----------
+const CORTES = $$('[data-corte]').map((b) => ({
+  btn: b, seg: +b.dataset.seg,
+  nome: b.querySelector('.corte__nome').textContent, tc: b.querySelector('.corte__tc').textContent,
+}));
+const telaComic = $('#comic-tela');
+const vidsComic = $$('.comic__video', telaComic);
+const arqCorte = (i) => `./assets/comic/corte-${String(i + 1).padStart(2, '0')}${fraco ? '-m' : ''}.mp4`;
+const quadroCorte = (i) => `./assets/comic/quadro-${String(i + 1).padStart(2, '0')}${fraco ? '-m' : ''}.webp`;
+const temCorte = (v, i) => v.src.endsWith(arqCorte(i).slice(1));
+let corteAtual = -1, comicVisivel = false, comicAberto = false, reserva;
+function mostrarCorte(i, { tocar = true } = {}) {
+  i = (i + CORTES.length) % CORTES.length;
+  const ativo = vidsComic.find((v) => v.classList.contains('is-on'));
+  const proximo = corteAtual === -1 ? ativo : vidsComic.find((v) => v !== ativo);
+  corteAtual = i;
+  const c = CORTES[i];
+  $('#comic-n').textContent = String(i + 1).padStart(2, '0');
+  $('#comic-tc').textContent = c.tc;
+  $('#comic-nome').textContent = c.nome;
+  CORTES.forEach((x, k) => { x.btn.classList.toggle('ativo', k === i); x.btn.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+  proximo.poster = quadroCorte(i);
+  if (!temCorte(proximo, i)) { proximo.src = arqCorte(i); proximo.preload = 'auto'; }
+  const trocar = () => {
+    vidsComic.forEach((v) => v.classList.toggle('is-on', v === proximo));
+    if (proximo !== ativo) ativo.pause();
+  };
+  if (!tocar || calmo) { trocar(); return; }
+  proximo.currentTime = 0;
+  proximo.play().then(trocar).catch(trocar);
+  // reinicia a barrinha do corte
+  const barra = c.btn.querySelector('.corte__barra'); barra.style.animation = 'none'; void barra.offsetWidth; barra.style.animation = '';
+  clearTimeout(reserva); reserva = setTimeout(() => { if (comicVisivel && !comicAberto) mostrarCorte(corteAtual + 1); }, 7000);
+}
+vidsComic.forEach((v) => {
+  v.addEventListener('ended', () => { if (v.classList.contains('is-on') && comicVisivel && !comicAberto) mostrarCorte(corteAtual + 1); });
+  // perto do fim, o outro vídeo já começa a carregar o próximo corte
+  v.addEventListener('timeupdate', () => {
+    if (!v.classList.contains('is-on') || v.currentTime < 3.5) return;
+    const outro = vidsComic.find((x) => x !== v), prox = (corteAtual + 1) % CORTES.length;
+    if (!temCorte(outro, prox)) { outro.src = arqCorte(prox); outro.preload = 'auto'; outro.poster = quadroCorte(prox); }
+  });
+});
+CORTES.forEach((c, i) => c.btn.addEventListener('click', () => { if (comicAberto) fecharSet(); mostrarCorte(i); }));
+new IntersectionObserver(([e]) => {
+  comicVisivel = e.isIntersecting;
+  if (comicAberto) return;
+  if (comicVisivel) { if (corteAtual === -1) mostrarCorte(0, { tocar: !calmo }); else if (!calmo) vidsComic.find((v) => v.classList.contains('is-on')).play().catch(() => {}); }
+  else { vidsComic.forEach((v) => v.pause()); clearTimeout(reserva); }
+}, { threshold: .25 }).observe(telaComic);
+
+// set completo no YouTube (sem cookies), só quando a pessoa pede
+const yt = $('#comic-yt');
+function abrirSet() {
+  comicAberto = true; clearTimeout(reserva);
+  vidsComic.forEach((v) => v.pause());
+  if (estado.som) ligarSom(false);
+  const inicio = corteAtual >= 0 ? CORTES[corteAtual].seg : 0;
+  yt.replaceChildren();
+  const fr = document.createElement('iframe');
+  fr.src = `https://www.youtube-nocookie.com/embed/O3xTPJZGzeo?autoplay=1&rel=0&playsinline=1&start=${inicio}`;
+  fr.title = 'Linnx DjSet @ Comic Festival 2026 (set completo)';
+  fr.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+  fr.referrerPolicy = 'strict-origin-when-cross-origin';
+  const fechar = document.createElement('button');
+  fechar.type = 'button'; fechar.className = 'comic__fechar'; fechar.textContent = 'Fechar o set';
+  fechar.addEventListener('click', fecharSet);
+  yt.append(fr, fechar); yt.hidden = false; telaComic.classList.add('com-yt');
+  fechar.focus({ preventScroll: true });
+}
+function fecharSet() {
+  comicAberto = false; yt.hidden = true; yt.replaceChildren(); telaComic.classList.remove('com-yt');
+  if (comicVisivel && !calmo) mostrarCorte(corteAtual);
+  $('#comic-full').focus({ preventScroll: true });
+}
+$('#comic-full').addEventListener('click', abrirSet);
 
 // vídeo de fundo da viagem
 const vViagem = $('.viagem__video');
@@ -122,7 +199,7 @@ const espectro = new Float32Array(48);
 
 function pulso(agora) {
   const t = (agora - t0) / 1000;
-  if (estado.som && analisador && !video.paused) {
+  if (estado.som && analisador && !trilha.paused) {
     analisador.getByteFrequencyData(dadosFreq);
     let g = 0; for (let i = 1; i < 6; i++) g += dadosFreq[i]; g /= 5 * 255;
     let tot = 0; for (let i = 0; i < 64; i++) tot += dadosFreq[i]; tot /= 64 * 255;
@@ -346,12 +423,23 @@ function quebrarLetras(el) {
 
 function motion() {
   if (!gsap || !ST || calmo) return;
+  const mm0 = gsap.matchMedia();
 
   // hero: rolar afasta a foto e aproxima o logo
   gsap.to('.hero__foto', { yPercent: 18, scale: 1.08, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
   gsap.to('.hero__texto', { yPercent: -25, opacity: .2, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
   gsap.to('.hero__anel', { rotate: 120, scale: 1.3, opacity: 0, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
   gsap.fromTo('.faixa', { xPercent: 4 }, { xPercent: -4, ease: 'none', scrollTrigger: { trigger: '.faixa', start: 'top bottom', end: 'bottom top', scrub: true } });
+
+  // última passagem: o título entra linha a linha e a tela abre até a borda
+  gsap.from('.comic__linha', { yPercent: 110, opacity: 0, stagger: .12, duration: 1.1, ease: 'power4.out', scrollTrigger: { trigger: '.comic', start: 'top 75%' } });
+  gsap.from('.comic__lede', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.comic', start: 'top 70%' } });
+  mm0.add('(min-width: 761px)', () => {
+    gsap.fromTo('#comic-tela', { clipPath: 'inset(7% 9% 7% 9% round 32px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
+      scrollTrigger: { trigger: '.comic__pin', start: 'top 85%', end: 'top 10%', scrub: .6 } });
+    gsap.fromTo('.comic__video', { scale: 1.12 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '.comic__pin', start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+  gsap.from('.comic__cortes li', { y: 40, opacity: 0, stagger: .05, duration: .7, ease: 'power3.out', scrollTrigger: { trigger: '.comic__cortes', start: 'top 92%' } });
 
   // sobre: as palavras acendem conforme a leitura
   const palavras = quebrarPalavras($('[data-palavras]'));
