@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LINNX — DJ · Progressive Trance e Acelerado</title>
+<meta name="description" content="Linnx, artista de São Paulo: progressive trance e acelerado, melodias etéreas e o pulso da biomecânica. Ao vivo, press kit e contratação.">
+<meta name="theme-color" content="#07030b">
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:title" content="LINNX — Progressive Trance e Acelerado">
+<meta property="og:description" content="Artista de São Paulo. Melodias etéreas, baixo intenso e o pulso da biomecânica.">
+<meta property="og:image" content="./assets/img/linnx-chapeu-m.webp">
+<link rel="icon" type="image/png" href="./assets/img/favicon.png">
+<link rel="preload" href="./fonts/Syne-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/InstrumentSans-VF.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="./css/site.css">
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+<!-- ABERTURA: a pincelada do logo se pinta enquanto as peças carregam -->
+<div class="abertura" id="abertura">
+  <div class="abertura__logo" aria-hidden="true">
+    <img src="./assets/img/logo-rosa-m.webp" alt="" width="700" height="262" decoding="async">
+  </div>
+  <div class="abertura__info">
+    <span class="abertura__pct" id="ab-pct">000</span>
+    <span class="abertura__rot">calibrando a pista</span>
+  </div>
+  <div class="abertura__barra"><i id="ab-barra"></i></div>
+  <div class="abertura__entrar" id="ab-entrar" hidden>
+    <button type="button" class="btn btn--rosa" data-entrar="som">Entrar com som</button>
+    <button type="button" class="btn btn--linha" data-entrar="mudo">Entrar em silêncio</button>
+    <p>O som é o do set ao vivo dela. Dá para ligar e desligar a qualquer momento.</p>
+  </div>
+</div>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="fundo-css" aria-hidden="true"></div>
+<div class="grao" aria-hidden="true"></div>
+
+<header class="topo" id="topo">
+  <a class="topo__marca" href="#inicio" aria-label="Linnx, início"><img src="./assets/img/logo-branco.webp" alt="" width="1200" height="449"></a>
+  <nav class="topo__nav" aria-label="Seções">
+    <a href="#sobre" data-scramble>Sobre</a>
+    <a href="#viagem" data-scramble>Viagem</a>
+    <a href="#ao-vivo" data-scramble>Ao vivo</a>
+    <a href="#press" data-scramble>Press kit</a>
+    <a class="topo__cta" href="#booking">Contratar</a>
+  </nav>
+  <button class="topo__menu" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <nav aria-label="Menu">
+    <a href="#sobre"><small>01</small>Sobre</a>
+    <a href="#viagem"><small>02</small>Viagem</a>
+    <a href="#ao-vivo"><small>03</small>Ao vivo</a>
+    <a href="#retrato"><small>04</small>Retrato</a>
+    <a href="#press"><small>05</small>Press kit</a>
+    <a href="#booking"><small>06</small>Contratar</a>
+  </nav>
+</div>
+
+<main id="conteudo" tabindex="-1">
+
+  <!-- HERO -->
+  <section class="hero" id="inicio" aria-label="Linnx">
+    <div class="hero__anel" aria-hidden="true">
+      <svg viewBox="0 0 600 600"><defs><path id="circ" d="M300,300 m-250,0 a250,250 0 1,1 500,0 a250,250 0 1,1 -500,0"/></defs>
+        <text><textPath href="#circ">PROGRESSIVE TRANCE ✕ ACELERADO ✕ BIOMECÂNICA ✕ SÃO PAULO ✕ PROGRESSIVE TRANCE ✕ ACELERADO ✕ </textPath></text></svg>
+    </div>
+    <figure class="hero__foto" aria-hidden="true">
+      <img src="./assets/img/linnx-chapeu.webp" srcset="./assets/img/linnx-chapeu-m.webp 760w, ./assets/img/linnx-chapeu.webp 1400w" sizes="(max-width: 760px) 100vw, 60vw" alt="" width="1400" height="1319" fetchpriority="high">
+    </figure>
+    <div class="hero__texto">
+      <p class="rotulo hero__rot"><span class="ponto"></span>São Paulo · DJ e produtora</p>
+      <h1 class="hero__logo"><img src="./assets/img/logo-rosa.webp" srcset="./assets/img/logo-rosa-m.webp 700w, ./assets/img/logo-rosa.webp 1600w" sizes="(max-width: 760px) 92vw, 52vw" alt="Linnx" width="1600" height="599"></h1>
+      <p class="hero__linha"><span class="kin" data-kin>Progressive trance</span> <b>✕</b> <span class="kin" data-kin>acelerado</span></p>
+      <div class="hero__acoes">
+        <a class="btn btn--rosa magnet" href="#booking">Contratar a Linnx</a>
+        <a class="btn btn--linha magnet" href="#ao-vivo">Ver ao vivo</a>
+      </div>
+    </div>
+    <a class="hero__desce" href="#sobre" aria-label="Descer para o conteúdo"><span></span></a>
+  </section>
+
+  <!-- FAIXA -->
+  <div class="faixa" aria-hidden="true">
+    <div class="faixa__trilho"><span>PROGRESSIVE TRANCE</span><i>✕</i><span>ACELERADO</span><i>✕</i><span>BIOMECÂNICA</span><i>✕</i><span>MELODIAS ETÉREAS</span><i>✕</i><span>SÃO PAULO</span><i>✕</i></div>
+  </div>
+
+  <!-- SOBRE / MANIFESTO -->
+  <section class="sobre" id="sobre" aria-labelledby="sobre-t">
+    <p class="rotulo">01 · Sobre</p>
+    <h2 id="sobre-t" class="sobre__frase" data-palavras>Sou a Linnx, uma artista emergente de São Paulo que traz uma mistura explosiva de progressive trance e acelerado.</h2>
+    <div class="sobre__grade">
+      <p data-revela>Minhas tracks combinam melodias etéreas e progressivas com o ritmo pulsante e contagiante da biomecânica, criando uma experiência musical única e energizante.</p>
+      <p data-revela>Minha paixão pela música eletrônica me move a buscar sempre a inovação e a perfeição em minhas apresentações. Dedico-me a criar sets criativos e dinâmicos que farão você dançar do início ao fim.</p>
+    </div>
+    <ul class="sobre__tags" aria-label="Estilos">
+      <li>Progressive trance</li><li>Acelerado</li><li>Biomecânica</li><li>São Paulo</li>
+    </ul>
+  </section>
+
+  <!-- VIAGEM: rolagem horizontal pela paisagem sonora -->
+  <section class="viagem" id="viagem" aria-labelledby="viagem-t">
+    <video class="viagem__video" src="./assets/video/linnx-fundo.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <div class="viagem__pin">
+      <header class="viagem__topo">
+        <p class="rotulo">02 · A viagem</p>
+        <h2 id="viagem-t">Paisagens sonoras vibrantes</h2>
+        <div class="viagem__prog" aria-hidden="true"><i id="viagem-prog"></i></div>
+      </header>
+      <div class="viagem__trilho" id="viagem-trilho">
+        <article class="cena cena--1">
+          <span class="cena__n">01</span>
+          <svg class="cena__arte" viewBox="0 0 400 200" aria-hidden="true"><path class="onda" d="M0,100 C50,40 100,160 150,100 S250,40 300,100 S350,160 400,100"/><path class="onda onda--2" d="M0,110 C60,60 110,150 160,110 S260,60 310,110 S360,150 400,110"/></svg>
+          <h3>Melodias etéreas</h3>
+          <p>Melodias etéreas e progressivas, que sobem devagar e levam a pista junto.</p>
+        </article>
+        <article class="cena cena--2">
+          <span class="cena__n">02</span>
+          <svg class="cena__arte" viewBox="0 0 400 200" aria-hidden="true"><g class="barras"><rect x="10" y="60" width="26" height="80"/><rect x="50" y="30" width="26" height="140"/><rect x="90" y="70" width="26" height="60"/><rect x="130" y="20" width="26" height="160"/><rect x="170" y="50" width="26" height="100"/><rect x="210" y="35" width="26" height="130"/><rect x="250" y="75" width="26" height="50"/><rect x="290" y="25" width="26" height="150"/><rect x="330" y="55" width="26" height="90"/><rect x="370" y="40" width="26" height="120"/></g></svg>
+          <h3>Baixo intenso</h3>
+          <p>Linhas de baixo intensas e o ritmo pulsante e contagiante da biomecânica.</p>
+        </article>
+        <article class="cena cena--3">
+          <span class="cena__n">03</span>
+          <svg class="cena__arte" viewBox="0 0 400 200" aria-hidden="true"><g class="raios"><circle cx="200" cy="100" r="18"/><circle cx="200" cy="100" r="44"/><circle cx="200" cy="100" r="72"/><circle cx="200" cy="100" r="98"/></g></svg>
+          <h3>Sintetizadores poderosos</h3>
+          <p>Sintetizadores poderosos e vocais emocionantes. Cada set é uma história contada através da música.</p>
+        </article>
+        <article class="cena cena--4">
+          <span class="cena__n">04</span>
+          <svg class="cena__arte" viewBox="0 0 400 200" aria-hidden="true"><path class="x" d="M120,30 L280,170 M280,30 L120,170"/></svg>
+          <h3>Euforia na pista</h3>
+          <p>Um estado de euforia e conexão com a pista de dança, do início ao fim.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- AO VIVO -->
+  <section class="aovivo" id="ao-vivo" aria-labelledby="aovivo-t">
+    <div class="aovivo__pin">
+      <div class="aovivo__titulo">
+        <p class="rotulo"><span class="ponto ponto--vivo"></span>03 · Ao vivo</p>
+        <h2 id="aovivo-t">Me encontre<br>nas pistas</h2>
+      </div>
+      <div class="aovivo__palco">
+        <canvas class="aovivo__vis" id="vis" aria-hidden="true"></canvas>
+        <div class="aovivo__tela" id="tela">
+          <div class="aovivo__clip">
+          <video id="video-vivo" class="aovivo__video" muted loop playsinline preload="metadata" poster="./assets/img/ao-vivo-capa.webp" aria-label="Linnx tocando ao vivo, vídeo de 28 segundos">
+            <source data-src-m="./assets/video/linnx-ao-vivo-m.mp4" data-src="./assets/video/linnx-ao-vivo.mp4" type="video/mp4">
+          </video>
+          </div>
+          <button class="aovivo__som" type="button" data-som aria-pressed="false"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span data-som-rot>Ligar o som</span></button>
+        </div>
+      </div>
+      <p class="aovivo__legenda">Prepare-se para ser transportado para um universo de sensações.</p>
+    </div>
+  </section>
+
+  <!-- RETRATO -->
+  <section class="retrato" id="retrato" aria-labelledby="retrato-t">
+    <p class="rotulo">04 · Retrato</p>
+    <h2 id="retrato-t" class="sr">Fotos da Linnx</h2>
+    <svg width="0" height="0" class="sr" aria-hidden="true" focusable="false">
+      <filter id="duo" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values=".33 .33 .33 0 0  .33 .33 .33 0 0  .33 .33 .33 0 0  0 0 0 1 0"/>
+        <feComponentTransfer><feFuncR id="duo-r" type="table" tableValues="0.03 1"/><feFuncG id="duo-g" type="table" tableValues="0.01 0.25"/><feFuncB id="duo-b" type="table" tableValues="0.06 0.69"/></feComponentTransfer>
+      </filter>
+    </svg>
+    <div class="retrato__grade">
+      <figure class="retrato__quadro retrato__quadro--a" data-tilt>
+        <div class="retrato__luz" aria-hidden="true"></div>
+        <img class="retrato__img" id="duo-img" src="./assets/img/linnx-lingua.webp" srcset="./assets/img/linnx-lingua-m.webp 520w, ./assets/img/linnx-lingua.webp 994w" sizes="(max-width: 760px) 90vw, 40vw" alt="Linnx de chapéu de couro e colar vermelho, mostrando a língua e apontando para a câmera" width="495" height="692" loading="lazy" decoding="async">
+        <figcaption>Linnx · press 2025</figcaption>
+      </figure>
+      <div class="retrato__lado">
+        <p class="retrato__chamada">Cada set é uma história contada através da música.</p>
+        <div class="retrato__cores" role="group" aria-label="Cor do retrato">
+          <button type="button" data-duo="rosa" aria-pressed="true"><i style="--c:#ff3fb0"></i>Rosa</button>
+          <button type="button" data-duo="azul" aria-pressed="false"><i style="--c:#2f6bff"></i>Azul</button>
+          <button type="button" data-duo="brasa" aria-pressed="false"><i style="--c:#ff7a2e"></i>Brasa</button>
+          <button type="button" data-duo="original" aria-pressed="false"><i style="--c:conic-gradient(#ff3fb0,#2f6bff,#ff7a2e,#ff3fb0)"></i>Original</button>
+        </div>
+        <figure class="retrato__quadro retrato__quadro--b" data-tilt>
+          <img src="./assets/img/linnx-chapeu-m.webp" alt="Linnx de cabelo azul e chapéu laranja, tocando a aba do chapéu" width="760" height="716" loading="lazy" decoding="async">
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESS KIT -->
+  <section class="press" id="press" aria-labelledby="press-t">
+    <p class="rotulo">05 · Press kit</p>
+    <h2 id="press-t">Tudo para divulgar</h2>
+    <p class="press__lede">Logo, fotos, release e vídeo, prontos para flyer, line-up e redes. Baixe um por um ou o pacote inteiro.</p>
+    <ul class="press__lista">
+      <li><a class="arquivo" href="./assets/press/linnx-presskit.zip" download><span class="arquivo__ico arquivo__ico--zip" aria-hidden="true">ZIP</span><span class="arquivo__nome">Press kit completo</span><span class="arquivo__meta">tudo abaixo · ZIP · 8,5 MB</span></a></li>
+      <li><a class="arquivo" href="./assets/press/linnx-logo-rosa.png" download><span class="arquivo__ico arquivo__ico--img" aria-hidden="true" style="--prev:url(../assets/img/logo-rosa-m.webp)"></span><span class="arquivo__nome">Logo rosa</span><span class="arquivo__meta">PNG transparente · 2400 px</span></a></li>
+      <li><a class="arquivo" href="./assets/press/linnx-logo-branco.png" download><span class="arquivo__ico arquivo__ico--img arquivo__ico--escuro" aria-hidden="true" style="--prev:url(../assets/img/logo-branco.webp)"></span><span class="arquivo__nome">Logo branco</span><span class="arquivo__meta">PNG transparente · 2400 px</span></a></li>
+      <li><a class="arquivo" href="./assets/press/linnx-foto-1.png" download><span class="arquivo__ico arquivo__ico--img arquivo__ico--foto" aria-hidden="true" style="--prev:url(../assets/img/linnx-chapeu-m.webp)"></span><span class="arquivo__nome">Foto 1 · chapéu</span><span class="arquivo__meta">PNG recortado · 1400 px</span></a></li>
+      <li><a class="arquivo" href="./assets/press/linnx-foto-2.png" download><span class="arquivo__ico arquivo__ico--img arquivo__ico--foto" aria-hidden="true" style="--prev:url(../assets/img/linnx-lingua-m.webp)"></span><span class="arquivo__nome">Foto 2 · retrato</span><span class="arquivo__meta">PNG recortado</span></a></li>
+      <li><a class="arquivo" href="./assets/video/linnx-ao-vivo.mp4" download><span class="arquivo__ico" aria-hidden="true">MP4</span><span class="arquivo__nome">Vídeo ao vivo</span><span class="arquivo__meta">28 s · vertical · com som</span></a></li>
+      <li><a class="arquivo" href="./assets/press/linnx-release.docx" download><span class="arquivo__ico" aria-hidden="true">DOC</span><span class="arquivo__nome">Release</span><span class="arquivo__meta">Word · texto oficial</span></a></li>
+    </ul>
+    <div class="release">
+      <div class="release__topo">
+        <h3>Release</h3>
+        <button class="btn btn--linha btn--peq" type="button" id="copiar-release">Copiar texto</button>
+      </div>
+      <div class="release__texto" id="release-texto">
+        <p>Sou a Linnx, uma artista emergente de São Paulo que traz uma mistura explosiva de progressive trance e acelerado. Minhas tracks combinam melodias etéreas e progressivas com o ritmo pulsante e contagiante da biomecânica, criando uma experiência musical única e energizante.</p>
+        <p>Prepare-se para viajar por paisagens sonoras vibrantes, com linhas de baixo intensas, sintetizadores poderosos e vocais emocionantes. Cada set é uma história contada através da música, levando você a um estado de euforia e conexão com a pista de dança. Minha paixão pela música eletrônica me move a buscar sempre a inovação e a perfeição em minhas apresentações. Dedico-me a criar sets criativos e dinâmicos que farão você dançar do início ao fim.</p>
+        <p>Se você busca uma experiência musical única e inesquecível, me encontre nas pistas e prepare-se para ser transportado para um universo de sensações através da minha conexão com a música e com a pista.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section class="booking" id="booking" aria-labelledby="booking-t">
+    <div class="booking__x" aria-hidden="true">✕</div>
+    <p class="rotulo">06 · Contratar</p>
+    <h2 id="booking-t">Leve a Linnx<br>para a sua pista</h2>
+    <form class="form" id="form" novalidate>
+      <div class="form__linha">
+        <label><span>Seu nome</span><input name="nome" autocomplete="name" required maxlength="80"></label>
+        <label><span>Evento ou casa</span><input name="evento" required maxlength="100"></label>
+      </div>
+      <div class="form__linha">
+        <label><span>Cidade</span><input name="cidade" autocomplete="address-level2" maxlength="60"></label>
+        <label><span>Data</span><input name="data" type="date"></label>
+      </div>
+      <label><span>Conte sobre a festa</span><textarea name="msg" rows="4" maxlength="800" placeholder="Horário, line-up, público esperado..."></textarea></label>
+      <div class="form__envio" id="form-envio"></div>
+      <p class="form__aviso" id="form-aviso" role="status" aria-live="polite"></p>
+    </form>
+    <ul class="booking__redes" id="redes"></ul>
+  </section>
+</main>
+
+<footer class="rodape">
+  <img class="rodape__logo" src="./assets/img/logo-rosa-m.webp" alt="Linnx" width="700" height="262" loading="lazy">
+  <p>Progressive trance ✕ acelerado · São Paulo</p>
+  <p class="rodape__ass">Site feito por Amplitude Lab</p>
+</footer>
+
+<!-- HUD: pulso da pista e som -->
+<div class="hud" id="hud">
+  <button type="button" class="hud__som" data-som aria-pressed="false" aria-label="Ligar o som do set ao vivo"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="hud__txt" data-som-rot>Som</span></button>
+  <span class="hud__nivel" aria-hidden="true"><i id="hud-nivel"></i></span>
+</div>
+<div class="cursor" id="cursor" aria-hidden="true"><i></i><span class="cursor__txt" id="cursor-txt"></span></div>
+<div class="aviso" id="aviso" role="status" aria-live="polite"></div>
+
+<noscript><style>.abertura{display:none}</style></noscript>
+<script src="./vendor/gsap.min.js"></script>
+<script src="./vendor/ScrollTrigger.min.js"></script>
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>

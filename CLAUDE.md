@@ -112,6 +112,21 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
     O inventário do material, as medições e o que falta do artista estão em
     `darky/INVENTARIO.md`. As fotos e vídeos originais (ZIP de 2 GB) não vão para o
     repositório; só as versões otimizadas em `assets/`.
+  - `linnx/`: página da DJ **Linnx** (progressive trance e acelerado, São Paulo). Veio
+    do press kit de 2025: duas fotos já recortadas, o logo rosa em pincel (fundo
+    transparente), um vídeo vertical de 28 s ao vivo e o release. Todo o texto da página
+    sai do release; nada foi inventado. Contatos de booking ficam no objeto `CONTATO` de
+    `js/app.js` — **ainda vazios**: campo vazio não aparece, e sem nenhum o formulário só
+    copia o pedido. O som da página é o áudio do vídeo ao vivo; com ele ligado, um
+    `AnalyserNode` lê os graves e faz o fundo WebGL (`js/fx.js`, sem biblioteca), o logo e
+    o visualizador pulsarem; sem som, um pulso sintético em 140 BPM. No celular não há
+    WebGL (fica um gradiente em CSS) e o vídeo é o `-m`. Antes de ligar o fundo, `fx.js` mede o custo
+    de alguns quadros na GPU e desiste se passar de 8 ms (GPU por software também fica de
+    fora); `?semfx` no endereço desliga o WebGL para testes. Use `powerPreference:
+    'default'`: com `low-power`, em notebook de duas GPUs, WebGL e vídeo juntos travavam
+    a página. Sem script inline (CSP
+    `script-src 'self'`). O ZIP do press kit (`assets/press/linnx-presskit.zip`) é gerado
+    à mão: refaça se trocar logo, foto, release ou vídeo.
   - Bruxo e Bruno Zampieri usam CSP com hash do `<script>` inline: **recalcule o `sha256`
     sempre que mudar o script**, senão ele não roda. Para recalcular e já gravar no
     cabeçalho:
@@ -234,8 +249,8 @@ node previa/previa.js limpar                                     # apaga as venc
 - Links internos usam `index.html` explícito quando a página precisa abrir também do
   disco (pacote .zip).
 - Pacote para enviar: `git archive` do `main` sem `voxel-realms*`, sem `previa/` e sem
-  os sites de clientes (`clientes/`, `bruno-zampieri/`, `bruxo/`, `darky/` e os próximos
-  que entrarem na lista), mais uma página `COMECE-AQUI.html` na raiz, zipado como
+  os sites de clientes (`clientes/`, `bruno-zampieri/`, `bruxo/`, `darky/`, `linnx/` e os
+  próximos que entrarem na lista), mais uma página `COMECE-AQUI.html` na raiz, zipado como
   `amplitude-lab-completo.zip`.
 - Pull requests só quando pedido. O dono costuma pedir PR + merge no fim.
 
