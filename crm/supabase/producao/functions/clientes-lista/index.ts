@@ -41,6 +41,15 @@ const SITES = [
     cor: "#ff3fb0",
     fundo: "#1c0716",
   },
+  {
+    nome: "ARCANNE",
+    sobre: "DJ e produtor · psy-trance ao techno · nov 2026",
+    url: "../arcanne/",
+    endereco: "amplitudelab.github.io/lab/arcanne/",
+    inicial: "AR",
+    cor: "#ff5a1f",
+    fundo: "#0b0b0c",
+  },
 ];
 
 const SLUG = "amplitudelab";

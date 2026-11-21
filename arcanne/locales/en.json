@@ -1,0 +1,192 @@
+{
+  "lang": "en",
+  "og_locale": "en_US",
+  "caminho": "en/",
+  "meta": {
+    "titulo": "ARCANNE · DJ and producer",
+    "descricao": "Arcanne is the solo project of Rodolfo Carvalho: from psytrance to techno, with pop culture in the mix. Music, live shows, press kit and booking.",
+    "og_alt": "White ARCANNE logo and the artist in a white T-shirt on an orange background"
+  },
+  "ui": {
+    "pular": "Skip intro",
+    "menu": "Menu",
+    "fechar_menu": "Close menu",
+    "nav_aria": "Sections",
+    "idioma_aria": "Language",
+    "idioma_outro": "Português",
+    "som_ligar": "Sound on",
+    "som_desligar": "Sound off",
+    "som_tocando": "Playing",
+    "som_rotulo": "Odin on Acid",
+    "tocar": "Play",
+    "pausar": "Pause",
+    "carregando": "Loading",
+    "erro_audio": "The audio couldn't be loaded.",
+    "posicao": "Track position",
+    "fechar": "Close",
+    "copiar": "Copy",
+    "copiado": "Copied",
+    "baixar": "Download",
+    "abrir_nova": "opens in a new tab",
+    "pular_conteudo": "Skip to content",
+    "topo": "Back to top"
+  },
+  "nav": {
+    "artista": "Artist",
+    "aovivo": "Live",
+    "musica": "Music",
+    "press": "Press kit",
+    "booking": "Booking"
+  },
+  "inicio": {
+    "rotulo": "DJ and producer · Rodolfo Carvalho",
+    "linha": "From psytrance to techno, with pop culture in the mix.",
+    "ouvir": "Listen",
+    "aovivo": "Watch live",
+    "booking": "Booking",
+    "novo": "New single",
+    "novo_acao": "Play Odin on Acid",
+    "rolar": "Scroll"
+  },
+  "artista": {
+    "rotulo": "01 · Artist",
+    "titulo": "The man behind it",
+    "citacao": "From psytrance to techno, from video games to classic films.",
+    "ficha_titulo": "File",
+    "ficha": [
+      [
+        "ID",
+        "ARCANNE"
+      ],
+      [
+        "Name",
+        "Rodolfo Carvalho"
+      ],
+      [
+        "Roots",
+        "Half Italian, half Brazilian"
+      ],
+      [
+        "Years in",
+        "Almost two decades as a DJ and multi-instrumentalist"
+      ],
+      [
+        "Solo since",
+        "2020"
+      ],
+      [
+        "Sound",
+        "Psytrance → techno"
+      ],
+      [
+        "Debut album",
+        "Parallax · Sept 2024"
+      ]
+    ],
+    "bio": [
+      "Rodolfo Carvalho is the name behind Arcanne. Half Italian, half Brazilian, he has spent almost two decades as a DJ and multi-instrumentalist. After success as part of high-profile projects, winning thousands of fans across Brazil and racking up millions of plays on digital platforms, he took on a new challenge in 2020: going solo.",
+      "Refusing to stick to one genre, his productions move from psytrance to techno and pull in pop culture, from video games to classic films. He is known for tracks such as “Paradise”, “Odin on Acid”, “Hey Ya Ho” and “Amsterdam”, and for hit remixes of “Bloody Mary” (Lady Gaga), “Go F**k Yourself” (Two Feet) and “Pompeii” (Bastille). With millions of streams on the major platforms, his tracks regularly turn up in sets by some of the scene’s biggest names and have been released on leading international labels.",
+      "His sets are built on creative mixing techniques, blending his sound with elements of other genres such as EDM and rock. That approach has taken Arcanne to memorable shows around the world, at large-scale events including Universo Paralello (Pratigi, Brazil), Neelix & Friends (Bremen, Germany), Club A (São Paulo, Brazil), Techno Den (Dublin, Ireland), Dicey’s Garden (Dublin, Ireland) and Valldemossa Beach (Mallorca, Spain).",
+      "In 2024 he conceived and produced his debut album, “Parallax”, released that September. A milestone in his career, it brings together tracks that tell a story and travel through the styles he has explored as a producer, uniting every influence that has shaped his work to date."
+    ],
+    "alt_ficha": "Arcanne smiling in an orange T-shirt, holding a police mugshot board that reads ARCANNE",
+    "alt_grito": "Arcanne in a white T-shirt, shouting, hands curled like claws",
+    "alt_caixa": "Arcanne shouting into a studio monitor speaker he holds in his left hand",
+    "alt_palco": "Arcanne on stage in daylight, in sunglasses and denim overalls, arms raised behind the CDJs",
+    "alt_clube": "Arcanne in a club, turquoise headphones round his neck, pulling a face at the crowd",
+    "alt_letreiro": "Arcanne playing under a light-bulb marquee sign, in sunglasses and turquoise headphones",
+    "alt_cabine": "Arcanne laughing at the controller, in a beige tank top and sunglasses"
+  },
+  "aovivo": {
+    "rotulo": "02 · Live",
+    "titulo": "On the floor",
+    "intro": "His sets combine creative mixing techniques with elements of EDM and rock. Three films, three very different dancefloors.",
+    "assistir": "Watch the aftermovie",
+    "no_youtube": "on YouTube",
+    "vertical": "vertical",
+    "horizontal": "horizontal",
+    "min": "min",
+    "s": "s",
+    "filmado_por": "Filmed by",
+    "passagens_titulo": "Where he’s played",
+    "passagens_nota": "Events named in the official press release.",
+    "paises": {
+      "BR": "Brazil",
+      "DE": "Germany",
+      "IE": "Ireland",
+      "ES": "Spain"
+    },
+    "player_titulo": "Aftermovie",
+    "player_youtube": "The video plays from YouTube, without tracking cookies.",
+    "player_abrir_youtube": "Open on YouTube"
+  },
+  "musica": {
+    "rotulo": "03 · Music",
+    "titulo": "In your headphones",
+    "destaque_rotulo": "Single · 11 Apr 2026",
+    "destaque_nota": "Full track. Nothing plays until you press play.",
+    "ouvir_spotify": "Listen on Spotify",
+    "trechos_titulo": "Press kit previews",
+    "trechos_nota": "30-second cuts supplied by the artist.",
+    "remix_de": "remix of",
+    "spotify_titulo": "Also on Spotify",
+    "spotify_carregar": "Load the Spotify player",
+    "spotify_aviso": "The player comes from Spotify and only loads if you ask for it.",
+    "album_titulo": "Album",
+    "album_texto": "“Parallax”, his debut album, came out in September 2024: tracks that tell a story and move through the styles he has explored as a producer.",
+    "disco_titulo": "Discography on Spotify",
+    "disco_nota": "{n} singles from 2020 to 2026, newest first.",
+    "playlists_titulo": "Playlist",
+    "plataformas_titulo": "Where to listen"
+  },
+  "press": {
+    "rotulo": "04 · Press kit",
+    "titulo": "For press and promoters",
+    "zip": "Download the full press kit",
+    "zip_inclui": "High-res photos, logos and the press release in Portuguese and English.",
+    "bio_curta": "Short bio",
+    "bio_completa": "Full bio",
+    "curta_pt": "Arcanne é o projeto solo de Rodolfo Carvalho, DJ e produtor meio italiano, meio brasileiro, com quase duas décadas como DJ e multi-instrumentista. Suas produções vão do psy-trance ao techno, com cultura pop no meio, e seus shows já passaram por Universo Paralello, Neelix & Friends (Bremen) e Techno Den (Dublin). Em 2024 lançou o primeiro álbum, “Parallax”.",
+    "curta_en": "Arcanne is the solo project of Rodolfo Carvalho, a half-Italian, half-Brazilian DJ and producer with almost two decades as a DJ and multi-instrumentalist. His music runs from psytrance to techno with pop culture in the mix, and he has played Universo Paralello, Neelix & Friends (Bremen) and Techno Den (Dublin). His debut album, “Parallax”, came out in 2024.",
+    "lingua_pt": "Portuguese",
+    "lingua_en": "English",
+    "fotos_titulo": "Official photos",
+    "fotos_nota": "Studio shots come cut out, as PNGs with a transparent background.",
+    "recorte": "Cut-out PNG",
+    "logos_titulo": "Logos",
+    "logos_nota": "PNGs with a transparent background, in black and in white.",
+    "logo_nomes": {
+      "logo-branco": "Ring and name · white",
+      "logo-preto": "Ring and name · black",
+      "logo-2-branco": "Horizontal · white",
+      "logo-2-preto": "Horizontal · black",
+      "logo-3-branco": "Name over ring · white",
+      "logo-3-preto": "Name over ring · black"
+    }
+  },
+  "booking": {
+    "rotulo": "05 · Booking",
+    "titulo": "Bring Arcanne to your dancefloor",
+    "texto": "Festivals, clubs and parties. Talk to the artist directly.",
+    "instagram": "Message on Instagram",
+    "email": "Send an email",
+    "whatsapp": "Message on WhatsApp",
+    "extra": "He also teaches DJing and production and works as a ghost producer.",
+    "form_titulo": "Put your request together",
+    "form_nota": "Fill in what you already know. The text comes out ready to paste into the chat.",
+    "campo_nome": "Your name",
+    "campo_evento": "Event or venue",
+    "campo_cidade": "City",
+    "campo_data": "Date",
+    "campo_msg": "Details",
+    "enviar": "Copy request and open chat",
+    "enviado": "Request copied. Paste it into the chat that just opened.",
+    "enviado_sem_copia": "The chat is open. If pasting doesn’t work, the text is right below.",
+    "msg_ola": "Hi Arcanne! Booking request:",
+    "press": "See press kit"
+  },
+  "rodape": {
+    "feito": "Site by",
+    "direitos": "Photos, videos, logos and music: ARCANNE."
+  }
+}

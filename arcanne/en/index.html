@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en" data-idioma="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-hPInUu4kY5xMMk9t0XvqiptOBLuuL/84ELEldGYr428='; style-src 'self'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://open.spotify.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<script>// Escolhe a versão do site antes de desenhar a página.
+// 1. Escolha manual guardada (botão PT/EN) vale sempre.
+// 2. Sem escolha, só a raiz em português redireciona: lê os idiomas preferidos do navegador
+//    na ordem; o primeiro que for pt ou en decide. Se nenhum for, o fuso horário desempata
+//    (fuso do Brasil ou de Portugal fica em português; o resto vai para o inglês).
+//    Sem nenhum sinal, fica em português. Nunca pede localização.
+// 3. Robôs de busca e testes (?idioma=fixo) não são redirecionados.
+(function () {
+  'use strict';
+  var CHAVE = 'arcanne:idioma';
+  var raiz = document.documentElement;
+  // Chegou com #seção: layout completo desde o começo (ver content-visibility no CSS).
+  if (location.hash.length > 1) raiz.classList.add('tudo-visivel');
+  var atual = raiz.getAttribute('data-idioma') === 'en' ? 'en' : 'pt';
+  var params = new URLSearchParams(location.search);
+  if (params.get('idioma') === 'fixo') return;
+  if (/bot|crawl|spider|slurp|lighthouse|facebookexternalhit|embedly|preview/i.test(navigator.userAgent)) return;
+
+  var guardado = null;
+  try { guardado = localStorage.getItem(CHAVE); } catch (e) { /* modo privado */ }
+
+  function detectar() {
+    var lista = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || '']);
+    for (var i = 0; i < lista.length; i++) {
+      var l = String(lista[i] || '').toLowerCase();
+      if (l.indexOf('pt') === 0) return 'pt';
+      if (l.indexOf('en') === 0) return 'en';
+    }
+    if (!lista[0]) return 'pt';
+    var fuso = '';
+    try { fuso = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* sem Intl */ }
+    if (/^America\/(Sao_Paulo|Bahia|Fortaleza|Recife|Maceio|Belem|Manaus|Cuiaba|Campo_Grande|Porto_Velho|Boa_Vista|Rio_Branco|Araguaina|Santarem|Noronha|Eirunepe)$/.test(fuso) || /^(Europe\/Lisbon|Atlantic\/(Azores|Madeira))$/.test(fuso)) return 'pt';
+    return 'en';
+  }
+
+  var alvo = guardado === 'pt' || guardado === 'en' ? guardado : (atual === 'pt' ? detectar() : atual);
+  if (alvo === atual) return;
+  var base = location.pathname.replace(/index\.html$/, '');
+  var destino = atual === 'pt' ? base + 'en/' : base.replace(/en\/$/, '');
+  location.replace(destino + location.search + location.hash);
+})();</script>
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>ARCANNE · DJ and producer</title>
+<meta name="description" content="Arcanne is the solo project of Rodolfo Carvalho: from psytrance to techno, with pop culture in the mix. Music, live shows, press kit and booking.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://amplitudelab.github.io/lab/arcanne/en/">
+<link rel="alternate" hreflang="pt-BR" href="https://amplitudelab.github.io/lab/arcanne/">
+<link rel="alternate" hreflang="en" href="https://amplitudelab.github.io/lab/arcanne/en/">
+<link rel="alternate" hreflang="x-default" href="https://amplitudelab.github.io/lab/arcanne/">
+<meta name="theme-color" content="#0b0b0c">
+<meta name="color-scheme" content="dark light">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="ARCANNE">
+<meta property="og:title" content="ARCANNE · DJ and producer">
+<meta property="og:description" content="Arcanne is the solo project of Rodolfo Carvalho: from psytrance to techno, with pop culture in the mix. Music, live shows, press kit and booking.">
+<meta property="og:url" content="https://amplitudelab.github.io/lab/arcanne/en/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:image" content="https://amplitudelab.github.io/lab/arcanne/assets/img/compartilhar.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="White ARCANNE logo and the artist in a white T-shirt on an orange background">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/img/favicon.png" type="image/png" sizes="48x48">
+<link rel="apple-touch-icon" href="../assets/img/icone-180.png">
+<link rel="preload" href="../fonts/Archivo-VF.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="../assets/img/logo.webp" imagesrcset="../assets/img/logo-m.webp 720w, ../assets/img/logo.webp 1400w" imagesizes="(max-width: 899px) 84vw, 780px" fetchpriority="high">
+<link rel="stylesheet" href="../css/site.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"MusicGroup","name":"ARCANNE","url":"https://amplitudelab.github.io/lab/arcanne/en/","image":"https://amplitudelab.github.io/lab/arcanne/assets/img/compartilhar.jpg","logo":"https://amplitudelab.github.io/lab/arcanne/assets/img/icone-512.png","description":"Arcanne is the solo project of Rodolfo Carvalho: from psytrance to techno, with pop culture in the mix. Music, live shows, press kit and booking.","genre":["Psytrance","Techno"],"member":{"@type":"Person","name":"Rodolfo Carvalho"},"sameAs":["https://www.instagram.com/arcannemusic/","https://open.spotify.com/artist/4BxmyEMSuuBeLNQiRAchAg","https://soundcloud.com/arcanne","https://www.youtube.com/c/ArcanneLive","https://www.beatport.com/artist/arcanne/216180","https://www.facebook.com/arcannemusic","https://linktr.ee/arcanne"],"album":{"@type":"MusicAlbum","name":"Parallax","datePublished":"2024-09","byArtist":{"@type":"MusicGroup","name":"ARCANNE"}},"track":{"@type":"MusicRecording","name":"Odin on Acid","datePublished":"2026-04-11","url":"https://open.spotify.com/track/6RnbrCukj50aEl1kHILxkj"}}</script>
+</head>
+<body>
+<a class="pular sr-foco" href="#conteudo">Skip to content</a>
+
+<div class="abertura" id="abertura" hidden data-src="../assets/video/abertura.mp4" data-src-v="../assets/video/abertura-v.mp4">
+  <video class="abertura-video" muted playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+  <button class="abertura-pular" type="button">Skip intro<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+</div>
+
+<header class="topo" id="topo">
+  <a class="topo-marca" href="#inicio" aria-label="ARCANNE · Back to top"><img src="../assets/img/logo-linha-p.webp" width="1800" height="366" alt=""></a>
+  <nav class="topo-nav" id="menu" aria-label="Sections">
+    <ul>
+      <li><a href="#artista">Artist</a></li>
+      <li><a href="#aovivo">Live</a></li>
+      <li><a href="#musica">Music</a></li>
+      <li><a href="#press">Press kit</a></li>
+      <li><a href="#booking">Booking</a></li>
+    </ul>
+  </nav>
+  <div class="topo-acoes">
+    <button class="som" type="button" aria-pressed="false" aria-label="Sound on · Odin on Acid" data-ligar="Sound on" data-desligar="Sound off" data-faixa-alvo="destaque"><span class="barras" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="som-texto">Sound on</span></button>
+    <div class="idiomas" role="group" aria-label="Language">
+      <a class="idioma" href="../" hreflang="pt-BR" lang="pt-BR" data-idioma-para="pt-BR" aria-label="PT · Português">PT</a><span class="idioma-sep" aria-hidden="true">/</span><span class="idioma idioma--atual" aria-current="true" lang="en">EN</span>
+    </div>
+    <button class="menu-botao" type="button" aria-expanded="false" aria-controls="menu" data-abrir="Menu" data-fechar="Close menu"><span class="menu-botao-linhas" aria-hidden="true"></span><span class="sr">Menu</span></button>
+  </div>
+</header>
+
+<main id="conteudo">
+
+  <section class="inicio" id="inicio" aria-labelledby="inicio-t">
+    <div class="cena" aria-hidden="true">
+      <picture><source media="(max-width: 899px)" srcset="../assets/img/montagem-m.jpg" width="720" height="1280"><img class="cena-capa" src="../assets/img/montagem.jpg" width="1920" height="1080" alt="" fetchpriority="high" decoding="async"></picture>
+      <video class="cena-video" muted loop playsinline preload="none" tabindex="-1" data-src="../assets/video/montagem.mp4" data-src-m="../assets/video/montagem-m.mp4" data-agora></video>
+    </div>
+    <div class="inicio-corpo">
+      <p class="rotulo">DJ and producer · Rodolfo Carvalho</p>
+      <h1 class="inicio-titulo" id="inicio-t"><span class="sr">ARCANNE</span><img class="inicio-logo" src="../assets/img/logo.webp" srcset="../assets/img/logo-m.webp 720w, ../assets/img/logo.webp 1400w" sizes="(max-width: 899px) 84vw, 780px" width="1400" height="931" alt="" fetchpriority="high"></h1>
+      <p class="inicio-linha">From psytrance to techno, with pop culture in the mix.</p>
+      <div class="acoes">
+        <a class="botao botao--sinal" href="#musica">Listen<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg></a>
+        <a class="botao botao--vidro" href="#aovivo">Watch live</a>
+        <a class="botao botao--vidro" href="#booking">Booking</a>
+      </div>
+    </div>
+    <button class="inicio-novo" type="button" data-tocar="destaque">
+      <span class="inicio-novo-rotulo">New single · 2026</span>
+      <span class="inicio-novo-titulo">Odin on Acid</span>
+      <span class="inicio-novo-play"><svg class="i i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="i i-pausa" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg><span class="sr">Play Odin on Acid</span></span>
+    </button>
+    <p class="inicio-rolar" aria-hidden="true">Scroll</p>
+  </section>
+
+  <section class="artista" id="artista" aria-labelledby="artista-t">
+    <img class="artista-anel" src="../assets/img/anel.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" width="900" height="923">
+    <header class="secao-cab">
+      <p class="rotulo">01 · Artist</p>
+      <h2 class="secao-titulo" id="artista-t">The man behind it</h2>
+    </header>
+    <p class="manchete" data-esticar>From psytrance to techno, from video games to classic films.</p>
+    <div class="artista-grade">
+      <figure class="foto foto--ficha" data-prof="-0.06">
+        <img class="foto-img" src="../assets/img/estudio-ficha.webp" srcset="../assets/img/estudio-ficha-m.webp 760w, ../assets/img/estudio-ficha.webp 1300w" sizes="(min-width: 900px) 36vw, 88vw" width="1300" height="1625" alt="Arcanne smiling in an orange T-shirt, holding a police mugshot board that reads ARCANNE" loading="lazy" decoding="async">
+      </figure>
+      <dl class="ficha" aria-label="File">
+        <div class="ficha-topo" aria-hidden="true"><span>#N</span><span>PD</span><span>Ref</span></div>
+        <div class="ficha-linha"><dt>ID</dt><dd>ARCANNE</dd></div>
+        <div class="ficha-linha"><dt>Name</dt><dd>Rodolfo Carvalho</dd></div>
+        <div class="ficha-linha"><dt>Roots</dt><dd>Half Italian, half Brazilian</dd></div>
+        <div class="ficha-linha"><dt>Years in</dt><dd>Almost two decades as a DJ and multi-instrumentalist</dd></div>
+        <div class="ficha-linha"><dt>Solo since</dt><dd>2020</dd></div>
+        <div class="ficha-linha"><dt>Sound</dt><dd>Psytrance → techno</dd></div>
+        <div class="ficha-linha"><dt>Debut album</dt><dd>Parallax · Sept 2024</dd></div>
+      </dl>
+      <div class="bio">
+        <p>Rodolfo Carvalho is the name behind Arcanne. Half Italian, half Brazilian, he has spent almost two decades as a DJ and multi-instrumentalist. After success as part of high-profile projects, winning thousands of fans across Brazil and racking up millions of plays on digital platforms, he took on a new challenge in 2020: going solo.</p>
+        <p>Refusing to stick to one genre, his productions move from psytrance to techno and pull in pop culture, from video games to classic films. He is known for tracks such as “Paradise”, “Odin on Acid”, “Hey Ya Ho” and “Amsterdam”, and for hit remixes of “Bloody Mary” (Lady Gaga), “Go F**k Yourself” (Two Feet) and “Pompeii” (Bastille). With millions of streams on the major platforms, his tracks regularly turn up in sets by some of the scene’s biggest names and have been released on leading international labels.</p>
+        <p>His sets are built on creative mixing techniques, blending his sound with elements of other genres such as EDM and rock. That approach has taken Arcanne to memorable shows around the world, at large-scale events including Universo Paralello (Pratigi, Brazil), Neelix &amp; Friends (Bremen, Germany), Club A (São Paulo, Brazil), Techno Den (Dublin, Ireland), Dicey’s Garden (Dublin, Ireland) and Valldemossa Beach (Mallorca, Spain).</p>
+        <p>In 2024 he conceived and produced his debut album, “Parallax”, released that September. A milestone in his career, it brings together tracks that tell a story and travel through the styles he has explored as a producer, uniting every influence that has shaped his work to date.</p>
+      </div>
+      <figure class="foto foto--grito" data-prof="0.12">
+        <img class="foto-img" src="../assets/img/estudio-grito.webp" srcset="../assets/img/estudio-grito-m.webp 760w, ../assets/img/estudio-grito.webp 1300w" sizes="(min-width: 900px) 28vw, 70vw" width="1300" height="1625" alt="Arcanne in a white T-shirt, shouting, hands curled like claws" loading="lazy" decoding="async">
+      </figure>
+      <figure class="foto foto--caixa" data-prof="0.05">
+        <img class="foto-img" src="../assets/img/estudio-caixa.webp" srcset="../assets/img/estudio-caixa-m.webp 1000w, ../assets/img/estudio-caixa.webp 1800w" sizes="(min-width: 900px) 48vw, 96vw" width="1800" height="1200" alt="Arcanne shouting into a studio monitor speaker he holds in his left hand" loading="lazy" decoding="async">
+      </figure>
+    </div>
+    <ul class="tira" aria-label="On the floor">
+      <li><img class="tira-img" src="../assets/img/palco-dia.webp" srcset="../assets/img/palco-dia-m.webp 800w, ../assets/img/palco-dia.webp 1400w" sizes="(min-width: 900px) 24vw, 70vw" width="1400" height="2100" alt="Arcanne on stage in daylight, in sunglasses and denim overalls, arms raised behind the CDJs" loading="lazy" decoding="async"></li>
+      <li><img class="tira-img" src="../assets/img/cabine-letreiro.webp" srcset="../assets/img/cabine-letreiro-m.webp 720w, ../assets/img/cabine-letreiro.webp 1179w" sizes="(min-width: 900px) 24vw, 70vw" width="1179" height="2061" alt="Arcanne playing under a light-bulb marquee sign, in sunglasses and turquoise headphones" loading="lazy" decoding="async"></li>
+      <li><img class="tira-img" src="../assets/img/clube.webp" width="570" height="426" alt="Arcanne in a club, turquoise headphones round his neck, pulling a face at the crowd" loading="lazy" decoding="async"></li>
+      <li><img class="tira-img" src="../assets/img/cabine.webp" srcset="../assets/img/cabine-m.webp 640w, ../assets/img/cabine.webp 941w" sizes="(min-width: 900px) 24vw, 70vw" width="941" height="1672" alt="Arcanne laughing at the controller, in a beige tank top and sunglasses" loading="lazy" decoding="async"></li>
+    </ul>
+  </section>
+
+  <section class="aovivo" id="aovivo" aria-labelledby="aovivo-t">
+    <header class="secao-cab">
+      <p class="rotulo">02 · Live</p>
+      <h2 class="secao-titulo" id="aovivo-t">On the floor</h2>
+      <p class="secao-intro">His sets combine creative mixing techniques with elements of EDM and rock. Three films, three very different dancefloors.</p>
+    </header>
+    
+      <article class="capitulo capitulo--vertical" id="aovivo-neelix" aria-labelledby="cap-neelix">
+        <div class="capitulo-midia">
+          <video class="cena-video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"
+            poster="../assets/img/neelix-loop.webp" data-poster-m="../assets/img/neelix-loop-m.webp" data-src="../assets/video/neelix-loop.mp4" data-src-m="../assets/video/neelix-loop-m.mp4"></video>
+        </div>
+        <div class="capitulo-fundo" aria-hidden="true">2026</div>
+        <div class="capitulo-texto">
+          <p class="capitulo-n">01 / 03</p>
+          <h3 class="capitulo-titulo" id="cap-neelix">Neelix &amp; Friends <span class="capitulo-ano">2026</span></h3>
+          <p class="capitulo-meta">Bremen · Germany · aftermovie · 1 min</p>
+          <div class="acoes">
+            <button class="botao botao--claro" type="button" data-filme="neelix" data-filme-src="../assets/video/neelix-aftermovie.mp4" data-filme-capa="../assets/img/neelix-capa.webp" data-youtube="" data-formato="vertical" data-titulo="Neelix &amp; Friends 2026"><svg class="i i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><span>Watch the aftermovie</span></button>
+            
+          </div>
+        </div>
+      </article>
+      <article class="capitulo capitulo--vertical capitulo--dir" id="aovivo-arcadia" aria-labelledby="cap-arcadia">
+        <div class="capitulo-midia">
+          <video class="cena-video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"
+            poster="../assets/img/arcadia-loop.webp" data-poster-m="../assets/img/arcadia-loop-m.webp" data-src="../assets/video/arcadia-loop.mp4" data-src-m="../assets/video/arcadia-loop-m.mp4"></video>
+        </div>
+        <div class="capitulo-fundo" aria-hidden="true">2023</div>
+        <div class="capitulo-texto">
+          <p class="capitulo-n">02 / 03</p>
+          <h3 class="capitulo-titulo" id="cap-arcadia">Arcadia <span class="capitulo-ano">2023</span></h3>
+          <p class="capitulo-meta">aftermovie · 2 min</p>
+          <div class="acoes">
+            <button class="botao botao--claro" type="button" data-filme="arcadia" data-filme-src="" data-filme-capa="../assets/img/arcadia-capa.webp" data-youtube="6hPzQSBAm14" data-formato="vertical" data-titulo="Arcadia 2023"><svg class="i i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><span>Watch the aftermovie</span></button>
+            <a class="link" href="https://www.youtube.com/watch?v=6hPzQSBAm14" target="_blank" rel="noopener" data-fora>YouTube<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a>
+          </div>
+        </div>
+      </article>
+      <article class="capitulo capitulo--horizontal" id="aovivo-ricks" aria-labelledby="cap-ricks">
+        <div class="capitulo-midia">
+          <video class="cena-video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"
+            poster="../assets/img/ricks-loop.webp" data-poster-m="../assets/img/ricks-loop-m.webp" data-src="../assets/video/ricks-loop.mp4" data-src-m="../assets/video/ricks-loop-m.mp4"></video>
+        </div>
+        <div class="capitulo-fundo" aria-hidden="true">Rick's</div>
+        <div class="capitulo-texto">
+          <p class="capitulo-n">03 / 03</p>
+          <h3 class="capitulo-titulo" id="cap-ricks">Rick's Experiment</h3>
+          <p class="capitulo-meta">aftermovie · 2 min · Filmed by Orange Frames</p>
+          <div class="acoes">
+            <button class="botao botao--claro" type="button" data-filme="ricks" data-filme-src="../assets/video/ricks-aftermovie.mp4" data-filme-capa="../assets/img/ricks-capa.webp" data-youtube="" data-formato="horizontal" data-titulo="Rick's Experiment"><svg class="i i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><span>Watch the aftermovie</span></button>
+            
+          </div>
+        </div>
+      </article>
+    <div class="passagens">
+      <h3 class="sub-titulo">Where he’s played</h3>
+      <ol class="passagens-lista">
+        <li class="passagem"><span class="passagem-n">01</span><span class="passagem-nome" data-esticar>Universo Paralello</span><span class="passagem-lugar">Pratigi · Brazil</span></li>
+        <li class="passagem"><span class="passagem-n">02</span><span class="passagem-nome" data-esticar>Neelix &amp; Friends</span><span class="passagem-lugar">Bremen · Germany</span></li>
+        <li class="passagem"><span class="passagem-n">03</span><span class="passagem-nome" data-esticar>Club A</span><span class="passagem-lugar">São Paulo · Brazil</span></li>
+        <li class="passagem"><span class="passagem-n">04</span><span class="passagem-nome" data-esticar>Techno Den</span><span class="passagem-lugar">Dublin · Ireland</span></li>
+        <li class="passagem"><span class="passagem-n">05</span><span class="passagem-nome" data-esticar>Dicey's Garden</span><span class="passagem-lugar">Dublin · Ireland</span></li>
+        <li class="passagem"><span class="passagem-n">06</span><span class="passagem-nome" data-esticar>Valldemossa Beach</span><span class="passagem-lugar">Mallorca · Spain</span></li>
+      </ol>
+      <p class="nota">Events named in the official press release.</p>
+    </div>
+  </section>
+
+  <section class="musica" id="musica" aria-labelledby="musica-t">
+    <video class="musica-pulso" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-src="../assets/video/pulso.mp4"></video>
+    <header class="secao-cab">
+      <p class="rotulo">03 · Music</p>
+      <h2 class="secao-titulo" id="musica-t">In your headphones</h2>
+    </header>
+    <div class="destaque">
+      <p class="rotulo">Single · 11 Apr 2026</p>
+      <h3 class="destaque-titulo" data-esticar>Odin on Acid</h3>
+      <div class="faixa faixa--grande" data-faixa="destaque" data-src="../assets/audio/odin-on-acid.m4a" data-duracao="334" data-titulo="Odin on Acid">
+          <button class="faixa-play" type="button" aria-label="Play: Odin on Acid" data-rotulo-tocar="Play: Odin on Acid" data-rotulo-pausar="Pause: Odin on Acid"><svg class="i i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="i i-pausa" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg></button>
+          <div class="faixa-info">
+            
+            <div class="faixa-linha">
+              <input class="faixa-pos" type="range" min="0" max="334" step="0.1" value="0" aria-label="Track position: Odin on Acid" aria-valuetext="0:00">
+              <span class="faixa-tempo" aria-hidden="true"><span class="faixa-agora">0:00</span> / 5:34</span>
+            </div>
+          </div>
+        </div>
+      <p class="nota">Full track. Nothing plays until you press play. · 140 BPM</p>
+      <a class="link" href="https://open.spotify.com/track/6RnbrCukj50aEl1kHILxkj" target="_blank" rel="noopener" data-fora>Listen on Spotify<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a>
+    </div>
+
+    <div class="trechos">
+      <h3 class="sub-titulo">Press kit previews</h3>
+      <p class="nota">30-second cuts supplied by the artist.</p>
+      <ol class="trechos-lista">
+      <li class="trecho"><span class="trecho-n">01</span>
+        <div class="faixa" data-faixa="trecho-0" data-src="../assets/audio/amsterdam-30s.m4a" data-duracao="38" data-titulo="Amsterdam">
+          <button class="faixa-play" type="button" aria-label="Play: Amsterdam" data-rotulo-tocar="Play: Amsterdam" data-rotulo-pausar="Pause: Amsterdam"><svg class="i i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="i i-pausa" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg></button>
+          <div class="faixa-info">
+            <p class="faixa-titulo">Amsterdam</p>
+            <div class="faixa-linha">
+              <input class="faixa-pos" type="range" min="0" max="38" step="0.1" value="0" aria-label="Track position: Amsterdam" aria-valuetext="0:00">
+              <span class="faixa-tempo" aria-hidden="true"><span class="faixa-agora">0:00</span> / 0:38</span>
+            </div>
+          </div>
+        </div>
+        <span class="trecho-spotify" aria-hidden="true"></span>
+      </li>
+      <li class="trecho"><span class="trecho-n">02</span>
+        <div class="faixa" data-faixa="trecho-1" data-src="../assets/audio/bloody-mary-30s.m4a" data-duracao="35" data-titulo="Bloody Mary">
+          <button class="faixa-play" type="button" aria-label="Play: Bloody Mary" data-rotulo-tocar="Play: Bloody Mary" data-rotulo-pausar="Pause: Bloody Mary"><svg class="i i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="i i-pausa" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg></button>
+          <div class="faixa-info">
+            <p class="faixa-titulo">Bloody Mary <span class="faixa-sub">(Arcanne Remix) · remix of Lady Gaga</span></p>
+            <div class="faixa-linha">
+              <input class="faixa-pos" type="range" min="0" max="35" step="0.1" value="0" aria-label="Track position: Bloody Mary" aria-valuetext="0:00">
+              <span class="faixa-tempo" aria-hidden="true"><span class="faixa-agora">0:00</span> / 0:35</span>
+            </div>
+          </div>
+        </div>
+        <a class="trecho-spotify" href="https://open.spotify.com/album/1F12h9FqC7fvsNhOYCtRWG" target="_blank" rel="noopener" data-fora aria-label="Bloody Mary · Spotify (opens in a new tab)">Spotify<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg></a>
+      </li>
+      <li class="trecho"><span class="trecho-n">03</span>
+        <div class="faixa" data-faixa="trecho-2" data-src="../assets/audio/go-f-yourself-30s.m4a" data-duracao="38" data-titulo="Go F**k Yourself">
+          <button class="faixa-play" type="button" aria-label="Play: Go F**k Yourself" data-rotulo-tocar="Play: Go F**k Yourself" data-rotulo-pausar="Pause: Go F**k Yourself"><svg class="i i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="i i-pausa" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg></button>
+          <div class="faixa-info">
+            <p class="faixa-titulo">Go F**k Yourself <span class="faixa-sub">remix of Two Feet</span></p>
+            <div class="faixa-linha">
+              <input class="faixa-pos" type="range" min="0" max="38" step="0.1" value="0" aria-label="Track position: Go F**k Yourself" aria-valuetext="0:00">
+              <span class="faixa-tempo" aria-hidden="true"><span class="faixa-agora">0:00</span> / 0:38</span>
+            </div>
+          </div>
+        </div>
+        <a class="trecho-spotify" href="https://open.spotify.com/album/2GTFgVg9hNtvGHKzxdGglS" target="_blank" rel="noopener" data-fora aria-label="Go F**k Yourself · Spotify (opens in a new tab)">Spotify<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg></a>
+      </li>
+      </ol>
+    </div>
+
+    <div class="spotify" data-spotify="4Qq3UqMZIKTOEnqqYlZhQB">
+      <h3 class="sub-titulo">Also on Spotify</h3>
+      <p class="spotify-faixa">Hey Ya Ho (VIP Mix) <span>· 2026</span></p>
+      <div class="spotify-caixa">
+        <button class="botao botao--tinta" type="button" data-carregar-spotify><svg class="i i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><span>Load the Spotify player</span></button>
+        <p class="nota">The player comes from Spotify and only loads if you ask for it. <a href="https://open.spotify.com/track/4Qq3UqMZIKTOEnqqYlZhQB" target="_blank" rel="noopener" data-fora>open.spotify.com<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></p>
+      </div>
+    </div>
+
+    <div class="album">
+      <h3 class="sub-titulo">Album</h3>
+      <p class="album-nome" data-esticar>Parallax</p>
+      <p>“Parallax”, his debut album, came out in September 2024: tracks that tell a story and move through the styles he has explored as a producer.</p>
+    </div>
+
+    <div class="disco">
+      <h3 class="sub-titulo">Discography on Spotify</h3>
+      <p class="nota">54 singles from 2020 to 2026, newest first.</p>
+      <div class="disco-anos">
+        <div class="disco-ano"><h4>2026</h4><ul><li><a href="https://open.spotify.com/album/3AUDltc9dKZ71AIab22Uiu" target="_blank" rel="noopener" data-fora>Halloween of 1978<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/5O2f8xPBRsn4bkt4waWMsm" target="_blank" rel="noopener" data-fora>Yeza<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/4bQZiPaMyhry1vrDkDUk9c" target="_blank" rel="noopener" data-fora>SWITCHBACK<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/5B2I2AZCYT7ggo5QMdwnax" target="_blank" rel="noopener" data-fora>Paradise<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/0xPBE4Ju7AlHZqZKAjqUXT" target="_blank" rel="noopener" data-fora>Hey Ya Ho (VIP Mix)<span class="sr"> · Spotify (opens in a new tab)</span></a></li></ul></div>
+        <div class="disco-ano"><h4>2024</h4><ul><li><a href="https://open.spotify.com/album/12WgHAM6icJnDTv5ISVXkp" target="_blank" rel="noopener" data-fora>Rock and Roll<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/10S33kyiuq3dQBEq0W54KB" target="_blank" rel="noopener" data-fora>Taki Taki<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/6D5q6UBWWke6FHBe0x4B1m" target="_blank" rel="noopener" data-fora>Destination Calabria (Arcanne Remix Stream Edit)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/3P6wEzt5EZFSuuXztiimPv" target="_blank" rel="noopener" data-fora>Strangers (Stream Edit)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/4ZlqP9lIZomYuS6LfgowJo" target="_blank" rel="noopener" data-fora>KING<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/1sBaeCvacu0fwk9FZcpjvz" target="_blank" rel="noopener" data-fora>Unstable<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/1XURejG7qW6F9YYSWS6NE6" target="_blank" rel="noopener" data-fora>Sex Style (Remake)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/75JQ16kdrHycGaA0vLt8M8" target="_blank" rel="noopener" data-fora>One Night in Dublin<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/1jYA05q6THoduwTRP0265E" target="_blank" rel="noopener" data-fora>High Doses of Swing<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/3jOiuwQK5wAsS28s0KMjjC" target="_blank" rel="noopener" data-fora>Addicted<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/52PqlbQDbmI6L9nBLo8q8J" target="_blank" rel="noopener" data-fora>Calma na Alma<span class="sr"> · Spotify (opens in a new tab)</span></a></li></ul></div>
+        <div class="disco-ano"><h4>2023</h4><ul><li><a href="https://open.spotify.com/album/2VrCcQbh2tSLoh8PzFENwN" target="_blank" rel="noopener" data-fora>Savoia<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/015IOqDggxzWmHUrTRS0fC" target="_blank" rel="noopener" data-fora>Fliperama<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/47BLdl4PkKtzsA4gJKlVja" target="_blank" rel="noopener" data-fora>Fly to the Moon<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/3g1oWarmQa4h8Vf0Ygnk8W" target="_blank" rel="noopener" data-fora>Deixa Ela (Arcanne '2.0' Remix)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/0dJfTLK2yc2IlpcRgVB4Py" target="_blank" rel="noopener" data-fora>I'll Fly With You<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/5YBXBOHPFJmK7XIcZzzP1t" target="_blank" rel="noopener" data-fora>Agora<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/5IyU4V8JVtF2xCcEEvVUQh" target="_blank" rel="noopener" data-fora>RUN<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/1F12h9FqC7fvsNhOYCtRWG" target="_blank" rel="noopener" data-fora>Bloody Mary (Arcanne Remix)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/0sN2PeuTUMj5OVBmYSg8Aq" target="_blank" rel="noopener" data-fora>#STAFM (Shake That Ass For Me)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/598qsLgPy2IRtBO6fajNp6" target="_blank" rel="noopener" data-fora>Pirate Ship<span class="sr"> · Spotify (opens in a new tab)</span></a></li></ul></div>
+        <div class="disco-ano"><h4>2022</h4><ul><li><a href="https://open.spotify.com/album/3aSdg1hli4Oy0dWeiqkkHQ" target="_blank" rel="noopener" data-fora>País do Carnaval<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/4SXQid8Msy3yx6oQtCmvxt" target="_blank" rel="noopener" data-fora>Deuses a Dançar<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/3iWA4kO6OqQHE4vqZkLleU" target="_blank" rel="noopener" data-fora>Underground<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/1lafaCbjiPcpb8VXpRUto8" target="_blank" rel="noopener" data-fora>Clube da Luta<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/2XnaGysZHXJBz9gjIXV27H" target="_blank" rel="noopener" data-fora>UNDR DA SUN<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/2NUA3Jj1AC5hfKb9S9G2WE" target="_blank" rel="noopener" data-fora>Beat Oven<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/1iBATuWyNTC1oEcDijGhkU" target="_blank" rel="noopener" data-fora>Domino<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/2gleCiTkawlN3HcUtVmu4p" target="_blank" rel="noopener" data-fora>Fuel<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/4CxdDoIA3zjKzblXfq2LrU" target="_blank" rel="noopener" data-fora>#BITCH<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/6RknnKlT8HT963yhZMCl72" target="_blank" rel="noopener" data-fora>Joker (Why So Serious?)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/7gkHryAFnZUTGqnz4OTHne" target="_blank" rel="noopener" data-fora>Sucker Punch<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/4WJcr8UiT0ahggkZkjE3KD" target="_blank" rel="noopener" data-fora>Yooo!<span class="sr"> · Spotify (opens in a new tab)</span></a></li></ul></div>
+        <div class="disco-ano"><h4>2021</h4><ul><li><a href="https://open.spotify.com/album/5XTC5RK7ix66CyKyzj7eqm" target="_blank" rel="noopener" data-fora>A Queda (Remix)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/2GF2iYfvs3RRWRxhzz4qHB" target="_blank" rel="noopener" data-fora>Athena<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/4eW51pq988VwQ4yvJzR2Zf" target="_blank" rel="noopener" data-fora>I Like to Move it<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/4JH7dYna567LGp7dT760ss" target="_blank" rel="noopener" data-fora>Treme-Terra<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/7evYeCGNBnlrHxJFLMWqLV" target="_blank" rel="noopener" data-fora>Tribute to Rick Sanchez (Remix)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/3WIBL5RDRtbhJM2qSqB0SW" target="_blank" rel="noopener" data-fora>Pompeii (Remix)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/0nPXaMCZ2lUsnqjDanWJav" target="_blank" rel="noopener" data-fora>Mambo No. 5 (Arcanne 'Fm' Remix)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/2GTFgVg9hNtvGHKzxdGglS" target="_blank" rel="noopener" data-fora>Go Fuck Yourself<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/6BHfKd2JASnqCGbKnQVhzh" target="_blank" rel="noopener" data-fora>Birds<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/6owZMRNH5XkdZR8LEltZFC" target="_blank" rel="noopener" data-fora>Eyes<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/6N4xutA9H32v7vdGcuoKhG" target="_blank" rel="noopener" data-fora>Born to be Wild<span class="sr"> · Spotify (opens in a new tab)</span></a></li></ul></div>
+        <div class="disco-ano"><h4>2020</h4><ul><li><a href="https://open.spotify.com/album/7i0eO8zkYBesm1nWIWOXAH" target="_blank" rel="noopener" data-fora>Out of Your Love<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/2yuu4AWywEKxVJnkHiG2W0" target="_blank" rel="noopener" data-fora>Cosmic Jesus (Arcanne Remix)<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/4TMkMYtwx0AqZPRik7SGil" target="_blank" rel="noopener" data-fora>Fantastic<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/3GQlhTB5V8p6SCPH2go6QZ" target="_blank" rel="noopener" data-fora>Mother Funker<span class="sr"> · Spotify (opens in a new tab)</span></a></li><li><a href="https://open.spotify.com/album/6rhgq5gQEDTpTQZP9DaK87" target="_blank" rel="noopener" data-fora>Jupiter<span class="sr"> · Spotify (opens in a new tab)</span></a></li></ul></div>
+      </div>
+    </div>
+
+    <div class="onde">
+      <h3 class="sub-titulo">Where to listen</h3>
+      <ul class="onde-lista">
+        <li><a href="https://open.spotify.com/artist/4BxmyEMSuuBeLNQiRAchAg" target="_blank" rel="noopener" data-fora>Spotify<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+        <li><a href="https://soundcloud.com/arcanne" target="_blank" rel="noopener" data-fora>SoundCloud<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+        <li><a href="https://www.youtube.com/c/ArcanneLive" target="_blank" rel="noopener" data-fora>YouTube<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+        <li><a href="https://www.beatport.com/artist/arcanne/216180" target="_blank" rel="noopener" data-fora>Beatport<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+        <li><a href="https://sptfy.com/thisisprogfarofa" target="_blank" rel="noopener" data-fora><span class="onde-tipo">Playlist</span>This is Prog-Trance Farofa 2023<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="press" id="press" aria-labelledby="press-t">
+    <header class="secao-cab">
+      <p class="rotulo">04 · Press kit</p>
+      <h2 class="secao-titulo" id="press-t">For press and promoters</h2>
+    </header>
+    <a class="press-zip" href="../assets/press/arcanne-presskit.zip" download>
+      <span class="press-zip-texto"><span class="press-zip-titulo">Download the full press kit</span><span class="press-zip-inclui">High-res photos, logos and the press release in Portuguese and English.</span></span>
+      <span class="press-zip-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg>ZIP · 11,0 MB</span>
+    </a>
+    <div class="press-bios">
+      <div class="press-bio press-bio--curta">
+        <h3 class="sub-titulo">Short bio</h3>
+        <div class="press-texto" lang="pt-BR">
+          <div class="press-texto-cab"><span class="rotulo">Portuguese</span><button class="copiar" type="button" data-copiar="#bio-curta-pt" data-ok="Copied">Copy</button></div>
+          <div class="press-texto-corpo" id="bio-curta-pt"><p>Arcanne é o projeto solo de Rodolfo Carvalho, DJ e produtor meio italiano, meio brasileiro, com quase duas décadas como DJ e multi-instrumentista. Suas produções vão do psy-trance ao techno, com cultura pop no meio, e seus shows já passaram por Universo Paralello, Neelix &amp; Friends (Bremen) e Techno Den (Dublin). Em 2024 lançou o primeiro álbum, “Parallax”.</p></div>
+        </div>
+        <div class="press-texto" lang="en">
+          <div class="press-texto-cab"><span class="rotulo">English</span><button class="copiar" type="button" data-copiar="#bio-curta-en" data-ok="Copied">Copy</button></div>
+          <div class="press-texto-corpo" id="bio-curta-en"><p>Arcanne is the solo project of Rodolfo Carvalho, a half-Italian, half-Brazilian DJ and producer with almost two decades as a DJ and multi-instrumentalist. His music runs from psytrance to techno with pop culture in the mix, and he has played Universo Paralello, Neelix &amp; Friends (Bremen) and Techno Den (Dublin). His debut album, “Parallax”, came out in 2024.</p></div>
+        </div>
+      </div>
+      <div class="press-bio press-bio--completa">
+        <h3 class="sub-titulo">Full bio</h3>
+        <div class="press-texto" lang="pt-BR">
+          <div class="press-texto-cab"><span class="rotulo">Portuguese</span><button class="copiar" type="button" data-copiar="#bio-completa-pt" data-ok="Copied">Copy</button></div>
+          <div class="press-texto-corpo" id="bio-completa-pt" tabindex="0" role="region" aria-label="Full bio · Portuguese"><p>Rodolfo Carvalho é o nome por trás do Arcanne. Meio italiano e meio brasileiro, soma quase duas décadas como DJ e músico multi-instrumentista. Depois de fazer sucesso integrando projetos de destaque, conquistar milhares de fãs pelo Brasil e acumular milhões de reproduções nas plataformas digitais, decidiu, em 2020, encarar um novo desafio: a carreira solo.</p><p>Sem se prender a gêneros, suas produções transitam do psy-trance ao techno e incorporam elementos da cultura pop, de videogames a filmes clássicos. Ele é conhecido por faixas como “Paradise”, “Odin on Acid”, “Hey Ya Ho” e “Amsterdam”, além de remixes de sucesso de “Bloody Mary” (Lady Gaga), “Go F**k Yourself” (Two Feet) e “Pompeii” (Bastille). Com milhões de reproduções nas principais plataformas de streaming, suas faixas aparecem com frequência nos sets de grandes nomes da cena e já saíram por importantes gravadoras internacionais.</p><p>As apresentações, marcadas por técnicas criativas de mixagem, fundem sua sonoridade a elementos de outros gêneros, como EDM e rock. Essa abordagem levou o Arcanne a shows memoráveis ao redor do mundo, em eventos de grande porte como Universo Paralello (Pratigi, Brasil), Neelix &amp; Friends (Bremen, Alemanha), Club A (São Paulo, Brasil), Techno Den (Dublin, Irlanda), Dicey’s Garden (Dublin, Irlanda) e Valldemossa Beach (Mallorca, Espanha).</p><p>Em 2024, idealizou e produziu seu primeiro álbum, “Parallax”, lançado em setembro daquele ano. O trabalho é um marco na trajetória: reúne faixas que contam uma história e percorrem os estilos explorados ao longo da carreira de produtor, juntando todas as influências que moldaram seu trabalho até hoje.</p></div>
+        </div>
+        <div class="press-texto" lang="en">
+          <div class="press-texto-cab"><span class="rotulo">English</span><button class="copiar" type="button" data-copiar="#bio-completa-en" data-ok="Copied">Copy</button></div>
+          <div class="press-texto-corpo" id="bio-completa-en" tabindex="0" role="region" aria-label="Full bio · English"><p>Rodolfo Carvalho is the name behind Arcanne. Half Italian, half Brazilian, he has spent almost two decades as a DJ and multi-instrumentalist. After success as part of high-profile projects, winning thousands of fans across Brazil and racking up millions of plays on digital platforms, he took on a new challenge in 2020: going solo.</p><p>Refusing to stick to one genre, his productions move from psytrance to techno and pull in pop culture, from video games to classic films. He is known for tracks such as “Paradise”, “Odin on Acid”, “Hey Ya Ho” and “Amsterdam”, and for hit remixes of “Bloody Mary” (Lady Gaga), “Go F**k Yourself” (Two Feet) and “Pompeii” (Bastille). With millions of streams on the major platforms, his tracks regularly turn up in sets by some of the scene’s biggest names and have been released on leading international labels.</p><p>His sets are built on creative mixing techniques, blending his sound with elements of other genres such as EDM and rock. That approach has taken Arcanne to memorable shows around the world, at large-scale events including Universo Paralello (Pratigi, Brazil), Neelix &amp; Friends (Bremen, Germany), Club A (São Paulo, Brazil), Techno Den (Dublin, Ireland), Dicey’s Garden (Dublin, Ireland) and Valldemossa Beach (Mallorca, Spain).</p><p>In 2024 he conceived and produced his debut album, “Parallax”, released that September. A milestone in his career, it brings together tracks that tell a story and travel through the styles he has explored as a producer, uniting every influence that has shaped his work to date.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="press-bloco">
+      <h3 class="sub-titulo">Official photos</h3>
+      <p class="nota">Studio shots come cut out, as PNGs with a transparent background.</p>
+      <ul class="press-fotos">
+          <li class="press-foto press-foto--recorte">
+            <a href="../assets/press/arcanne-estudio-ficha.png" download>
+              <img class="press-foto-img" src="../assets/img/estudio-ficha.webp" srcset="../assets/img/estudio-ficha-m.webp 760w, ../assets/img/estudio-ficha.webp 1300w" sizes="(min-width: 900px) 22vw, 45vw" width="1300" height="1625" alt="Arcanne smiling in an orange T-shirt, holding a police mugshot board that reads ARCANNE" loading="lazy" decoding="async">
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Cut-out PNG · 1920×2400 · 3,0 MB</span></span>
+            </a>
+          </li>
+          <li class="press-foto press-foto--recorte">
+            <a href="../assets/press/arcanne-estudio-grito.png" download>
+              <img class="press-foto-img" src="../assets/img/estudio-grito.webp" srcset="../assets/img/estudio-grito-m.webp 760w, ../assets/img/estudio-grito.webp 1300w" sizes="(min-width: 900px) 22vw, 45vw" width="1300" height="1625" alt="Arcanne in a white T-shirt, shouting, hands curled like claws" loading="lazy" decoding="async">
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Cut-out PNG · 1919×2400 · 2,4 MB</span></span>
+            </a>
+          </li>
+          <li class="press-foto press-foto--recorte">
+            <a href="../assets/press/arcanne-estudio-caixa.png" download>
+              <img class="press-foto-img" src="../assets/img/estudio-caixa.webp" srcset="../assets/img/estudio-caixa-m.webp 1000w, ../assets/img/estudio-caixa.webp 1800w" sizes="(min-width: 900px) 22vw, 45vw" width="1800" height="1200" alt="Arcanne shouting into a studio monitor speaker he holds in his left hand" loading="lazy" decoding="async">
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Cut-out PNG · 2400×1600 · 2,5 MB</span></span>
+            </a>
+          </li>
+          <li class="press-foto">
+            <a href="../assets/press/arcanne-palco-dia.jpg" download>
+              <img class="press-foto-img" src="../assets/img/palco-dia.webp" srcset="../assets/img/palco-dia-m.webp 800w, ../assets/img/palco-dia.webp 1400w" sizes="(min-width: 900px) 22vw, 45vw" width="1400" height="2100" alt="Arcanne on stage in daylight, in sunglasses and denim overalls, arms raised behind the CDJs" loading="lazy" decoding="async">
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>JPG · 2000×3000 · 772 KB</span></span>
+            </a>
+          </li>
+          <li class="press-foto">
+            <a href="../assets/press/arcanne-cabine.jpg" download>
+              <img class="press-foto-img" src="../assets/img/cabine.webp" srcset="../assets/img/cabine-m.webp 640w, ../assets/img/cabine.webp 941w" sizes="(min-width: 900px) 22vw, 45vw" width="941" height="1672" alt="Arcanne laughing at the controller, in a beige tank top and sunglasses" loading="lazy" decoding="async">
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>JPG · 941×1672 · 213 KB</span></span>
+            </a>
+          </li>
+          <li class="press-foto">
+            <a href="../assets/press/arcanne-cabine-letreiro.jpg" download>
+              <img class="press-foto-img" src="../assets/img/cabine-letreiro.webp" srcset="../assets/img/cabine-letreiro-m.webp 720w, ../assets/img/cabine-letreiro.webp 1179w" sizes="(min-width: 900px) 22vw, 45vw" width="1179" height="2061" alt="Arcanne playing under a light-bulb marquee sign, in sunglasses and turquoise headphones" loading="lazy" decoding="async">
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>JPG · 1179×2061 · 305 KB</span></span>
+            </a>
+          </li>
+          <li class="press-foto">
+            <a href="../assets/press/arcanne-clube.jpg" download>
+              <img class="press-foto-img" src="../assets/img/clube.webp" width="570" height="426" alt="Arcanne in a club, turquoise headphones round his neck, pulling a face at the crowd" loading="lazy" decoding="async">
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>JPG · 570×426 · 67 KB</span></span>
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="press-bloco">
+      <h3 class="sub-titulo">Logos</h3>
+      <p class="nota">PNGs with a transparent background, in black and in white.</p>
+      <ul class="press-logos">
+          <li class="press-logo press-logo--branco">
+            <a href="../assets/press/arcanne-logo-branco.png" download>
+              <img src="../assets/press/arcanne-logo-branco.png" alt="" loading="lazy" decoding="async" width="3000" height="1832">
+              <span class="press-logo-nome">Ring and name · white</span>
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>PNG · 407 KB</span></span>
+            </a>
+          </li>
+          <li class="press-logo press-logo--preto">
+            <a href="../assets/press/arcanne-logo-preto.png" download>
+              <img src="../assets/press/arcanne-logo-preto.png" alt="" loading="lazy" decoding="async" width="3000" height="1832">
+              <span class="press-logo-nome">Ring and name · black</span>
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>PNG · 367 KB</span></span>
+            </a>
+          </li>
+          <li class="press-logo press-logo--branco">
+            <a href="../assets/press/arcanne-logo-2-branco.png" download>
+              <img src="../assets/press/arcanne-logo-2-branco.png" alt="" loading="lazy" decoding="async" width="3523" height="800">
+              <span class="press-logo-nome">Horizontal · white</span>
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>PNG · 209 KB</span></span>
+            </a>
+          </li>
+          <li class="press-logo press-logo--preto">
+            <a href="../assets/press/arcanne-logo-2-preto.png" download>
+              <img src="../assets/press/arcanne-logo-2-preto.png" alt="" loading="lazy" decoding="async" width="3523" height="800">
+              <span class="press-logo-nome">Horizontal · black</span>
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>PNG · 218 KB</span></span>
+            </a>
+          </li>
+          <li class="press-logo press-logo--branco">
+            <a href="../assets/press/arcanne-logo-3-branco.png" download>
+              <img src="../assets/press/arcanne-logo-3-branco.png" alt="" loading="lazy" decoding="async" width="3523" height="1832">
+              <span class="press-logo-nome">Name over ring · white</span>
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>PNG · 400 KB</span></span>
+            </a>
+          </li>
+          <li class="press-logo press-logo--preto">
+            <a href="../assets/press/arcanne-logo-3-preto.png" download>
+              <img src="../assets/press/arcanne-logo-3-preto.png" alt="" loading="lazy" decoding="async" width="3523" height="1832">
+              <span class="press-logo-nome">Name over ring · black</span>
+              <span class="press-foto-dados"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>PNG · 392 KB</span></span>
+            </a>
+          </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="booking" id="booking" aria-labelledby="booking-t">
+    <header class="secao-cab">
+      <p class="rotulo">05 · Booking</p>
+      <h2 class="booking-titulo" id="booking-t" data-esticar>Bring Arcanne to your dancefloor</h2>
+    </header>
+    <div class="booking-grade">
+      <div class="booking-texto">
+        <p class="booking-lead">Festivals, clubs and parties. Talk to the artist directly.</p>
+        <div class="acoes">
+          <a class="botao botao--tinta" href="https://ig.me/m/arcannemusic" target="_blank" rel="noopener" data-fora data-canal="instagram">Message on Instagram<svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a>
+          <a class="botao botao--linha" href="#press">See press kit</a>
+        </div>
+        <p class="nota">He also teaches DJing and production and works as a ghost producer.</p>
+      </div>
+      <form class="pedido" data-canal="https://ig.me/m/arcannemusic" data-ola="Hi Arcanne! Booking request:" data-ok="Request copied. Paste it into the chat that just opened." data-ok-sem-copia="The chat is open. If pasting doesn’t work, the text is right below." novalidate>
+        <h3 class="sub-titulo">Put your request together</h3>
+        <p class="nota">Fill in what you already know. The text comes out ready to paste into the chat.</p>
+        <div class="campos">
+          <label class="campo"><span>Your name</span><input name="nome" autocomplete="name" maxlength="80"></label>
+          <label class="campo"><span>Event or venue</span><input name="evento" maxlength="120"></label>
+          <label class="campo"><span>City</span><input name="cidade" autocomplete="address-level2" maxlength="80"></label>
+          <label class="campo"><span>Date</span><input name="data" type="date"></label>
+          <label class="campo campo--largo"><span>Details</span><textarea name="msg" rows="3" maxlength="800"></textarea></label>
+        </div>
+        <button class="botao botao--tinta" type="submit">Copy request and open chat<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+        <p class="pedido-status" role="status" aria-live="polite"></p>
+        <pre class="pedido-texto" hidden></pre>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape">
+  <img class="rodape-logo" src="../assets/img/logo-linha.webp" srcset="../assets/img/logo-linha-p.webp 480w, ../assets/img/logo-linha.webp 1800w" sizes="(max-width: 700px) 88vw, 620px" alt="ARCANNE" loading="lazy" decoding="async" width="1800" height="366">
+  <ul class="rodape-redes">
+          <li><a href="https://www.instagram.com/arcannemusic/" target="_blank" rel="noopener" data-fora><span class="rede-nome">Instagram</span><span class="rede-rotulo">@arcannemusic</span><svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+          <li><a href="https://open.spotify.com/artist/4BxmyEMSuuBeLNQiRAchAg" target="_blank" rel="noopener" data-fora><span class="rede-nome">Spotify</span><span class="rede-rotulo">Arcanne</span><svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+          <li><a href="https://soundcloud.com/arcanne" target="_blank" rel="noopener" data-fora><span class="rede-nome">SoundCloud</span><span class="rede-rotulo">arcanne</span><svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+          <li><a href="https://www.youtube.com/c/ArcanneLive" target="_blank" rel="noopener" data-fora><span class="rede-nome">YouTube</span><span class="rede-rotulo">ArcanneLive</span><svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+          <li><a href="https://www.beatport.com/artist/arcanne/216180" target="_blank" rel="noopener" data-fora><span class="rede-nome">Beatport</span><span class="rede-rotulo">Arcanne</span><svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+          <li><a href="https://www.facebook.com/arcannemusic" target="_blank" rel="noopener" data-fora><span class="rede-nome">Facebook</span><span class="rede-rotulo">arcannemusic</span><svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+          <li><a href="https://linktr.ee/arcanne" target="_blank" rel="noopener" data-fora><span class="rede-nome">Linktree</span><span class="rede-rotulo">arcanne</span><svg class="i i-fora" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="sr">(opens in a new tab)</span></a></li>
+  </ul>
+  <div class="rodape-fim">
+    <p>Photos, videos, logos and music: ARCANNE.</p>
+    <p class="rodape-ass">Site by Amplitude Lab</p>
+  </div>
+</footer>
+
+<dialog class="player" id="player" aria-labelledby="player-t">
+  <div class="player-cab">
+    <p class="player-titulo" id="player-t">Aftermovie</p>
+    <button class="player-fechar" type="button" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+  </div>
+  <div class="player-palco"></div>
+  <p class="player-nota" data-youtube-nota="The video plays from YouTube, without tracking cookies." data-youtube-abrir="Open on YouTube"></p>
+</dialog>
+
+<audio id="audio" preload="none"></audio>
+<script src="../js/app.js" defer></script>
+</body>
+</html>

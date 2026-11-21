@@ -1,0 +1,3 @@
+# Site em endereço provisório: fora dos buscadores até ir para o domínio do artista.
+User-agent: *
+Disallow: /
