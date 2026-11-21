@@ -1,0 +1,205 @@
+{
+  "_leia": "Fatos e mídia do site do ARCANNE. Tudo aqui foi conferido em fonte oficial (press kit, Linktree, Spotify, YouTube). Campo vazio não aparece na página. Depois de mudar, rode: node arcanne/gerar.js",
+
+  "site": {
+    "base": "https://amplitudelab.github.io/lab/arcanne/",
+    "indexar": false,
+    "_indexar": "Fica false enquanto o site mora em amplitudelab.github.io/lab (regra dos sites de clientes). No domínio do artista, troque 'base' e ponha true: o gerar.js refaz canonical, hreflang, sitemap e robots."
+  },
+
+  "contato": {
+    "_leia": "Nada disso veio no press kit nem no Linktree. Preencha só com dado confirmado pelo artista.",
+    "email": "",
+    "whatsapp": "",
+    "instagram_dm": "https://ig.me/m/arcannemusic"
+  },
+
+  "redes": [
+    { "id": "instagram", "nome": "Instagram", "rotulo": "@arcannemusic", "url": "https://www.instagram.com/arcannemusic/" },
+    { "id": "spotify", "nome": "Spotify", "rotulo": "Arcanne", "url": "https://open.spotify.com/artist/4BxmyEMSuuBeLNQiRAchAg" },
+    { "id": "soundcloud", "nome": "SoundCloud", "rotulo": "arcanne", "url": "https://soundcloud.com/arcanne" },
+    { "id": "youtube", "nome": "YouTube", "rotulo": "ArcanneLive", "url": "https://www.youtube.com/c/ArcanneLive" },
+    { "id": "beatport", "nome": "Beatport", "rotulo": "Arcanne", "url": "https://www.beatport.com/artist/arcanne/216180" },
+    { "id": "facebook", "nome": "Facebook", "rotulo": "arcannemusic", "url": "https://www.facebook.com/arcannemusic" },
+    { "id": "linktree", "nome": "Linktree", "rotulo": "arcanne", "url": "https://linktr.ee/arcanne" }
+  ],
+
+  "destaque": {
+    "titulo": "Odin on Acid",
+    "data": "2026-04-11",
+    "spotify_track": "6RnbrCukj50aEl1kHILxkj",
+    "audio": "assets/audio/odin-on-acid.m4a",
+    "duracao": 334,
+    "bpm": 140
+  },
+
+  "spotify_embed": {
+    "titulo": "Hey Ya Ho (VIP Mix)",
+    "ano": 2026,
+    "track": "4Qq3UqMZIKTOEnqqYlZhQB"
+  },
+
+  "trechos": [
+    { "titulo": "Amsterdam", "original": "", "audio": "assets/audio/amsterdam-30s.m4a", "duracao": 38 },
+    { "titulo": "Bloody Mary", "versao": "Arcanne Remix", "original": "Lady Gaga", "audio": "assets/audio/bloody-mary-30s.m4a", "duracao": 35, "spotify_album": "1F12h9FqC7fvsNhOYCtRWG" },
+    { "titulo": "Go F**k Yourself", "versao": "remix", "original": "Two Feet", "audio": "assets/audio/go-f-yourself-30s.m4a", "duracao": 38, "spotify_album": "2GTFgVg9hNtvGHKzxdGglS" }
+  ],
+
+  "playlists": [
+    { "titulo": "This is Prog-Trance Farofa 2023", "url": "https://sptfy.com/thisisprogfarofa" }
+  ],
+
+  "album": { "titulo": "Parallax", "lancamento": "2024-09" },
+
+  "discografia": {
+    "_fonte": "Spotify, discografia do artista, lida em 21/11/2026. Todos singles.",
+    "itens": [
+      [2026, "Halloween of 1978", "3AUDltc9dKZ71AIab22Uiu"],
+      [2026, "Yeza", "5O2f8xPBRsn4bkt4waWMsm"],
+      [2026, "SWITCHBACK", "4bQZiPaMyhry1vrDkDUk9c"],
+      [2026, "Paradise", "5B2I2AZCYT7ggo5QMdwnax"],
+      [2026, "Hey Ya Ho (VIP Mix)", "0xPBE4Ju7AlHZqZKAjqUXT"],
+      [2024, "Rock and Roll", "12WgHAM6icJnDTv5ISVXkp"],
+      [2024, "Taki Taki", "10S33kyiuq3dQBEq0W54KB"],
+      [2024, "Destination Calabria (Arcanne Remix Stream Edit)", "6D5q6UBWWke6FHBe0x4B1m"],
+      [2024, "Strangers (Stream Edit)", "3P6wEzt5EZFSuuXztiimPv"],
+      [2024, "KING", "4ZlqP9lIZomYuS6LfgowJo"],
+      [2024, "Unstable", "1sBaeCvacu0fwk9FZcpjvz"],
+      [2024, "Sex Style (Remake)", "1XURejG7qW6F9YYSWS6NE6"],
+      [2024, "One Night in Dublin", "75JQ16kdrHycGaA0vLt8M8"],
+      [2024, "High Doses of Swing", "1jYA05q6THoduwTRP0265E"],
+      [2024, "Addicted", "3jOiuwQK5wAsS28s0KMjjC"],
+      [2024, "Calma na Alma", "52PqlbQDbmI6L9nBLo8q8J"],
+      [2023, "Savoia", "2VrCcQbh2tSLoh8PzFENwN"],
+      [2023, "Fliperama", "015IOqDggxzWmHUrTRS0fC"],
+      [2023, "Fly to the Moon", "47BLdl4PkKtzsA4gJKlVja"],
+      [2023, "Deixa Ela (Arcanne '2.0' Remix)", "3g1oWarmQa4h8Vf0Ygnk8W"],
+      [2023, "I'll Fly With You", "0dJfTLK2yc2IlpcRgVB4Py"],
+      [2023, "Agora", "5YBXBOHPFJmK7XIcZzzP1t"],
+      [2023, "RUN", "5IyU4V8JVtF2xCcEEvVUQh"],
+      [2023, "Bloody Mary (Arcanne Remix)", "1F12h9FqC7fvsNhOYCtRWG"],
+      [2023, "#STAFM (Shake That Ass For Me)", "0sN2PeuTUMj5OVBmYSg8Aq"],
+      [2023, "Pirate Ship", "598qsLgPy2IRtBO6fajNp6"],
+      [2022, "País do Carnaval", "3aSdg1hli4Oy0dWeiqkkHQ"],
+      [2022, "Deuses a Dançar", "4SXQid8Msy3yx6oQtCmvxt"],
+      [2022, "Underground", "3iWA4kO6OqQHE4vqZkLleU"],
+      [2022, "Clube da Luta", "1lafaCbjiPcpb8VXpRUto8"],
+      [2022, "UNDR DA SUN", "2XnaGysZHXJBz9gjIXV27H"],
+      [2022, "Beat Oven", "2NUA3Jj1AC5hfKb9S9G2WE"],
+      [2022, "Domino", "1iBATuWyNTC1oEcDijGhkU"],
+      [2022, "Fuel", "2gleCiTkawlN3HcUtVmu4p"],
+      [2022, "#BITCH", "4CxdDoIA3zjKzblXfq2LrU"],
+      [2022, "Joker (Why So Serious?)", "6RknnKlT8HT963yhZMCl72"],
+      [2022, "Sucker Punch", "7gkHryAFnZUTGqnz4OTHne"],
+      [2022, "Yooo!", "4WJcr8UiT0ahggkZkjE3KD"],
+      [2021, "A Queda (Remix)", "5XTC5RK7ix66CyKyzj7eqm"],
+      [2021, "Athena", "2GF2iYfvs3RRWRxhzz4qHB"],
+      [2021, "I Like to Move it", "4eW51pq988VwQ4yvJzR2Zf"],
+      [2021, "Treme-Terra", "4JH7dYna567LGp7dT760ss"],
+      [2021, "Tribute to Rick Sanchez (Remix)", "7evYeCGNBnlrHxJFLMWqLV"],
+      [2021, "Pompeii (Remix)", "3WIBL5RDRtbhJM2qSqB0SW"],
+      [2021, "Mambo No. 5 (Arcanne 'Fm' Remix)", "0nPXaMCZ2lUsnqjDanWJav"],
+      [2021, "Go Fuck Yourself", "2GTFgVg9hNtvGHKzxdGglS"],
+      [2021, "Birds", "6BHfKd2JASnqCGbKnQVhzh"],
+      [2021, "Eyes", "6owZMRNH5XkdZR8LEltZFC"],
+      [2021, "Born to be Wild", "6N4xutA9H32v7vdGcuoKhG"],
+      [2020, "Out of Your Love", "7i0eO8zkYBesm1nWIWOXAH"],
+      [2020, "Cosmic Jesus (Arcanne Remix)", "2yuu4AWywEKxVJnkHiG2W0"],
+      [2020, "Fantastic", "4TMkMYtwx0AqZPRik7SGil"],
+      [2020, "Mother Funker", "3GQlhTB5V8p6SCPH2go6QZ"],
+      [2020, "Jupiter", "6rhgq5gQEDTpTQZP9DaK87"]
+    ]
+  },
+
+  "passagens": [
+    ["Universo Paralello", "Pratigi", "BR"],
+    ["Neelix & Friends", "Bremen", "DE"],
+    ["Club A", "São Paulo", "BR"],
+    ["Techno Den", "Dublin", "IE"],
+    ["Dicey's Garden", "Dublin", "IE"],
+    ["Valldemossa Beach", "Mallorca", "ES"]
+  ],
+
+  "aovivo": [
+    {
+      "id": "neelix",
+      "titulo": "Neelix & Friends",
+      "ano": 2026,
+      "lugar": "Bremen",
+      "pais": "DE",
+      "formato": "vertical",
+      "duracao": 60,
+      "loop": "assets/video/neelix-loop.mp4",
+      "loop_m": "assets/video/neelix-loop-m.mp4",
+      "capa": "assets/img/neelix-loop.webp",
+      "capa_m": "assets/img/neelix-loop-m.webp",
+      "filme": "assets/video/neelix-aftermovie.mp4",
+      "filme_capa": "assets/img/neelix-capa.webp",
+      "youtube": ""
+    },
+    {
+      "id": "arcadia",
+      "titulo": "Arcadia",
+      "ano": 2023,
+      "lugar": "",
+      "pais": "",
+      "formato": "vertical",
+      "duracao": 95,
+      "loop": "assets/video/arcadia-loop.mp4",
+      "loop_m": "assets/video/arcadia-loop-m.mp4",
+      "capa": "assets/img/arcadia-loop.webp",
+      "capa_m": "assets/img/arcadia-loop-m.webp",
+      "filme": "",
+      "filme_capa": "assets/img/arcadia-capa.webp",
+      "youtube": "6hPzQSBAm14"
+    },
+    {
+      "id": "ricks",
+      "titulo": "Rick's Experiment",
+      "ano": "",
+      "lugar": "",
+      "pais": "",
+      "formato": "horizontal",
+      "duracao": 102,
+      "credito": "Orange Frames",
+      "loop": "assets/video/ricks-loop.mp4",
+      "loop_m": "assets/video/ricks-loop-m.mp4",
+      "capa": "assets/img/ricks-loop.webp",
+      "capa_m": "assets/img/ricks-loop-m.webp",
+      "filme": "assets/video/ricks-aftermovie.mp4",
+      "filme_capa": "assets/img/ricks-capa.webp",
+      "youtube": ""
+    }
+  ],
+
+  "midia": {
+    "abertura": "assets/video/abertura.mp4",
+    "abertura_v": "assets/video/abertura-v.mp4",
+    "inicio": "assets/video/montagem.mp4",
+    "inicio_m": "assets/video/montagem-m.mp4",
+    "inicio_capa": "assets/img/montagem.jpg",
+    "inicio_capa_m": "assets/img/montagem-m.jpg",
+    "pulso": "assets/video/pulso.mp4"
+  },
+
+  "fotos": [
+    { "id": "estudio-ficha", "arquivo": "assets/press/arcanne-estudio-ficha.png", "recorte": true },
+    { "id": "estudio-grito", "arquivo": "assets/press/arcanne-estudio-grito.png", "recorte": true },
+    { "id": "estudio-caixa", "arquivo": "assets/press/arcanne-estudio-caixa.png", "recorte": true },
+    { "id": "palco-dia", "arquivo": "assets/press/arcanne-palco-dia.jpg" },
+    { "id": "cabine", "arquivo": "assets/press/arcanne-cabine.jpg" },
+    { "id": "cabine-letreiro", "arquivo": "assets/press/arcanne-cabine-letreiro.jpg" },
+    { "id": "clube", "arquivo": "assets/press/arcanne-clube.jpg" }
+  ],
+
+  "logos": [
+    { "id": "logo-branco", "arquivo": "assets/press/arcanne-logo-branco.png" },
+    { "id": "logo-preto", "arquivo": "assets/press/arcanne-logo-preto.png" },
+    { "id": "logo-2-branco", "arquivo": "assets/press/arcanne-logo-2-branco.png" },
+    { "id": "logo-2-preto", "arquivo": "assets/press/arcanne-logo-2-preto.png" },
+    { "id": "logo-3-branco", "arquivo": "assets/press/arcanne-logo-3-branco.png" },
+    { "id": "logo-3-preto", "arquivo": "assets/press/arcanne-logo-3-preto.png" }
+  ],
+
+  "presskit_zip": "assets/press/arcanne-presskit.zip"
+}

@@ -134,6 +134,20 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
     a página. Sem script inline (CSP
     `script-src 'self'`). O ZIP do press kit (`assets/press/linnx-presskit.zip`) é gerado
     à mão: refaça se trocar logo, foto, release ou vídeo.
+  - `arcanne/`: site do DJ e produtor **ARCANNE** (Rodolfo Carvalho), bilíngue:
+    `/lab/arcanne/` em português e `/lab/arcanne/en/` em inglês, as duas páginas geradas
+    por `node arcanne/gerar.js` a partir de `dados.json` (links, discografia, mídia, contato)
+    e `locales/pt-BR.json` / `locales/en.json`. **Não edite os `index.html` à mão; rode o
+    gerador.** `js/idioma.js` escolhe a versão na chegada (escolha manual guardada vence;
+    senão idioma do navegador, com fuso só de desempate). Fica com `noindex` até ir para o
+    domínio do artista (`site.indexar` em `dados.json`), mas canonical, hreflang, sitemap
+    e dados estruturados já saem prontos. Abertura, fundo da primeira tela e fundo da seção
+    Música são vídeos feitos no **Remotion** (`arcanne/remotion/`, cortes em 140 BPM, o
+    andamento de "Odin on Acid"); como renderizar está em `arcanne/LEIAME.md`. Dois dos três
+    aftermovies são verticais e viram coluna 9:16 no desktop. Contato de booking ainda só
+    pela DM do Instagram: `contato.email` e `contato.whatsapp` vazios até o artista confirmar.
+    O único script inline é o `js/idioma.js`, embutido no `<head>` pelo gerador, que calcula
+    o hash da CSP sozinho; o resto fica em `js/app.js`.
   - Bruxo e Bruno Zampieri usam CSP com hash do `<script>` inline: **recalcule o `sha256`
     sempre que mudar o script**, senão ele não roda. Para recalcular e já gravar no
     cabeçalho:
@@ -256,7 +270,7 @@ node previa/previa.js limpar                                     # apaga as venc
 - Links internos usam `index.html` explícito quando a página precisa abrir também do
   disco (pacote .zip).
 - Pacote para enviar: `git archive` do `main` sem `voxel-realms*`, sem `previa/` e sem
-  os sites de clientes (`clientes/`, `bruno-zampieri/`, `bruxo/`, `darky/`, `linnx/` e os
+  os sites de clientes (`clientes/`, `bruno-zampieri/`, `bruxo/`, `darky/`, `linnx/`, `arcanne/` e os
   próximos que entrarem na lista), mais uma página `COMECE-AQUI.html` na raiz, zipado como
   `amplitude-lab-completo.zip`.
 - Pull requests só quando pedido. O dono costuma pedir PR + merge no fim.

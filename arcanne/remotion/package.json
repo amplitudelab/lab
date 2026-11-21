@@ -1,0 +1,19 @@
+{
+  "name": "arcanne-motion",
+  "private": true,
+  "description": "Peças de movimento do site do ARCANNE (abertura e transições), renderizadas com Remotion e servidas como vídeo.",
+  "scripts": {
+    "studio": "remotion studio src/index.jsx",
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.545",
+    "@remotion/media-utils": "4.0.545",
+    "@remotion/renderer": "4.0.545",
+    "@remotion/bundler": "4.0.545",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.545",
+    "@remotion/media": "4.0.545"
+  }
+}
