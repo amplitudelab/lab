@@ -158,6 +158,17 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
     pela DM do Instagram: `contato.email` e `contato.whatsapp` vazios até o artista confirmar.
     O único script inline é o `js/idioma.js`, embutido no `<head>` pelo gerador, que calcula
     o hash da CSP sozinho; o resto fica em `js/app.js`.
+  - `project-oak/`: site do DJ e produtor **Oak** (João Victor Carvalho), "Psicodelia de alta
+    classe": dark progressive, techno, psytechno e jazz; selo Bantuh Records. Veio do press
+    kit de 2026 (dois ZIPs de 3,7 GB que não vão para o repositório). PT no HTML (`data-i`),
+    EN no objeto `EN` de `js/oak.js`, outros idiomas pelo Google Tradutor (a CSP libera só os
+    endereços dele). Abertura, fundo da primeira tela (mandala das festas) e túnel da seção
+    Som são vídeos feitos no **Remotion** (`project-oak/remotion/`, 138 BPM, o andamento do
+    trecho preferido); como refazer está em `project-oak/LEIAME.md`. Booking pelo WhatsApp com
+    `js/booking.js` (o mesmo da página `djs/`); o número `5511958008632` veio da bio do
+    Instagram dele, não do press kit: **confirmar com o artista**. O site não tem script inline, mas a CSP
+    leva `'unsafe-inline'` e `frame-src data:` porque o Google Tradutor cria um iframe `data:` com
+    script embutido, que herda a CSP (detalhes no LEIAME).
   - Bruxo e Bruno Zampieri usam CSP com hash do `<script>` inline: **recalcule o `sha256`
     sempre que mudar o script**, senão ele não roda. Para recalcular e já gravar no
     cabeçalho:
@@ -280,7 +291,7 @@ node previa/previa.js limpar                                     # apaga as venc
 - Links internos usam `index.html` explícito quando a página precisa abrir também do
   disco (pacote .zip).
 - Pacote para enviar: `git archive` do `main` sem `voxel-realms*`, sem `previa/` e sem
-  os sites de clientes (`clientes/`, `bruno-zampieri/`, `bruxo/`, `darky/`, `linnx/`, `arcanne/` e os
+  os sites de clientes (`clientes/`, `bruno-zampieri/`, `bruxo/`, `darky/`, `linnx/`, `arcanne/`, `project-oak/` e os
   próximos que entrarem na lista), mais uma página `COMECE-AQUI.html` na raiz, zipado como
   `amplitude-lab-completo.zip`.
 - Pull requests só quando pedido. O dono costuma pedir PR + merge no fim.
