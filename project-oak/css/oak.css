@@ -71,7 +71,6 @@ button { cursor: pointer; }
 .abertura { position: fixed; inset: 0; z-index: 150; background: var(--noite); transition: opacity .9s ease, visibility .9s; }
 .abertura.sai { opacity: 0; visibility: hidden; pointer-events: none; }
 .abertura-video { width: 100%; height: 100%; object-fit: cover; }
-.abertura-acoes { position: absolute; left: 0; right: 0; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 0 var(--lado); }
 html.com-abertura { overflow: hidden; }
 
 /* ---------- topo ---------- */

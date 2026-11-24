@@ -11,7 +11,6 @@
     _title: 'Oak · High-class psychedelia',
     _desc: 'Oak is the project of João Victor Carvalho: dark progressive, techno, psytechno and jazz in a cinematic, psychedelic atmosphere. Music, nights, aftermovies, press kit and booking.',
     pular_conteudo: 'Skip to content',
-    ab_som: 'Enter with sound', ab_pular: 'Skip intro',
     m_som: 'Music', m_noites: 'Nights', m_aovivo: 'Aftermovies', m_historia: 'Story', m_press: 'Press kit', m_booking: 'Booking',
     som_liga: 'Sound on', som_desliga: 'Sound off',
     outros_rotulo: 'Other languages (automatic translation)', outros_op: '🌐 +', menu: 'Menu',
@@ -195,30 +194,31 @@
   }
 
   /* ---------- abertura ---------- */
+  // Toca sempre, sem botões, muda (para o navegador deixar tocar sozinha), e no fim entra no
+  // site. Se o vídeo der erro, for bloqueado ou não começar em 4 s, entra no site do mesmo
+  // jeito; e nunca passa de 9 s (o vídeo tem 5,4 s), para ninguém ficar preso.
+  // Fica de fora só com prefers-reduced-motion e com ?semabertura no endereço (testes).
   function iniciaAbertura() {
     var ab = document.getElementById('abertura');
     var pular = /[?&]semabertura/.test(location.search);
-    var vista = false; try { vista = sessionStorage.getItem('oak:abertura') === '1'; } catch (e) {}
-    if (!ab || reduz || vista || pular || googAtual()) return;
+    if (!ab || reduz || pular) return;
     var v = ab.querySelector('video');
     ab.hidden = false;
     raiz.classList.add('com-abertura');
-    var fim = false;
+    var fim = false, comecou = false;
     function fecha() {
       if (fim) return; fim = true;
-      try { sessionStorage.setItem('oak:abertura', '1'); } catch (e) {}
       ab.classList.add('sai');
       raiz.classList.remove('com-abertura');
       setTimeout(function () { ab.hidden = true; v.removeAttribute('src'); v.load(); }, 1000);
     }
     v.src = retrato ? v.dataset.srcM : v.dataset.src;
+    v.addEventListener('playing', function () { comecou = true; });
     v.addEventListener('ended', fecha);
     v.addEventListener('error', fecha);
     var p = v.play(); if (p && p.catch) p.catch(fecha);
+    setTimeout(function () { if (!comecou) fecha(); }, 4000);
     setTimeout(fecha, 9000);
-    document.getElementById('pular-abertura').addEventListener('click', fecha);
-    ab.querySelector('[data-som-liga]').addEventListener('click', function () { ligaSom(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fecha(); });
   }
 
   /* ---------- som ---------- */
