@@ -50,8 +50,7 @@ não tem script inline.
 
 ## Som e pulso
 
-- O som nunca começa sozinho: "Ligar som" no topo, "Entrar com som" na abertura ou o play de
-  um trecho. Ao fim de um trecho, toca o próximo.
+- O som nunca começa sozinho: "Ligar som" no topo ou o play de um trecho. Ao fim de um trecho, toca o próximo.
 - Com som, um `AnalyserNode` lê os graves e escreve `--pulso` (0 a 1) no `<html>`: logo do
   topo, logo da primeira tela, ponto do BPM, túnel da seção Som e barras do botão respiram
   juntos. Sem som, um pulso de **138 BPM** (o andamento medido no trecho preferido) faz o
@@ -64,8 +63,10 @@ história (frases que acendem palavra por palavra) → som (trechos, Spotify) �
 (corredor: a rolagem vertical anda na horizontal por sete festas) → aftermovies (cartões em
 loop; o toque abre o filme inteiro com som) → retratos → booking → press kit → rodapé.
 
-- A abertura aparece uma vez por sessão (`sessionStorage`), some com `?semabertura` e não
-  existe com `prefers-reduced-motion`. Esc ou "Pular abertura" fecham.
+- A abertura toca sempre que a página abre, sem botões (pedido do dono): muda, para o
+  navegador deixar tocar sozinha, e no fim entra no site. Se o vídeo der erro, for bloqueado
+  ou não começar em 4 s, entra no site do mesmo jeito; nunca passa de 9 s. Não existe com
+  `prefers-reduced-motion`, e `?semabertura` no endereço tira a abertura (para testes).
 - Vídeos só carregam perto da tela e pausam fora dela. Até 820 px (ou tela em pé) entram as
   versões de celular (`data-src-m`).
 - Com `prefers-reduced-motion`: sem abertura, sem vídeo tocando sozinho, frases inteiras e o
