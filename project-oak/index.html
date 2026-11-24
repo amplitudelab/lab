@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://www.gstatic.com https://translate.googleapis.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://translate.google.com https://translate.googleapis.com https://fonts.gstatic.com; media-src 'self'; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://translate.googleapis.com https://translate-pa.googleapis.com https://translate.google.com; frame-src https://open.spotify.com https://translate.google.com https://translate.googleapis.com data:; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="robots" content="noindex">
+<title>Oak · Psicodelia de alta classe</title>
+<meta name="description" content="Oak é o projeto de João Victor Carvalho: dark progressive, techno, psytechno e jazz numa atmosfera cinematográfica e psicodélica. Som, noites, aftermovies, press kit e booking.">
+<meta property="og:title" content="Oak · Psicodelia de alta classe">
+<meta property="og:description" content="Dark progressive, techno, psytechno e jazz. Som, noites, aftermovies e booking.">
+<meta property="og:image" content="https://amplitudelab.github.io/lab/project-oak/assets/img/og.jpg">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0b0a08">
+<link rel="icon" type="image/png" href="assets/img/icone.png">
+<link rel="preload" href="fonts/BodoniModa-Italic-VF.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/InstrumentSans-VF.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/oak.css">
+<script src="js/booking.js" defer></script>
+<script src="js/oak.js" defer></script>
+</head>
+<body>
+<a class="pular-conteudo" href="#inicio" data-i="pular_conteudo">Pular para o conteúdo</a>
+
+<!-- Abertura: o logo se monta e a câmera atravessa a gravata. Só na primeira visita da sessão. -->
+<div class="abertura" id="abertura" hidden>
+  <video class="abertura-video" muted playsinline preload="auto" data-src="assets/video/abertura.mp4" data-src-m="assets/video/abertura-v.mp4"></video>
+  <div class="abertura-acoes">
+    <button type="button" class="botao botao-claro" data-som-liga data-i="ab_som">Entrar com som</button>
+    <button type="button" class="botao botao-linha" id="pular-abertura" data-i="ab_pular">Pular abertura</button>
+  </div>
+</div>
+
+<header class="topo" id="topo">
+  <a class="topo-marca" href="#inicio" aria-label="Oak, início"><img src="assets/img/logo.webp" alt="" width="1018" height="542"></a>
+  <nav class="menu" id="menu" aria-label="Seções">
+    <a href="#som" data-i="m_som">Som</a>
+    <a href="#noites" data-i="m_noites">Noites</a>
+    <a href="#ao-vivo" data-i="m_aovivo">Aftermovies</a>
+    <a href="#historia" data-i="m_historia">História</a>
+    <a href="#press" data-i="m_press">Press kit</a>
+    <a href="#booking" class="menu-booking" data-i="m_booking">Booking</a>
+  </nav>
+  <div class="topo-direita">
+    <button type="button" class="som-botao" id="som-botao" aria-pressed="false">
+      <span class="som-barras" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="som-rotulo" data-i="som_liga">Ligar som</span>
+    </button>
+    <div class="idioma notranslate" translate="no" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang="pt" aria-pressed="true">PT</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      <label class="outros"><span class="sr" data-i="outros_rotulo">Outros idiomas (tradução automática)</span>
+        <select id="outros" aria-describedby="nota-trad">
+          <option value="" data-i="outros_op">🌐 +</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="it">Italiano</option>
+          <option value="nl">Nederlands</option>
+          <option value="ja">日本語</option>
+          <option value="zh-CN">中文</option>
+          <option value="he">עברית</option>
+          <option value="ru">Русский</option>
+        </select>
+      </label>
+    </div>
+    <button type="button" class="menu-abre" id="menu-abre" aria-expanded="false" aria-controls="menu"><span class="sr" data-i="menu">Menu</span><i></i><i></i></button>
+  </div>
+</header>
+<p id="nota-trad" class="sr" data-i="nota_trad">Português e inglês foram escritos para o site. Os outros idiomas usam o Google Tradutor.</p>
+
+<main>
+  <!-- 1. Primeira tela -->
+  <section class="inicio" id="inicio" aria-labelledby="inicio-titulo">
+    <video class="inicio-fundo" muted playsinline loop preload="none" poster="assets/img/salao.jpg" data-poster-m="assets/img/salao-v.jpg" data-src="assets/video/salao.mp4" data-src-m="assets/video/salao-v.mp4" aria-hidden="true"></video>
+    <div class="inicio-luz" aria-hidden="true"></div>
+    <div class="inicio-conteudo">
+      <p class="rotulo"><span class="ponto-bpm" aria-hidden="true"></span><span data-i="in_rotulo">DJ e produtor · desde 2022</span></p>
+      <h1 id="inicio-titulo" class="inicio-logo"><img src="assets/img/logo.webp" alt="Oak" width="1018" height="542"></h1>
+      <p class="inicio-lema"><em data-i="in_lema">Psicodelia de alta classe</em></p>
+      <p class="inicio-generos notranslate" translate="no">Dark progressive · Techno · Psytechno · Jazz</p>
+      <div class="inicio-acoes">
+        <a class="botao botao-claro" href="#som" data-i="in_ouvir">Ouvir</a>
+        <a class="botao botao-linha" href="#booking" data-i="in_booking">Booking</a>
+      </div>
+    </div>
+    <div class="inicio-rodape" aria-hidden="true">
+      <span class="notranslate" translate="no"><b class="bpm-num">138</b> BPM</span>
+      <span data-i="in_role">Role</span>
+    </div>
+  </section>
+
+  <!-- 2. Manifesto -->
+  <section class="historia" id="historia" aria-labelledby="historia-titulo">
+    <div class="historia-foto" aria-hidden="true">
+      <img src="assets/img/cartola.webp" data-src-m="assets/img/cartola-m.webp" alt="" width="1800" height="1203" loading="lazy">
+      <div class="fumaca"></div>
+    </div>
+    <div class="historia-texto">
+      <p class="rotulo" data-i="hi_rotulo">A história</p>
+      <h2 id="historia-titulo" class="sr" data-i="hi_titulo">História do Oak</h2>
+      <p class="frase" data-revela data-i="hi_1"><span class="notranslate" translate="no">João Victor Carvalho</span> é o cérebro por trás do Oak.</p>
+      <p class="frase" data-revela data-i="hi_2">Sempre foi apaixonado pela cena psicodélica, e em 2022 deu início ao projeto com uma proposta única e original.</p>
+      <p class="frase" data-revela data-i="hi_3">As produções trazem referências do dark progressive, do techno, do psytechno e do jazz.</p>
+      <p class="frase" data-revela data-i="hi_4">Sons imersivos e hipnóticos se encontram com o explosivo e o dançante. Cada set conta uma história, numa atmosfera cinematográfica e psicodélica.</p>
+      <p class="frase frase-final" data-revela data-i="hi_5">Organizador da <span class="notranslate" translate="no">Green Garden pvt</span> e da <span class="notranslate" translate="no">Progstyle</span>, e sócio do <span class="notranslate" translate="no">Green Garden Festival</span>.</p>
+    </div>
+  </section>
+
+  <!-- 3. Som -->
+  <section class="som" id="som" aria-labelledby="som-titulo">
+    <video class="som-fundo" muted playsinline loop preload="none" poster="assets/img/tunel.jpg" data-src="assets/video/tunel.mp4" data-src-m="assets/video/tunel-v.mp4" aria-hidden="true"></video>
+    <div class="secao-cab">
+      <p class="rotulo" data-i="so_rotulo">Som</p>
+      <h2 id="som-titulo" class="titulo"><em data-i="so_titulo">Isto não é jazz.</em></h2>
+      <p class="intro" data-i="so_intro">Quatro trechos que ele escolheu para o press kit. Aperte o play: a página inteira acompanha a batida.</p>
+    </div>
+    <ol class="faixas" id="faixas">
+      <li><button type="button" class="faixa" data-audio="assets/audio/trecho-1.m4a"><span class="faixa-n">01</span><span class="faixa-nome" data-i="fx_1">Trecho do press kit · preferido do Oak</span><span class="faixa-tempo">0:55</span><span class="faixa-barra" aria-hidden="true"><i></i></span></button></li>
+      <li><button type="button" class="faixa" data-audio="assets/audio/trecho-2.m4a"><span class="faixa-n">02</span><span class="faixa-nome" data-i="fx_2">Trecho do press kit</span><span class="faixa-tempo">0:41</span><span class="faixa-barra" aria-hidden="true"><i></i></span></button></li>
+      <li><button type="button" class="faixa" data-audio="assets/audio/trecho-3.m4a"><span class="faixa-n">03</span><span class="faixa-nome" data-i="fx_3">Trecho do press kit</span><span class="faixa-tempo">0:40</span><span class="faixa-barra" aria-hidden="true"><i></i></span></button></li>
+      <li><button type="button" class="faixa" data-audio="assets/audio/trecho-4.m4a"><span class="faixa-n">04</span><span class="faixa-nome" data-i="fx_4">Trecho do press kit</span><span class="faixa-tempo">0:30</span><span class="faixa-barra" aria-hidden="true"><i></i></span></button></li>
+    </ol>
+    <div class="spotify">
+      <div class="spotify-lista">
+        <p class="rotulo" data-i="sp_rotulo">No Spotify</p>
+        <ul class="notranslate" translate="no">
+          <li><b>This is Not Jazz</b></li>
+          <li><b>Baba Yaga</b> <span>× Alicid</span></li>
+          <li><b>Swing, Baby</b> <span>× JOX</span></li>
+          <li><b>Dialogue in the Void</b></li>
+          <li><b>Addicted</b></li>
+          <li><b>Alone Child</b> <span>× tohd</span></li>
+        </ul>
+      </div>
+      <div class="spotify-player" id="spotify-player">
+        <button type="button" class="botao botao-claro" id="spotify-abre" data-i="sp_abre">Abrir o player do Spotify</button>
+        <p class="nota" data-i="sp_nota">O player é do Spotify e só carrega quando você pedir.</p>
+      </div>
+      <div class="links-som">
+        <a class="botao botao-linha" href="https://open.spotify.com/intl-pt/artist/17uBCYbpAJ6UASKXs4gxyP" target="_blank" rel="noopener noreferrer">Spotify ↗</a>
+        <a class="botao botao-linha" href="https://on.soundcloud.com/UWh2t6Mg6JzcQd4y8n" target="_blank" rel="noopener noreferrer">SoundCloud ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Noites: a rolagem vertical anda por um corredor de festas. -->
+  <section class="noites" id="noites" aria-labelledby="noites-titulo">
+    <div class="noites-fixo">
+      <div class="noites-cab">
+        <p class="rotulo" data-i="no_rotulo">Noites</p>
+        <h2 id="noites-titulo" class="titulo"><em data-i="no_titulo">Por onde o Oak passou</em></h2>
+        <p class="noites-contador notranslate" translate="no"><b id="noite-atual">01</b> / 07</p>
+      </div>
+      <ol class="noites-trilho" id="noites-trilho">
+        <li class="noite"><video muted playsinline loop preload="none" poster="assets/img/noite-dream-on.jpg" data-src="assets/video/noites/dream-on.mp4" data-src-m="assets/video/noites/dream-on-m.mp4" aria-hidden="true"></video><h3 class="notranslate" translate="no">Dream On</h3></li>
+        <li class="noite"><video muted playsinline loop preload="none" poster="assets/img/noite-infinity.jpg" data-src="assets/video/noites/infinity.mp4" data-src-m="assets/video/noites/infinity-m.mp4" aria-hidden="true"></video><h3 class="notranslate" translate="no">Infinity</h3></li>
+        <li class="noite"><video muted playsinline loop preload="none" poster="assets/img/noite-noite-magica.jpg" data-src="assets/video/noites/noite-magica.mp4" data-src-m="assets/video/noites/noite-magica-m.mp4" aria-hidden="true"></video><h3 class="notranslate" translate="no">Noite Mágica</h3></li>
+        <li class="noite"><video muted playsinline loop preload="none" poster="assets/img/noite-reveillon-psicodelico.jpg" data-src="assets/video/noites/reveillon-psicodelico.mp4" data-src-m="assets/video/noites/reveillon-psicodelico-m.mp4" aria-hidden="true"></video><h3 class="notranslate" translate="no">Réveillon Psicodélico</h3></li>
+        <li class="noite"><video muted playsinline loop preload="none" poster="assets/img/noite-sintetika.jpg" data-src="assets/video/noites/sintetika.mp4" data-src-m="assets/video/noites/sintetika-m.mp4" aria-hidden="true"></video><h3 class="notranslate" translate="no">Sintetika</h3></li>
+        <li class="noite"><video muted playsinline loop preload="none" poster="assets/img/noite-horus.jpg" data-src="assets/video/noites/horus.mp4" data-src-m="assets/video/noites/horus-m.mp4" aria-hidden="true"></video><h3 class="notranslate" translate="no">Horus</h3></li>
+        <li class="noite"><video muted playsinline loop preload="none" poster="assets/img/noite-gg-showcase.jpg" data-src="assets/video/noites/gg-showcase.mp4" data-src-m="assets/video/noites/gg-showcase-m.mp4" aria-hidden="true"></video><h3 class="notranslate" translate="no">GG Showcase</h3></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 5. Aftermovies -->
+  <section class="aovivo" id="ao-vivo" aria-labelledby="aovivo-titulo">
+    <div class="secao-cab">
+      <p class="rotulo" data-i="av_rotulo">Aftermovies</p>
+      <h2 id="aovivo-titulo" class="titulo"><em data-i="av_titulo">Assista de perto</em></h2>
+      <p class="intro" data-i="av_intro">Toque num filme para ver inteiro, com som.</p>
+    </div>
+    <ul class="filmes">
+      <li><button type="button" class="filme filme-principal" data-filme="assets/video/after/green-garden.mp4" data-poster="assets/img/after-green-garden.jpg">
+        <video muted playsinline loop preload="none" poster="assets/img/after-green-garden.jpg" data-src="assets/video/after/green-garden-loop.mp4" aria-hidden="true"></video>
+        <span class="filme-info"><span class="filme-tag" data-i="av_principal">Aftermovie principal</span><b class="notranslate" translate="no">Green Garden</b><span class="filme-play" aria-hidden="true">▶</span></span>
+        <span class="sr" data-i="av_ver">Assistir com som</span>
+      </button></li>
+      <li><button type="button" class="filme" data-filme="assets/video/after/horus.mp4" data-poster="assets/img/after-horus.jpg">
+        <video muted playsinline loop preload="none" poster="assets/img/after-horus.jpg" data-src="assets/video/after/horus-loop.mp4" aria-hidden="true"></video>
+        <span class="filme-info"><b class="notranslate" translate="no">Horus</b><span class="filme-play" aria-hidden="true">▶</span></span>
+        <span class="sr" data-i="av_ver">Assistir com som</span>
+      </button></li>
+      <li><button type="button" class="filme" data-filme="assets/video/after/invasion.mp4" data-poster="assets/img/after-invasion.jpg">
+        <video muted playsinline loop preload="none" poster="assets/img/after-invasion.jpg" data-src="assets/video/after/invasion-loop.mp4" aria-hidden="true"></video>
+        <span class="filme-info"><b class="notranslate" translate="no">Invasion PVT 2023</b><span class="filme-play" aria-hidden="true">▶</span></span>
+        <span class="sr" data-i="av_ver">Assistir com som</span>
+      </button></li>
+      <li><button type="button" class="filme" data-filme="assets/video/after/green-garden-2.mp4" data-poster="assets/img/after-green-garden-2.jpg">
+        <video muted playsinline loop preload="none" poster="assets/img/after-green-garden-2.jpg" data-src="assets/video/after/green-garden-2-loop.mp4" aria-hidden="true"></video>
+        <span class="filme-info"><b class="notranslate" translate="no">Green Garden</b><span class="filme-tag" data-i="av_outro">Outro olhar</span><span class="filme-play" aria-hidden="true">▶</span></span>
+        <span class="sr" data-i="av_ver">Assistir com som</span>
+      </button></li>
+    </ul>
+  </section>
+
+  <!-- 6. Retratos -->
+  <section class="retratos" aria-labelledby="retratos-titulo">
+    <h2 id="retratos-titulo" class="sr" data-i="re_titulo">Retratos</h2>
+    <div class="mosaico">
+      <figure class="m1"><img src="assets/img/cabine.webp" data-src-m="assets/img/cabine-m.webp" alt="Oak na cabine, iluminado por projeções psicodélicas" data-i-alt="re_a1" width="1200" height="1800" loading="lazy"></figure>
+      <figure class="m2"><img src="assets/img/estrada.webp" data-src-m="assets/img/estrada-m.webp" alt="Oak de camisa preta numa estrada à noite" data-i-alt="re_a2" width="1800" height="1203" loading="lazy"></figure>
+      <figure class="m3"><img src="assets/img/palco.webp" data-src-m="assets/img/palco-m.webp" alt="Oak tocando de fones e óculos redondos" data-i-alt="re_a3" width="1350" height="1800" loading="lazy"></figure>
+      <figure class="m4"><img src="assets/img/pista.webp" data-src-m="assets/img/pista-m.webp" alt="Vista da cabine para a pista de um festival ao ar livre" data-i-alt="re_a4" width="1800" height="1200" loading="lazy"></figure>
+      <figure class="m5"><img src="assets/img/pinheiros.webp" data-src-m="assets/img/pinheiros-m.webp" alt="Oak entre pinheiros, com a camiseta do logo" data-i-alt="re_a5" width="1080" height="1080" loading="lazy"></figure>
+      <figure class="m6"><img src="assets/img/sorriso.webp" data-src-m="assets/img/sorriso-m.webp" alt="Oak de cartola, sorrindo" data-i-alt="re_a6" width="1800" height="1203" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <!-- 7. Booking -->
+  <section class="booking" id="booking" aria-labelledby="booking-titulo">
+    <div class="booking-texto">
+      <p class="rotulo" data-i="bk_rotulo">Booking</p>
+      <h2 id="booking-titulo" class="titulo"><em data-i="bk_titulo">Leve o Oak para a sua noite</em></h2>
+      <p class="intro" data-i="bk_intro">Preencha e o pedido vai pronto para o WhatsApp do Oak. Festival, club, private ou open air.</p>
+      <ul class="contatos">
+        <li><a href="https://wa.me/5511958008632" target="_blank" rel="noopener noreferrer" class="notranslate" translate="no">WhatsApp · (11) 95800-8632</a></li>
+        <li><a href="https://www.instagram.com/project_oak_/" target="_blank" rel="noopener noreferrer" class="notranslate" translate="no">Instagram · @project_oak_</a></li>
+      </ul>
+    </div>
+    <form class="bk" data-booking data-whats="5511958008632" data-artista="Oak" novalidate>
+      <div class="bk-linha">
+        <label><span class="bk-rot"><span data-i="f_nome">Seu nome</span> *</span><input name="nome" required autocomplete="name"></label>
+        <label><span class="bk-rot"><span data-i="f_contato">Contato (WhatsApp ou e-mail)</span> *</span><input name="contato" required autocomplete="email"></label>
+      </div>
+      <div class="bk-linha">
+        <label><span class="bk-rot"><span data-i="f_data">Data</span> *</span><input name="data" type="date" required></label>
+        <label><span class="bk-rot"><span data-i="f_cidade">Cidade</span> *</span><input name="cidade" required autocomplete="address-level2"></label>
+      </div>
+      <label><span data-i="f_local">Local / tipo de evento</span><input name="local" data-i-ph="f_local_ph" placeholder="Festival, club, private, open air…"></label>
+      <div class="bk-linha">
+        <label><span data-i="f_duracao">Duração do set</span>
+          <select name="duracao">
+            <option value="" data-i="f_dur_0">A combinar</option>
+            <option data-i="f_dur_1">1 hora</option>
+            <option data-i="f_dur_2">1h30</option>
+            <option data-i="f_dur_3">2 horas</option>
+            <option data-i="f_dur_4">Mais de 2 horas</option>
+          </select>
+        </label>
+        <label><span data-i="f_orcamento">Orçamento</span><input name="orcamento" data-i-ph="f_orc_ph" placeholder="Opcional"></label>
+      </div>
+      <p class="bk-aviso" data-booking-aviso role="status" hidden></p>
+      <button class="botao botao-claro bk-enviar" type="submit" data-i="f_enviar">Enviar pelo WhatsApp</button>
+      <pre class="bk-saida" data-booking-saida hidden></pre>
+    </form>
+  </section>
+
+  <!-- 8. Press kit -->
+  <section class="press" id="press" aria-labelledby="press-titulo">
+    <div class="secao-cab">
+      <p class="rotulo" data-i="pr_rotulo">Press kit</p>
+      <h2 id="press-titulo" class="titulo"><em data-i="pr_titulo">Para produtores e imprensa</em></h2>
+    </div>
+    <div class="press-grade">
+      <a class="press-item press-zip" href="assets/press/oak-presskit.zip" download>
+        <b data-i="pr_zip">Press kit completo</b>
+        <span data-i="pr_zip_d">Release, cinco fotos em alta e os logos do Oak e da Bantuh Records (ZIP)</span>
+      </a>
+      <a class="press-item press-logo" href="assets/press/oak-logo-white2.png" download>
+        <img src="assets/img/logo.webp" alt="" width="1018" height="542" loading="lazy">
+        <span data-i="pr_logo_b">Logo branco (PNG)</span>
+      </a>
+      <a class="press-item press-logo press-logo-claro" href="assets/press/oak-logo-black2.png" download>
+        <img src="assets/img/logo.webp" alt="" width="1018" height="542" loading="lazy">
+        <span data-i="pr_logo_p">Logo preto (PNG)</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <img class="rodape-logo" src="assets/img/logo.webp" alt="Oak" width="1018" height="542" loading="lazy">
+    <div class="selo">
+      <img src="assets/img/bantuh.webp" alt="Bantuh Records" width="520" height="456" loading="lazy">
+      <span data-i="ro_selo">Selo</span>
+    </div>
+    <ul class="redes notranslate" translate="no">
+      <li><a href="https://www.instagram.com/project_oak_/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+      <li><a href="https://open.spotify.com/intl-pt/artist/17uBCYbpAJ6UASKXs4gxyP" target="_blank" rel="noopener noreferrer">Spotify</a></li>
+      <li><a href="https://on.soundcloud.com/UWh2t6Mg6JzcQd4y8n" target="_blank" rel="noopener noreferrer">SoundCloud</a></li>
+      <li><a href="https://wa.me/5511958008632" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+    </ul>
+    <a class="topo-volta" href="#inicio" data-i="ro_topo">Voltar ao topo ↑</a>
+  </div>
+</footer>
+<div class="assinatura"><a href="https://amplitudelab.github.io/lab/" target="_blank" rel="noopener noreferrer">Site feito por <b>Amplitude Lab</b></a></div>
+
+<dialog class="cinema" id="cinema" aria-label="Aftermovie">
+  <video controls playsinline preload="none"></video>
+  <button type="button" class="cinema-fecha" id="cinema-fecha" data-i="av_fechar">Fechar</button>
+</dialog>
+</body>
+</html>
