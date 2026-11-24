@@ -1,0 +1,19 @@
+{
+  "name": "amplitude-djs-motion",
+  "private": true,
+  "description": "Peças de movimento da página para DJs da Amplitude Lab, renderizadas com Remotion e servidas como vídeo.",
+  "scripts": {
+    "studio": "remotion studio src/index.jsx",
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.545",
+    "@remotion/cli": "4.0.545",
+    "@remotion/google-fonts": "4.0.545",
+    "@remotion/media": "4.0.545",
+    "@remotion/renderer": "4.0.545",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.545"
+  }
+}

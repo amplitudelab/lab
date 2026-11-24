@@ -61,6 +61,16 @@ atualizado quando algo importante mudar (preço, endereço, estrutura, decisão)
   apontam para lá. Demo que ainda não pode aparecer vai para `previa/`.
 - `previa/`: prévias temporárias e privadas (uma semana, conteúdo cifrado). Processo
   completo na seção "Prévias temporárias" abaixo.
+- `djs/`: página de vendas da Amplitude só para DJs (`/lab/djs/`). É página da Amplitude
+  (marca, orçamento e WhatsApp dela), não site de cliente. Mostra os sites de artista no ar em
+  vídeo (notebook e celular), referências internacionais (só texto e link) e o processo.
+  PT e EN revisados (texto PT no HTML com `data-i`, EN no objeto `EN` de `js/djs.js`); os
+  outros idiomas usam o Google Tradutor, carregado só quando alguém escolhe. Fundo e vitrine
+  são vídeos feitos no **Remotion** (`djs/remotion/`, 120 BPM). Como gravar e renderizar de
+  novo está em `djs/LEIAME.md`. `djs/demo/` é uma demo interativa com artista fictício
+  (NOVA VOLTZ): projeto que ainda é prévia só entra nessa página com nome fictício. O booking
+  (`djs/js/booking.js`) abre o WhatsApp com a mensagem pronta; o número vai em
+  `data-whats` no formulário (vazio aqui, de propósito).
 - **Sites de clientes** — grupo à parte, sem ligação com o ecossistema da Amplitude
   (nada de CRM, orçamento ou WhatsApp da Amplitude). Cada cliente tem uma pasta própria
   **na raiz**, então o nome dele fica no fim do link:
