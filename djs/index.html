@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sites para DJs · Amplitude Lab</title>
+<meta name="description" content="Sites de DJ feitos sob medida: vídeo de abertura, players, agenda, press kit e booking, rápidos no celular e em dois idiomas. Veja os sites que a Amplitude Lab já pôs no ar.">
+<meta property="og:title" content="Sites para DJs · Amplitude Lab">
+<meta property="og:description" content="Seu som lota a pista. Seu site tem que soar igual. Veja os sites de DJ que a Amplitude Lab já pôs no ar.">
+<meta property="og:image" content="https://amplitudelab.github.io/lab/djs/assets/img/vitrine.jpg">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#05070d">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/djs.css">
+<script src="js/booking.js" defer></script>
+<script src="js/djs.js" defer></script>
+</head>
+<body>
+<a class="pular" href="#vitrine" data-i="pular">Pular para a vitrine</a>
+
+<header class="topo" id="topo">
+  <a class="marca notranslate" href="../index.html" translate="no" aria-label="Amplitude Lab"><span class="marca-ponto"></span>AMPLITUDE<b>LAB</b><i>× DJs</i></a>
+  <nav class="menu" aria-label="Seções">
+    <a href="#gigs" data-i="m_gigs">Mais gigs</a>
+    <a href="#vitrine" data-i="m_vitrine">Vitrine</a>
+    <a href="#ouvintes" data-i="m_ouvintes">Ouvintes</a>
+    <a href="#booking" data-i="m_booking">Booking</a>
+    <a href="#perguntas" data-i="m_faq">Dúvidas</a>
+  </nav>
+  <div class="idioma notranslate" translate="no" role="group" aria-label="Idioma / Language">
+    <button type="button" data-lang="pt" aria-pressed="true">PT</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    <label class="outros"><span class="sr" data-i="outros_rotulo">Outros idiomas (tradução automática)</span>
+      <select id="outros" aria-describedby="nota-trad">
+        <option value="" data-i="outros_op">🌐 +</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="it">Italiano</option>
+        <option value="nl">Nederlands</option>
+        <option value="ja">日本語</option>
+        <option value="ko">한국어</option>
+        <option value="zh-CN">中文</option>
+        <option value="ru">Русский</option>
+        <option value="tr">Türkçe</option>
+        <option value="ar">العربية</option>
+        <option value="hi">हिन्दी</option>
+      </select>
+    </label>
+  </div>
+  <a class="btn btn-mini" href="#contato" data-i="cta_topo">Quero o meu</a>
+</header>
+<p id="nota-trad" class="sr" data-i="nota_trad">Português e inglês são revisados por nós. Os outros idiomas usam o Google Tradutor.</p>
+
+<main>
+  <!-- 1 · Abertura: fundo feito no Remotion (remotion/src/Palco.jsx) -->
+  <section class="hero" aria-labelledby="hero-titulo">
+    <video class="hero-video" muted loop playsinline preload="none" poster="assets/img/palco.jpg" data-src="assets/video/palco.mp4" data-src-m="assets/video/palco-v.mp4" data-poster-m="assets/img/palco-v.jpg" aria-hidden="true"></video>
+    <div class="hero-veu"></div>
+    <div class="hero-txt">
+      <p class="sobre" data-i="hero_sobre">Amplitude Lab · sites para DJs</p>
+      <h1 id="hero-titulo" data-i="hero_t">Seu som lota a pista.<br>Seu site tem que <em>soar igual.</em></h1>
+      <p class="lead" data-i="hero_lead">Não é só uma página: é a ferramenta que transforma quem te descobre em pedido de booking e quem te ouve em público fiel. Vídeo de abertura, press kit, agenda, pedidos de música e booking direto no WhatsApp.</p>
+      <div class="acoes">
+        <a class="btn" href="#no-ar" data-i="hero_b1">Ver os sites no ar</a>
+        <a class="btn btn-linha" href="#contato" data-i="hero_b2">Quero o meu</a>
+      </div>
+    </div>
+    <div class="bpm notranslate" translate="no" aria-hidden="true"><span class="bpm-luz"></span><b>120</b> BPM</div>
+  </section>
+
+  <div class="faixa notranslate" translate="no" aria-hidden="true">
+    <div class="faixa-trilho"><span>PRESS KIT ✦ BOOKING ✦ SOUNDCLOUD ✦ SPOTIFY ✦ MIXCLOUD ✦ YOUTUBE ✦ GIGS ✦ PT / EN ✦ REMOTION ✦ WEBGL ✦&nbsp;</span><span>PRESS KIT ✦ BOOKING ✦ SOUNDCLOUD ✦ SPOTIFY ✦ MIXCLOUD ✦ YOUTUBE ✦ GIGS ✦ PT / EN ✦ REMOTION ✦ WEBGL ✦&nbsp;</span></div>
+  </div>
+
+  <!-- 2 · Proposta: ferramenta de gigs, não "uma página" -->
+  <section class="bloco" id="gigs" aria-labelledby="gigs-titulo">
+    <div class="cab">
+      <p class="sobre" data-i="gig_sobre">Por que um site, se já tenho Instagram?</p>
+      <h2 id="gigs-titulo" data-i="gig_t">Não é uma página. É a sua máquina de gigs.</h2>
+      <p class="sub" data-i="gig_sub">O Instagram mostra o seu dia. O site fecha a data. Ele trabalha para dois públicos ao mesmo tempo, e cada parte da página existe para levar um deles ao próximo passo.</p>
+    </div>
+    <div class="publicos">
+      <article class="publico">
+        <p class="publico-n">A</p>
+        <h3 data-i="pub_a_t">Para quem contrata</h3>
+        <p class="publico-q" data-i="pub_a_q">Produtores, casas, festivais, agências e eventos privados</p>
+        <ul>
+          <li data-i="pub_a_1"><b>Decide em 30 segundos:</b> vídeo de set na primeira tela, gêneros, cidades e festas onde você já tocou.</li>
+          <li data-i="pub_a_2"><b>Pega o material sozinho:</b> release, fotos em alta, logos e rider num clique, sem esperar resposta na DM.</li>
+          <li data-i="pub_a_3"><b>Vê se a data está livre:</b> agenda sempre atualizada mostra onde você vai estar.</li>
+          <li data-i="pub_a_4"><b>Pede em poucos cliques:</b> data, cidade, tipo de evento, duração e orçamento chegam juntos no seu WhatsApp.</li>
+        </ul>
+      </article>
+      <article class="publico publico-b">
+        <p class="publico-n">B</p>
+        <h3 data-i="pub_b_t">Para quem ouve</h3>
+        <p class="publico-q" data-i="pub_b_q">Fãs, quem saiu da sua festa e quem te achou num set</p>
+        <ul>
+          <li data-i="pub_b_1"><b>Ouve sem sair:</b> sets e faixas tocando na página, com visual que pulsa no grave.</li>
+          <li data-i="pub_b_2"><b>Participa da festa:</b> pede música e vota na fila pelo celular, até por QR code no telão.</li>
+          <li data-i="pub_b_3"><b>Confirma presença:</b> "Eu vou" em cada data e lembrete antes da festa.</li>
+          <li data-i="pub_b_4"><b>Vira comunidade:</b> entra na sua lista e fica sabendo das festas antes de todo mundo.</li>
+        </ul>
+      </article>
+    </div>
+    <p class="ponte" data-i="gig_ponte">Público que aparece e participa vira argumento de venda: casa cheia é o melhor press kit.</p>
+  </section>
+
+  <!-- 3 · Vitrine: showreel feito no Remotion (remotion/src/Vitrine.jsx) -->
+  <section class="bloco" id="vitrine" aria-labelledby="vitrine-titulo">
+    <div class="cab">
+      <p class="sobre" data-i="vit_sobre">Vitrine · 28 segundos</p>
+      <h2 id="vitrine-titulo" data-i="vit_t">Os sites, rodando de verdade.</h2>
+      <p class="sub" data-i="vit_sub">Gravamos cada site no notebook e no celular e montamos tudo no Remotion, com os cortes no tempo da batida.</p>
+    </div>
+    <figure class="reel">
+      <video class="reel-video" muted loop playsinline preload="none" poster="assets/img/vitrine.jpg" data-src="assets/video/vitrine.mp4" data-src-m="assets/video/vitrine-v.mp4" data-poster-m="assets/img/vitrine-v.jpg"></video>
+      <button class="reel-play" type="button" aria-pressed="false" data-i-aria="vit_play" aria-label="Pausar a vitrine"><span class="ic-pausa" aria-hidden="true"></span></button>
+      <figcaption class="sr" data-i="vit_cap">Vídeo sem som com os sites ARCANNE, LINNX, BRUXO, DARKY e Bruno Zampieri e a demo NOVA VOLTZ em notebook e celular.</figcaption>
+    </figure>
+  </section>
+
+  <!-- 3 · Sites no ar -->
+  <section class="bloco" id="no-ar" aria-labelledby="noar-titulo">
+    <div class="cab">
+      <p class="sobre" data-i="noar_sobre">No ar</p>
+      <h2 id="noar-titulo" data-i="noar_t">Cada artista com o próprio universo.</h2>
+      <p class="sub" data-i="noar_sub">Nada de modelo pronto com outra foto. Abra e mexa: são os sites de verdade.</p>
+    </div>
+
+    <div class="sites">
+      <article class="site" style="--c:#ff5a1f">
+        <div class="aparelhos">
+          <div class="note"><video muted loop playsinline preload="none" poster="assets/img/arcanne-d.jpg" data-src="assets/video/arcanne-d.mp4" aria-hidden="true"></video></div>
+          <div class="cel"><video muted loop playsinline preload="none" poster="assets/img/arcanne-m.jpg" data-src="assets/video/arcanne-m.mp4" aria-hidden="true"></video></div>
+        </div>
+        <div class="site-txt">
+          <p class="genero notranslate" translate="no">Psy-trance → Techno</p>
+          <h3 class="notranslate" translate="no">ARCANNE</h3>
+          <ul>
+            <li data-i="arc_1">Abertura e fundos feitos no Remotion, cortados no BPM do single (140).</li>
+            <li data-i="arc_2">Português e inglês, com o idioma escolhido na chegada.</li>
+            <li data-i="arc_3">Aftermovies, discografia e press kit para baixar.</li>
+          </ul>
+          <a class="abrir" href="../arcanne/" target="_blank" rel="noopener"><span data-i="abrir">Abrir o site</span> <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+
+      <article class="site" style="--c:#ff3fb4">
+        <div class="aparelhos">
+          <div class="note"><video muted loop playsinline preload="none" poster="assets/img/linnx-d.jpg" data-src="assets/video/linnx-d.mp4" aria-hidden="true"></video></div>
+          <div class="cel"><video muted loop playsinline preload="none" poster="assets/img/linnx-m.jpg" data-src="assets/video/linnx-m.mp4" aria-hidden="true"></video></div>
+        </div>
+        <div class="site-txt">
+          <p class="genero notranslate" translate="no">Progressive Trance · São Paulo</p>
+          <h3 class="notranslate" translate="no">LINNX</h3>
+          <ul>
+            <li data-i="lin_1">A primeira tela é o último set, em cortes que giram sozinhos.</li>
+            <li data-i="lin_2">Com o som ligado, o fundo em WebGL pulsa com os graves do set.</li>
+            <li data-i="lin_3">Entrada com som ou em silêncio: o visitante escolhe.</li>
+          </ul>
+          <a class="abrir" href="../linnx/" target="_blank" rel="noopener"><span data-i="abrir">Abrir o site</span> <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+
+      <article class="site" style="--c:#e2b04a">
+        <div class="aparelhos">
+          <div class="note"><video muted loop playsinline preload="none" poster="assets/img/bruxo-d.jpg" data-src="assets/video/bruxo-d.mp4" aria-hidden="true"></video></div>
+          <div class="cel"><video muted loop playsinline preload="none" poster="assets/img/bruxo-m.jpg" data-src="assets/video/bruxo-m.mp4" aria-hidden="true"></video></div>
+        </div>
+        <div class="site-txt">
+          <p class="genero notranslate" translate="no">Progressive · Hard · Hi-Tech</p>
+          <h3 class="notranslate" translate="no">BRUXO</h3>
+          <ul>
+            <li data-i="bru_1">O BPM do fundo sobe com a rolagem: de 136 na abertura a 190 na catarse.</li>
+            <li data-i="bru_2">Campo de partículas no tempo da música, com botão de pausa.</li>
+            <li data-i="bru_3">Galeria, faixas autorais e contato para booking.</li>
+          </ul>
+          <a class="abrir" href="../bruxo/" target="_blank" rel="noopener"><span data-i="abrir">Abrir o site</span> <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+
+      <article class="site" style="--c:#8a6bff">
+        <div class="aparelhos">
+          <div class="note"><video muted loop playsinline preload="none" poster="assets/img/darky-d.jpg" data-src="assets/video/darky-d.mp4" aria-hidden="true"></video></div>
+          <div class="cel"><video muted loop playsinline preload="none" poster="assets/img/darky-m.jpg" data-src="assets/video/darky-m.mp4" aria-hidden="true"></video></div>
+        </div>
+        <div class="site-txt">
+          <p class="genero notranslate" translate="no">Darky · Slowly · Obskurial</p>
+          <h3 class="notranslate" translate="no">DARKY</h3>
+          <ul>
+            <li data-i="dar_1">Três projetos do mesmo artista num site só, cada um com endereço próprio.</li>
+            <li data-i="dar_2">Galeria em roleta, passagens animadas e fundo em WebGL.</li>
+            <li data-i="dar_3">No celular, o site mede o aparelho e serve uma versão leve.</li>
+          </ul>
+          <a class="abrir" href="../darky/" target="_blank" rel="noopener"><span data-i="abrir">Abrir o site</span> <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+
+      <article class="site" style="--c:#ff9a3c">
+        <div class="aparelhos">
+          <div class="note"><video muted loop playsinline preload="none" poster="assets/img/bruno-zampieri-d.jpg" data-src="assets/video/bruno-zampieri-d.mp4" aria-hidden="true"></video></div>
+          <div class="cel"><video muted loop playsinline preload="none" poster="assets/img/bruno-zampieri-m.jpg" data-src="assets/video/bruno-zampieri-m.mp4" aria-hidden="true"></video></div>
+        </div>
+        <div class="site-txt">
+          <p class="genero" data-i="bz_gen">Criador de conteúdo · drone · lifestyle</p>
+          <h3 class="notranslate" translate="no">BRUNO ZAMPIERI</h3>
+          <ul>
+            <li data-i="bz_1">Vídeo de drone no fundo e sequências imersivas de fotos e vídeos.</li>
+            <li data-i="bz_2">Cada frente de trabalho com a própria seção e contato direto.</li>
+            <li data-i="bz_3">A mesma linguagem serve para DJ com aftermovie e agenda.</li>
+          </ul>
+          <a class="abrir" href="../bruno-zampieri/" target="_blank" rel="noopener"><span data-i="abrir">Abrir o site</span> <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+
+      <article class="site" style="--c:#c6ff3d">
+        <div class="aparelhos">
+          <div class="note"><video muted loop playsinline preload="none" poster="assets/img/demo-d.jpg" data-src="assets/video/demo-d.mp4" aria-hidden="true"></video></div>
+          <div class="cel"><video muted loop playsinline preload="none" poster="assets/img/demo-m.jpg" data-src="assets/video/demo-m.mp4" aria-hidden="true"></video></div>
+        </div>
+        <div class="site-txt">
+          <p class="genero" data-i="nv_gen">Demo interativa · artista fictício</p>
+          <h3 class="notranslate" translate="no">NOVA VOLTZ</h3>
+          <ul>
+            <li data-i="nv_1">Aperte o play: o fundo, o logo e o player reagem ao som em tempo real.</li>
+            <li data-i="nv_2">Pedidos de música com votação, "Eu vou" nas datas e lista da comunidade.</li>
+            <li data-i="nv_3">Booking que monta a mensagem e abre o WhatsApp. Teste à vontade: é tudo de mentira, menos o formulário.</li>
+          </ul>
+          <a class="abrir" href="demo/index.html" target="_blank" rel="noopener"><span data-i="abrir_demo">Testar a demo</span> <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+    </div>
+    <p class="aviso" data-i="noar_aviso">Projetos em fase de prévia aparecem aqui só com nome fictício, para proteger quem ainda está decidindo.</p>
+  </section>
+
+  <!-- 5 · Caminho do booking -->
+  <section class="bloco" id="caminho" aria-labelledby="caminho-titulo">
+    <div class="cab">
+      <p class="sobre" data-i="cam_sobre">O caminho até a gig</p>
+      <h2 id="caminho-titulo" data-i="cam_t">Cada clique leva a um pedido de booking.</h2>
+      <p class="sub" data-i="cam_sub">É assim que um produtor sai do seu story e chega no seu WhatsApp com a data na mão.</p>
+    </div>
+    <ol class="trilha">
+      <li><span class="trilha-n">1</span><b data-i="c1_t">Descobre</b><span data-i="c1_d">Link da bio, QR code no flyer e no telão, set no SoundCloud, indicação de outro produtor.</span></li>
+      <li><span class="trilha-n">2</span><b data-i="c2_t">Se convence</b><span data-i="c2_d">Vídeo de pista lotada na primeira tela, gêneros, line-ups e números da sua carreira.</span></li>
+      <li><span class="trilha-n">3</span><b data-i="c3_t">Leva o material</b><span data-i="c3_d">Baixa release, fotos e rider para montar o flyer e mostrar para o sócio.</span></li>
+      <li><span class="trilha-n">4</span><b data-i="c4_t">Pede a data</b><span data-i="c4_d">Formulário curto: data, cidade, evento, duração do set e orçamento.</span></li>
+      <li><span class="trilha-n">5</span><b data-i="c5_t">Você fecha</b><span data-i="c5_d">O pedido chega pronto no seu WhatsApp. É só responder com o valor.</span></li>
+    </ol>
+  </section>
+
+  <!-- 6 · Ambiente interativo para ouvintes -->
+  <section class="bloco" id="ouvintes" aria-labelledby="ouvintes-titulo">
+    <div class="cab">
+      <p class="sobre" data-i="ouv_sobre">Para quem ouve</p>
+      <h2 id="ouvintes-titulo" data-i="ouv_t">Um lugar para o seu público voltar, não só visitar.</h2>
+      <p class="sub" data-i="ouv_sub">Cada recurso abaixo pode entrar no seu site. Escolha os que combinam com o seu som e com as suas festas.</p>
+    </div>
+    <ul class="recursos">
+      <li><b data-i="o1_t">Player e sets</b><span data-i="o1_d">SoundCloud, Mixcloud, Spotify e YouTube tocando dentro do site, com o último set em destaque.</span></li>
+      <li><b data-i="o2_t">Pedido de música</b><span data-i="o2_d">O público pede e vota pelo celular durante a festa; você vê a fila pronta.</span></li>
+      <li><b data-i="o3_t">"Eu vou" na agenda</b><span data-i="o3_d">Confirmação de presença em cada data e contagem de quem vai.</span></li>
+      <li><b data-i="o4_t">Lista da comunidade</b><span data-i="o4_d">WhatsApp ou e-mail de quem quer saber das festas primeiro: nome na lista, pré-venda, set novo.</span></li>
+      <li><b data-i="o5_t">Visual que pulsa</b><span data-i="o5_d">Fundo, logo e luzes reagem ao grave quando o visitante liga o som.</span></li>
+      <li><b data-i="o6_t">Galeria da festa</b><span data-i="o6_d">Fotos e aftermovie de cada noite, para quem foi marcar e quem não foi se arrepender.</span></li>
+      <li><b data-i="o7_t">QR code na pista</b><span data-i="o7_d">Do telão direto para pedir música, seguir e entrar na lista, sem digitar nada.</span></li>
+      <li><b data-i="o8_t">Lançamentos</b><span data-i="o8_d">Contagem para a faixa nova e botão para salvar no Spotify no dia.</span></li>
+    </ul>
+    <div class="convite-demo">
+      <p data-i="ouv_demo">Quer sentir na mão? A demo NOVA VOLTZ tem player, pedidos, agenda e lista funcionando.</p>
+      <a class="btn" href="demo/index.html" target="_blank" rel="noopener" data-i="ouv_demo_b">Abrir a demo interativa</a>
+    </div>
+  </section>
+
+  <!-- 7 · Booking direto no WhatsApp (js/booking.js) -->
+  <section class="bloco" id="booking" aria-labelledby="booking-titulo">
+    <div class="booking">
+      <div class="cab">
+        <p class="sobre" data-i="bk_sobre">Booking direto no WhatsApp</p>
+        <h2 id="booking-titulo" data-i="bk_t">Teste o formulário que vai no seu site.</h2>
+        <p class="sub" data-i="bk_sub">Quem contrata preenche em menos de um minuto e o WhatsApp abre com tudo escrito. No seu site, o número é o seu: é uma linha de configuração. Aqui, sem número, o WhatsApp abre para você escolher para quem mandar.</p>
+        <ul class="bk-pontos">
+          <li data-i="bk_p1">Funciona em português e em inglês, conforme o idioma da página.</li>
+          <li data-i="bk_p2">Nada passa por servidor: a mensagem vai do celular de quem pede para o seu.</li>
+          <li data-i="bk_p3">Campos obrigatórios só os essenciais, para ninguém desistir no meio.</li>
+        </ul>
+      </div>
+      <form class="bk" data-booking data-whats="" data-artista="" novalidate>
+        <label><span data-i="f_nome">Nome</span><input name="nome" required autocomplete="name"></label>
+        <label><span data-i="f_data">Data do evento</span><input name="data" type="date" required></label>
+        <label><span data-i="f_cidade">Cidade</span><input name="cidade" required autocomplete="address-level2"></label>
+        <label><span data-i="f_local">Local / tipo de evento</span><input name="local" data-i-ph="f_local_ph" placeholder="Clube, festival, casamento…"></label>
+        <label><span data-i="f_duracao">Duração do set</span>
+          <select name="duracao">
+            <option value="1h">1h</option><option value="1h30">1h30</option><option value="2h" selected>2h</option><option value="3h">3h</option><option value="4h+">4h+</option>
+            <option value="" data-i="f_aberto">A combinar</option>
+          </select></label>
+        <label><span data-i="f_orc">Orçamento</span><input name="orcamento" data-i-ph="f_orc_ph" placeholder="Ex.: R$ 2.000"></label>
+        <label class="larga"><span data-i="f_contato">Seu contato</span><input name="contato" required autocomplete="tel" data-i-ph="f_contato_ph" placeholder="WhatsApp ou e-mail"></label>
+        <button class="btn larga" type="submit" data-i="f_enviar">Enviar pedido pelo WhatsApp</button>
+        <p class="bk-aviso larga" data-booking-aviso hidden role="status"></p>
+        <pre class="bk-saida larga" data-booking-saida hidden></pre>
+      </form>
+    </div>
+  </section>
+
+  <!-- 8 · O que vai no site -->
+  <section class="bloco" id="entrega" aria-labelledby="entrega-titulo">
+    <div class="cab">
+      <p class="sobre" data-i="ent_sobre">O que vai no seu site</p>
+      <h2 id="entrega-titulo" data-i="ent_t">Tudo que um booker procura, em uma página.</h2>
+    </div>
+    <ol class="itens">
+      <li><b data-i="i1_t">Abertura em vídeo</b><span data-i="i1_d">Feita no Remotion com as suas imagens, cortada no BPM da sua faixa.</span></li>
+      <li><b data-i="i2_t">Seus players</b><span data-i="i2_d">SoundCloud, Spotify, Mixcloud, YouTube e Apple Music, sem sair do site.</span></li>
+      <li><b data-i="i3_t">Agenda de datas</b><span data-i="i3_d">Próximas gigs com local, cidade e link do ingresso.</span></li>
+      <li><b data-i="i4_t">Press kit</b><span data-i="i4_d">Release, fotos em alta, logos e rider para baixar num clique.</span></li>
+      <li><b data-i="i5_t">Booking</b><span data-i="i5_d">Formulário com data, cidade e tipo de evento que chega pronto no seu WhatsApp ou e-mail.</span></li>
+      <li><b data-i="i6_t">Dois idiomas</b><span data-i="i6_d">Português e inglês revisados, mais tradução automática para o resto do mundo.</span></li>
+      <li><b data-i="i7_t">Visual que escuta</b><span data-i="i7_d">Fundos e logos que pulsam com o grave quando o visitante liga o som.</span></li>
+      <li><b data-i="i8_t">Leve no celular</b><span data-i="i8_d">O site mede o aparelho e serve vídeos e efeitos do tamanho certo.</span></li>
+    </ol>
+  </section>
+
+  <!-- 5 · Referências internacionais -->
+  <section class="bloco" id="referencias" aria-labelledby="refs-titulo">
+    <div class="cab">
+      <p class="sobre" data-i="ref_sobre">Referências internacionais</p>
+      <h2 id="refs-titulo" data-i="ref_t">O nível que a gente persegue.</h2>
+      <p class="sub" data-i="ref_sub">Sites de artistas e marcas da cena global que estudamos. Cada um resolve bem uma coisa, e a gente leva a ideia, não a cópia.</p>
+    </div>
+    <div class="refs">
+      <a class="ref" href="https://charlottedewittemusic.com/" target="_blank" rel="noopener"><span class="ref-n notranslate" translate="no">Charlotte de Witte</span><span class="ref-u notranslate" translate="no">charlottedewittemusic.com</span><span class="ref-d" data-i="r1">O nome vira logo, o retrato ocupa a tela e quase não há cor: identidade forte com poucos elementos.</span></a>
+      <a class="ref" href="https://www.peggygou.com/" target="_blank" rel="noopener"><span class="ref-n notranslate" translate="no">Peggy Gou</span><span class="ref-u notranslate" translate="no">peggygou.com</span><span class="ref-d" data-i="r2">A primeira tela é uma peça visual em movimento, e o menu fica curto: música, turnê, vídeos, imprensa.</span></a>
+      <a class="ref" href="https://www.anyma.com/" target="_blank" rel="noopener"><span class="ref-n notranslate" translate="no">Anyma</span><span class="ref-u notranslate" translate="no">anyma.com</span><span class="ref-d" data-i="r3">Um mundo visual de cinema e a turnê tratada como o produto principal do site.</span></a>
+      <a class="ref" href="https://disclosureofficial.com/" target="_blank" rel="noopener"><span class="ref-n notranslate" translate="no">Disclosure</span><span class="ref-u notranslate" translate="no">disclosureofficial.com</span><span class="ref-d" data-i="r4">O lançamento do momento é o herói da página, com letreiro correndo e botão direto para ouvir.</span></a>
+      <a class="ref" href="https://boilerroom.tv/" target="_blank" rel="noopener"><span class="ref-n notranslate" translate="no">Boiler Room</span><span class="ref-u notranslate" translate="no">boilerroom.tv</span><span class="ref-d" data-i="r5">O set ao vivo como vitrine: eventos, vídeo e áudio lado a lado.</span></a>
+      <a class="ref" href="https://keinemusik.com/" target="_blank" rel="noopener"><span class="ref-n notranslate" translate="no">Keinemusik</span><span class="ref-u notranslate" translate="no">keinemusik.com</span><span class="ref-d" data-i="r6">Um coletivo com datas, lançamentos e programa de rádio no mesmo menu.</span></a>
+      <a class="ref" href="https://carlcox.com/" target="_blank" rel="noopener"><span class="ref-n notranslate" translate="no">Carl Cox</span><span class="ref-u notranslate" translate="no">carlcox.com</span><span class="ref-d" data-i="r7">Todas as plataformas no topo da página: quem chega escolhe onde ouvir.</span></a>
+    </div>
+    <p class="aviso" data-i="ref_aviso">Links para os sites oficiais, só como referência de mercado. A Amplitude Lab não tem ligação com esses artistas.</p>
+  </section>
+
+  <!-- 6 · Como funciona -->
+  <section class="bloco" id="processo" aria-labelledby="proc-titulo">
+    <div class="cab">
+      <p class="sobre" data-i="pro_sobre">Como funciona</p>
+      <h2 id="proc-titulo" data-i="pro_t">Do material ao site no ar em 5 a 10 dias.</h2>
+    </div>
+    <ol class="passos">
+      <li><span class="passo-n">01</span><b data-i="p1_t">Conversa e material</b><span data-i="p1_d">Fotos, vídeos de set, faixas, release e as datas que vêm por aí.</span></li>
+      <li><span class="passo-n">02</span><b data-i="p2_t">Prévia privada</b><span data-i="p2_d">Em poucos dias você recebe um link só seu para ver o site funcionando.</span></li>
+      <li><span class="passo-n">03</span><b data-i="p3_t">Ajustes</b><span data-i="p3_d">Texto, ordem, cores, vídeo de abertura: a gente acerta até ficar com a sua cara.</span></li>
+      <li><span class="passo-n">04</span><b data-i="p4_t">No ar</b><span data-i="p4_d">Publicado, rápido e pronto para o seu domínio e para a bio do Instagram.</span></li>
+    </ol>
+  </section>
+
+  <!-- Perguntas: explicar tudo, sem ponto solto -->
+  <section class="bloco" id="perguntas" aria-labelledby="faq-titulo">
+    <div class="cab">
+      <p class="sobre" data-i="faq_sobre">Perguntas</p>
+      <h2 id="faq-titulo" data-i="faq_t">Tudo explicado, sem letra miúda.</h2>
+    </div>
+    <div class="faq">
+      <details><summary data-i="q1">Já tenho Instagram e Linktree. Para que um site?</summary><p data-i="a1">O Instagram é ótimo para mostrar o dia a dia, mas quem contrata precisa de outra coisa: material para baixar, agenda, vídeo de set e um jeito rápido de pedir a data. O site junta tudo num endereço só, que você coloca na bio no lugar do Linktree. E é seu: não depende do algoritmo.</p></details>
+      <details><summary data-i="q2">Quanto custa?</summary><p data-i="a2">Depende do que entra no site. Página vitrine a partir de R$ 600; site completo de R$ 1.200 a R$ 2.500. Metade na aprovação e metade na entrega. O plano mensal (R$ 79 ou R$ 199) é opcional, para quem quer que a gente atualize agenda, sets e fotos. Monte o seu no orçamento e veja o valor na hora.</p></details>
+      <details><summary data-i="q3">Em quanto tempo fica pronto?</summary><p data-i="a3">De 5 a 10 dias depois que o material chega. Em poucos dias você já recebe uma prévia privada para ver funcionando e pedir ajustes.</p></details>
+      <details><summary data-i="q4">O que eu preciso mandar?</summary><p data-i="a4">Fotos (as melhores que tiver), vídeos de set ou de pista, links das suas faixas e sets, um texto sobre você (ou a gente escreve com você), as próximas datas e o seu contato de booking. Se faltar alguma coisa, o site sai com o que tem e cresce depois.</p></details>
+      <details><summary data-i="q5">Como funciona o booking pelo WhatsApp?</summary><p data-i="a5">O formulário junta nome, data, cidade, tipo de evento, duração do set, orçamento e contato numa mensagem pronta e abre o WhatsApp do contratante já com ela escrita para o seu número. Ele só aperta enviar. Nada fica guardado em servidor.</p></details>
+      <details><summary data-i="q6">Pedido de música e "Eu vou" funcionam de verdade?</summary><p data-i="a6">Na demo, ficam só no navegador de quem testa. No seu site, ligamos a um banco de dados para você ver a fila de pedidos e as confirmações em tempo real. É um recurso extra, combinado no orçamento.</p></details>
+      <details><summary data-i="q7">O site fica em inglês também?</summary><p data-i="a7">Sim. Português e inglês escritos e revisados por nós, com troca na hora. Para outros idiomas, um botão usa a tradução automática do Google, como nesta página.</p></details>
+      <details><summary data-i="q8">Posso usar meu próprio domínio?</summary><p data-i="a8">Pode. O site fica pronto para ir para o seu endereço (por exemplo, seunome.com). O registro do domínio é seu, e a gente faz a ligação.</p></details>
+      <details><summary data-i="q9">E se eu quiser mudar alguma coisa depois?</summary><p data-i="a9">Agenda, sets, fotos e textos ficam separados do visual, então mudar é rápido. Você pode pedir no plano mensal ou avulso.</p></details>
+      <details><summary data-i="q10">Os vídeos não deixam o site pesado?</summary><p data-i="a10">Não. Os vídeos de fundo são curtos, sem som e comprimidos; só carregam quando aparecem na tela, e o celular recebe versões menores. Quem prefere menos movimento vê imagens paradas.</p></details>
+    </div>
+  </section>
+
+  <!-- Contato -->
+  <section class="contato" id="contato" aria-labelledby="contato-titulo">
+    <video class="contato-video" muted loop playsinline preload="none" poster="assets/img/palco-v.jpg" data-src="assets/video/palco-v.mp4" aria-hidden="true"></video>
+    <div class="contato-txt">
+      <h2 id="contato-titulo" data-i="ct_t">Vamos colocar o seu som no ar?</h2>
+      <p data-i="ct_d">Conta o seu estilo e manda o material que já tem. Respondemos com a ideia do site e o orçamento.</p>
+      <div class="acoes">
+        <a class="btn" href="../index.html#monte" data-i="ct_b1">Montar meu orçamento</a>
+        <a class="btn btn-linha" id="whats" href="https://wa.me/5511952182016?text=Oi!%20Vi%20a%20p%C3%A1gina%20de%20sites%20para%20DJs%20da%20Amplitude%20Lab" target="_blank" rel="noopener" data-i="ct_b2">Chamar no WhatsApp</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape">
+  <span class="notranslate" translate="no">Amplitude Lab</span>
+  <span data-i="rod_1">Sites para artistas e negócios · São Paulo, Brasil</span>
+  <span><a href="../sites/index.html" data-i="rod_2">Portfólio completo</a> · <a href="https://instagram.com/amplitude_lab" target="_blank" rel="noopener" class="notranslate" translate="no">@amplitude_lab</a></span>
+</footer>
+</body>
+</html>
