@@ -2,7 +2,7 @@
    - Idioma: português (no HTML) e inglês (EN abaixo), revisados. Outros idiomas pelo
      Google Tradutor, que só carrega quando alguém escolhe um deles.
    - Vídeos: só carregam perto da tela e pausam fora dela; no celular entram as versões verticais.
-   - O ponto verde do topo e do BPM pisca no tempo do fundo (120 BPM, o andamento das peças do Remotion). */
+   - O ponto verde do topo e do BPM pisca no tempo do fundo (120 BPM, o andamento dos vídeos). */
 (function () {
   'use strict';
 
@@ -79,14 +79,14 @@
     hero_b1: 'See the live sites', hero_b2: 'I want mine',
     vit_sobre: 'Showreel · 28 seconds',
     vit_t: 'The sites, actually running.',
-    vit_sub: 'We recorded every site on a laptop and a phone and cut it all together in Remotion, right on the beat.',
+    vit_sub: 'We recorded every site on a laptop and a phone and cut it all together right on the beat.',
     vit_play: 'Pause the showreel', vit_play_on: 'Play the showreel',
     vit_cap: 'Silent video showing the ARCANNE, LINNX, BRUXO, DARKY and Bruno Zampieri websites and the NOVA VOLTZ demo on a laptop and a phone.',
     noar_sobre: 'Live now',
     noar_t: 'Every artist gets their own universe.',
     noar_sub: 'No template with a different photo. Open them and click around: these are the real sites.',
     abrir: 'Open the site',
-    arc_1: 'Intro and backgrounds made in Remotion, cut to the BPM of the single (140).',
+    arc_1: 'Intro and backgrounds on video, cut to the BPM of the single (140).',
     arc_2: 'Portuguese and English, with the language picked on arrival.',
     arc_3: 'Aftermovies, discography and a downloadable press kit.',
     lin_1: 'The first screen is her latest set, in clips that rotate on their own.',
@@ -104,7 +104,7 @@
     bz_3: 'The same language works for a DJ with aftermovies and tour dates.',
     ent_sobre: 'What goes on your site',
     ent_t: 'Everything a booker looks for, on one page.',
-    i1_t: 'Video intro', i1_d: 'Made in Remotion with your footage, cut to the BPM of your track.',
+    i1_t: 'Video intro', i1_d: 'Made with your footage, cut to the BPM of your track.',
     i2_t: 'Your players', i2_d: 'SoundCloud, Spotify, Mixcloud, YouTube and Apple Music, without leaving the site.',
     i3_t: 'Tour dates', i3_d: 'Upcoming gigs with venue, city and ticket link.',
     i4_t: 'Press kit', i4_d: 'Bio, hi-res photos, logos and rider, one click to download.',
